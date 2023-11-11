@@ -1,8 +1,7 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -11,11 +10,18 @@ import lombok.Data;
 public class BookingNote {
 
   @Id
-  private String noteid;
+  private int noteid;
   private java.sql.Date datetime;
   private String notebody;
-  private String bookingid;
-  private String userid;
+
+  @JsonBackReference
+  @ManyToOne
+  @JoinColumn(name = "BOOKINGID", referencedColumnName = "BOOKINGID")
+  private Booking booking;
+
+  @ManyToOne
+  @JoinColumn(name = "USERID", referencedColumnName = "USERID")
+  private User user;
 
 //
 //  public String getNoteid() {

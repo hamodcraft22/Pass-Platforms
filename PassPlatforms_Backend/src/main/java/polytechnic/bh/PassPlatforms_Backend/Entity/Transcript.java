@@ -1,8 +1,6 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -11,10 +9,16 @@ import lombok.Data;
 public class Transcript {
 
   @Id
-  private String transid;
+  private int transid;
   private String grade;
-  private String studentid;
-  private String courseid;
+
+  @ManyToOne
+  @JoinColumn(name = "STUDENTID", referencedColumnName = "USERID")
+  private User student;
+
+  @ManyToOne
+  @JoinColumn(name = "COURSEID", referencedColumnName = "COURSEID")
+  private Course course;
 
 //
 //  public String getTransid() {

@@ -1,8 +1,6 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -11,10 +9,16 @@ import lombok.Data;
 public class StudentMajor {
 
   @Id
-  private String stumajorid;
+  private int stumajorid;
   private String isminor;
-  private String userid;
-  private String majorid;
+
+  @ManyToOne
+  @JoinColumn(name = "USERID", referencedColumnName = "USERID")
+  private User user;
+
+  @ManyToOne
+  @JoinColumn(name = "MAJORID", referencedColumnName = "MAJORID")
+  private Major major;
 
 //
 //  public String getStumajorid() {

@@ -1,8 +1,6 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -11,13 +9,16 @@ import lombok.Data;
 public class Audit {
 
   @Id
-  private String auditid;
+  private int auditid;
   private String changetype;
   private String entityname;
   private java.sql.Date datetime;
   private String oldvalue;
   private String newvalue;
-  private String userid;
+
+  @ManyToOne
+  @JoinColumn(name = "USERID", referencedColumnName = "USERID")
+  private User user;
 
 //
 //  public String getAuditid() {

@@ -11,7 +11,7 @@ import lombok.Data;
 public class ApplicationStatus {
 
   @Id
-  private String statusid;
+  private char statusid;
   private String statusname;
   private String statusdesc;
 

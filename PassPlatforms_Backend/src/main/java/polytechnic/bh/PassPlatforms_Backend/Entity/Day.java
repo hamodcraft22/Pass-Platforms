@@ -11,7 +11,7 @@ import lombok.Data;
 public class Day {
 
   @Id
-  private String dayid;
+  private char dayid;
   private String dayname;
 
 //

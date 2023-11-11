@@ -1,8 +1,6 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -11,11 +9,17 @@ import lombok.Data;
 public class Schedule {
 
   @Id
-  private String scheduleid;
+  private int scheduleid;
   private java.sql.Timestamp starttime;
   private java.sql.Timestamp endtime;
-  private String dayid;
-  private String userid;
+
+  @ManyToOne
+  @JoinColumn(name = "DAYID", referencedColumnName = "DAYID")
+  private Day day;
+
+  @ManyToOne
+  @JoinColumn(name = "USERID", referencedColumnName = "USERID")
+  private User user;
 
 //
 //  public String getScheduleid() {

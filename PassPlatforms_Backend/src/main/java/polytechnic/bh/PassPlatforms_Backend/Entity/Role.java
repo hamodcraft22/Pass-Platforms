@@ -1,9 +1,9 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -11,9 +11,10 @@ import lombok.Data;
 public class Role {
 
   @Id
-  private String roleid;
+  private int roleid;
   private String rolename;
   private String roledesc;
+
 
 //
 //  public String getRoleid() {

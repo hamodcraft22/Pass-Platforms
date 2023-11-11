@@ -1,8 +1,6 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -11,12 +9,21 @@ import lombok.Data;
 public class Recommendation {
 
   @Id
-  private String recid;
+  private int recid;
   private java.sql.Date datetime;
   private String note;
-  private String statusid;
-  private String tutorid;
-  private String studentid;
+
+  @ManyToOne
+  @JoinColumn(name = "STATUSID", referencedColumnName = "STATUSID")
+  private RecStatus status;
+
+  @ManyToOne
+  @JoinColumn(name = "TUTORID", referencedColumnName = "USERID")
+  private User tutor;
+
+  @ManyToOne
+  @JoinColumn(name = "STUDENTID", referencedColumnName = "USERID")
+  private User student;
 
 //
 //  public String getRecid() {

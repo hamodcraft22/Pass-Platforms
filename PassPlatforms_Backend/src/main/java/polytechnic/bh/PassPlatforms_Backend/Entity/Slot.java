@@ -1,8 +1,6 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -11,14 +9,20 @@ import lombok.Data;
 public class Slot {
 
   @Id
-  private String slotid;
+  private int slotid;
   private java.sql.Timestamp starttime;
   private java.sql.Timestamp endtime;
   private String note;
   private String isrevision;
   private String isonline;
-  private String dayid;
-  private String leaderid;
+
+  @ManyToOne
+  @JoinColumn(name = "DAYID", referencedColumnName = "DAYID")
+  private Day day;
+
+  @ManyToOne
+  @JoinColumn(name = "LEADERID", referencedColumnName = "USERID")
+  private User leader;
 
 //
 //  public String getSlotid() {

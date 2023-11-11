@@ -1,18 +1,22 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "user")
+@Table(name = "pp_user")
 public class User {
 
   @Id
   private String userid;
-  private String roleid;
+
+  @ManyToOne
+  @JoinColumn(name = "roleid", referencedColumnName = "roleid")
+  private Role role;
+
 
 //
 //  public String getUserid() {

@@ -1,8 +1,6 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -11,9 +9,15 @@ import lombok.Data;
 public class OfferedCourse {
 
   @Id
-  private String offerid;
-  private String leaderid;
-  private String courseid;
+  private int offerid;
+
+  @ManyToOne
+  @JoinColumn(name = "LEADERID", referencedColumnName = "USERID")
+  private User leader;
+
+  @ManyToOne
+  @JoinColumn(name = "COURSEID", referencedColumnName = "COURSEID")
+  private Course course;
 
 //
 //  public String getOfferid() {
