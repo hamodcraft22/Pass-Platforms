@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "transcript")
+@Table(name = "pp_transcript")
 public class Transcript {
 
   @Id
@@ -19,41 +19,5 @@ public class Transcript {
   @ManyToOne
   @JoinColumn(name = "COURSEID", referencedColumnName = "COURSEID")
   private Course course;
-
-//
-//  public String getTransid() {
-//    return transid;
-//  }
-//
-//  public void setTransid(String transid) {
-//    this.transid = transid;
-//  }
-//
-//
-//  public String getGrade() {
-//    return grade;
-//  }
-//
-//  public void setGrade(String grade) {
-//    this.grade = grade;
-//  }
-//
-//
-//  public String getStudentid() {
-//    return studentid;
-//  }
-//
-//  public void setStudentid(String studentid) {
-//    this.studentid = studentid;
-//  }
-//
-//
-//  public String getCourseid() {
-//    return courseid;
-//  }
-//
-//  public void setCourseid(String courseid) {
-//    this.courseid = courseid;
-//  }
 
 }

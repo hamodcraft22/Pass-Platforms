@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "recommendation")
+@Table(name = "pp_recommendation")
 public class Recommendation {
 
   @Id
@@ -24,59 +24,5 @@ public class Recommendation {
   @ManyToOne
   @JoinColumn(name = "STUDENTID", referencedColumnName = "USERID")
   private User student;
-
-//
-//  public String getRecid() {
-//    return recid;
-//  }
-//
-//  public void setRecid(String recid) {
-//    this.recid = recid;
-//  }
-//
-//
-//  public java.sql.Date getDatetime() {
-//    return datetime;
-//  }
-//
-//  public void setDatetime(java.sql.Date datetime) {
-//    this.datetime = datetime;
-//  }
-//
-//
-//  public String getNote() {
-//    return note;
-//  }
-//
-//  public void setNote(String note) {
-//    this.note = note;
-//  }
-//
-//
-//  public String getStatusid() {
-//    return statusid;
-//  }
-//
-//  public void setStatusid(String statusid) {
-//    this.statusid = statusid;
-//  }
-//
-//
-//  public String getTutorid() {
-//    return tutorid;
-//  }
-//
-//  public void setTutorid(String tutorid) {
-//    this.tutorid = tutorid;
-//  }
-//
-//
-//  public String getStudentid() {
-//    return studentid;
-//  }
-//
-//  public void setStudentid(String studentid) {
-//    this.studentid = studentid;
-//  }
 
 }

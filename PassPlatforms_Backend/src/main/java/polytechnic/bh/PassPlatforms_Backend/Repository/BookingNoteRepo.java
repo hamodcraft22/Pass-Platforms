@@ -1,6 +1,7 @@
 package polytechnic.bh.PassPlatforms_Backend.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import polytechnic.bh.PassPlatforms_Backend.Entity.BookingNote;
 
-public interface BookingNoteRepo extends JpaRepository<BookingNoteRepo, Integer> {
+public interface BookingNoteRepo extends JpaRepository<BookingNote, Integer> {
 }

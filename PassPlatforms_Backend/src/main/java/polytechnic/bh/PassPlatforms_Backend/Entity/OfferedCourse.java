@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "offeredcourse")
+@Table(name = "pp_offeredcourse")
 public class OfferedCourse {
 
   @Id
@@ -18,32 +18,5 @@ public class OfferedCourse {
   @ManyToOne
   @JoinColumn(name = "COURSEID", referencedColumnName = "COURSEID")
   private Course course;
-
-//
-//  public String getOfferid() {
-//    return offerid;
-//  }
-//
-//  public void setOfferid(String offerid) {
-//    this.offerid = offerid;
-//  }
-//
-//
-//  public String getLeaderid() {
-//    return leaderid;
-//  }
-//
-//  public void setLeaderid(String leaderid) {
-//    this.leaderid = leaderid;
-//  }
-//
-//
-//  public String getCourseid() {
-//    return courseid;
-//  }
-//
-//  public void setCourseid(String courseid) {
-//    this.courseid = courseid;
-//  }
 
 }
