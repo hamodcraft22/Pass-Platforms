@@ -13,8 +13,8 @@ public class Slot {
   private java.sql.Timestamp starttime;
   private java.sql.Timestamp endtime;
   private String note;
-  private String isrevision;
-  private String isonline;
+  private boolean isrevision;
+  private boolean isonline;
 
   @ManyToOne
   @JoinColumn(name = "DAYID", referencedColumnName = "DAYID")

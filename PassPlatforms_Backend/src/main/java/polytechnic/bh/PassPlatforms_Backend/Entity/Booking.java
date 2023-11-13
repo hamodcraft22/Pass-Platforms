@@ -13,15 +13,15 @@ public class Booking {
 
   @Id
   private int bookingid;
-  private java.sql.Date datebooked;
-  private java.sql.Date date;
+  private java.sql.Timestamp datebooked;
+  private java.sql.Date bookingdate;
   private String note;
   private java.sql.Timestamp starttime;
   private java.sql.Timestamp endtime;
-  private String bookinglimit;
-  private String isonline;
-  private String isgroup;
-  private String isrevision;
+  private int bookinglimit;
+  private boolean isonline;
+  private boolean isgroup;
+  private boolean isrevision;
 
   @ManyToOne
   @JoinColumn(name = "SLOTID", referencedColumnName = "SLOTID")

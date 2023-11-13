@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Recommendation;
 
 import java.sql.Date;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -14,7 +15,7 @@ import java.sql.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RecommendationDto {
     private int recid;
-    private java.sql.Date datetime;
+    private Instant datetime;
     private String note;
     private RecStatusDto recStatus;
     private UserDto student;
@@ -22,7 +23,7 @@ public class RecommendationDto {
 
     public RecommendationDto(Recommendation recommendation) {
         this.recid = recommendation.getRecid();
-        this.datetime = recommendation.getDatetime();
+        this.datetime = recommendation.getDatetime().toInstant();
         this.note = recommendation.getNote();
         this.recStatus = new RecStatusDto(recommendation.getStatus());
         this.student = new UserDto(recommendation.getStudent());

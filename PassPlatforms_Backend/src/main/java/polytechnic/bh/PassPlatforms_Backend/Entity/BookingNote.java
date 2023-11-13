@@ -11,7 +11,7 @@ public class BookingNote {
 
   @Id
   private int noteid;
-  private java.sql.Date datetime;
+  private java.sql.Timestamp datetime;
   private String notebody;
 
   @JsonBackReference

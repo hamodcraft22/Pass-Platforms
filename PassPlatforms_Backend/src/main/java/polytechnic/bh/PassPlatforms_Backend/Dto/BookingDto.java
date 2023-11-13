@@ -8,7 +8,9 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Booking;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingNote;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -17,15 +19,15 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookingDto {
     private int bookingid;
-    private java.sql.Date datebooked;
-    private java.sql.Date date;
+    private Instant datebooked;
+    private Date date;
     private String note;
-    private java.sql.Timestamp starttime;
-    private java.sql.Timestamp endtime;
-    private String bookinglimit;
-    private String isonline;
-    private String isgroup;
-    private String isrevision;
+    private Instant starttime;
+    private Instant endtime;
+    private int bookinglimit;
+    private boolean isonline;
+    private boolean isgroup;
+    private boolean isrevision;
     private SlotDto slot;
     private BookingStatusDto bookingStatus;
     private UserDto student;
@@ -35,15 +37,15 @@ public class BookingDto {
 
     public BookingDto(Booking booking) {
         this.bookingid = booking.getBookingid();
-        this.datebooked = booking.getDatebooked();
-        this.date = booking.getDate();
+        this.datebooked = booking.getDatebooked().toInstant();
+        this.date = booking.getBookingdate();
         this.note = booking.getNote();
-        this.starttime = booking.getStarttime();
-        this.endtime = booking.getEndtime();
+        this.starttime = booking.getStarttime().toInstant();
+        this.endtime = booking.getEndtime().toInstant();
         this.bookinglimit = booking.getBookinglimit();
-        this.isonline = booking.getIsonline();
-        this.isgroup = booking.getIsgroup();
-        this.isrevision = booking.getIsrevision();
+        this.isonline = booking.isIsonline();
+        this.isgroup = booking.isIsgroup();
+        this.isrevision = booking.isIsrevision();
 
         this.slot = new SlotDto(booking.getSlot());
         this.bookingStatus = new BookingStatusDto(booking.getBookingStatus());
@@ -56,7 +58,7 @@ public class BookingDto {
             for (BookingMember member : booking.getBookingMembers())
             {
                 bookingMembers.add(new BookingMemberDto(member.getMemberid(),
-                        member.getDatetime(),
+                        member.getDatetime().toInstant(),
                         new UserDto(member.getStudent()),
                         null,
                         new MemberStatusDto(member.getStatus())));
@@ -69,7 +71,7 @@ public class BookingDto {
             for (BookingNote note : booking.getBookingNotes())
             {
                 bookingNotes.add(new BookingNoteDto(note.getNoteid(),
-                        note.getDatetime(),
+                        note.getDatetime().toInstant(),
                         note.getNotebody(),
                         null,
                         new UserDto(note.getUser())));

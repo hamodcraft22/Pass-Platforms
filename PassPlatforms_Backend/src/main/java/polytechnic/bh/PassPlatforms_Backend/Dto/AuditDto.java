@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Audit;
 
 import java.sql.Date;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -14,9 +15,9 @@ import java.sql.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuditDto {
     private int auditid;
-    private String changetype;
+    private char changetype;
     private String entityname;
-    private java.sql.Date datetime;
+    private Instant datetime;
     private String oldvalue;
     private String newvalue;
     private UserDto user;
@@ -25,7 +26,7 @@ public class AuditDto {
         this.auditid = audit.getAuditid();
         this.changetype = audit.getChangetype();
         this.entityname = audit.getEntityname();
-        this.datetime = audit.getDatetime();
+        this.datetime = audit.getDatetime().toInstant();
         this.oldvalue = audit.getOldvalue();
         this.newvalue = audit.getNewvalue();
         this.user = new UserDto(audit.getUser());

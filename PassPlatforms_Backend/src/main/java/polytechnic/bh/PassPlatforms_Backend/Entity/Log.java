@@ -11,7 +11,7 @@ public class Log {
   @Id
   private int logid;
   private String errormsg;
-  private java.sql.Date datetime;
+  private java.sql.Timestamp datetime;
 
   @ManyToOne
   @JoinColumn(name = "USERID", referencedColumnName = "USERID")

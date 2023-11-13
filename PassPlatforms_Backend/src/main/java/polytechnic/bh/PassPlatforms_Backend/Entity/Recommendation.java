@@ -10,7 +10,7 @@ public class Recommendation {
 
   @Id
   private int recid;
-  private java.sql.Date datetime;
+  private java.sql.Timestamp datetime;
   private String note;
 
   @ManyToOne

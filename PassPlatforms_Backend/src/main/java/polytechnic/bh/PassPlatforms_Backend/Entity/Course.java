@@ -12,8 +12,8 @@ public class Course {
   private String courseid;
   private String coursename;
   private String coursedesc;
-  private String semaster;
-  private String available;
+  private char semaster;
+  private boolean available;
 
   @ManyToOne
   @JoinColumn(name = "MAJORID", referencedColumnName = "MAJORID")

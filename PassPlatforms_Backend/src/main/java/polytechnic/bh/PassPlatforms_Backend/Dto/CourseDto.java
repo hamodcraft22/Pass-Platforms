@@ -14,8 +14,8 @@ public class CourseDto {
     private String courseid;
     private String coursename;
     private String coursedesc;
-    private String semaster;
-    private String available;
+    private char semaster;
+    private boolean available;
     private MajorDto major;
 
     public CourseDto(Course course) {
@@ -23,7 +23,7 @@ public class CourseDto {
         this.coursename = course.getCoursename();
         this.coursedesc = course.getCoursedesc();
         this.semaster = course.getSemaster();
-        this.available = course.getAvailable();
+        this.available = course.isAvailable();
         this.major = new MajorDto(course.getMajor());
     }
 }

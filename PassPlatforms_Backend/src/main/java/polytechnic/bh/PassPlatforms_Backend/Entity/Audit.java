@@ -10,9 +10,9 @@ public class Audit {
 
   @Id
   private int auditid;
-  private String changetype;
+  private char changetype;
   private String entityname;
-  private java.sql.Date datetime;
+  private java.sql.Timestamp datetime;
   private String oldvalue;
   private String newvalue;
 

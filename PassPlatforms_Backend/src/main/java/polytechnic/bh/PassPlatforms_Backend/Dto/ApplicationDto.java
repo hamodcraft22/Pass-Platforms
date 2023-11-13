@@ -38,7 +38,8 @@ public class ApplicationDto {
             for (ApplicationNote note : application.getApplicationNotes())
             {
                 applicationNotes.add(new ApplicationNoteDto(note.getNoteid(),
-                        note.getDatetime(),note.getNotebody(),
+                        note.getDatetime().toInstant(),
+                        note.getNotebody(),
                         null,
                         new UserDto(note.getUser())));
             }

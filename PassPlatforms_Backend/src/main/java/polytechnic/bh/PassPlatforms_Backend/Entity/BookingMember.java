@@ -11,13 +11,12 @@ public class BookingMember {
 
   @Id
   private int memberid;
-  private java.sql.Date datetime;
+  private java.sql.Timestamp datetime;
 
   @ManyToOne
   @JoinColumn(name = "STUDENTID", referencedColumnName = "USERID")
   private User student;
 
-  @JsonBackReference
   @ManyToOne
   @JoinColumn(name = "BOOKINGID", referencedColumnName = "BOOKINGID")
   private Booking booking;

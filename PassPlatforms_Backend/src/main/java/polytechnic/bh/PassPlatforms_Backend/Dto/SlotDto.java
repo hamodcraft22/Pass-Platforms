@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Slot;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -14,21 +15,21 @@ import java.sql.Timestamp;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SlotDto {
     private int slotid;
-    private java.sql.Timestamp starttime;
-    private java.sql.Timestamp endtime;
+    private Instant starttime;
+    private Instant endtime;
     private String note;
-    private String isrevision;
-    private String isonline;
+    private boolean isrevision;
+    private boolean isonline;
     private DayDto day;
     private UserDto leader;
 
     public SlotDto(Slot slot) {
         this.slotid = slot.getSlotid();
-        this.starttime = slot.getStarttime();
-        this.endtime = slot.getEndtime();
+        this.starttime = slot.getStarttime().toInstant();
+        this.endtime = slot.getEndtime().toInstant();
         this.note = slot.getNote();
-        this.isrevision = slot.getIsrevision();
-        this.isonline = slot.getIsonline();
+        this.isrevision = slot.isIsrevision();
+        this.isonline = slot.isIsonline();
         this.day = new DayDto(slot.getDay());
         this.leader = new UserDto(slot.getLeader());
     }

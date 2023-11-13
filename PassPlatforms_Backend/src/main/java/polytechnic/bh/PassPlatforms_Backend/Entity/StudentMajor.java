@@ -10,7 +10,7 @@ public class StudentMajor {
 
   @Id
   private int stumajorid;
-  private String isminor;
+  private boolean isminor;
 
   @ManyToOne
   @JoinColumn(name = "USERID", referencedColumnName = "USERID")

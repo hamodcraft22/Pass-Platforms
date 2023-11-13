@@ -1,6 +1,5 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,7 +10,7 @@ public class ApplicationNote {
 
   @Id
   private int noteid;
-  private Object datetime;
+  private java.sql.Timestamp datetime;
   private String notebody;
 
   @ManyToOne

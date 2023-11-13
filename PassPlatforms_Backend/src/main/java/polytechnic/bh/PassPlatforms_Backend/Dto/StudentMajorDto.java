@@ -12,13 +12,13 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.StudentMajor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class StudentMajorDto {
     private int stumajorid;
-    private String isminor;
+    private boolean isminor;
     private UserDto user;
     private MajorDto major;
 
     public StudentMajorDto(StudentMajor studentMajor) {
         this.stumajorid = studentMajor.getStumajorid();
-        this.isminor = studentMajor.getIsminor();
+        this.isminor = studentMajor.isIsminor();
         this.user = new UserDto(studentMajor.getUser());
         this.major = new MajorDto(studentMajor.getMajor());
     }

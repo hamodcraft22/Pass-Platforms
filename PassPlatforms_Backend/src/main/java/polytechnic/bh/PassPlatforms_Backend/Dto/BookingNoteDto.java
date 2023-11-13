@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingNote;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,14 +17,14 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookingNoteDto {
     private int noteid;
-    private java.sql.Date datetime;
+    private Instant datetime;
     private String notebody;
     private BookingDto booking;
     private UserDto user;
 
     public BookingNoteDto(BookingNote bookingNote) {
         this.noteid = bookingNote.getNoteid();
-        this.datetime = bookingNote.getDatetime();
+        this.datetime = bookingNote.getDatetime().toInstant();
         this.notebody = bookingNote.getNotebody();
         this.user = new UserDto(bookingNote.getUser());
 
@@ -33,7 +34,7 @@ public class BookingNoteDto {
             for (BookingMember member : bookingNote.getBooking().getBookingMembers())
             {
                 bookingMembers.add(new BookingMemberDto(member.getMemberid(),
-                        member.getDatetime(),
+                        member.getDatetime().toInstant(),
                         new UserDto(member.getStudent()),
                         null,
                         new MemberStatusDto(member.getStatus())));
@@ -41,15 +42,15 @@ public class BookingNoteDto {
         }
 
         this.booking = new BookingDto(bookingNote.getBooking().getBookingid(),
-                bookingNote.getBooking().getDatebooked(),
-                bookingNote.getBooking().getDate(),
+                bookingNote.getBooking().getDatebooked().toInstant(),
+                bookingNote.getBooking().getBookingdate(),
                 bookingNote.getBooking().getNote(),
-                bookingNote.getBooking().getStarttime(),
-                bookingNote.getBooking().getEndtime(),
+                bookingNote.getBooking().getStarttime().toInstant(),
+                bookingNote.getBooking().getEndtime().toInstant(),
                 bookingNote.getBooking().getBookinglimit(),
-                bookingNote.getBooking().getIsonline(),
-                bookingNote.getBooking().getIsgroup(),
-                bookingNote.getBooking().getIsrevision(),
+                bookingNote.getBooking().isIsonline(),
+                bookingNote.getBooking().isIsgroup(),
+                bookingNote.getBooking().isIsrevision(),
                 new SlotDto(bookingNote.getBooking().getSlot()),
                 new BookingStatusDto(bookingNote.getBooking().getBookingStatus()),
                 new UserDto(bookingNote.getBooking().getStudent()),
