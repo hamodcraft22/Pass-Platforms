@@ -17,8 +17,8 @@ public class AuditDao {
     private char changetype;
     private String entityname;
     private Instant datetime;
-    private String oldvalue;
-    private String newvalue;
+    private byte[] oldvalue;
+    private byte[] newvalue;
     private UserDao user;
 
     public AuditDao(Audit audit) {

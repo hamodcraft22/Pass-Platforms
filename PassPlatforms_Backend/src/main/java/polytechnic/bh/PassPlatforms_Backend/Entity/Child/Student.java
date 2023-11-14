@@ -3,7 +3,6 @@ package polytechnic.bh.PassPlatforms_Backend.Entity.Child;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.SuperBuilder;
 import polytechnic.bh.PassPlatforms_Backend.Entity.*;
 
 import java.util.List;
@@ -13,6 +12,7 @@ import java.util.List;
 @DiscriminatorValue("1")
 @EqualsAndHashCode(callSuper = true)
 public class Student extends User {
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "USERID", referencedColumnName = "USERID")
     private List<StudentMajor> studentMajors;

@@ -7,12 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import polytechnic.bh.PassPlatforms_Backend.Entity.Child.Student;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.StudentRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
-import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -26,15 +24,15 @@ public class UserCont {
     StudentRepo studentRepo;
 
     @GetMapping("/User")
-    public ResponseEntity<List<User>> getAllTutorials(@RequestHeader(value = "requestKey", required = false) String requestKey)
+    public ResponseEntity<User> getAllTutorials(@RequestHeader(value = "requestKey", required = false) String requestKey)
     {
         if (Objects.equals(requestKey, "student-3e1d-4e5f-a2b1-6c7d8e9f0a1b"))
         {
-            List<User> users = userRepo.findAll();
+            //List<User> users = userRepo.findAll();
 
-            Student student = studentRepo.getReferenceById("201900500");
+            User student = userRepo.getReferenceById("202002789");
 
-            return new ResponseEntity<>(users, HttpStatus.OK);
+            return new ResponseEntity<>(student, HttpStatus.OK);
         }
         else
         {
