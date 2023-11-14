@@ -1,4 +1,4 @@
-package polytechnic.bh.PassPlatforms_Backend.Dto;
+package polytechnic.bh.PassPlatforms_Backend.Dao;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -10,16 +10,16 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Transcript;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TranscriptDto {
+public class TranscriptDao {
     private int transid;
     private String grade;
-    private UserDto student;
-    private CourseDto course;
+    private UserDao student;
+    private CourseDao course;
 
-    public TranscriptDto(Transcript transcript) {
+    public TranscriptDao(Transcript transcript) {
         this.transid = transcript.getTransid();
         this.grade = transcript.getGrade();
-        this.student = new UserDto(transcript.getStudent());
-        this.course = new CourseDto(transcript.getCourse());
+        this.student = new UserDao(transcript.getStudent());
+        this.course = new CourseDao(transcript.getCourse());
     }
 }

@@ -1,4 +1,4 @@
-package polytechnic.bh.PassPlatforms_Backend.Dto;
+package polytechnic.bh.PassPlatforms_Backend.Dao;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -6,25 +6,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Schedule;
 
-import java.sql.Timestamp;
 import java.time.Instant;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ScheduleDto {
+public class ScheduleDao {
     private int scheduleid;
     private Instant starttime;
     private Instant endtime;
-    private DayDto day;
-    private UserDto user;
+    private DayDao day;
+    private UserDao user;
 
-    public ScheduleDto(Schedule schedule) {
+    public ScheduleDao(Schedule schedule) {
         this.scheduleid = schedule.getScheduleid();
         this.starttime = schedule.getStarttime().toInstant();
         this.endtime = schedule.getEndtime().toInstant();
-        this.day = new DayDto(schedule.getDay());
-        this.user = new UserDto(schedule.getUser());
+        this.day = new DayDao(schedule.getDay());
+        this.user = new UserDao(schedule.getUser());
     }
 }

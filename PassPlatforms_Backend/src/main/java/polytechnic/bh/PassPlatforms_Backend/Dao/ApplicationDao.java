@@ -1,4 +1,4 @@
-package polytechnic.bh.PassPlatforms_Backend.Dto;
+package polytechnic.bh.PassPlatforms_Backend.Dao;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -14,34 +14,34 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApplicationDto {
+public class ApplicationDao {
     private int applicationid;
     private Object datetime;
     private String note;
-    private ApplicationStatusDto applicationStatus;
-    private UserDto user;
-    private List<ApplicationNoteDto> applicationNotes;
+    private ApplicationStatusDao applicationStatus;
+    private UserDao user;
+    private List<ApplicationNoteDao> applicationNotes;
 
-    public ApplicationDto(Application application) {
+    public ApplicationDao(Application application) {
         this.applicationid = application.getApplicationid();
         this.datetime = application.getDatetime();
         this.note = application.getNote();
 
         //building custom dto objects for linked elements
-        this.applicationStatus = new ApplicationStatusDto(application.getApplicationStatus());
-        this.user = new UserDto(application.getUser());
+        this.applicationStatus = new ApplicationStatusDao(application.getApplicationStatus());
+        this.user = new UserDao(application.getUser());
 
         //building custom list of objects while removing infinite recursion
-        List<ApplicationNoteDto> applicationNotes = new ArrayList<>();
+        List<ApplicationNoteDao> applicationNotes = new ArrayList<>();
         if(!application.getApplicationNotes().isEmpty())
         {
             for (ApplicationNote note : application.getApplicationNotes())
             {
-                applicationNotes.add(new ApplicationNoteDto(note.getNoteid(),
+                applicationNotes.add(new ApplicationNoteDao(note.getNoteid(),
                         note.getDatetime().toInstant(),
                         note.getNotebody(),
                         null,
-                        new UserDto(note.getUser())));
+                        new UserDao(note.getUser())));
             }
         }
         this.applicationNotes = applicationNotes;

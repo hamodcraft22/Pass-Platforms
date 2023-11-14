@@ -1,4 +1,4 @@
-package polytechnic.bh.PassPlatforms_Backend.Dto;
+package polytechnic.bh.PassPlatforms_Backend.Dao;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BookingDto {
+public class BookingDao {
     private int bookingid;
     private Instant datebooked;
     private Date date;
@@ -28,14 +28,14 @@ public class BookingDto {
     private boolean isonline;
     private boolean isgroup;
     private boolean isrevision;
-    private SlotDto slot;
-    private BookingStatusDto bookingStatus;
-    private UserDto student;
-    private CourseDto course;
-    private List<BookingMemberDto> bookingMembers;
-    private List<BookingNoteDto> bookingNotes;
+    private SlotDao slot;
+    private BookingStatusDao bookingStatus;
+    private UserDao student;
+    private CourseDao course;
+    private List<BookingMemberDao> bookingMembers;
+    private List<BookingNoteDao> bookingNotes;
 
-    public BookingDto(Booking booking) {
+    public BookingDao(Booking booking) {
         this.bookingid = booking.getBookingid();
         this.datebooked = booking.getDatebooked().toInstant();
         this.date = booking.getBookingdate();
@@ -47,34 +47,34 @@ public class BookingDto {
         this.isgroup = booking.isIsgroup();
         this.isrevision = booking.isIsrevision();
 
-        this.slot = new SlotDto(booking.getSlot());
-        this.bookingStatus = new BookingStatusDto(booking.getBookingStatus());
-        this.student = new UserDto(booking.getStudent());
-        this.course = new CourseDto(booking.getCourse());
+        this.slot = new SlotDao(booking.getSlot());
+        this.bookingStatus = new BookingStatusDao(booking.getBookingStatus());
+        this.student = new UserDao(booking.getStudent());
+        this.course = new CourseDao(booking.getCourse());
 
-        List<BookingMemberDto> bookingMembers = new ArrayList<>();
+        List<BookingMemberDao> bookingMembers = new ArrayList<>();
         if(!booking.getBookingMembers().isEmpty())
         {
             for (BookingMember member : booking.getBookingMembers())
             {
-                bookingMembers.add(new BookingMemberDto(member.getMemberid(),
+                bookingMembers.add(new BookingMemberDao(member.getMemberid(),
                         member.getDatetime().toInstant(),
-                        new UserDto(member.getStudent()),
+                        new UserDao(member.getStudent()),
                         null,
-                        new MemberStatusDto(member.getStatus())));
+                        new MemberStatusDao(member.getStatus())));
             }
         }
 
-        List<BookingNoteDto> bookingNotes = new ArrayList<>();
+        List<BookingNoteDao> bookingNotes = new ArrayList<>();
         if(!booking.getBookingNotes().isEmpty())
         {
             for (BookingNote note : booking.getBookingNotes())
             {
-                bookingNotes.add(new BookingNoteDto(note.getNoteid(),
+                bookingNotes.add(new BookingNoteDao(note.getNoteid(),
                         note.getDatetime().toInstant(),
                         note.getNotebody(),
                         null,
-                        new UserDto(note.getUser())));
+                        new UserDao(note.getUser())));
             }
         }
 

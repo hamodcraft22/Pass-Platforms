@@ -1,4 +1,4 @@
-package polytechnic.bh.PassPlatforms_Backend.Dto;
+package polytechnic.bh.PassPlatforms_Backend.Dao;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -10,12 +10,12 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.ApplicationStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApplicationStatusDto {
+public class ApplicationStatusDao {
     private char statusid;
     private String statusname;
     private String statusdesc;
 
-    public ApplicationStatusDto(ApplicationStatus applicationStatus) {
+    public ApplicationStatusDao(ApplicationStatus applicationStatus) {
         this.statusid = applicationStatus.getStatusid();
         this.statusname = applicationStatus.getStatusname();
         this.statusdesc = applicationStatus.getStatusdesc();

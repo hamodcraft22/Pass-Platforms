@@ -1,4 +1,4 @@
-package polytechnic.bh.PassPlatforms_Backend.Dto;
+package polytechnic.bh.PassPlatforms_Backend.Dao;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -10,16 +10,16 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Major;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MajorDto {
+public class MajorDao {
     private String majorid;
     private String majorname;
     private String majordesc;
-    private SchoolDto school;
+    private SchoolDao school;
 
-    public MajorDto(Major major) {
+    public MajorDao(Major major) {
         this.majorid = major.getMajorid();
         this.majorname = major.getMajorname();
         this.majordesc = major.getMajordesc();
-        this.school = new SchoolDto(major.getSchool());
+        this.school = new SchoolDao(major.getSchool());
     }
 }

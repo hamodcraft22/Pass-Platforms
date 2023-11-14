@@ -1,4 +1,4 @@
-package polytechnic.bh.PassPlatforms_Backend.Dto;
+package polytechnic.bh.PassPlatforms_Backend.Dao;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -10,12 +10,12 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Role;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RoleDto {
+public class RoleDao {
     private int roleid;
     private String rolename;
     private String roledesc;
 
-    public RoleDto(Role role) {
+    public RoleDao(Role role) {
         this.roleid = role.getRoleid();
         this.rolename = role.getRolename();
         this.roledesc = role.getRoledesc();

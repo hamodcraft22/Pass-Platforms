@@ -1,4 +1,4 @@
-package polytechnic.bh.PassPlatforms_Backend.Dto;
+package polytechnic.bh.PassPlatforms_Backend.Dao;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -12,23 +12,23 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApplicationNoteDto {
+public class ApplicationNoteDao {
     private int noteid;
     private Instant datetime;
     private String notebody;
-    private ApplicationDto application;
-    private UserDto user;
+    private ApplicationDao application;
+    private UserDao user;
 
-    public ApplicationNoteDto(ApplicationNote applicationNote) {
+    public ApplicationNoteDao(ApplicationNote applicationNote) {
         this.noteid = applicationNote.getNoteid();
         this.datetime = applicationNote.getDatetime().toInstant();
         this.notebody = applicationNote.getNotebody();
-        this.application = new ApplicationDto(applicationNote.getApplication().getApplicationid(),
+        this.application = new ApplicationDao(applicationNote.getApplication().getApplicationid(),
                 applicationNote.getApplication().getDatetime(),
                 applicationNote.getApplication().getNote(),
-                new ApplicationStatusDto(applicationNote.getApplication().getApplicationStatus()),
-                new UserDto(applicationNote.getApplication().getUser()),
+                new ApplicationStatusDao(applicationNote.getApplication().getApplicationStatus()),
+                new UserDao(applicationNote.getApplication().getUser()),
                 null);
-        this.user = new UserDto(applicationNote.getUser());
+        this.user = new UserDao(applicationNote.getUser());
     }
 }
