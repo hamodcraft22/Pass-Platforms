@@ -13,8 +13,10 @@ public class Audit {
   private char changetype;
   private String entityname;
   private java.sql.Timestamp datetime;
-  private String oldvalue;
-  private String newvalue;
+  @Lob
+  private byte[] oldvalue;
+  @Lob
+  private byte[] newvalue;
 
   @ManyToOne
   @JoinColumn(name = "USERID", referencedColumnName = "USERID")
