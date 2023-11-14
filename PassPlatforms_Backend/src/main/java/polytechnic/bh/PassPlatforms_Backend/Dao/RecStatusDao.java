@@ -1,4 +1,4 @@
-package polytechnic.bh.PassPlatforms_Backend.Dto;
+package polytechnic.bh.PassPlatforms_Backend.Dao;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -10,12 +10,12 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.RecStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RecStatusDto {
+public class RecStatusDao {
     private char statusid;
     private String statusname;
     private String statusdesc;
 
-    public RecStatusDto(RecStatus status) {
+    public RecStatusDao(RecStatus status) {
         this.statusid = status.getStatusid();
         this.statusname = status.getStatusname();
         this.statusdesc = status.getStatusdesc();

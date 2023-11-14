@@ -1,4 +1,4 @@
-package polytechnic.bh.PassPlatforms_Backend.Dto;
+package polytechnic.bh.PassPlatforms_Backend.Dao;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -15,33 +15,33 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BookingNoteDto {
+public class BookingNoteDao {
     private int noteid;
     private Instant datetime;
     private String notebody;
-    private BookingDto booking;
-    private UserDto user;
+    private BookingDao booking;
+    private UserDao user;
 
-    public BookingNoteDto(BookingNote bookingNote) {
+    public BookingNoteDao(BookingNote bookingNote) {
         this.noteid = bookingNote.getNoteid();
         this.datetime = bookingNote.getDatetime().toInstant();
         this.notebody = bookingNote.getNotebody();
-        this.user = new UserDto(bookingNote.getUser());
+        this.user = new UserDao(bookingNote.getUser());
 
-        List<BookingMemberDto> bookingMembers = new ArrayList<>();
+        List<BookingMemberDao> bookingMembers = new ArrayList<>();
         if(!bookingNote.getBooking().getBookingMembers().isEmpty())
         {
             for (BookingMember member : bookingNote.getBooking().getBookingMembers())
             {
-                bookingMembers.add(new BookingMemberDto(member.getMemberid(),
+                bookingMembers.add(new BookingMemberDao(member.getMemberid(),
                         member.getDatetime().toInstant(),
-                        new UserDto(member.getStudent()),
+                        new UserDao(member.getStudent()),
                         null,
-                        new MemberStatusDto(member.getStatus())));
+                        new MemberStatusDao(member.getStatus())));
             }
         }
 
-        this.booking = new BookingDto(bookingNote.getBooking().getBookingid(),
+        this.booking = new BookingDao(bookingNote.getBooking().getBookingid(),
                 bookingNote.getBooking().getDatebooked().toInstant(),
                 bookingNote.getBooking().getBookingdate(),
                 bookingNote.getBooking().getNote(),
@@ -51,10 +51,10 @@ public class BookingNoteDto {
                 bookingNote.getBooking().isIsonline(),
                 bookingNote.getBooking().isIsgroup(),
                 bookingNote.getBooking().isIsrevision(),
-                new SlotDto(bookingNote.getBooking().getSlot()),
-                new BookingStatusDto(bookingNote.getBooking().getBookingStatus()),
-                new UserDto(bookingNote.getBooking().getStudent()),
-                new CourseDto(bookingNote.getBooking().getCourse()),
+                new SlotDao(bookingNote.getBooking().getSlot()),
+                new BookingStatusDao(bookingNote.getBooking().getBookingStatus()),
+                new UserDao(bookingNote.getBooking().getStudent()),
+                new CourseDao(bookingNote.getBooking().getCourse()),
                 bookingMembers,
                 null);
 

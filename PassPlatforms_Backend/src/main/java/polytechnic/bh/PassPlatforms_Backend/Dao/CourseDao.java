@@ -1,4 +1,4 @@
-package polytechnic.bh.PassPlatforms_Backend.Dto;
+package polytechnic.bh.PassPlatforms_Backend.Dao;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -10,20 +10,20 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Course;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CourseDto {
+public class CourseDao {
     private String courseid;
     private String coursename;
     private String coursedesc;
     private char semaster;
     private boolean available;
-    private MajorDto major;
+    private MajorDao major;
 
-    public CourseDto(Course course) {
+    public CourseDao(Course course) {
         this.courseid = course.getCourseid();
         this.coursename = course.getCoursename();
         this.coursedesc = course.getCoursedesc();
         this.semaster = course.getSemaster();
         this.available = course.isAvailable();
-        this.major = new MajorDto(course.getMajor());
+        this.major = new MajorDao(course.getMajor());
     }
 }

@@ -1,4 +1,4 @@
-package polytechnic.bh.PassPlatforms_Backend.Dto;
+package polytechnic.bh.PassPlatforms_Backend.Dao;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -10,14 +10,14 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.OfferedCourse;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OfferedCourseDto {
+public class OfferedCourseDao {
     private int offerid;
-    private UserDto leader;
-    private CourseDto course;
+    private UserDao leader;
+    private CourseDao course;
 
-    public OfferedCourseDto(OfferedCourse offeredCourse) {
+    public OfferedCourseDao(OfferedCourse offeredCourse) {
         this.offerid = offeredCourse.getOfferid();
-        this.leader = new UserDto(offeredCourse.getLeader());
-        this.course = new CourseDto(offeredCourse.getCourse());
+        this.leader = new UserDao(offeredCourse.getLeader());
+        this.course = new CourseDao(offeredCourse.getCourse());
     }
 }

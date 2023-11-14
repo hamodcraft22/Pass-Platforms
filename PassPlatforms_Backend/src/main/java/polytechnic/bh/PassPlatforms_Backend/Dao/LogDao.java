@@ -1,4 +1,4 @@
-package polytechnic.bh.PassPlatforms_Backend.Dto;
+package polytechnic.bh.PassPlatforms_Backend.Dao;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -6,23 +6,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Log;
 
-import java.sql.Date;
 import java.time.Instant;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class LogDto {
+public class LogDao {
     private int logid;
     private String errormsg;
     private Instant datetime;
-    private UserDto user;
+    private UserDao user;
 
-    public LogDto(Log log) {
+    public LogDao(Log log) {
         this.logid = log.getLogid();
         this.errormsg = log.getErrormsg();
         this.datetime = log.getDatetime().toInstant();
-        this.user = new UserDto(log.getUser());
+        this.user = new UserDao(log.getUser());
     }
 }

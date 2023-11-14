@@ -1,4 +1,4 @@
-package polytechnic.bh.PassPlatforms_Backend.Dto;
+package polytechnic.bh.PassPlatforms_Backend.Dao;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -10,11 +10,11 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Day;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DayDto {
+public class DayDao {
     private char dayid;
     private String dayname;
 
-    public DayDto(Day day) {
+    public DayDao(Day day) {
         this.dayid = day.getDayid();
         this.dayname = day.getDayname();
     }
