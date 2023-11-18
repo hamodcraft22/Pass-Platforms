@@ -2,12 +2,19 @@ package polytechnic.bh.PassPlatforms_Backend.Entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "pp_booking")
 public class Booking {
 
@@ -40,14 +47,28 @@ public class Booking {
   private Course course;
 
   // custom (multi item) entities
-  @JsonManagedReference
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "BOOKINGID", referencedColumnName = "BOOKINGID")
   private List<BookingMember> bookingMembers;
 
-  @JsonManagedReference
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "BOOKINGID", referencedColumnName = "BOOKINGID")
   private List<BookingNote> bookingNotes;
 
+  public Booking(BookingDao bookingDao) {
+    this.bookingid = bookingDao.getBookingid();
+    this.datebooked = Timestamp.from(bookingDao.getDatebooked());
+    this.bookingdate = new Date(bookingDao.getBookingDate().getTime());
+    this.note = bookingDao.getNote();
+    this.starttime = Timestamp.from(bookingDao.getStarttime());
+    this.endtime = Timestamp.from(bookingDao.getEndtime());
+    this.bookinglimit = bookingDao.getBookinglimit();
+    this.isonline = bookingDao.isIsonline();
+    this.isgroup = bookingDao.isIsgroup();
+    this.isrevision = bookingDao.isIsrevision();
+    this.slot = new Slot(bookingDao.getSlot());
+    this.bookingStatus = new BookingStatus(bookingDao.getBookingStatus());
+    this.student = new User(bookingDao.getStudent());
+    this.course = new Course(bookingDao.getCourse());
+  }
 }

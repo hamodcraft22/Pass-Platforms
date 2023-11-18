@@ -6,11 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 
 import java.util.List;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "ROLEID", discriminatorType = DiscriminatorType.INTEGER)
 @Table(name = "pp_user")
@@ -23,4 +26,8 @@ public class User {
   @JoinColumn(name = "roleid", referencedColumnName = "roleid", insertable = false, updatable = false)
   private Role role;
 
+  public User(UserDao userDao) {
+    this.userid = userDao.getUserid();
+    this.role = new Role(userDao.getRole());
+  }
 }

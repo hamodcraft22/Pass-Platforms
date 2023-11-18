@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Application;
 import polytechnic.bh.PassPlatforms_Backend.Entity.ApplicationNote;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApplicationDao {
     private int applicationid;
-    private Object datetime;
+    private Instant datetime;
     private String note;
     private ApplicationStatusDao applicationStatus;
     private UserDao user;
@@ -24,7 +25,7 @@ public class ApplicationDao {
 
     public ApplicationDao(Application application) {
         this.applicationid = application.getApplicationid();
-        this.datetime = application.getDatetime();
+        this.datetime = application.getDatetime().toInstant();
         this.note = application.getNote();
 
         //building custom dto objects for linked elements
@@ -33,7 +34,7 @@ public class ApplicationDao {
 
         //building custom list of objects while removing infinite recursion
         List<ApplicationNoteDao> applicationNotes = new ArrayList<>();
-        if(!application.getApplicationNotes().isEmpty())
+        if(application.getApplicationNotes() != null && !application.getApplicationNotes().isEmpty())
         {
             for (ApplicationNote note : application.getApplicationNotes())
             {

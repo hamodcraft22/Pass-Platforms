@@ -20,7 +20,7 @@ import java.util.List;
 public class BookingDao {
     private int bookingid;
     private Instant datebooked;
-    private Date date;
+    private Date bookingDate;
     private String note;
     private Instant starttime;
     private Instant endtime;
@@ -38,7 +38,7 @@ public class BookingDao {
     public BookingDao(Booking booking) {
         this.bookingid = booking.getBookingid();
         this.datebooked = booking.getDatebooked().toInstant();
-        this.date = booking.getBookingdate();
+        this.bookingDate = booking.getBookingdate();
         this.note = booking.getNote();
         this.starttime = booking.getStarttime().toInstant();
         this.endtime = booking.getEndtime().toInstant();

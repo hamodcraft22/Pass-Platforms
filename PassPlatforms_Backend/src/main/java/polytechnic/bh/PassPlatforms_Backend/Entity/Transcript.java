@@ -2,6 +2,7 @@ package polytechnic.bh.PassPlatforms_Backend.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import polytechnic.bh.PassPlatforms_Backend.Dao.TranscriptDao;
 
 @Data
 @Entity
@@ -20,4 +21,10 @@ public class Transcript {
   @JoinColumn(name = "COURSEID", referencedColumnName = "COURSEID")
   private Course course;
 
+  public Transcript(TranscriptDao transcriptDao) {
+    this.transid = transcriptDao.getTransid();
+    this.grade = transcriptDao.getGrade();
+    this.student = new User(transcriptDao.getStudent());
+    this.course = new Course(transcriptDao.getCourse());
+  }
 }

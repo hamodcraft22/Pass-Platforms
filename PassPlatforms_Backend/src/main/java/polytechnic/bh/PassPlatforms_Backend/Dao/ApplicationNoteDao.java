@@ -24,7 +24,7 @@ public class ApplicationNoteDao {
         this.datetime = applicationNote.getDatetime().toInstant();
         this.notebody = applicationNote.getNotebody();
         this.application = new ApplicationDao(applicationNote.getApplication().getApplicationid(),
-                applicationNote.getApplication().getDatetime(),
+                applicationNote.getApplication().getDatetime().toInstant(),
                 applicationNote.getApplication().getNote(),
                 new ApplicationStatusDao(applicationNote.getApplication().getApplicationStatus()),
                 new UserDao(applicationNote.getApplication().getUser()),

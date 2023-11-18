@@ -7,48 +7,32 @@ import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Application;
-import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationStatusRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
+import polytechnic.bh.PassPlatforms_Backend.Service.ApplicationServ;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
+
+import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.*;
 
 @RestController
 @RequestMapping("/api/application")
 public class ApplicationCont<T> {
 
     @Autowired
-    ApplicationRepo applicationRepo;
+    ApplicationServ applicationServ;
 
-    @Autowired
-    ApplicationStatusRepo applicationStatusRepo;
-
-    @Autowired
-    UserRepo userRepo;
-
-    @GetMapping("/")
-    public ResponseEntity<GenericDto<T>> getAllApplications(@RequestHeader(value = "requestKey", required = false) String requestKey)
+    @GetMapping("")
+    public ResponseEntity<GenericDto<T>> getAllApplications(@RequestHeader(value = "Authorization", required = false) String requestKey)
     {
-        if (Objects.equals(requestKey, "student-3e1d-4e5f-a2b1-6c7d8e9f0a1b"))
+        if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
         {
-            //retrieve
-            List<Application> applications = applicationRepo.findAll();
-            List<ApplicationDao> applicationDtos = new ArrayList<>();
+            //retrieve from service
+            List<ApplicationDao> applicationDaos = applicationServ.getAllApplications(false);
 
-            GenericDto<T> genericDto = new GenericDto<>();
-
-            if(!applications.isEmpty())
+            if(!applicationDaos.isEmpty())
             {
-                for (Application application : applications)
-                {
-                    applicationDtos.add(new ApplicationDao(application));
-                }
-
-                genericDto.setTransObject((T) applicationDtos);
-
-                return new ResponseEntity<>(genericDto, HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, (T) applicationDaos,null), HttpStatus.OK);
             }
             else
             {
@@ -62,50 +46,92 @@ public class ApplicationCont<T> {
 
     }
 
-//    @GetMapping("/{applicationID}")
-//    public ResponseEntity<ApplicationDto> getApplication(@RequestHeader(value = "requestKey", required = false) String requestKey, @PathVariable("applicationID") int applicationID)
-//    {
-//        if (Objects.equals(requestKey, "student-3e1d-4e5f-a2b1-6c7d8e9f0a1b"))
-//        {
-//            Optional<Application> application = applicationRepo.findById(applicationID);
-//
-//            if(application.isPresent())
-//            {
-//                return new ResponseEntity<>(new ApplicationDto(application.get()), HttpStatus.OK);
-//            }
-//            else
-//            {
-//                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-//            }
-//
-//        }
-//        else
-//        {
-//            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-//        }
-//
-//    }
-//
-//    @PostMapping("/")
-//    public ResponseEntity<ApplicationDto> createApplication(@RequestBody ApplicationDto applicationDto)
-//    {
-//        Application newapplicationton = new Application();
-//
-//        //automate id creation
-//        //newapplicationton.setApplicationid(2);
-//
-//        newapplicationton.setDatetime(Timestamp.from(Instant.now()));
-//        newapplicationton.setNote("new has been created");
-//        newapplicationton.setApplicationStatus(applicationStatusRepo.getReferenceById('c'));
-//        newapplicationton.setUser(userRepo.getReferenceById("202002789"));
-//
-//        applicationRepo.save(newapplicationton);
-//
-//        return new ResponseEntity<>(null,HttpStatus.OK);
-//    }
-//
+    @GetMapping("/{applicationID}")
+    public ResponseEntity<GenericDto<T>> getApplication(@RequestHeader(value = "Authorization", required = false) String requestKey, @RequestHeader(value = "Requester", required = false) String requisterID, @PathVariable("applicationID") int applicationID)
+    {
+        // if it is an admin or manager, return anyway
+        if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
+        {
+            ApplicationDao applicationDao = applicationServ.getApplicationDetailsByID(applicationID);
+
+            if (applicationDao != null)
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, (T) applicationDao, null), HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            }
+        }
+        //if it is a student, check if it is their application
+        else if (Objects.equals(requestKey, STUDENT_KEY))
+        {
+            ApplicationDao applicationDao = applicationServ.getApplicationDetailsByID(applicationID);
+
+            if (applicationDao != null)
+            {
+                if (Objects.equals(applicationDao.getUser().getUserid(), requisterID))
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, (T) applicationDao, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            }
+
+        }
+        // if any other type, do not return anything
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+    }
+
+    // creating an application (by student);
+    @PostMapping("")
+    public ResponseEntity<GenericDto<T>> createApplication(@RequestHeader(value = "Authorization", required = false) String requestKey, @RequestHeader(value = "Requester", required = false) String requisterID, @RequestBody String applicationNote)
+    {
+        if (Objects.equals(requestKey, STUDENT_KEY))
+        {
+            // check if user has an application first
+            ApplicationDao retrivedApplicationDao = applicationServ.getApplicationDetailsByUser(requisterID);
+
+            if (retrivedApplicationDao == null)
+            {
+                // user has no application, can create a new one
+
+                //** should check if transcript is present **
+
+                if (applicationServ.createApplication(requisterID, applicationNote) != null)
+                {
+                    return new ResponseEntity<>(null, HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+            }
+            else
+            {
+                // user already has application
+                return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+
 //    @PutMapping("/")
-//    public ResponseEntity<ApplicationDto> updateApplication()
+//    public ResponseEntity<GenericDto<T>> updateApplication()
 //    {
 //        Application applicationtoUpdate = applicationRepo.getReferenceById(1);
 //
@@ -116,7 +142,7 @@ public class ApplicationCont<T> {
 //    }
 //
 //    @DeleteMapping("/")
-//    public ResponseEntity<ApplicationDto> deleteApplication()
+//    public ResponseEntity<GenericDto<T>> deleteApplication()
 //    {
 //
 //

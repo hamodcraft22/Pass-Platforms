@@ -1,10 +1,15 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import polytechnic.bh.PassPlatforms_Backend.Dao.OfferedCourseDao;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "pp_offeredcourse")
 public class OfferedCourse {
 
@@ -19,4 +24,9 @@ public class OfferedCourse {
   @JoinColumn(name = "COURSEID", referencedColumnName = "COURSEID")
   private Course course;
 
+  public OfferedCourse(OfferedCourseDao offeredCourseDao) {
+    this.offerid = offeredCourseDao.getOfferid();
+    this.leader = new User(offeredCourseDao.getLeader());
+    this.course = new Course(offeredCourseDao.getCourse());
+  }
 }
