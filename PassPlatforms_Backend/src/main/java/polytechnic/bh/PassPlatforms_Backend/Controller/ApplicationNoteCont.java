@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/applicationNote")
 public class ApplicationNoteCont {
 
     @Autowired
     ApplicationNoteRepo applicationNoteRepo;
 
-    @GetMapping("/applicationNote")
+    @GetMapping("")
     public ResponseEntity<List<ApplicationNote>> getAllTutorials(@RequestHeader(value = "requestKey", required = false) String requestKey)
     {
         if (Objects.equals(requestKey, "student-3e1d-4e5f-a2b1-6c7d8e9f0a1b"))

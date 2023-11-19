@@ -247,8 +247,4 @@ public class ApplicationCont<T> {
             return new ResponseEntity<>(null,HttpStatus.UNAUTHORIZED);
         }
     }
-
-    // special APIs
-
-    // get student application (by student)
 }

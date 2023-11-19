@@ -1,12 +1,10 @@
 package polytechnic.bh.PassPlatforms_Backend.Service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationStatusDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Application;
-import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationStatusRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
