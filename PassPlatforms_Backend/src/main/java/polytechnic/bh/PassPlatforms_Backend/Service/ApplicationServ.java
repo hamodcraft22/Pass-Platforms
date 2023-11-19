@@ -29,6 +29,7 @@ public class ApplicationServ {
     @Autowired
     UserRepo userRepo;
 
+    // get all applications (with details if needed)
     public List<ApplicationDao> getAllApplications(Boolean details)
     {
         List<ApplicationDao> applications = new ArrayList<>();
@@ -57,6 +58,7 @@ public class ApplicationServ {
         return applications;
     }
 
+    // get a single application and its details
     public ApplicationDao getApplicationDetailsByID(int applcationID)
     {
         Optional<Application> retrivedApplication = applicationRepo.findById(applcationID);
@@ -64,6 +66,7 @@ public class ApplicationServ {
         return retrivedApplication.map(ApplicationDao::new).orElse(null);
     }
 
+    // get application by user (to check if user has )
     public ApplicationDao getApplicationDetailsByUser(String userID)
     {
         Optional<Application> retrivedApplication = applicationRepo.findApplicationByUser_Userid(userID);
@@ -81,5 +84,26 @@ public class ApplicationServ {
         newapplicationton.setUser(userRepo.getReferenceById(studentID));
 
         return new ApplicationDao(applicationRepo.save(newapplicationton));
+    }
+
+    public ApplicationDao updateApplication(int applicationID, char statusID)
+    {
+        Optional<Application> applicationToUpdate = applicationRepo.findById(applicationID);
+
+        if (applicationToUpdate.isPresent())
+        {
+            applicationToUpdate.get().setApplicationStatus(applicationStatusRepo.getReferenceById(statusID));
+            return new ApplicationDao(applicationRepo.save(applicationToUpdate.get()));
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public boolean deleteApplication(int applicationID)
+    {
+        applicationRepo.deleteById(applicationID);
+        return true;
     }
 }

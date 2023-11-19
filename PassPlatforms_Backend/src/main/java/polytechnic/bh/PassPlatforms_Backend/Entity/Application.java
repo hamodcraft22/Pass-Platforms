@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationDao;
 
 import java.sql.Timestamp;
@@ -32,8 +33,8 @@ public class Application {
   private User user;
 
   // custom (multi item) entities
-  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "APPLICATIONID", referencedColumnName = "APPLICATIONID")
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval=true, mappedBy = "application")
+  @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
   private List<ApplicationNote> applicationNotes;
 
   public Application(ApplicationDao application) {
