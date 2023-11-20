@@ -105,4 +105,9 @@ public class ApplicationServ
         applicationRepo.deleteById(applicationID);
         return true;
     }
+
+    public boolean checkApplication(int applicationID)
+    {
+        return applicationRepo.existsById(applicationID);
+    }
 }

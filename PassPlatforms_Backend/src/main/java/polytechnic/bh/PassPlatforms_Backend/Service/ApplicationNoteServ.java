@@ -101,9 +101,6 @@ public class ApplicationNoteServ
         return new ApplicationNoteDao(applicationNoteRepo.save(newApplicationNote));
     }
 
-    // edit application note - not allowed
-
-
     // delete application note - full delete by user or manager / admin
     public boolean deleteNote(int noteID)
     {

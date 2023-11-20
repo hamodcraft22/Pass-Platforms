@@ -30,7 +30,7 @@ public class ApplicationCont<T>
             //retrieve from service
             List<ApplicationDao> applicationDaos = applicationServ.getAllApplications(false);
 
-            if (!applicationDaos.isEmpty())
+            if (applicationDaos != null && !applicationDaos.isEmpty())
             {
                 return new ResponseEntity<>(new GenericDto<>(null, (T) applicationDaos, null), HttpStatus.OK);
             }
