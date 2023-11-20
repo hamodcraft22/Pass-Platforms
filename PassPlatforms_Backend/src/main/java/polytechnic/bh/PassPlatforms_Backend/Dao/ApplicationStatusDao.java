@@ -10,12 +10,14 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.ApplicationStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApplicationStatusDao {
+public class ApplicationStatusDao
+{
     private char statusid;
     private String statusname;
     private String statusdesc;
 
-    public ApplicationStatusDao(ApplicationStatus applicationStatus) {
+    public ApplicationStatusDao(ApplicationStatus applicationStatus)
+    {
         this.statusid = applicationStatus.getStatusid();
         this.statusname = applicationStatus.getStatusname();
         this.statusdesc = applicationStatus.getStatusdesc();

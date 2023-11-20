@@ -12,7 +12,8 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AuditDao {
+public class AuditDao
+{
     private int auditid;
     private char changetype;
     private String entityname;
@@ -21,7 +22,8 @@ public class AuditDao {
     private byte[] newvalue;
     private UserDao user;
 
-    public AuditDao(Audit audit) {
+    public AuditDao(Audit audit)
+    {
         this.auditid = audit.getAuditid();
         this.changetype = audit.getChangetype();
         this.entityname = audit.getEntityname();

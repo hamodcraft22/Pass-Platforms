@@ -10,13 +10,15 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Major;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MajorDao {
+public class MajorDao
+{
     private String majorid;
     private String majorname;
     private String majordesc;
     private SchoolDao school;
 
-    public MajorDao(Major major) {
+    public MajorDao(Major major)
+    {
         this.majorid = major.getMajorid();
         this.majorname = major.getMajorname();
         this.majordesc = major.getMajordesc();

@@ -13,29 +13,31 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "pp_audit")
-public class Audit {
+public class Audit
+{
 
-  @Id
-  private int auditid;
-  private char changetype;
-  private String entityname;
-  private java.sql.Timestamp datetime;
-  @Lob
-  private byte[] oldvalue;
-  @Lob
-  private byte[] newvalue;
+    @Id
+    private int auditid;
+    private char changetype;
+    private String entityname;
+    private java.sql.Timestamp datetime;
+    @Lob
+    private byte[] oldvalue;
+    @Lob
+    private byte[] newvalue;
 
-  @ManyToOne
-  @JoinColumn(name = "USERID", referencedColumnName = "USERID")
-  private User user;
+    @ManyToOne
+    @JoinColumn(name = "USERID", referencedColumnName = "USERID")
+    private User user;
 
-  public Audit(AuditDao auditDao) {
-    this.auditid = auditDao.getAuditid();
-    this.changetype = auditDao.getChangetype();
-    this.entityname = auditDao.getEntityname();
-    this.datetime = Timestamp.from(auditDao.getDatetime());
-    this.oldvalue = auditDao.getOldvalue();
-    this.newvalue = auditDao.getNewvalue();
-    this.user = new User(auditDao.getUser());
-  }
+    public Audit(AuditDao auditDao)
+    {
+        this.auditid = auditDao.getAuditid();
+        this.changetype = auditDao.getChangetype();
+        this.entityname = auditDao.getEntityname();
+        this.datetime = Timestamp.from(auditDao.getDatetime());
+        this.oldvalue = auditDao.getOldvalue();
+        this.newvalue = auditDao.getNewvalue();
+        this.user = new User(auditDao.getUser());
+    }
 }

@@ -10,13 +10,15 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.StudentMajor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class StudentMajorDao {
+public class StudentMajorDao
+{
     private int stumajorid;
     private boolean isminor;
     private UserDao user;
     private MajorDao major;
 
-    public StudentMajorDao(StudentMajor studentMajor) {
+    public StudentMajorDao(StudentMajor studentMajor)
+    {
         this.stumajorid = studentMajor.getStumajorid();
         this.isminor = studentMajor.isIsminor();
         this.user = new UserDao(studentMajor.getUser());

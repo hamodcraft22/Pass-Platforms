@@ -9,9 +9,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public interface ApplicationRepo extends JpaRepository<Application, Integer> {
-    List<Application> findApplicationsByDatetime (Date dateTime);
+public interface ApplicationRepo extends JpaRepository<Application, Integer>
+{
+    List<Application> findApplicationsByDatetime(Date dateTime);
+
     List<Application> findApplicationsByNoteContainsIgnoreCase(String note);
+
     List<Application> findApplicationsByApplicationStatus(ApplicationStatus status);
+
     Optional<Application> findApplicationByUser_Userid(String userID);
 }

@@ -13,31 +13,33 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "pp_recommendation")
-public class Recommendation {
+public class Recommendation
+{
 
-  @Id
-  private int recid;
-  private java.sql.Timestamp datetime;
-  private String note;
+    @Id
+    private int recid;
+    private java.sql.Timestamp datetime;
+    private String note;
 
-  @ManyToOne
-  @JoinColumn(name = "STATUSID", referencedColumnName = "STATUSID")
-  private RecStatus status;
+    @ManyToOne
+    @JoinColumn(name = "STATUSID", referencedColumnName = "STATUSID")
+    private RecStatus status;
 
-  @ManyToOne
-  @JoinColumn(name = "TUTORID", referencedColumnName = "USERID")
-  private User tutor;
+    @ManyToOne
+    @JoinColumn(name = "TUTORID", referencedColumnName = "USERID")
+    private User tutor;
 
-  @ManyToOne
-  @JoinColumn(name = "STUDENTID", referencedColumnName = "USERID")
-  private User student;
+    @ManyToOne
+    @JoinColumn(name = "STUDENTID", referencedColumnName = "USERID")
+    private User student;
 
-  public Recommendation(RecommendationDao recommendationDao) {
-    this.recid = recommendationDao.getRecid();
-    this.datetime = Timestamp.from(recommendationDao.getDatetime());
-    this.note = recommendationDao.getNote();
-    this.status = new RecStatus(recommendationDao.getRecStatus());
-    this.tutor = new User(recommendationDao.getTutor());
-    this.student = new User(recommendationDao.getStudent());
-  }
+    public Recommendation(RecommendationDao recommendationDao)
+    {
+        this.recid = recommendationDao.getRecid();
+        this.datetime = Timestamp.from(recommendationDao.getDatetime());
+        this.note = recommendationDao.getNote();
+        this.status = new RecStatus(recommendationDao.getRecStatus());
+        this.tutor = new User(recommendationDao.getTutor());
+        this.student = new User(recommendationDao.getStudent());
+    }
 }

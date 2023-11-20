@@ -1,6 +1,7 @@
 package polytechnic.bh.PassPlatforms_Backend.Constant;
 
-public final class APIkeyConstant {
+public final class APIkeyConstant
+{
     public static final String STUDENT_KEY = "a397c756-79e7-46d0-86c3-324af4209e3b";
 
     public static final String LEADER_KEY = "963cd763-efcb-4106-a3a0-0c5a71efaf56";

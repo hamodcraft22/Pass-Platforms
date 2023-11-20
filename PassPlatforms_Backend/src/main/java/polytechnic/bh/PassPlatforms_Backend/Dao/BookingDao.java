@@ -17,7 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BookingDao {
+public class BookingDao
+{
     private int bookingid;
     private Instant datebooked;
     private Date bookingDate;
@@ -35,7 +36,8 @@ public class BookingDao {
     private List<BookingMemberDao> bookingMembers;
     private List<BookingNoteDao> bookingNotes;
 
-    public BookingDao(Booking booking) {
+    public BookingDao(Booking booking)
+    {
         this.bookingid = booking.getBookingid();
         this.datebooked = booking.getDatebooked().toInstant();
         this.bookingDate = booking.getBookingdate();
@@ -53,7 +55,7 @@ public class BookingDao {
         this.course = new CourseDao(booking.getCourse());
 
         List<BookingMemberDao> bookingMembers = new ArrayList<>();
-        if(!booking.getBookingMembers().isEmpty())
+        if (!booking.getBookingMembers().isEmpty())
         {
             for (BookingMember member : booking.getBookingMembers())
             {
@@ -66,7 +68,7 @@ public class BookingDao {
         }
 
         List<BookingNoteDao> bookingNotes = new ArrayList<>();
-        if(!booking.getBookingNotes().isEmpty())
+        if (!booking.getBookingNotes().isEmpty())
         {
             for (BookingNote note : booking.getBookingNotes())
             {

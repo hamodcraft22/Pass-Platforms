@@ -10,6 +10,7 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 @Entity
 @DiscriminatorValue("5")
 @EqualsAndHashCode(callSuper = true)
-public class Admin extends User {
+public class Admin extends User
+{
 
 }

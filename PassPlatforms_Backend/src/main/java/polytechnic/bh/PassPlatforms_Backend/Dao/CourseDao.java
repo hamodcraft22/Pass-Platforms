@@ -10,7 +10,8 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Course;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CourseDao {
+public class CourseDao
+{
     private String courseid;
     private String coursename;
     private String coursedesc;
@@ -18,7 +19,8 @@ public class CourseDao {
     private boolean available;
     private MajorDao major;
 
-    public CourseDao(Course course) {
+    public CourseDao(Course course)
+    {
         this.courseid = course.getCourseid();
         this.coursename = course.getCoursename();
         this.coursedesc = course.getCoursedesc();

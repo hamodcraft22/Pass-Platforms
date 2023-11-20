@@ -10,13 +10,15 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Transcript;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TranscriptDao {
+public class TranscriptDao
+{
     private int transid;
     private String grade;
     private UserDao student;
     private CourseDao course;
 
-    public TranscriptDao(Transcript transcript) {
+    public TranscriptDao(Transcript transcript)
+    {
         this.transid = transcript.getTransid();
         this.grade = transcript.getGrade();
         this.student = new UserDao(transcript.getStudent());

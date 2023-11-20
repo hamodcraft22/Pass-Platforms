@@ -11,7 +11,8 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("1")
 @EqualsAndHashCode(callSuper = true)
-public class Student extends User {
+public class Student extends User
+{
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "USERID", referencedColumnName = "USERID")

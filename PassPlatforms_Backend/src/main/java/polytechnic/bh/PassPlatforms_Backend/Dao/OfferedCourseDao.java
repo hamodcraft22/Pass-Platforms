@@ -10,12 +10,14 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.OfferedCourse;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OfferedCourseDao {
+public class OfferedCourseDao
+{
     private int offerid;
     private UserDao leader;
     private CourseDao course;
 
-    public OfferedCourseDao(OfferedCourse offeredCourse) {
+    public OfferedCourseDao(OfferedCourse offeredCourse)
+    {
         this.offerid = offeredCourse.getOfferid();
         this.leader = new UserDao(offeredCourse.getLeader());
         this.course = new CourseDao(offeredCourse.getCourse());

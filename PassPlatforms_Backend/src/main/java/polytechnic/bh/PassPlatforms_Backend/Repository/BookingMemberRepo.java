@@ -6,6 +6,7 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
 import java.util.Date;
 import java.util.List;
 
-public interface BookingMemberRepo extends JpaRepository<BookingMember, Integer> {
+public interface BookingMemberRepo extends JpaRepository<BookingMember, Integer>
+{
     List<BookingMember> findBookingMembersByDatetime(Date dateTime);
 }

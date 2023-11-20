@@ -6,7 +6,9 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.BookingNote;
 import java.util.Date;
 import java.util.List;
 
-public interface BookingNoteRepo extends JpaRepository<BookingNote, Integer> {
+public interface BookingNoteRepo extends JpaRepository<BookingNote, Integer>
+{
     List<BookingNote> findBookingNotesByDatetime(Date date);
+
     List<BookingNote> findBookingNotesByNotebodyContainsIgnoreCase(String note);
 }

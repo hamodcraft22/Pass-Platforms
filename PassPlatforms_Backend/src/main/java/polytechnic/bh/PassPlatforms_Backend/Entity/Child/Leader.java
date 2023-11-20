@@ -13,7 +13,8 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("2")
 @EqualsAndHashCode(callSuper = true)
-public class Leader extends Student{
+public class Leader extends Student
+{
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "STUDENTID", referencedColumnName = "USERID")

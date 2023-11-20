@@ -14,27 +14,29 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "pp_bookingnote")
-public class BookingNote {
+public class BookingNote
+{
 
-  @Id
-  private int noteid;
-  private java.sql.Timestamp datetime;
-  private String notebody;
+    @Id
+    private int noteid;
+    private java.sql.Timestamp datetime;
+    private String notebody;
 
-  @JsonBackReference
-  @ManyToOne
-  @JoinColumn(name = "BOOKINGID", referencedColumnName = "BOOKINGID")
-  private Booking booking;
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "BOOKINGID", referencedColumnName = "BOOKINGID")
+    private Booking booking;
 
-  @ManyToOne
-  @JoinColumn(name = "USERID", referencedColumnName = "USERID")
-  private User user;
+    @ManyToOne
+    @JoinColumn(name = "USERID", referencedColumnName = "USERID")
+    private User user;
 
-  public BookingNote(BookingNoteDao bookingNoteDao) {
-    this.noteid = bookingNoteDao.getNoteid();
-    this.datetime = Timestamp.from(bookingNoteDao.getDatetime());
-    this.notebody = bookingNoteDao.getNotebody();
-    this.booking = new Booking(bookingNoteDao.getBooking());
-    this.user = new User(bookingNoteDao.getUser());
-  }
+    public BookingNote(BookingNoteDao bookingNoteDao)
+    {
+        this.noteid = bookingNoteDao.getNoteid();
+        this.datetime = Timestamp.from(bookingNoteDao.getDatetime());
+        this.notebody = bookingNoteDao.getNotebody();
+        this.booking = new Booking(bookingNoteDao.getBooking());
+        this.user = new User(bookingNoteDao.getUser());
+    }
 }

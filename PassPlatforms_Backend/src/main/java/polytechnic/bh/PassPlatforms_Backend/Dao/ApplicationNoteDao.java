@@ -12,14 +12,16 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApplicationNoteDao {
+public class ApplicationNoteDao
+{
     private int noteid;
     private Instant datetime;
     private String notebody;
     private ApplicationDao application;
     private UserDao user;
 
-    public ApplicationNoteDao(ApplicationNote applicationNote) {
+    public ApplicationNoteDao(ApplicationNote applicationNote)
+    {
         this.noteid = applicationNote.getNoteid();
         this.datetime = applicationNote.getDatetime().toInstant();
         this.notebody = applicationNote.getNotebody();

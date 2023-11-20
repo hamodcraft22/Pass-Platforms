@@ -15,21 +15,23 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BookingNoteDao {
+public class BookingNoteDao
+{
     private int noteid;
     private Instant datetime;
     private String notebody;
     private BookingDao booking;
     private UserDao user;
 
-    public BookingNoteDao(BookingNote bookingNote) {
+    public BookingNoteDao(BookingNote bookingNote)
+    {
         this.noteid = bookingNote.getNoteid();
         this.datetime = bookingNote.getDatetime().toInstant();
         this.notebody = bookingNote.getNotebody();
         this.user = new UserDao(bookingNote.getUser());
 
         List<BookingMemberDao> bookingMembers = new ArrayList<>();
-        if(!bookingNote.getBooking().getBookingMembers().isEmpty())
+        if (!bookingNote.getBooking().getBookingMembers().isEmpty())
         {
             for (BookingMember member : bookingNote.getBooking().getBookingMembers())
             {

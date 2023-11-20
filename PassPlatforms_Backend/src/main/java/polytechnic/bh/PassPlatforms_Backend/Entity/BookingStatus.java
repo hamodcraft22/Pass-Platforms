@@ -13,16 +13,18 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.BookingStatusDao;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "pp_bookingstatus")
-public class BookingStatus {
+public class BookingStatus
+{
 
-  @Id
-  private char statusid;
-  private String statusname;
-  private String statusdesc;
+    @Id
+    private char statusid;
+    private String statusname;
+    private String statusdesc;
 
-  public BookingStatus(BookingStatusDao bookingStatusDao) {
-    this.statusid = bookingStatusDao.getStatusid();
-    this.statusname = bookingStatusDao.getStatusname();
-    this.statusdesc = bookingStatusDao.getStatusdesc();
-  }
+    public BookingStatus(BookingStatusDao bookingStatusDao)
+    {
+        this.statusid = bookingStatusDao.getStatusid();
+        this.statusname = bookingStatusDao.getStatusname();
+        this.statusdesc = bookingStatusDao.getStatusdesc();
+    }
 }

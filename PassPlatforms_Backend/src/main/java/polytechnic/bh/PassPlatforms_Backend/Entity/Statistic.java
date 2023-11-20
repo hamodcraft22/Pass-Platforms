@@ -8,7 +8,8 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "pp_statistic")
-public class Statistic {
+public class Statistic
+{
 
     @Id
     private int statID;

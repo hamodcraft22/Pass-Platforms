@@ -21,7 +21,8 @@ import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.MANAG
 
 @RestController
 @RequestMapping("/api/applicationNote")
-public class ApplicationNoteCont<T> {
+public class ApplicationNoteCont<T>
+{
 
     @Autowired
     ApplicationNoteServ applicationNoteServ;
@@ -29,16 +30,23 @@ public class ApplicationNoteCont<T> {
     // get all notes - note used - by admin or manager
     @GetMapping("")
     public ResponseEntity<GenericDto<T>> getAllNotes(
-            @RequestHeader(value = "requestKey", required = false) String requestKey) {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY)) {
+            @RequestHeader(value = "requestKey", required = false) String requestKey)
+    {
+        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
+        {
             List<ApplicationNoteDao> retrivedNotes = applicationNoteServ.getAllAplicationNotes(false);
 
-            if (retrivedNotes != null && !retrivedNotes.isEmpty()) {
+            if (retrivedNotes != null && !retrivedNotes.isEmpty())
+            {
                 return new ResponseEntity<>(new GenericDto<>(null, (T) retrivedNotes, null), HttpStatus.UNAUTHORIZED);
-            } else {
+            }
+            else
+            {
                 return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
             }
-        } else {
+        }
+        else
+        {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
 

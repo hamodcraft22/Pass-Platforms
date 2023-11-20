@@ -13,16 +13,18 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.RecStatusDao;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "pp_recstatus")
-public class RecStatus {
+public class RecStatus
+{
 
-  @Id
-  private char statusid;
-  private String statusname;
-  private String statusdesc;
+    @Id
+    private char statusid;
+    private String statusname;
+    private String statusdesc;
 
-  public RecStatus(RecStatusDao recStatusDao) {
-    this.statusid = recStatusDao.getStatusid();
-    this.statusname = recStatusDao.getStatusname();
-    this.statusdesc = recStatusDao.getStatusdesc();
-  }
+    public RecStatus(RecStatusDao recStatusDao)
+    {
+        this.statusid = recStatusDao.getStatusid();
+        this.statusname = recStatusDao.getStatusname();
+        this.statusdesc = recStatusDao.getStatusdesc();
+    }
 }

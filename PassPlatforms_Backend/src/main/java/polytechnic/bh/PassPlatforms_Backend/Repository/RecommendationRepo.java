@@ -6,7 +6,9 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Recommendation;
 import java.util.Date;
 import java.util.List;
 
-public interface RecommendationRepo extends JpaRepository<Recommendation, Integer> {
+public interface RecommendationRepo extends JpaRepository<Recommendation, Integer>
+{
     List<Recommendation> findRecommendationsByDatetime(Date date);
+
     List<Recommendation> findRecommendationsByNoteContainsIgnoreCase(String note);
 }

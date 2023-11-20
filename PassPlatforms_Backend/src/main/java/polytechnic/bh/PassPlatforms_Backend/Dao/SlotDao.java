@@ -12,7 +12,8 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SlotDao {
+public class SlotDao
+{
     private int slotid;
     private Instant starttime;
     private Instant endtime;
@@ -22,7 +23,8 @@ public class SlotDao {
     private DayDao day;
     private UserDao leader;
 
-    public SlotDao(Slot slot) {
+    public SlotDao(Slot slot)
+    {
         this.slotid = slot.getSlotid();
         this.starttime = slot.getStarttime().toInstant();
         this.endtime = slot.getEndtime().toInstant();

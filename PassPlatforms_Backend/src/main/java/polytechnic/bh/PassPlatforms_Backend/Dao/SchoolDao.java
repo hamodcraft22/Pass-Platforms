@@ -10,12 +10,14 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.School;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SchoolDao {
+public class SchoolDao
+{
     private String schoolid;
     private String schoolname;
     private String schooldesc;
 
-    public SchoolDao(School school) {
+    public SchoolDao(School school)
+    {
         this.schoolid = school.getSchoolid();
         this.schoolname = school.getSchoolname();
         this.schooldesc = school.getSchooldesc();

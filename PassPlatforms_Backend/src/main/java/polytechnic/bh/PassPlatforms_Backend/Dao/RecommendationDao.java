@@ -12,7 +12,8 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RecommendationDao {
+public class RecommendationDao
+{
     private int recid;
     private Instant datetime;
     private String note;
@@ -20,7 +21,8 @@ public class RecommendationDao {
     private UserDao student;
     private UserDao tutor;
 
-    public RecommendationDao(Recommendation recommendation) {
+    public RecommendationDao(Recommendation recommendation)
+    {
         this.recid = recommendation.getRecid();
         this.datetime = recommendation.getDatetime().toInstant();
         this.note = recommendation.getNote();

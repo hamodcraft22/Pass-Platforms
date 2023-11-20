@@ -8,12 +8,19 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import java.util.Date;
 import java.util.List;
 
-public interface SlotRepo extends JpaRepository<Slot, Integer> {
+public interface SlotRepo extends JpaRepository<Slot, Integer>
+{
     List<Slot> findSlotsByStarttime(Date date);
+
     List<Slot> findSlotsByEndtime(Date date);
+
     List<Slot> findSlotsByNoteContainsIgnoreCase(String note);
+
     List<Slot> findSlotsByIsrevision(Boolean isrevision);
+
     List<Slot> findSlotsByIsonline(Boolean isonline);
+
     List<Slot> findSlotsByDay(Day day);
+
     List<Slot> findSlotsByLeader(User leader);
 }

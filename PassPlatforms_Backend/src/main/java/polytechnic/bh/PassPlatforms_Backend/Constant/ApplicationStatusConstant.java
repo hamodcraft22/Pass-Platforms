@@ -1,6 +1,7 @@
 package polytechnic.bh.PassPlatforms_Backend.Constant;
 
-public final class ApplicationStatusConstant {
+public final class ApplicationStatusConstant
+{
     public static final char APLC_CREATED = 'c';
     public static final char APLC_REVIEWD = 'r';
     public static final char APLC_INTERVIEWD = 'i';

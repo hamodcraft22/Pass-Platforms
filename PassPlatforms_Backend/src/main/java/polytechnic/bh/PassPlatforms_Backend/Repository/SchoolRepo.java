@@ -3,5 +3,6 @@ package polytechnic.bh.PassPlatforms_Backend.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import polytechnic.bh.PassPlatforms_Backend.Entity.School;
 
-public interface SchoolRepo extends JpaRepository<School, String> {
+public interface SchoolRepo extends JpaRepository<School, String>
+{
 }

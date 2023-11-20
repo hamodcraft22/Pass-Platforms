@@ -13,16 +13,18 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.SchoolDao;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "pp_school")
-public class School {
+public class School
+{
 
-  @Id
-  private String schoolid;
-  private String schoolname;
-  private String schooldesc;
+    @Id
+    private String schoolid;
+    private String schoolname;
+    private String schooldesc;
 
-  public School(SchoolDao schoolDao) {
-    this.schoolid = schoolDao.getSchoolid();
-    this.schoolname = schoolDao.getSchoolname();
-    this.schooldesc = schoolDao.getSchooldesc();
-  }
+    public School(SchoolDao schoolDao)
+    {
+        this.schoolid = schoolDao.getSchoolid();
+        this.schoolname = schoolDao.getSchoolname();
+        this.schooldesc = schoolDao.getSchooldesc();
+    }
 }

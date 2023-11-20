@@ -17,17 +17,19 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "ROLEID", discriminatorType = DiscriminatorType.INTEGER)
 @Table(name = "pp_user")
-public class User {
+public class User
+{
 
-  @Id
-  private String userid;
+    @Id
+    private String userid;
 
-  @ManyToOne
-  @JoinColumn(name = "roleid", referencedColumnName = "roleid", insertable = false, updatable = false)
-  private Role role;
+    @ManyToOne
+    @JoinColumn(name = "roleid", referencedColumnName = "roleid", insertable = false, updatable = false)
+    private Role role;
 
-  public User(UserDao userDao) {
-    this.userid = userDao.getUserid();
-    this.role = new Role(userDao.getRole());
-  }
+    public User(UserDao userDao)
+    {
+        this.userid = userDao.getUserid();
+        this.role = new Role(userDao.getRole());
+    }
 }

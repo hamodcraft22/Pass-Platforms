@@ -10,12 +10,14 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Role;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RoleDao {
+public class RoleDao
+{
     private int roleid;
     private String rolename;
     private String roledesc;
 
-    public RoleDao(Role role) {
+    public RoleDao(Role role)
+    {
         this.roleid = role.getRoleid();
         this.rolename = role.getRolename();
         this.roledesc = role.getRoledesc();

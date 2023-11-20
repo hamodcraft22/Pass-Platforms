@@ -13,16 +13,18 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "pp_role")
-public class Role {
+public class Role
+{
 
-  @Id
-  private int roleid;
-  private String rolename;
-  private String roledesc;
+    @Id
+    private int roleid;
+    private String rolename;
+    private String roledesc;
 
-  public Role(RoleDao roleDao) {
-    this.roleid = roleDao.getRoleid();
-    this.rolename = roleDao.getRolename();
-    this.roledesc = roleDao.getRoledesc();
-  }
+    public Role(RoleDao roleDao)
+    {
+        this.roleid = roleDao.getRoleid();
+        this.rolename = roleDao.getRolename();
+        this.roledesc = roleDao.getRoledesc();
+    }
 }

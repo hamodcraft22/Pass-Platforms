@@ -13,26 +13,28 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "pp_applicationnote")
-public class ApplicationNote {
+public class ApplicationNote
+{
 
-  @Id
-  private int noteid;
-  private java.sql.Timestamp datetime;
-  private String notebody;
+    @Id
+    private int noteid;
+    private java.sql.Timestamp datetime;
+    private String notebody;
 
-  @ManyToOne
-  @JoinColumn(name = "APPLICATIONID", referencedColumnName = "APPLICATIONID")
-  private Application application;
+    @ManyToOne
+    @JoinColumn(name = "APPLICATIONID", referencedColumnName = "APPLICATIONID")
+    private Application application;
 
-  @ManyToOne
-  @JoinColumn(name = "USERID", referencedColumnName = "USERID")
-  private User user;
+    @ManyToOne
+    @JoinColumn(name = "USERID", referencedColumnName = "USERID")
+    private User user;
 
-  public ApplicationNote(ApplicationNoteDao applicationNoteDao) {
-    this.noteid = applicationNoteDao.getNoteid();
-    this.datetime = Timestamp.from(applicationNoteDao.getDatetime());
-    this.notebody = applicationNoteDao.getNotebody();
-    this.application = new Application(applicationNoteDao.getApplication());
-    this.user = new User(applicationNoteDao.getUser());
-  }
+    public ApplicationNote(ApplicationNoteDao applicationNoteDao)
+    {
+        this.noteid = applicationNoteDao.getNoteid();
+        this.datetime = Timestamp.from(applicationNoteDao.getDatetime());
+        this.notebody = applicationNoteDao.getNotebody();
+        this.application = new Application(applicationNoteDao.getApplication());
+        this.user = new User(applicationNoteDao.getUser());
+    }
 }

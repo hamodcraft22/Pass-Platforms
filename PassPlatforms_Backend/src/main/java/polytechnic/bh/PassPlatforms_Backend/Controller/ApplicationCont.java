@@ -15,7 +15,8 @@ import static polytechnic.bh.PassPlatforms_Backend.Constant.ApplicationStatusCon
 
 @RestController
 @RequestMapping("/api/application")
-public class ApplicationCont<T> {
+public class ApplicationCont<T>
+{
 
     @Autowired
     ApplicationServ applicationServ;
@@ -29,9 +30,9 @@ public class ApplicationCont<T> {
             //retrieve from service
             List<ApplicationDao> applicationDaos = applicationServ.getAllApplications(false);
 
-            if(!applicationDaos.isEmpty())
+            if (!applicationDaos.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, (T) applicationDaos,null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, (T) applicationDaos, null), HttpStatus.OK);
             }
             else
             {
@@ -156,7 +157,7 @@ public class ApplicationCont<T> {
 
                     if ((retrivedApplicationDao.getApplicationStatus().getStatusid() == APLC_CANCLED && applicationGotten.getApplicationStatus().getStatusid() == APLC_REOPENED) || ((retrivedApplicationDao.getApplicationStatus().getStatusid() != APLC_ACCEPTED && retrivedApplicationDao.getApplicationStatus().getStatusid() != APLC_REJECTED && retrivedApplicationDao.getApplicationStatus().getStatusid() != APLC_CANCLED) && (applicationGotten.getApplicationStatus().getStatusid() == APLC_CANCLED)))
                     {
-                        ApplicationDao responseAplDao = applicationServ.updateApplication(retrivedApplicationDao.getApplicationid(),applicationStatus);
+                        ApplicationDao responseAplDao = applicationServ.updateApplication(retrivedApplicationDao.getApplicationid(), applicationStatus);
 
                         if (responseAplDao != null)
                         {
@@ -196,7 +197,7 @@ public class ApplicationCont<T> {
 
                 if (applicationStatus != APLC_CREATED && applicationStatus != APLC_CANCLED && applicationStatus != APLC_REOPENED)
                 {
-                    ApplicationDao responseAplDao = applicationServ.updateApplication(retrivedApplicationDao.getApplicationid(),applicationStatus);
+                    ApplicationDao responseAplDao = applicationServ.updateApplication(retrivedApplicationDao.getApplicationid(), applicationStatus);
 
                     if (responseAplDao != null)
                     {
@@ -235,16 +236,16 @@ public class ApplicationCont<T> {
         {
             if (applicationServ.deleteApplication(applicationID))
             {
-                return new ResponseEntity<>(null,HttpStatus.OK);
+                return new ResponseEntity<>(null, HttpStatus.OK);
             }
             else
             {
-                return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
         }
         else
         {
-            return new ResponseEntity<>(null,HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
     }
 }

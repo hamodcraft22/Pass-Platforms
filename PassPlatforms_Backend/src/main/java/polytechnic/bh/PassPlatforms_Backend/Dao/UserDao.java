@@ -10,11 +10,13 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDao {
+public class UserDao
+{
     private String userid;
     private RoleDao role;
 
-    public UserDao(User user) {
+    public UserDao(User user)
+    {
         this.userid = user.getUserid();
         this.role = new RoleDao(user.getRole());
     }

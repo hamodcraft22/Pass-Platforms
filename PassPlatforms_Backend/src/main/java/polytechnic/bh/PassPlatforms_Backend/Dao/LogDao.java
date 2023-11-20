@@ -12,13 +12,15 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class LogDao {
+public class LogDao
+{
     private int logid;
     private String errormsg;
     private Instant datetime;
     private UserDao user;
 
-    public LogDao(Log log) {
+    public LogDao(Log log)
+    {
         this.logid = log.getLogid();
         this.errormsg = log.getErrormsg();
         this.datetime = log.getDatetime().toInstant();

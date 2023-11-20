@@ -16,7 +16,8 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/api")
-public class StatisticCont {
+public class StatisticCont
+{
 
     @Autowired
     StatisticRepo statisticRepo;

@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ApplicationServ {
+public class ApplicationServ
+{
 
     @Autowired
     ApplicationRepo applicationRepo;

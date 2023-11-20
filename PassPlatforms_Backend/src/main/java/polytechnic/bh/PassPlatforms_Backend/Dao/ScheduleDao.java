@@ -12,14 +12,16 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ScheduleDao {
+public class ScheduleDao
+{
     private int scheduleid;
     private Instant starttime;
     private Instant endtime;
     private DayDao day;
     private UserDao user;
 
-    public ScheduleDao(Schedule schedule) {
+    public ScheduleDao(Schedule schedule)
+    {
         this.scheduleid = schedule.getScheduleid();
         this.starttime = schedule.getStarttime().toInstant();
         this.endtime = schedule.getEndtime().toInstant();

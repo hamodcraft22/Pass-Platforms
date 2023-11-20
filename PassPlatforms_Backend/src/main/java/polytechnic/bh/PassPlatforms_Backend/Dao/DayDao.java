@@ -10,11 +10,13 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Day;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DayDao {
+public class DayDao
+{
     private char dayid;
     private String dayname;
 
-    public DayDao(Day day) {
+    public DayDao(Day day)
+    {
         this.dayid = day.getDayid();
         this.dayname = day.getDayname();
     }

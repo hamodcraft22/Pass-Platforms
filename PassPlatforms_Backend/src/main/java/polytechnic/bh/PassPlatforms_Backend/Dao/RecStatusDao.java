@@ -10,12 +10,14 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.RecStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RecStatusDao {
+public class RecStatusDao
+{
     private char statusid;
     private String statusname;
     private String statusdesc;
 
-    public RecStatusDao(RecStatus status) {
+    public RecStatusDao(RecStatus status)
+    {
         this.statusid = status.getStatusid();
         this.statusname = status.getStatusname();
         this.statusdesc = status.getStatusdesc();

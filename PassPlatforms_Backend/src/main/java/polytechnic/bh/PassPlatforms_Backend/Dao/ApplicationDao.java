@@ -15,7 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApplicationDao {
+public class ApplicationDao
+{
     private int applicationid;
     private Instant datetime;
     private String note;
@@ -23,7 +24,8 @@ public class ApplicationDao {
     private UserDao user;
     private List<ApplicationNoteDao> applicationNotes;
 
-    public ApplicationDao(Application application) {
+    public ApplicationDao(Application application)
+    {
         this.applicationid = application.getApplicationid();
         this.datetime = application.getDatetime().toInstant();
         this.note = application.getNote();
@@ -34,7 +36,7 @@ public class ApplicationDao {
 
         //building custom list of objects while removing infinite recursion
         List<ApplicationNoteDao> applicationNotes = new ArrayList<>();
-        if(application.getApplicationNotes() != null && !application.getApplicationNotes().isEmpty())
+        if (application.getApplicationNotes() != null && !application.getApplicationNotes().isEmpty())
         {
             for (ApplicationNote note : application.getApplicationNotes())
             {

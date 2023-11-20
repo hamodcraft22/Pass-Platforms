@@ -13,14 +13,16 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.DayDao;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "pp_day")
-public class Day {
+public class Day
+{
 
-  @Id
-  private char dayid;
-  private String dayname;
+    @Id
+    private char dayid;
+    private String dayname;
 
-  public Day(DayDao dayDao) {
-    this.dayid = dayDao.getDayid();
-    this.dayname = dayDao.getDayname();
-  }
+    public Day(DayDao dayDao)
+    {
+        this.dayid = dayDao.getDayid();
+        this.dayname = dayDao.getDayname();
+    }
 }
