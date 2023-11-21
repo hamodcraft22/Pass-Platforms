@@ -2,7 +2,6 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import polytechnic.bh.PassPlatforms_Backend.Dao.MajorDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.SchoolDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.School;
 import polytechnic.bh.PassPlatforms_Backend.Repository.SchoolRepo;

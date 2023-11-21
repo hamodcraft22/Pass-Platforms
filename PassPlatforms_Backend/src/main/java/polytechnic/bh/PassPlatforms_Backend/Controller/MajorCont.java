@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import polytechnic.bh.PassPlatforms_Backend.Dao.SchoolDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.MajorDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
-import polytechnic.bh.PassPlatforms_Backend.Service.SchoolServ;
+import polytechnic.bh.PassPlatforms_Backend.Service.MajorServ;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,25 +15,25 @@ import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.MANAGER_KEY;
 
 @RestController
-@RequestMapping("/api/school")
-public class SchoolCont
+@RequestMapping("/api/major")
+public class MajorCont
 {
 
     @Autowired
-    private SchoolServ schoolServ;
+    private MajorServ majorServ;
 
-    // get all schools
+    // get all majors
     @GetMapping("")
-    public ResponseEntity<GenericDto<List<SchoolDao>>> getAllSchools(
+    public ResponseEntity<GenericDto<List<MajorDao>>> getAllMajors(
             @RequestHeader(value = "Authorization", required = false) String requestKey)
     {
         // Any person can use these
 
-        List<SchoolDao> schools = schoolServ.getAllSchools();
+        List<MajorDao> majors = majorServ.getAllMajors();
 
-        if (schools != null && !schools.isEmpty())
+        if (majors != null && !majors.isEmpty())
         {
-            return new ResponseEntity<>(new GenericDto<>(null, schools, null), HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, majors, null), HttpStatus.OK);
         }
         else
         {
@@ -41,19 +41,19 @@ public class SchoolCont
         }
     }
 
-    // get school details
-    @GetMapping("/{schoolID}")
-    public ResponseEntity<GenericDto<SchoolDao>> getSchoolDetails(
+    // get major details
+    @GetMapping("/{majorID}")
+    public ResponseEntity<GenericDto<MajorDao>> getMajorDetails(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @PathVariable("schoolID") String schoolID)
+            @PathVariable("majorID") String majorID)
     {
         // Any person can use these
 
-        SchoolDao school = schoolServ.getSchoolDetails(schoolID);
+        MajorDao major = majorServ.getMajorDetails(majorID);
 
-        if (school != null)
+        if (major != null)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, school, null), HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, major, null), HttpStatus.OK);
         }
         else
         {
@@ -61,17 +61,22 @@ public class SchoolCont
         }
     }
 
-    // create school
+    // create major
     @PostMapping("")
-    public ResponseEntity<GenericDto<SchoolDao>> createSchool(
+    public ResponseEntity<GenericDto<MajorDao>> createMajor(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestBody SchoolDao schoolDao)
+            @RequestBody MajorDao majorDao)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
-            SchoolDao createdSchool = schoolServ.createSchool(schoolDao.getSchoolname(), schoolDao.getSchooldesc());
+            MajorDao createdMajor = majorServ.createMajor(
+                    majorDao.getMajorid(),
+                    majorDao.getMajorname(),
+                    majorDao.getMajordesc(),
+                    majorDao.getSchool().getSchoolid()
+            );
 
-            return new ResponseEntity<>(new GenericDto<>(null, createdSchool, null), HttpStatus.CREATED);
+            return new ResponseEntity<>(new GenericDto<>(null, createdMajor, null), HttpStatus.CREATED);
         }
         else
         {
@@ -79,20 +84,19 @@ public class SchoolCont
         }
     }
 
-    // edit school
+    // edit major
     @PutMapping("")
-    public ResponseEntity<GenericDto<SchoolDao>> editSchool(
+    public ResponseEntity<GenericDto<MajorDao>> editMajor(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestBody SchoolDao schoolDao)
+            @RequestBody MajorDao majorDao)
     {
-
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
-            SchoolDao editedSchool = schoolServ.editSchool(schoolDao);
+            MajorDao editedMajor = majorServ.editMajor(majorDao);
 
-            if (editedSchool != null)
+            if (editedMajor != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, editedSchool, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, editedMajor, null), HttpStatus.OK);
             }
             else
             {
@@ -105,15 +109,15 @@ public class SchoolCont
         }
     }
 
-    // delete school
-    @DeleteMapping("/{schoolID}")
-    public ResponseEntity<GenericDto<Void>> deleteSchool(
+    // delete major
+    @DeleteMapping("/{majorID}")
+    public ResponseEntity<GenericDto<Void>> deleteMajor(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @PathVariable("schoolID") String schoolID)
+            @PathVariable("majorID") String majorID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
-            if (schoolServ.deleteSchool(schoolID))
+            if (majorServ.deleteMajor(majorID))
             {
                 return new ResponseEntity<>(null, HttpStatus.OK);
             }
