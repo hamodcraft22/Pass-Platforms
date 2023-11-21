@@ -27,7 +27,7 @@ public class CourseCont
     public ResponseEntity<GenericDto<List<CourseDao>>> getAllCourses(
             @RequestHeader(value = "Authorization", required = false) String requestKey)
     {
-        // Adjust your authorization logic as needed
+        // Any person can use these
 
         List<CourseDao> courses = courseServ.getAllCourses();
 
