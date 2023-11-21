@@ -1,12 +1,13 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 import polytechnic.bh.PassPlatforms_Backend.Dao.SchoolDao;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -20,6 +21,11 @@ public class School
     private String schoolid;
     private String schoolname;
     private String schooldesc;
+
+    // custom (multi item) entities
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "school")
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    private List<Major> majors;
 
     public School(SchoolDao schoolDao)
     {

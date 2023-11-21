@@ -1,13 +1,17 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Dao.SlotDao;
 
 import java.sql.Timestamp;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "pp_slot")
 public class Slot
 {

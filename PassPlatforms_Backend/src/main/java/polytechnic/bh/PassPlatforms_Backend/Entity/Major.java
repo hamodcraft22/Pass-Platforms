@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 import polytechnic.bh.PassPlatforms_Backend.Dao.MajorDao;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -22,6 +25,11 @@ public class Major
     @ManyToOne
     @JoinColumn(name = "SCHOOLID", referencedColumnName = "SCHOOLID")
     private School school;
+
+    // custom (multi item) entities
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "major")
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    private List<Course> courses;
 
     public Major(MajorDao majorDao)
     {

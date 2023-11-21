@@ -1,11 +1,18 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 import polytechnic.bh.PassPlatforms_Backend.Dao.CourseDao;
+
+import java.util.List;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "pp_course")
 public class Course
 {
@@ -20,6 +27,7 @@ public class Course
     @ManyToOne
     @JoinColumn(name = "MAJORID", referencedColumnName = "MAJORID")
     private Major major;
+
 
     public Course(CourseDao courseDao)
     {
