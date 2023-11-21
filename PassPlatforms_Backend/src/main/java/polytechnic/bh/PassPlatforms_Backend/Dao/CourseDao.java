@@ -17,7 +17,7 @@ public class CourseDao
     private String coursedesc;
     private char semaster;
     private boolean available;
-    private MajorDao major;
+    private SchoolDao school;
 
     public CourseDao(Course course)
     {
@@ -26,6 +26,6 @@ public class CourseDao
         this.coursedesc = course.getCoursedesc();
         this.semaster = course.getSemaster();
         this.available = course.isAvailable();
-        this.major = new MajorDao(course.getMajor());
+        this.school = new SchoolDao(course.getSchool());
     }
 }

@@ -74,7 +74,7 @@ public class CourseCont
                     courseDao.getCoursedesc(),
                     courseDao.getSemaster(),
                     courseDao.isAvailable(),
-                    courseDao.getMajor().getMajorid()
+                    courseDao.getSchool().getSchoolid()
             );
 
             return new ResponseEntity<>(new GenericDto<>(null, createdCourse, null), HttpStatus.CREATED);

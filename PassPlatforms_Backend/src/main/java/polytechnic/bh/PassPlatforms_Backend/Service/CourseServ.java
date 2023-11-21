@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.CourseDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Course;
 import polytechnic.bh.PassPlatforms_Backend.Repository.CourseRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.MajorRepo;
+import polytechnic.bh.PassPlatforms_Backend.Repository.SchoolRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class CourseServ
     private CourseRepo courseRepo;
 
     @Autowired
-    private MajorRepo majorRepo;
+    private SchoolRepo schoolRepo;
 
     public List<CourseDao> getAllCourses()
     {
@@ -40,7 +40,7 @@ public class CourseServ
         return retrievedCourse.map(CourseDao::new).orElse(null);
     }
 
-    public CourseDao createCourse(String courseName, String courseDesc, char semester, boolean available, String majorID)
+    public CourseDao createCourse(String courseName, String courseDesc, char semester, boolean available, String schoolID)
     {
         Course newCourse = new Course();
 
@@ -48,7 +48,7 @@ public class CourseServ
         newCourse.setCoursedesc(courseDesc);
         newCourse.setSemaster(semester);
         newCourse.setAvailable(available);
-        newCourse.setMajor(majorRepo.getReferenceById(majorID));
+        newCourse.setSchool(schoolRepo.getReferenceById(schoolID));
 
         return new CourseDao(courseRepo.save(newCourse));
     }
@@ -63,7 +63,7 @@ public class CourseServ
             retrievedCourse.get().setCoursedesc(updatedCourse.getCoursedesc());
             retrievedCourse.get().setSemaster(updatedCourse.getSemaster());
             retrievedCourse.get().setAvailable(updatedCourse.isAvailable());
-            retrievedCourse.get().setMajor(majorRepo.getReferenceById(updatedCourse.getMajor().getMajorid()));
+            retrievedCourse.get().setSchool(schoolRepo.getReferenceById(updatedCourse.getSchool().getSchoolid()));
 
             return new CourseDao(courseRepo.save(retrievedCourse.get()));
         }

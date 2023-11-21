@@ -13,11 +13,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class Student extends User
 {
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "USERID", referencedColumnName = "USERID")
-    private List<StudentMajor> studentMajors;
-
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "STUDENTID", referencedColumnName = "USERID")
     private List<Booking> bookings;

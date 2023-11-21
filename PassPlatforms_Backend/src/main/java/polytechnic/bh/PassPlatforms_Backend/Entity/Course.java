@@ -22,9 +22,8 @@ public class Course
     private boolean available;
 
     @ManyToOne
-    @JoinColumn(name = "MAJORID", referencedColumnName = "MAJORID")
-    private Major major;
-
+    @JoinColumn(name = "SCHOOLID", referencedColumnName = "SCHOOLID")
+    private School school;
 
     public Course(CourseDao courseDao)
     {
@@ -33,6 +32,6 @@ public class Course
         this.coursedesc = courseDao.getCoursedesc();
         this.semaster = courseDao.getSemaster();
         this.available = courseDao.isAvailable();
-        this.major = new Major(courseDao.getMajor());
+        this.school = new School(courseDao.getSchool());
     }
 }

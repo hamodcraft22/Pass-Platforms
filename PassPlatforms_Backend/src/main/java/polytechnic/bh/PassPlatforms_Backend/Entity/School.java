@@ -25,7 +25,7 @@ public class School
     // custom (multi item) entities
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "school")
     @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-    private List<Major> majors;
+    private List<Course> courses;
 
     public School(SchoolDao schoolDao)
     {
