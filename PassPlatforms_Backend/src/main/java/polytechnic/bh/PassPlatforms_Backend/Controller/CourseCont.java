@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import polytechnic.bh.PassPlatforms_Backend.Dao.MajorDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.CourseDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
-import polytechnic.bh.PassPlatforms_Backend.Service.MajorServ;
+import polytechnic.bh.PassPlatforms_Backend.Service.CourseServ;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,25 +15,25 @@ import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.MANAGER_KEY;
 
 @RestController
-@RequestMapping("/api/major")
-public class MajorCont
+@RequestMapping("/api/course")
+public class CourseCont
 {
 
     @Autowired
-    private MajorServ majorServ;
+    private CourseServ courseServ;
 
-    // get all majors
+    // Any person can use these
     @GetMapping("")
-    public ResponseEntity<GenericDto<List<MajorDao>>> getAllMajors(
+    public ResponseEntity<GenericDto<List<CourseDao>>> getAllCourses(
             @RequestHeader(value = "Authorization", required = false) String requestKey)
     {
-        // Any person can use these
+        // Adjust your authorization logic as needed
 
-        List<MajorDao> majors = majorServ.getAllMajors();
+        List<CourseDao> courses = courseServ.getAllCourses();
 
-        if (majors != null && !majors.isEmpty())
+        if (courses != null && !courses.isEmpty())
         {
-            return new ResponseEntity<>(new GenericDto<>(null, majors, null), HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, courses, null), HttpStatus.OK);
         }
         else
         {
@@ -41,19 +41,19 @@ public class MajorCont
         }
     }
 
-    // get major details
-    @GetMapping("/{majorID}")
-    public ResponseEntity<GenericDto<MajorDao>> getMajorDetails(
+    // get course details
+    @GetMapping("/{courseID}")
+    public ResponseEntity<GenericDto<CourseDao>> getCourseDetails(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @PathVariable("majorID") String majorID)
+            @PathVariable("courseID") String courseID)
     {
         // Any person can use these
 
-        MajorDao major = majorServ.getMajorDetails(majorID);
+        CourseDao course = courseServ.getCourseDetails(courseID);
 
-        if (major != null)
+        if (course != null)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, major, null), HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, course, null), HttpStatus.OK);
         }
         else
         {
@@ -61,21 +61,23 @@ public class MajorCont
         }
     }
 
-    // create major
+    // create course
     @PostMapping("")
-    public ResponseEntity<GenericDto<MajorDao>> createMajor(
+    public ResponseEntity<GenericDto<CourseDao>> createCourse(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestBody MajorDao majorDao)
+            @RequestBody CourseDao courseDao)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
-            MajorDao createdMajor = majorServ.createMajor(
-                    majorDao.getMajorname(),
-                    majorDao.getMajordesc(),
-                    majorDao.getSchool().getSchoolid()
+            CourseDao createdCourse = courseServ.createCourse(
+                    courseDao.getCoursename(),
+                    courseDao.getCoursedesc(),
+                    courseDao.getSemaster(),
+                    courseDao.isAvailable(),
+                    courseDao.getMajor().getMajorid()
             );
 
-            return new ResponseEntity<>(new GenericDto<>(null, createdMajor, null), HttpStatus.CREATED);
+            return new ResponseEntity<>(new GenericDto<>(null, createdCourse, null), HttpStatus.CREATED);
         }
         else
         {
@@ -83,19 +85,19 @@ public class MajorCont
         }
     }
 
-    // edit major
+    // edit course
     @PutMapping("")
-    public ResponseEntity<GenericDto<MajorDao>> editMajor(
+    public ResponseEntity<GenericDto<CourseDao>> editCourse(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestBody MajorDao majorDao)
+            @RequestBody CourseDao courseDao)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
-            MajorDao editedMajor = majorServ.editMajor(majorDao);
+            CourseDao editedCourse = courseServ.editCourse(courseDao);
 
-            if (editedMajor != null)
+            if (editedCourse != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, editedMajor, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, editedCourse, null), HttpStatus.OK);
             }
             else
             {
@@ -108,15 +110,15 @@ public class MajorCont
         }
     }
 
-    // delete major
-    @DeleteMapping("/{majorID}")
-    public ResponseEntity<GenericDto<Void>> deleteMajor(
+    // delete course
+    @DeleteMapping("/{courseID}")
+    public ResponseEntity<GenericDto<Void>> deleteCourse(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @PathVariable("majorID") String majorID)
+            @PathVariable("courseID") String courseID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
-            if (majorServ.deleteMajor(majorID))
+            if (courseServ.deleteCourse(courseID))
             {
                 return new ResponseEntity<>(null, HttpStatus.OK);
             }

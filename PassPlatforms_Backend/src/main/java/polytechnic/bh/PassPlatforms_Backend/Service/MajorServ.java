@@ -40,11 +40,10 @@ public class MajorServ
         return retrievedMajor.map(MajorDao::new).orElse(null);
     }
 
-    public MajorDao createMajor(String majorID, String majorName, String majorDesc, String schoolID)
+    public MajorDao createMajor(String majorName, String majorDesc, String schoolID)
     {
         Major newMajor = new Major();
 
-        newMajor.setMajorid(majorID);
         newMajor.setMajorname(majorName);
         newMajor.setMajordesc(majorDesc);
         newMajor.setSchool(schoolRepo.getReferenceById(schoolID));
