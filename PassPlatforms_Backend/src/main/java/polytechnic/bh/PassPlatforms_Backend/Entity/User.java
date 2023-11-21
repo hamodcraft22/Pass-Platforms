@@ -5,10 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
-
-import java.util.List;
 
 @Data
 @Entity

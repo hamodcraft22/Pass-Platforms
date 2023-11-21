@@ -66,7 +66,7 @@ public class AuditServ
         newAudit.setOldvalue(SerializationUtils.serialize(newValue));
         newAudit.setUser(userRepo.getReferenceById(userID));
 
-       return new AuditDao(auditRepo.save(newAudit));
+        return new AuditDao(auditRepo.save(newAudit));
     }
 
     // delete audit

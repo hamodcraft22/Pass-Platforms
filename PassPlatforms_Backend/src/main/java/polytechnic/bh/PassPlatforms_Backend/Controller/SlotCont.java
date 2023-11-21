@@ -51,13 +51,13 @@ public class SlotCont<T>
 
     // get leader slots
     @GetMapping("/leaders")
-    public ResponseEntity<GenericDto<Map<UserDao,List<SlotDao>>>> getLeaderSlots(
+    public ResponseEntity<GenericDto<Map<UserDao, List<SlotDao>>>> getLeaderSlots(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
             @RequestBody List<String> leaderIDs)
     {
         if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
         {
-            Map<UserDao,List<SlotDao>> slots = slotServ.getAllLeaderSlots(leaderIDs);
+            Map<UserDao, List<SlotDao>> slots = slotServ.getAllLeaderSlots(leaderIDs);
 
             if (slots != null && !slots.isEmpty())
             {

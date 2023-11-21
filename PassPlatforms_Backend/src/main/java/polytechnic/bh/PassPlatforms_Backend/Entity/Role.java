@@ -1,12 +1,12 @@
 package polytechnic.bh.PassPlatforms_Backend.Entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Dao.RoleDao;
-
-import java.util.List;
 
 @Data
 @Entity

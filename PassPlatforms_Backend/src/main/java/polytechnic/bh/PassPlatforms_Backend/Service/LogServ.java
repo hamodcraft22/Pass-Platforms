@@ -31,10 +31,10 @@ public class LogServ
         for (Log retrivedLog : logRepo.findAll())
         {
             logs.add(new LogDao(
-               retrivedLog.getLogid(),
-               null,
-               retrivedLog.getDatetime().toInstant(),
-               new UserDao(retrivedLog.getUser())
+                    retrivedLog.getLogid(),
+                    null,
+                    retrivedLog.getDatetime().toInstant(),
+                    new UserDao(retrivedLog.getUser())
             ));
         }
 

@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationDao;
-import polytechnic.bh.PassPlatforms_Backend.Dao.ScheduleDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.TranscriptDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.TranscriptServ;
@@ -187,8 +185,6 @@ public class TranscriptCont
             @PathVariable("transID") int transID)
     {
         // Adjust your authorization logic as needed
-
-
 
 
         // if it is an admin or manager, return anyway
