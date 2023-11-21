@@ -23,7 +23,7 @@ public class AuditCont<T>
 
     // get all audits
     @GetMapping("")
-    public ResponseEntity<GenericDto<T>> getAllAudits(
+    public ResponseEntity<GenericDto<List<AuditDao>>> getAllAudits(
             @RequestHeader(value = "Authorization", required = false) String requestKey)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
@@ -32,7 +32,7 @@ public class AuditCont<T>
 
             if (audits != null && !audits.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, (T) audits, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, audits, null), HttpStatus.OK);
             }
             else
             {
@@ -47,7 +47,7 @@ public class AuditCont<T>
 
     // get audit details
     @GetMapping("/{auditID}")
-    public ResponseEntity<GenericDto<T>> getAuditDetails(
+    public ResponseEntity<GenericDto<AuditDao>> getAuditDetails(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
             @PathVariable("auditID") int auditID)
     {
@@ -57,7 +57,7 @@ public class AuditCont<T>
 
             if (audit != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, (T) audit, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, audit, null), HttpStatus.OK);
             }
             else
             {

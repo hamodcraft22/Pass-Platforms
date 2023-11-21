@@ -28,7 +28,7 @@ public class ApplicationNoteCont<T>
 
     // get all notes - note used - by admin or manager
     @GetMapping("")
-    public ResponseEntity<GenericDto<T>> getAllNotes(
+    public ResponseEntity<GenericDto<List<ApplicationNoteDao>>> getAllNotes(
             @RequestHeader(value = "Authorization", required = false) String requestKey)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
@@ -37,7 +37,7 @@ public class ApplicationNoteCont<T>
 
             if (retrivedNotes != null && !retrivedNotes.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, (T) retrivedNotes, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, retrivedNotes, null), HttpStatus.OK);
             }
             else
             {
@@ -53,7 +53,7 @@ public class ApplicationNoteCont<T>
 
     // get all notes for an application - not needed (returned from main application with details)
     @GetMapping("/{applicationID}")
-    public ResponseEntity<GenericDto<T>> getApplicationNotes(
+    public ResponseEntity<GenericDto<List<ApplicationNoteDao>>> getApplicationNotes(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
             @RequestHeader(value = "Requester", required = false) String requisterID,
             @PathVariable("applicationID") int applicationID)
@@ -65,7 +65,7 @@ public class ApplicationNoteCont<T>
 
             if (retrivedNotes != null && !retrivedNotes.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, (T) retrivedNotes, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, retrivedNotes, null), HttpStatus.OK);
             }
             else
             {
@@ -84,7 +84,7 @@ public class ApplicationNoteCont<T>
                 // check if application is of student
                 if (Objects.equals(retrivedNotes.get(0).getApplication().getUser().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, (T) retrivedNotes, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, retrivedNotes, null), HttpStatus.OK);
                 }
                 else
                 {
@@ -105,7 +105,7 @@ public class ApplicationNoteCont<T>
 
     // get note details - specific application note
     @GetMapping("/{noteID}")
-    public ResponseEntity<GenericDto<T>> getNoteDetails(
+    public ResponseEntity<GenericDto<ApplicationNoteDao>> getNoteDetails(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
             @RequestHeader(value = "Requester", required = false) String requisterID,
             @PathVariable("noteID") int noteID)
@@ -117,7 +117,7 @@ public class ApplicationNoteCont<T>
 
             if (retrivedNote != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, (T) retrivedNote, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, retrivedNote, null), HttpStatus.OK);
             }
             else
             {
@@ -136,7 +136,7 @@ public class ApplicationNoteCont<T>
                 // check if application is of student
                 if (Objects.equals(retrivedNote.getApplication().getUser().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, (T) retrivedNote, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, retrivedNote, null), HttpStatus.OK);
                 }
                 else
                 {

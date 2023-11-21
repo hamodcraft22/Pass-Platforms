@@ -23,7 +23,7 @@ public class ApplicationCont<T>
     ApplicationServ applicationServ;
 
     @GetMapping("")
-    public ResponseEntity<GenericDto<T>> getAllApplications(
+    public ResponseEntity<GenericDto<List<ApplicationDao> >> getAllApplications(
             @RequestHeader(value = "Authorization", required = false) String requestKey)
     {
         if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
@@ -33,7 +33,7 @@ public class ApplicationCont<T>
 
             if (applicationDaos != null && !applicationDaos.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, (T) applicationDaos, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, applicationDaos, null), HttpStatus.OK);
             }
             else
             {
@@ -48,7 +48,7 @@ public class ApplicationCont<T>
     }
 
     @GetMapping("/{applicationID}")
-    public ResponseEntity<GenericDto<T>> getApplication(
+    public ResponseEntity<GenericDto<ApplicationDao>> getApplication(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
             @RequestHeader(value = "Requester", required = false) String requisterID,
             @PathVariable("applicationID") int applicationID)
@@ -60,7 +60,7 @@ public class ApplicationCont<T>
 
             if (applicationDao != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, (T) applicationDao, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, applicationDao, null), HttpStatus.OK);
             }
             else
             {
@@ -76,7 +76,7 @@ public class ApplicationCont<T>
             {
                 if (Objects.equals(applicationDao.getUser().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, (T) applicationDao, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, applicationDao, null), HttpStatus.OK);
                 }
                 else
                 {
@@ -138,7 +138,7 @@ public class ApplicationCont<T>
 
     // update an application (by manager)
     @PutMapping("")
-    public ResponseEntity<GenericDto<T>> updateApplication(
+    public ResponseEntity<GenericDto<ApplicationDao>> updateApplication(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
             @RequestHeader(value = "Requester", required = false) String requisterID,
             @RequestBody ApplicationDao applicationGotten)
@@ -162,7 +162,7 @@ public class ApplicationCont<T>
 
                         if (responseAplDao != null)
                         {
-                            return new ResponseEntity<>(new GenericDto<>(null, (T) responseAplDao, null), HttpStatus.OK);
+                            return new ResponseEntity<>(new GenericDto<>(null, responseAplDao, null), HttpStatus.OK);
                         }
                         else
                         {
@@ -202,7 +202,7 @@ public class ApplicationCont<T>
 
                     if (responseAplDao != null)
                     {
-                        return new ResponseEntity<>(new GenericDto<>(null, (T) responseAplDao, null), HttpStatus.OK);
+                        return new ResponseEntity<>(new GenericDto<>(null, responseAplDao, null), HttpStatus.OK);
                     }
                     else
                     {

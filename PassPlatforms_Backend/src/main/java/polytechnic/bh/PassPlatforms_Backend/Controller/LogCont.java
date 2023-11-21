@@ -22,7 +22,7 @@ public class LogCont<T>
     LogServ logServ;
 
     @GetMapping("")
-    public ResponseEntity<GenericDto<T>> getAllLogs(
+    public ResponseEntity<GenericDto<List<LogDao>>> getAllLogs(
             @RequestHeader(value = "Authorization", required = false) String requestKey)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
@@ -31,7 +31,7 @@ public class LogCont<T>
 
             if (logs != null && !logs.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, (T) logs, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, logs, null), HttpStatus.OK);
             }
             else
             {
@@ -45,7 +45,7 @@ public class LogCont<T>
     }
 
     @GetMapping("/{logID}")
-    public ResponseEntity<GenericDto<T>> getLogDetails(
+    public ResponseEntity<GenericDto<LogDao>> getLogDetails(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
             @PathVariable("logID") int logID)
     {
@@ -55,7 +55,7 @@ public class LogCont<T>
 
             if (log != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, (T) log, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, log, null), HttpStatus.OK);
             }
             else
             {
