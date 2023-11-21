@@ -132,15 +132,23 @@ public class SlotCont<T>
     @PutMapping("")
     public ResponseEntity<GenericDto<SlotDao>> editSlot(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Requester", required = false) String requisterID,
             @RequestBody SlotDao slotDao)
     {
         if (Objects.equals(requestKey, LEADER_KEY))
         {
-            SlotDao editedSlots = slotServ.editSlot(slotDao);
+            SlotDao editedSlots = slotServ.getSlotDetails(slotDao.getSlotid());
 
             if (editedSlots != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, editedSlots, null), HttpStatus.OK);
+                if (Objects.equals(editedSlots.getLeader().getUserid(), requisterID))
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, slotServ.editSlot(slotDao), null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
             }
             else
             {
@@ -156,20 +164,31 @@ public class SlotCont<T>
 
     // delete slot
     @DeleteMapping("/{slotID}")
-    public ResponseEntity<GenericDto<T>> deleteSlot(
+    public ResponseEntity<GenericDto<Boolean>> deleteSlot(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Requester", required = false) String requisterID,
             @PathVariable("slotID") int slotID)
     {
-        if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, LEADER_KEY))
+        if (Objects.equals(requestKey, LEADER_KEY))
         {
-            if (slotServ.deleteSlot(slotID))
+            SlotDao toDeleteSlots = slotServ.getSlotDetails(slotID);
+
+            if (toDeleteSlots != null)
             {
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                if (Objects.equals(toDeleteSlots.getLeader().getUserid(), requisterID))
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, slotServ.deleteSlot(slotID), null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
             }
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
+
         }
         else
         {

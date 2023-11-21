@@ -74,15 +74,36 @@ public class ScheduleCont
     @GetMapping("/{scheduleID}")
     public ResponseEntity<GenericDto<ScheduleDao>> getScheduleDetails(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Requester", required = false) String requisterID,
             @PathVariable("scheduleID") int scheduleID)
     {
-        if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY) || Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
+        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
             ScheduleDao schedule = scheduleServ.getScheduleDetails(scheduleID);
 
             if (schedule != null)
             {
                 return new ResponseEntity<>(new GenericDto<>(null, schedule, null), HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            }
+        }
+        else if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
+        {
+            ScheduleDao schedule = scheduleServ.getScheduleDetails(scheduleID);
+
+            if (schedule != null)
+            {
+                if (Objects.equals(schedule.getUser().getUserid(), requisterID))
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, schedule, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
             }
             else
             {
@@ -122,15 +143,23 @@ public class ScheduleCont
     @PutMapping("")
     public ResponseEntity<GenericDto<ScheduleDao>> editSchedule(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Requester", required = false) String requisterID,
             @RequestBody ScheduleDao scheduleDao)
     {
         if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
         {
-            ScheduleDao editedSchedule = scheduleServ.editSchedule(scheduleDao);
+            ScheduleDao editedSchedule = scheduleServ.getScheduleDetails(scheduleDao.getScheduleid());
 
             if (editedSchedule != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, editedSchedule, null), HttpStatus.OK);
+                if (Objects.equals(scheduleDao.getUser().getUserid(), editedSchedule.getUser().getUserid()))
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, scheduleServ.editSchedule(scheduleDao), null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
             }
             else
             {
@@ -147,13 +176,30 @@ public class ScheduleCont
     @DeleteMapping("/{scheduleID}")
     public ResponseEntity<GenericDto<Void>> deleteSchedule(
             @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Requester", required = false) String requisterID,
             @PathVariable("scheduleID") int scheduleID)
     {
         if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
         {
-            if (scheduleServ.deleteSchedule(scheduleID))
+            ScheduleDao toDeleteSchedule = scheduleServ.getScheduleDetails(scheduleID);
+
+            if (toDeleteSchedule != null)
             {
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                if (Objects.equals(toDeleteSchedule.getUser().getUserid(), requisterID))
+                {
+                    if (scheduleServ.deleteSchedule(scheduleID))
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
             }
             else
             {

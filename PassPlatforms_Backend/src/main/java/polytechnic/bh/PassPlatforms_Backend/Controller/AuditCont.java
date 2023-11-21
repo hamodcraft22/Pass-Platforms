@@ -26,7 +26,7 @@ public class AuditCont<T>
     public ResponseEntity<GenericDto<List<AuditDao>>> getAllAudits(
             @RequestHeader(value = "Authorization", required = false) String requestKey)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
+        if (Objects.equals(requestKey, ADMIN_KEY))
         {
             List<AuditDao> audits = auditServ.getAllAudits();
 
@@ -51,7 +51,7 @@ public class AuditCont<T>
             @RequestHeader(value = "Authorization", required = false) String requestKey,
             @PathVariable("auditID") int auditID)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
+        if (Objects.equals(requestKey, ADMIN_KEY))
         {
             AuditDao audit = auditServ.getAuditDetails(auditID);
 
@@ -76,7 +76,7 @@ public class AuditCont<T>
             @RequestHeader(value = "Authorization", required = false) String requestKey,
             @PathVariable("auditID") int auditID)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
+        if (Objects.equals(requestKey, ADMIN_KEY))
         {
             if (auditServ.deleteAudit(auditID))
             {

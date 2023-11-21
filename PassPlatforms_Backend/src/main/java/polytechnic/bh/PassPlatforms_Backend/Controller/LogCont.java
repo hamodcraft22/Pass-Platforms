@@ -25,7 +25,7 @@ public class LogCont<T>
     public ResponseEntity<GenericDto<List<LogDao>>> getAllLogs(
             @RequestHeader(value = "Authorization", required = false) String requestKey)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
+        if (Objects.equals(requestKey, ADMIN_KEY))
         {
             List<LogDao> logs = logServ.getAllLogs();
 
@@ -49,7 +49,7 @@ public class LogCont<T>
             @RequestHeader(value = "Authorization", required = false) String requestKey,
             @PathVariable("logID") int logID)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
+        if (Objects.equals(requestKey, ADMIN_KEY))
         {
             LogDao log = logServ.getLogDetails(logID);
 
@@ -73,7 +73,7 @@ public class LogCont<T>
             @RequestHeader(value = "Authorization", required = false) String requestKey,
             @PathVariable("logID") int logID)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
+        if (Objects.equals(requestKey, ADMIN_KEY))
         {
             if (logServ.deleteLog(logID))
             {

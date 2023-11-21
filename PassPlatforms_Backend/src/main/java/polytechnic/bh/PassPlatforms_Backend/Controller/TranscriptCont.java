@@ -70,9 +70,16 @@ public class TranscriptCont
         {
             List<TranscriptDao> transcripts = transcriptServ.getLeaderTranscripts(leaderID);
 
-            if (transcripts != null && !transcripts.isEmpty() && Objects.equals(requisterID, leaderID))
+            if (transcripts != null && !transcripts.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, transcripts, null), HttpStatus.OK);
+                if (Objects.equals(requisterID, leaderID))
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, transcripts, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
             }
             else
             {
@@ -113,9 +120,16 @@ public class TranscriptCont
         {
             TranscriptDao transcript = transcriptServ.getTranscriptDetails(transID);
 
-            if (transcript != null && Objects.equals(transcript.getStudent().getUserid(), requisterID))
+            if (transcript != null )
             {
-                return new ResponseEntity<>(new GenericDto<>(null, transcript, null), HttpStatus.OK);
+                if (Objects.equals(transcript.getStudent().getUserid(), requisterID))
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, transcript, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
             }
             else
             {
@@ -184,9 +198,6 @@ public class TranscriptCont
             @RequestHeader(value = "Requester", required = false) String requisterID,
             @PathVariable("transID") int transID)
     {
-        // Adjust your authorization logic as needed
-
-
         // if it is an admin or manager, return anyway
         if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
         {
@@ -204,16 +215,24 @@ public class TranscriptCont
         {
             TranscriptDao transcript = transcriptServ.getTranscriptDetails(transID);
 
-            if (transcript != null && Objects.equals(transcript.getStudent().getUserid(), requisterID))
+            if (transcript != null)
             {
-                if (transcriptServ.deleteTranscript(transID))
+                if (Objects.equals(transcript.getStudent().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(null, HttpStatus.OK);
+                    if (transcriptServ.deleteTranscript(transID))
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
+
             }
             else
             {
