@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN_KEY;
-import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.MANAGER_KEY;
 
 @RestController
 @RequestMapping("/api/audit")

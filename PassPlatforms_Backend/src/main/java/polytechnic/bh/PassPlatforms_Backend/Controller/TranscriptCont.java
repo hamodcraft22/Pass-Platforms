@@ -120,7 +120,7 @@ public class TranscriptCont
         {
             TranscriptDao transcript = transcriptServ.getTranscriptDetails(transID);
 
-            if (transcript != null )
+            if (transcript != null)
             {
                 if (Objects.equals(transcript.getStudent().getUserid(), requisterID))
                 {

@@ -217,8 +217,6 @@ public class ApplicationNoteCont<T>
         }
     }
 
-    // edit note - not available
-
     // delete note
     @DeleteMapping("/{noteID}")
     public ResponseEntity<GenericDto<T>> deleteNote(

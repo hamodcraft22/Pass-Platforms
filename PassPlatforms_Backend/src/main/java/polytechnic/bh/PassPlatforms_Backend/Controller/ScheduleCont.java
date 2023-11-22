@@ -45,7 +45,7 @@ public class ScheduleCont
         }
     }
 
-    // get all user schedules
+    // get a user schedules
     @GetMapping("/user")
     public ResponseEntity<GenericDto<List<ScheduleDao>>> getUserSchedules(
             @RequestHeader(value = "Authorization", required = false) String requestKey,

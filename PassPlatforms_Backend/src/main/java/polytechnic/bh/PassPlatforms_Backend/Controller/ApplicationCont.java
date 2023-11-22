@@ -23,7 +23,7 @@ public class ApplicationCont<T>
     ApplicationServ applicationServ;
 
     @GetMapping("")
-    public ResponseEntity<GenericDto<List<ApplicationDao> >> getAllApplications(
+    public ResponseEntity<GenericDto<List<ApplicationDao>>> getAllApplications(
             @RequestHeader(value = "Authorization", required = false) String requestKey)
     {
         if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
@@ -171,13 +171,11 @@ public class ApplicationCont<T>
                     }
                     else
                     {
-                        System.out.println("or in here");
                         return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                     }
                 }
                 else
                 {
-                    System.out.println("in here");
                     return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
