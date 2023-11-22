@@ -3,6 +3,8 @@ package polytechnic.bh.PassPlatforms_Backend.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import polytechnic.bh.PassPlatforms_Backend.Entity.*;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 public interface BookingRepo extends JpaRepository<Booking, Integer>
@@ -33,4 +35,13 @@ public interface BookingRepo extends JpaRepository<Booking, Integer>
 
     List<Booking> findBookingsByCourse(Course course);
 
+    List<Booking> findBookingsByCourse_School_Schoolid(String SchoolID);
+
+    boolean existsBySlot_SlotidAndBookingdateAndBookingStatus_Statusid(int slotID, Date date, char statusID);
+
+    boolean existsByStudent_UseridAndSlot_Starttime(String studentID, Timestamp startTime);
+
+    boolean existsByStudent_UseridAndStarttimeBetweenAndBookingdate(String leaderID, Timestamp startTime, Timestamp endTime, Date revisionDate);
+
+    boolean existsByStudent_UseridAndEndtimeBetweenAndBookingdate(String leaderID, Timestamp startTime, Timestamp endTime, Date revisionDate);
 }

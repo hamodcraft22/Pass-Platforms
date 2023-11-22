@@ -11,5 +11,7 @@ public interface OfferedCourseRepo extends JpaRepository<OfferedCourse, Integer>
 
     List<OfferedCourse> findOfferedCoursesByCourse_Courseid(String courseID);
 
+    boolean existsByLeader_UseridAndCourse_Courseid(String leaderID, String courseID);
+
     void deleteOfferedCourseByLeader_UseridAndCourse_Courseid(String leaderID, String courseID);
 }

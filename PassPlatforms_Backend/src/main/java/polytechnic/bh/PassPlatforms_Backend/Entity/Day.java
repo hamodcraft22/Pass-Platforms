@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Dao.DayDao;
 
+import java.util.Calendar;
+
 @Data
 @Entity
 @NoArgsConstructor
@@ -24,5 +26,44 @@ public class Day
     {
         this.dayid = dayDao.getDayid();
         this.dayname = dayDao.getDayname();
+    }
+
+    public int getDayNum()
+    {
+        switch (this.dayid)
+        {
+            case 'u' ->
+            {
+                return Calendar.SUNDAY;
+            }
+            case 'm' ->
+            {
+                return Calendar.MONDAY;
+            }
+            case 't' ->
+            {
+                return Calendar.TUESDAY;
+            }
+            case 'w' ->
+            {
+                return Calendar.WEDNESDAY;
+            }
+            case 'r' ->
+            {
+                return Calendar.THURSDAY;
+            }
+            case 'f' ->
+            {
+                return Calendar.FRIDAY;
+            }
+            case 's' ->
+            {
+                return Calendar.SATURDAY;
+            }
+            default ->
+            {
+                return 0;
+            }
+        }
     }
 }

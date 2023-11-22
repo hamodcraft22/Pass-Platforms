@@ -7,15 +7,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.StudentRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN_KEY;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.MANAGER_KEY;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 public class UserCont
 {
 
@@ -25,21 +30,19 @@ public class UserCont
     @Autowired
     StudentRepo studentRepo;
 
-    @GetMapping("/User")
-    public ResponseEntity<Optional<User>> getAllTutorials(@RequestHeader(value = "requestKey", required = false) String requestKey)
+    // get all users
+    @GetMapping("")
+    public ResponseEntity<GenericDto<List<User>>> getAllTutorials(@RequestHeader(value = "Authorization", required = false) String requestKey)
     {
-        if (Objects.equals(requestKey, "student-3e1d-4e5f-a2b1-6c7d8e9f0a1b"))
+        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
-            //List<User> users = userRepo.findAll();
+            List<User> users = userRepo.findAll();
 
-            Optional<User> student = userRepo.findById("201900500");
-
-            return new ResponseEntity<>(student, HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, users, null), HttpStatus.OK);
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-
     }
 }

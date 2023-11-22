@@ -23,9 +23,9 @@ public class BookingDao
     private Instant datebooked;
     private Date bookingDate;
     private String note;
-    private Instant starttime;
-    private Instant endtime;
-    private int bookinglimit;
+    private Instant starttime; // for leader - when did it start irl
+    private Instant endtime; // for leader - when did it start irl
+    private int bookinglimit; // only for revision sessions
     private boolean isonline;
     private boolean isgroup;
     private boolean isrevision;
