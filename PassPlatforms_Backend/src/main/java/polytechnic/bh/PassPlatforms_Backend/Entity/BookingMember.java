@@ -28,9 +28,6 @@ public class BookingMember
     @JoinColumn(name = "BOOKINGID", referencedColumnName = "BOOKINGID")
     private Booking booking;
 
-    @ManyToOne
-    @JoinColumn(name = "STATUSID", referencedColumnName = "STATUSID")
-    private MemberStatus status;
 
     public BookingMember(BookingMemberDao bookingMemberDao)
     {
@@ -38,6 +35,5 @@ public class BookingMember
         this.datetime = Timestamp.from(bookingMemberDao.getDatetime());
         this.student = new User(bookingMemberDao.getStudent());
         this.booking = new Booking(bookingMemberDao.getBooking());
-        this.status = new MemberStatus(bookingMemberDao.getMemberStatus());
     }
 }

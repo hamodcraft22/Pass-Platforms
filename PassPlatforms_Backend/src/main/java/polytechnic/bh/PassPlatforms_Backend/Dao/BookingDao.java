@@ -62,8 +62,7 @@ public class BookingDao
                 bookingMembers.add(new BookingMemberDao(member.getMemberid(),
                         member.getDatetime().toInstant(),
                         new UserDao(member.getStudent()),
-                        null,
-                        new MemberStatusDao(member.getStatus())));
+                        null));
             }
         }
 
