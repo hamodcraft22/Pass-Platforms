@@ -44,15 +44,16 @@ public interface BookingRepo extends JpaRepository<Booking, Integer>
 
     // check if student has session at the same time
     boolean existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndSlot_StarttimeBetween(String studentID, Date bookingDate, char statusID, boolean isRevision, Timestamp startTime, Timestamp startTime2);
+
     boolean existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndSlot_EndtimeBetween(String studentID, Date bookingDate, char statusID, boolean isRevision, Timestamp endTime, Timestamp endTime2);
 
     // check if student has session at the same time - check if or (for start and end time) TODO
     boolean existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndSlot_StarttimeBetweenOrSlot_EndtimeBetween(String studentID, Date bookingDate, char statusID, boolean isRevision, Timestamp startTime, Timestamp startTime2, Timestamp endTime, Timestamp endTime2);
 
 
-
     // check if leader has revision at the same time
     boolean existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndStarttimeBetween(String leaderID, Date revisionDate, char statusID, boolean isRevision, Timestamp startTime, Timestamp startTime1);
+
     boolean existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndEndtimeBetween(String leaderID, Date revisionDate, char statusID, boolean isRevision, Timestamp endTime, Timestamp endTime1);
 
     // check if leader has revision at the same time - check if or (for start and end time) TODO

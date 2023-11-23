@@ -37,6 +37,7 @@ public interface BookingMemberRepo extends JpaRepository<BookingMember, Integer>
 
     // check if user has a booking - they are a part off at this time
     boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_IsgroupAndBooking_IsrevisionAndBooking_Slot_StarttimeBetween(String studentID, Date bookingDate, char statusID, boolean isGroup, boolean isRevision, Timestamp startTime, Timestamp startTime2);
+
     boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_IsgroupAndBooking_IsrevisionAndBooking_Slot_EndtimeBetween(String studentID, Date bookingDate, char statusID, boolean isGroup, boolean isRevision, Timestamp endTime, Timestamp endTime2);
 
     // check if user has a booking - they are a part off - check if or (for start and end time) TODO
@@ -45,8 +46,13 @@ public interface BookingMemberRepo extends JpaRepository<BookingMember, Integer>
 
     // check if user has a revision - they are a part off at this time
     boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_IsrevisionAndBooking_StarttimeBetween(String studentID, Date bookingDate, boolean isRevision, Timestamp startTime, Timestamp startTime2);
+
     boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_IsrevisionAndBooking_EndtimeBetween(String studentID, Date bookingDate, boolean isRevision, Timestamp endTime, Timestamp endTime2);
 
     // check if user has a revision - they are a part off - check if or (for start and end time) TODO
     boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_IsrevisionAndBooking_StarttimeBetweenOrBooking_EndtimeBetween(String studentID, Date bookingDate, boolean isRevision, Timestamp startTime, Timestamp startTime2, Timestamp endTime, Timestamp endTime2);
+
+
+    // delete by student user id and booking id
+    void deleteByStudent_UseridAndBooking_Bookingid(String studentID, int bookingID);
 }

@@ -8,8 +8,6 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingNoteDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
-import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
-import polytechnic.bh.PassPlatforms_Backend.Repository.BookingRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 import polytechnic.bh.PassPlatforms_Backend.Service.BookingNoteServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.BookingServ;

@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
-import polytechnic.bh.PassPlatforms_Backend.Dao.BookingNoteDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 import polytechnic.bh.PassPlatforms_Backend.Service.BookingServ;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.*;
-import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.LEADER_KEY;
 
 @RestController
 @RequestMapping("/api")

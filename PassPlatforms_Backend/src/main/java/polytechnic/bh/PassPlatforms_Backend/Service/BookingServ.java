@@ -3,7 +3,6 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
-import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Booking;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Slot;
@@ -101,7 +100,7 @@ public class BookingServ
         Calendar cal = Calendar.getInstance();
 
 
-        // check if it is of time of mid or final sessions ADD
+        // TODO check if it is of time of mid or final sessions ADD
 
 
         // check if the booking is in the feature
@@ -137,13 +136,13 @@ public class BookingServ
             }
 
             // check if user has current bookings at this time
-            if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndSlot_StarttimeBetweenOrSlot_EndtimeBetween(studentID, bookingDate, 'a',false,retrivedSlot.get().getStarttime(),retrivedSlot.get().getEndtime(),retrivedSlot.get().getStarttime(),retrivedSlot.get().getEndtime()))
+            if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndSlot_StarttimeBetweenOrSlot_EndtimeBetween(studentID, bookingDate, 'a', false, retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime(), retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime()))
             {
                 errors.add("you have another booking at the same time");
             }
 
             // check if user is a member of any sessions at this time
-            if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_IsgroupAndBooking_IsrevisionAndBooking_Slot_StarttimeBetweenOrBooking_Slot_EndtimeBetween(studentID, bookingDate, 'a', true, false, retrivedSlot.get().getStarttime(),retrivedSlot.get().getEndtime(),retrivedSlot.get().getStarttime(),retrivedSlot.get().getEndtime()))
+            if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_IsgroupAndBooking_IsrevisionAndBooking_Slot_StarttimeBetweenOrBooking_Slot_EndtimeBetween(studentID, bookingDate, 'a', true, false, retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime(), retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime()))
             {
                 errors.add("you have another revision session you are a part of (group) at the same time");
             }
@@ -159,6 +158,7 @@ public class BookingServ
             errors.add("slot given does not exist");
         }
 
+        // TODO check if student booked x amount of sessions this week
 
         // create the booking
         if (errors.isEmpty())
@@ -206,7 +206,7 @@ public class BookingServ
         List<String> errors = new ArrayList<>();
 
         // check if there is any other revisions at this time by this leader
-        if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndStarttimeBetweenOrEndtimeBetween(leaderID, bookingDate, 'a', true, startTime,endTime,startTime,endTime))
+        if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndStarttimeBetweenOrEndtimeBetween(leaderID, bookingDate, 'a', true, startTime, endTime, startTime, endTime))
         {
             errors.add("there is another session or schedule within the selected time");
         }
@@ -255,135 +255,6 @@ public class BookingServ
         {
             return null;
         }
-    }
-
-    // add student to group
-    public BookingMemberDao addStudentMember(int bookingID, String studentID)
-    {
-        List<String> errors = new ArrayList<>();
-
-        Optional<Booking> retrivedBooking = bookingRepo.findById(bookingID);
-
-        // check if booking exists
-        if (retrivedBooking.isPresent())
-        {
-            // check if it can be booked - has not been closed
-            if (retrivedBooking.get().getBookingMembers().size() < retrivedBooking.get().getBookinglimit() && retrivedBooking.get().getBookingStatus().getStatusid()=='a')
-            {
-                // check if user has current bookings at this time
-                if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndSlot_StarttimeBetweenOrSlot_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), 'a',false,retrivedBooking.get().getSlot().getStarttime(),retrivedBooking.get().getSlot().getEndtime(),retrivedBooking.get().getSlot().getStarttime(),retrivedBooking.get().getSlot().getEndtime()))
-                {
-                    errors.add("you have another booking at the same time");
-                }
-
-                // check if user is a member of any sessions
-                if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_IsgroupAndBooking_IsrevisionAndBooking_Slot_StarttimeBetweenOrBooking_Slot_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), 'a', true, false, retrivedBooking.get().getSlot().getStarttime(),retrivedBooking.get().getSlot().getEndtime(),retrivedBooking.get().getSlot().getStarttime(),retrivedBooking.get().getSlot().getEndtime()))
-                {
-                    errors.add("you have another revision session you are a part of (group) at the same time");
-                }
-
-                // check if student has no classes - in schedule - at this time
-                if (scheduleRepo.existsByStarttimeBetweenAndUser_Userid(retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime(), studentID) || scheduleRepo.existsByEndtimeBetweenAndUser_Userid(retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime(), studentID))
-                {
-                    errors.add("you have a class in the same time as the booking session");
-                }
-
-                // check if user is already a part of this booking
-                if (bookingMemberRepo.existsByStudent_UseridAndBooking_Bookingid(studentID, retrivedBooking.get().getBookingid()))
-                {
-                    errors.add("you are already a part of this group");
-                }
-            }
-            else
-            {
-                errors.add("session is full");
-            }
-        }
-        else
-        {
-            errors.add("the booking selected does not exist");
-        }
-
-        // if they have no errors
-        if (errors.isEmpty())
-        {
-            BookingMember newRevMember = new BookingMember();
-
-            newRevMember.setBooking(bookingRepo.getReferenceById(retrivedBooking.get().getBookingid()));
-            newRevMember.setStudent(userRepo.getReferenceById(studentID));
-
-            return new BookingMemberDao(bookingMemberRepo.save(newRevMember));
-        }
-
-
-        return null;
-    }
-
-    // remove student from group / revision
-    public BookingMemberDao removeStudentMember(int bookingID, String studentID)
-    {
-
-    }
-
-    // register in revision
-    public BookingMemberDao revisionSignUp(int bookingID, String studentID)
-    {
-        List<String> errors = new ArrayList<>();
-
-        Optional<Booking> retrivedBooking = bookingRepo.findById(bookingID);
-
-        // check if revision exists
-        if (retrivedBooking.isPresent())
-        {
-            // check if it can be booked
-
-            if (retrivedBooking.get().getBookingMembers().size() < retrivedBooking.get().getBookinglimit() && retrivedBooking.get().getBookingStatus().getStatusid()=='a')
-            {
-                // check if user has another revision session within same time
-                List<BookingMember>  bookingMemberList = bookingMemberRepo.findBookingMembersByStudent_UseridAndBooking_BookingStatus_StatusidAndBooking_Bookingdate(studentID,'a',retrivedBooking.get().getBookingdate());
-
-                // get all active revisions they are a part off
-                if (!bookingMemberList.isEmpty())
-                {
-                    // no bookings at the same time
-                    if (bookingRepo.existsByBookingMembersContainsAndStarttimeBetween(bookingMemberList, retrivedBooking.get().getStarttime(), retrivedBooking.get().getEndtime()) || bookingRepo.existsByBookingMembersContainsAndEndtimeBetween(bookingMemberList, retrivedBooking.get().getStarttime(), retrivedBooking.get().getEndtime()))
-                    {
-                        errors.add("you have another revision session booked at the same time");
-                    }
-                }
-
-
-                // check if they have an active booking in the same course
-                List<BookingMember> courseMemberList = bookingMemberRepo.findBookingMembersByStudent_UseridAndBooking_Course_CourseidAndBooking_BookingStatus_StatusidAndBooking_Isrevision(studentID,retrivedBooking.get().getCourse().getCourseid(), 'a', true);
-
-                if (!courseMemberList.isEmpty())
-                {
-                    errors.add("you have already booked in this course");
-                }
-            }
-            else
-            {
-                errors.add("session is full / closed");
-            }
-        }
-        else
-        {
-            errors.add("the booking selected does not exist");
-        }
-
-        // if they have no errors
-        if (errors.isEmpty())
-        {
-            BookingMember newRevMember = new BookingMember();
-
-            newRevMember.setBooking(bookingRepo.getReferenceById(retrivedBooking.get().getBookingid()));
-            newRevMember.setStudent(userRepo.getReferenceById(studentID));
-
-            return new BookingMemberDao(bookingMemberRepo.save(newRevMember));
-        }
-
-
-        return null;
     }
 
     // delete booking - not by users
