@@ -13,4 +13,7 @@ public interface ScheduleRepo extends JpaRepository<Schedule, Integer>
     boolean existsByStarttimeBetweenAndUser_Userid(Timestamp startTime, Timestamp endTime, String userID);
 
     boolean existsByEndtimeBetweenAndUser_Userid(Timestamp startTime, Timestamp endTime, String userID);
+
+    //TODO
+    // combined start and end time check
 }

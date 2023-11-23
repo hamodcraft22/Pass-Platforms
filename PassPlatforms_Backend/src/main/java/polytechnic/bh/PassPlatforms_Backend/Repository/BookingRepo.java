@@ -35,17 +35,26 @@ public interface BookingRepo extends JpaRepository<Booking, Integer>
 
     List<Booking> findBookingsByCourse(Course course);
 
-    List<Booking> findBookingsByCourse_School_Schoolid(String SchoolID);
+    // find all bookings (or revisions) within a school
+    List<Booking> findBookingsByCourse_School_SchoolidAndIsrevision(String SchoolID, boolean isRevision);
 
+    // check if slot is used by another active booking
     boolean existsBySlot_SlotidAndBookingdateAndBookingStatus_Statusid(int slotID, Date date, char statusID);
 
-    boolean existsByStudent_UseridAndSlot_Starttime(String studentID, Timestamp startTime);
 
-    boolean existsByStudent_UseridAndStarttimeBetweenAndBookingdate(String leaderID, Timestamp startTime, Timestamp endTime, Date revisionDate);
+    // check if student has session at the same time
+    boolean existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndSlot_StarttimeBetween(String studentID, Date bookingDate, char statusID, boolean isRevision, Timestamp startTime, Timestamp startTime2);
+    boolean existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndSlot_EndtimeBetween(String studentID, Date bookingDate, char statusID, boolean isRevision, Timestamp endTime, Timestamp endTime2);
 
-    boolean existsByStudent_UseridAndEndtimeBetweenAndBookingdate(String leaderID, Timestamp startTime, Timestamp endTime, Date revisionDate);
+    // check if student has session at the same time - check if or (for start and end time) TODO
+    boolean existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndSlot_StarttimeBetweenOrSlot_EndtimeBetween(String studentID, Date bookingDate, char statusID, boolean isRevision, Timestamp startTime, Timestamp startTime2, Timestamp endTime, Timestamp endTime2);
 
-    boolean existsByBookingMembersContainsAndStarttimeBetween(List<BookingMember> bookingMembers, Timestamp startTime, Timestamp endTime);
 
-    boolean existsByBookingMembersContainsAndEndtimeBetween(List<BookingMember> bookingMembers, Timestamp startTime, Timestamp endTime);
+
+    // check if leader has revision at the same time
+    boolean existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndStarttimeBetween(String leaderID, Date revisionDate, char statusID, boolean isRevision, Timestamp startTime, Timestamp startTime1);
+    boolean existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndEndtimeBetween(String leaderID, Date revisionDate, char statusID, boolean isRevision, Timestamp endTime, Timestamp endTime1);
+
+    // check if leader has revision at the same time - check if or (for start and end time) TODO
+    boolean existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndStarttimeBetweenOrEndtimeBetween(String leaderID, Date revisionDate, char statusID, boolean isRevision, Timestamp startTime, Timestamp startTime1, Timestamp endTime, Timestamp endTime1);
 }
