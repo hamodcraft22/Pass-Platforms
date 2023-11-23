@@ -11,4 +11,6 @@ public interface BookingNoteRepo extends JpaRepository<BookingNote, Integer>
     List<BookingNote> findBookingNotesByDatetime(Date date);
 
     List<BookingNote> findBookingNotesByNotebodyContainsIgnoreCase(String note);
+
+    List<BookingNote> findBookingNotesByBooking_Bookingid(int bookingID);
 }

@@ -21,13 +21,13 @@ public class ApplicationNoteServ
 {
 
     @Autowired
-    ApplicationRepo applicationRepo;
+    private ApplicationRepo applicationRepo;
 
     @Autowired
-    ApplicationNoteRepo applicationNoteRepo;
+    private ApplicationNoteRepo applicationNoteRepo;
 
     @Autowired
-    UserRepo userRepo;
+    private UserRepo userRepo;
 
 
     // get all application Notes - not needed

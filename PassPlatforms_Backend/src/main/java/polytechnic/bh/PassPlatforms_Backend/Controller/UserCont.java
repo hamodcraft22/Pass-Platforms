@@ -14,7 +14,6 @@ import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN_KEY;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.MANAGER_KEY;

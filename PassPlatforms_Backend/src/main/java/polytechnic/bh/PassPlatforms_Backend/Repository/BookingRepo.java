@@ -44,4 +44,8 @@ public interface BookingRepo extends JpaRepository<Booking, Integer>
     boolean existsByStudent_UseridAndStarttimeBetweenAndBookingdate(String leaderID, Timestamp startTime, Timestamp endTime, Date revisionDate);
 
     boolean existsByStudent_UseridAndEndtimeBetweenAndBookingdate(String leaderID, Timestamp startTime, Timestamp endTime, Date revisionDate);
+
+    boolean existsByBookingMembersContainsAndStarttimeBetween(List<BookingMember> bookingMembers, Timestamp startTime, Timestamp endTime);
+
+    boolean existsByBookingMembersContainsAndEndtimeBetween(List<BookingMember> bookingMembers, Timestamp startTime, Timestamp endTime);
 }
