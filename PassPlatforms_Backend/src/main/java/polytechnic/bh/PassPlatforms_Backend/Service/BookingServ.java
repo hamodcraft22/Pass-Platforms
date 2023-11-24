@@ -3,6 +3,7 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Booking;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Slot;
@@ -93,7 +94,7 @@ public class BookingServ
     }
 
     // create booking / group booking
-    public BookingDao createNewBooking(Date bookingDate, String note, boolean group, int slotID, String studentID, String courseID, List<String> bookingMembersIDs)
+    public BookingDao createNewBooking(Date bookingDate, String note, boolean group, int slotID, String studentID, String courseID, List<BookingMemberDao> bookingMembers)
     {
         List<String> errors = new ArrayList<>();
 
@@ -177,15 +178,15 @@ public class BookingServ
 
             Booking createdBooking = bookingRepo.save(newBooking);
 
-            if (group)
+            if (group && bookingMembers != null && !bookingMembers.isEmpty())
             {
                 // add group memebers
-                for (String memberID : bookingMembersIDs)
+                for (BookingMemberDao member : bookingMembers)
                 {
                     BookingMember newBookingMember = new BookingMember();
 
                     newBookingMember.setDatetime(Timestamp.from(Instant.now()));
-                    newBookingMember.setStudent(userRepo.getReferenceById(memberID));
+                    newBookingMember.setStudent(userRepo.getReferenceById(member.getStudent().getUserid()));
                     newBookingMember.setBooking(bookingRepo.getReferenceById(createdBooking.getBookingid()));
 
                     bookingMemberRepo.save(newBookingMember);

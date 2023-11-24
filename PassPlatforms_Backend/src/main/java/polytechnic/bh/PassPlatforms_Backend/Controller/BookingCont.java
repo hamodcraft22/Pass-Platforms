@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
-import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
+import polytechnic.bh.PassPlatforms_Backend.Service.BookingMemberServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.BookingServ;
 
 import java.util.List;
@@ -16,19 +16,20 @@ import java.util.Objects;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/booking")
 public class BookingCont
 {
     @Autowired
     private BookingServ bookingServ;
 
     @Autowired
-    private UserRepo userRepo;
+    private BookingMemberServ bookingMemberServ;
+
 
     // get all bookings - only managers
-    @GetMapping("/booking")
+    @GetMapping("")
     public ResponseEntity<GenericDto<List<BookingDao>>> getAllBookings(
-            @RequestHeader(value = "Authorization", required = false) String requestKey)
+            @RequestHeader(value = "Authorization") String requestKey)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
@@ -49,11 +50,36 @@ public class BookingCont
         }
     }
 
+    // get all bookings - per school
+    @GetMapping("/{schoolID}")
+    public ResponseEntity<GenericDto<List<BookingDao>>> getSchoolBookings(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @PathVariable("schoolID") String schoolID)
+    {
+        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY) || Objects.equals(requestKey, TUTOR_KEY))
+        {
+            List<BookingDao> bookings = bookingServ.getSchoolSessions(schoolID);
+
+            if (bookings != null && !bookings.isEmpty())
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, bookings, null), HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+    }
+
     // get booking details
-    @GetMapping("/booking/{bookingID}")
+    @GetMapping("/{bookingID}")
     public ResponseEntity<GenericDto<BookingDao>> getBookingDetails(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("bookingID") int bookingID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
@@ -136,23 +162,163 @@ public class BookingCont
         }
     }
 
-    // get all revisions - per school
-    @GetMapping("/revision/{schoolID}")
-    public ResponseEntity<GenericDto<List<BookingDao>>> getSchoolRevisions(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @PathVariable("schoolID") String schoolID)
+    // post a booking
+    @PostMapping("")
+    public ResponseEntity<GenericDto<BookingDao>> createNewBooking(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
+            @RequestBody BookingDao bookingDao)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
+        if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
         {
-            List<BookingDao> bookings = bookingServ.getSchoolRevisions(schoolID);
+            // TODO null checks
 
-            if (bookings != null && !bookings.isEmpty())
+            if (bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsgroup(), bookingDao.getSlot().getSlotid(), requisterID, bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers()) != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, bookings, null), HttpStatus.OK);
+                return new ResponseEntity<>(null, HttpStatus.OK);
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+    }
+
+    // add booking member
+    @PostMapping("/{bookingID}/member")
+    public ResponseEntity<GenericDto<BookingDao>> addNewMember(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
+            @PathVariable("bookingID") int bookingID,
+            @RequestAttribute(value = "studentID") String studentID)
+    {
+        if (Objects.equals(requestKey, STUDENT_KEY))
+        {
+            // TODO null checks
+
+            // if the user is the one who booked the session
+            if (Objects.equals(bookingServ.getBookingDetails(bookingID).getStudent().getUserid(), requisterID))
+            {
+                if (bookingMemberServ.addStudentMember(bookingID, studentID) != null)
+                {
+                    return new ResponseEntity<>(null, HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+    }
+
+    // remove booking member
+    @DeleteMapping("/{bookingID}/member")
+    public ResponseEntity<GenericDto<BookingDao>> removeMember(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
+            @PathVariable("bookingID") int bookingID,
+            @RequestAttribute(value = "studentID") String studentID)
+    {
+        if (Objects.equals(requestKey, STUDENT_KEY))
+        {
+            // TODO null checks
+
+            // if the user is the one who booked the session
+            if (Objects.equals(bookingServ.getBookingDetails(bookingID).getStudent().getUserid(), requisterID))
+            {
+                if (bookingMemberServ.removeStudentMember(bookingID, studentID))
+                {
+                    return new ResponseEntity<>(null, HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+    }
+
+    // update booking - only status
+    @PutMapping("/{bookingID}")
+    public ResponseEntity<GenericDto<BookingDao>> updateBooking(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
+            @PathVariable("bookingID") int bookingID,
+            @RequestAttribute(value = "statusID") char statusID)
+    {
+        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
+        {
+            if (bookingServ.updateBooking(bookingID, statusID) != null)
+            {
+                return new ResponseEntity<>(null, HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+        }
+        else if (Objects.equals(requestKey, LEADER_KEY))
+        {
+            // does the leader own this booking?
+
+            if (Objects.equals(bookingServ.getBookingDetails(bookingID).getSlot().getLeader().getUserid(), requisterID))
+            {
+                if (bookingServ.updateBooking(bookingID, statusID) != null)
+                {
+                    return new ResponseEntity<>(null, HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else if (Objects.equals(requestKey, STUDENT_KEY))
+        {
+            // is the student the one who booked the session?
+
+            if (Objects.equals(bookingServ.getBookingDetails(bookingID).getStudent().getUserid(), requisterID))
+            {
+                if (bookingServ.updateBooking(bookingID, statusID) != null)
+                {
+                    return new ResponseEntity<>(null, HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
@@ -161,14 +327,29 @@ public class BookingCont
         }
     }
 
-    // post a booking
 
-
-    // post a revision
-
-    // update booking - only status
-
-    // register in revision
-
-    // delete booking - only managers
+    // actually delete booking - managers only
+    @DeleteMapping("/{bookingID}")
+    public ResponseEntity<GenericDto<BookingDao>> deleteBooking(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @PathVariable("bookingID") int bookingID
+    )
+    {
+        // only managers and admin are able to fully delete from the db
+        if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
+        {
+            if (bookingServ.deleteBooking(bookingID))
+            {
+                return new ResponseEntity<>(null, HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+    }
 }
