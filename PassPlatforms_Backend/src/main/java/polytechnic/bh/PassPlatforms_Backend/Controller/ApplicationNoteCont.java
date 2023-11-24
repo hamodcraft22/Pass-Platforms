@@ -17,7 +17,7 @@ import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.*;
 
 @RestController
 @RequestMapping("/api/applicationNote")
-public class ApplicationNoteCont<T>
+public class ApplicationNoteCont
 {
 
     @Autowired
@@ -29,7 +29,7 @@ public class ApplicationNoteCont<T>
     // get all notes - note used - by admin or manager
     @GetMapping("")
     public ResponseEntity<GenericDto<List<ApplicationNoteDao>>> getAllNotes(
-            @RequestHeader(value = "Authorization", required = false) String requestKey)
+            @RequestHeader(value = "Authorization") String requestKey)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
@@ -54,8 +54,8 @@ public class ApplicationNoteCont<T>
     // get all notes for an application - not needed (returned from main application with details)
     @GetMapping("/{applicationID}")
     public ResponseEntity<GenericDto<List<ApplicationNoteDao>>> getApplicationNotes(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("applicationID") int applicationID)
     {
         // if it is an admin or manager, return anyway
@@ -106,8 +106,8 @@ public class ApplicationNoteCont<T>
     // get note details - specific application note
     @GetMapping("/{noteID}")
     public ResponseEntity<GenericDto<ApplicationNoteDao>> getNoteDetails(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("noteID") int noteID)
     {
         // if it is an admin or manager, return anyway
@@ -157,9 +157,9 @@ public class ApplicationNoteCont<T>
 
     // create note
     @PostMapping("/{applicationID}")
-    public ResponseEntity<GenericDto<T>> createApplicationNote(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+    public ResponseEntity<GenericDto<ApplicationNoteDao>> createApplicationNote(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("applicationID") int applicationID,
             @RequestBody String noteBody)
     {
@@ -219,9 +219,9 @@ public class ApplicationNoteCont<T>
 
     // delete note
     @DeleteMapping("/{noteID}")
-    public ResponseEntity<GenericDto<T>> deleteNote(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+    public ResponseEntity<GenericDto<ApplicationNoteDao>> deleteNote(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("noteID") int noteID
     )
     {

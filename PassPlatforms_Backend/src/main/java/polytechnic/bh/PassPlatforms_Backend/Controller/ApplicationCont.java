@@ -16,7 +16,7 @@ import static polytechnic.bh.PassPlatforms_Backend.Constant.ApplicationStatusCon
 
 @RestController
 @RequestMapping("/api/application")
-public class ApplicationCont<T>
+public class ApplicationCont
 {
 
     @Autowired
@@ -24,7 +24,7 @@ public class ApplicationCont<T>
 
     @GetMapping("")
     public ResponseEntity<GenericDto<List<ApplicationDao>>> getAllApplications(
-            @RequestHeader(value = "Authorization", required = false) String requestKey)
+            @RequestHeader(value = "Authorization") String requestKey)
     {
         if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
         {
@@ -49,8 +49,8 @@ public class ApplicationCont<T>
 
     @GetMapping("/{applicationID}")
     public ResponseEntity<GenericDto<ApplicationDao>> getApplication(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("applicationID") int applicationID)
     {
         // if it is an admin or manager, return anyway
@@ -99,9 +99,9 @@ public class ApplicationCont<T>
 
     // creating an application (by student);
     @PostMapping("")
-    public ResponseEntity<GenericDto<T>> createApplication(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+    public ResponseEntity<GenericDto<ApplicationDao>> createApplication(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @RequestBody String applicationNote)
     {
         if (Objects.equals(requestKey, STUDENT_KEY))
@@ -139,8 +139,8 @@ public class ApplicationCont<T>
     // update an application (by manager)
     @PutMapping("")
     public ResponseEntity<GenericDto<ApplicationDao>> updateApplication(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @RequestBody ApplicationDao applicationGotten)
     {
         // if it is a student requesting an update, update y student id, if it is a manager update by passed in application id
@@ -225,8 +225,8 @@ public class ApplicationCont<T>
     }
 
     @DeleteMapping("/{applicationID}")
-    public ResponseEntity<GenericDto<T>> deleteApplication(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+    public ResponseEntity<GenericDto<ApplicationDao>> deleteApplication(
+            @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("applicationID") int applicationID
     )
     {

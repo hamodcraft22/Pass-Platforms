@@ -24,8 +24,7 @@ public class CourseCont
 
     // Any person can use these
     @GetMapping("")
-    public ResponseEntity<GenericDto<List<CourseDao>>> getAllCourses(
-            @RequestHeader(value = "Authorization", required = false) String requestKey)
+    public ResponseEntity<GenericDto<List<CourseDao>>> getAllCourses()
     {
         // Any person can use these
 
@@ -43,9 +42,7 @@ public class CourseCont
 
     // get course details
     @GetMapping("/{courseID}")
-    public ResponseEntity<GenericDto<CourseDao>> getCourseDetails(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @PathVariable("courseID") String courseID)
+    public ResponseEntity<GenericDto<CourseDao>> getCourseDetails(@PathVariable("courseID") String courseID)
     {
         // Any person can use these
 
@@ -64,7 +61,7 @@ public class CourseCont
     // create course
     @PostMapping("")
     public ResponseEntity<GenericDto<CourseDao>> createCourse(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody CourseDao courseDao)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
@@ -88,7 +85,7 @@ public class CourseCont
     // edit course
     @PutMapping("")
     public ResponseEntity<GenericDto<CourseDao>> editCourse(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody CourseDao courseDao)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
@@ -113,7 +110,7 @@ public class CourseCont
     // delete course
     @DeleteMapping("/{courseID}")
     public ResponseEntity<GenericDto<Void>> deleteCourse(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("courseID") String courseID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))

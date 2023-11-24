@@ -24,7 +24,7 @@ public class ScheduleCont
     // get all schedules
     @GetMapping("")
     public ResponseEntity<GenericDto<List<ScheduleDao>>> getAllSchedules(
-            @RequestHeader(value = "Authorization", required = false) String requestKey)
+            @RequestHeader(value = "Authorization") String requestKey)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
@@ -48,8 +48,8 @@ public class ScheduleCont
     // get a user schedules
     @GetMapping("/user")
     public ResponseEntity<GenericDto<List<ScheduleDao>>> getUserSchedules(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID)
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID)
     {
         if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
         {
@@ -73,8 +73,8 @@ public class ScheduleCont
     // get schedule details
     @GetMapping("/{scheduleID}")
     public ResponseEntity<GenericDto<ScheduleDao>> getScheduleDetails(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("scheduleID") int scheduleID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
@@ -119,7 +119,7 @@ public class ScheduleCont
     // create schedule
     @PostMapping("")
     public ResponseEntity<GenericDto<ScheduleDao>> createSchedule(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody ScheduleDao scheduleDao)
     {
         if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
@@ -142,8 +142,8 @@ public class ScheduleCont
     // edit schedule
     @PutMapping("")
     public ResponseEntity<GenericDto<ScheduleDao>> editSchedule(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @RequestBody ScheduleDao scheduleDao)
     {
         if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
@@ -152,7 +152,7 @@ public class ScheduleCont
 
             if (editedSchedule != null)
             {
-                if (Objects.equals(scheduleDao.getUser().getUserid(), editedSchedule.getUser().getUserid()))
+                if (Objects.equals(scheduleDao.getUser().getUserid(), requisterID))
                 {
                     return new ResponseEntity<>(new GenericDto<>(null, scheduleServ.editSchedule(scheduleDao), null), HttpStatus.OK);
                 }
@@ -175,8 +175,8 @@ public class ScheduleCont
     // delete schedule
     @DeleteMapping("/{scheduleID}")
     public ResponseEntity<GenericDto<Void>> deleteSchedule(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("scheduleID") int scheduleID)
     {
         if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))

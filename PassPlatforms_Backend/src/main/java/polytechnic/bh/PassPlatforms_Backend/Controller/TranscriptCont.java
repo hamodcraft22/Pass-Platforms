@@ -24,7 +24,7 @@ public class TranscriptCont
     // get all transcripts
     @GetMapping("")
     public ResponseEntity<GenericDto<List<TranscriptDao>>> getAllTranscripts(
-            @RequestHeader(value = "Authorization", required = false) String requestKey)
+            @RequestHeader(value = "Authorization") String requestKey)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
@@ -47,8 +47,8 @@ public class TranscriptCont
 
     @GetMapping("/leader/{leaderID}")
     public ResponseEntity<GenericDto<List<TranscriptDao>>> getLeaderTranscripts(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("leaderID") String leaderID)
     {
         // if it is an admin or manager, return anyway
@@ -97,8 +97,8 @@ public class TranscriptCont
     // get transcript details
     @GetMapping("/{transID}")
     public ResponseEntity<GenericDto<TranscriptDao>> getTranscriptDetails(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("transID") int transID)
     {
         // if it is an admin or manager, return anyway
@@ -147,7 +147,7 @@ public class TranscriptCont
     // create transcript
     @PostMapping("")
     public ResponseEntity<GenericDto<TranscriptDao>> createTranscript(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody TranscriptDao transcriptDao)
     {
         if (Objects.equals(requestKey, LEADER_KEY))
@@ -169,7 +169,7 @@ public class TranscriptCont
     // edit transcript - not allowed for students
     @PutMapping("")
     public ResponseEntity<GenericDto<TranscriptDao>> editTranscript(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody TranscriptDao transcriptDao)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
@@ -194,8 +194,8 @@ public class TranscriptCont
     // delete transcript
     @DeleteMapping("/{transID}")
     public ResponseEntity<GenericDto<Void>> deleteTranscript(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("transID") int transID)
     {
         // if it is an admin or manager, return anyway

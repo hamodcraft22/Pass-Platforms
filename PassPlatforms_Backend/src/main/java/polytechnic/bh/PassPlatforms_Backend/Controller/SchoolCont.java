@@ -24,8 +24,7 @@ public class SchoolCont
 
     // get all schools
     @GetMapping("")
-    public ResponseEntity<GenericDto<List<SchoolDao>>> getAllSchools(
-            @RequestHeader(value = "Authorization", required = false) String requestKey)
+    public ResponseEntity<GenericDto<List<SchoolDao>>> getAllSchools()
     {
         // Any person can use these
 
@@ -44,7 +43,6 @@ public class SchoolCont
     // get school details
     @GetMapping("/{schoolID}")
     public ResponseEntity<GenericDto<SchoolDao>> getSchoolDetails(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
             @PathVariable("schoolID") String schoolID)
     {
         // Any person can use these
@@ -64,7 +62,7 @@ public class SchoolCont
     // create school
     @PostMapping("")
     public ResponseEntity<GenericDto<SchoolDao>> createSchool(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody SchoolDao schoolDao)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
@@ -82,7 +80,7 @@ public class SchoolCont
     // edit school
     @PutMapping("")
     public ResponseEntity<GenericDto<SchoolDao>> editSchool(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody SchoolDao schoolDao)
     {
 
@@ -108,7 +106,7 @@ public class SchoolCont
     // delete school
     @DeleteMapping("/{schoolID}")
     public ResponseEntity<GenericDto<Void>> deleteSchool(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("schoolID") String schoolID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))

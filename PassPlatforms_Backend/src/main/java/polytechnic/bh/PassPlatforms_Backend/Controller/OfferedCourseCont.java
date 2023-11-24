@@ -23,8 +23,7 @@ public class OfferedCourseCont
 
     // get all offered courses
     @GetMapping("")
-    public ResponseEntity<GenericDto<List<OfferedCourseDao>>> getAllOfferedCourses(
-            @RequestHeader(value = "Authorization", required = false) String requestKey)
+    public ResponseEntity<GenericDto<List<OfferedCourseDao>>> getAllOfferedCourses()
     {
         // any person can use these
 
@@ -43,7 +42,6 @@ public class OfferedCourseCont
     // get courses offered by a leader
     @GetMapping("/leader/{leaderID}")
     public ResponseEntity<GenericDto<List<OfferedCourseDao>>> getLeaderOfferedCourses(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
             @PathVariable("leaderID") String leaderID)
     {
         // Any person can use these
@@ -63,7 +61,6 @@ public class OfferedCourseCont
     // get leaders who are teaching the course
     @GetMapping("/course/{courseID}")
     public ResponseEntity<GenericDto<List<OfferedCourseDao>>> getOfferedCourseLeaders(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
             @PathVariable("courseID") String courseID)
     {
         // Any person can use these
@@ -83,7 +80,6 @@ public class OfferedCourseCont
     // get offered course details
     @GetMapping("/{offerID}")
     public ResponseEntity<GenericDto<OfferedCourseDao>> getOfferedCourseDetails(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
             @PathVariable("offerID") int offerID)
     {
         // Any person can use these
@@ -103,7 +99,7 @@ public class OfferedCourseCont
     // create offered course
     @PostMapping("")
     public ResponseEntity<GenericDto<OfferedCourseDao>> createOfferedCourse(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody OfferedCourseDao offeredCourseDao)
     {
         if (Objects.equals(requestKey, LEADER_KEY))
@@ -124,8 +120,8 @@ public class OfferedCourseCont
     // delete offered course
     @DeleteMapping("/{offerID}")
     public ResponseEntity<GenericDto<Void>> deleteOfferedCourse(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("offerID") int offerID)
     {
         if (Objects.equals(requestKey, LEADER_KEY))

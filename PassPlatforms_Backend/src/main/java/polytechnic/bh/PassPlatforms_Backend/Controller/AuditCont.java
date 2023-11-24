@@ -15,7 +15,7 @@ import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN
 
 @RestController
 @RequestMapping("/api/audit")
-public class AuditCont<T>
+public class AuditCont
 {
     @Autowired
     AuditServ auditServ;
@@ -23,7 +23,7 @@ public class AuditCont<T>
     // get all audits
     @GetMapping("")
     public ResponseEntity<GenericDto<List<AuditDao>>> getAllAudits(
-            @RequestHeader(value = "Authorization", required = false) String requestKey)
+            @RequestHeader(value = "Authorization") String requestKey)
     {
         if (Objects.equals(requestKey, ADMIN_KEY))
         {
@@ -47,7 +47,7 @@ public class AuditCont<T>
     // get audit details
     @GetMapping("/{auditID}")
     public ResponseEntity<GenericDto<AuditDao>> getAuditDetails(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("auditID") int auditID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY))
@@ -71,8 +71,8 @@ public class AuditCont<T>
 
     // delete audit
     @DeleteMapping("/{auditID}")
-    public ResponseEntity<GenericDto<T>> deleteAudit(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+    public ResponseEntity<GenericDto<AuditDao>> deleteAudit(
+            @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("auditID") int auditID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY))

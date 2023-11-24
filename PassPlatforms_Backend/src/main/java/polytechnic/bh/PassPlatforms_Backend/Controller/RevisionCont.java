@@ -28,7 +28,7 @@ public class RevisionCont
     // get all revisions - per school
     @GetMapping("/{schoolID}")
     public ResponseEntity<GenericDto<List<BookingDao>>> getSchoolRevisions(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("schoolID") String schoolID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY) || Objects.equals(requestKey, TUTOR_KEY))
@@ -54,7 +54,6 @@ public class RevisionCont
     @GetMapping("/{revisionID}")
     public ResponseEntity<GenericDto<BookingDao>> getRevisionDetails(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("revisionID") int revisionID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))

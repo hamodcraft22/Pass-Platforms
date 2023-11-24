@@ -15,14 +15,14 @@ import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN
 
 @RestController
 @RequestMapping("/api/log")
-public class LogCont<T>
+public class LogCont
 {
     @Autowired
     LogServ logServ;
 
     @GetMapping("")
     public ResponseEntity<GenericDto<List<LogDao>>> getAllLogs(
-            @RequestHeader(value = "Authorization", required = false) String requestKey)
+            @RequestHeader(value = "Authorization") String requestKey)
     {
         if (Objects.equals(requestKey, ADMIN_KEY))
         {
@@ -45,7 +45,7 @@ public class LogCont<T>
 
     @GetMapping("/{logID}")
     public ResponseEntity<GenericDto<LogDao>> getLogDetails(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("logID") int logID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY))
@@ -68,8 +68,8 @@ public class LogCont<T>
     }
 
     @DeleteMapping("/{logID}")
-    public ResponseEntity<GenericDto<T>> deleteLog(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+    public ResponseEntity<GenericDto<LogDao>> deleteLog(
+            @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("logID") int logID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY))

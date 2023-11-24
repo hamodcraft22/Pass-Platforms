@@ -17,7 +17,7 @@ import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.*;
 
 @RestController
 @RequestMapping("/api/slot")
-public class SlotCont<T>
+public class SlotCont
 {
 
     @Autowired
@@ -26,7 +26,7 @@ public class SlotCont<T>
     // get all slots - not needed
     @GetMapping("")
     public ResponseEntity<GenericDto<List<SlotDao>>> getAllSlots(
-            @RequestHeader(value = "Authorization", required = false) String requestKey)
+            @RequestHeader(value = "Authorization") String requestKey)
     {
         if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
         {
@@ -52,7 +52,7 @@ public class SlotCont<T>
     // get leader slots
     @GetMapping("/leaders")
     public ResponseEntity<GenericDto<Map<UserDao, List<SlotDao>>>> getLeaderSlots(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody List<String> leaderIDs)
     {
         if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
@@ -78,7 +78,7 @@ public class SlotCont<T>
     // get slot details - not needed
     @GetMapping("/{slotID}")
     public ResponseEntity<GenericDto<SlotDao>> getSlotDetails(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("slotID") int slotID)
     {
         if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
@@ -105,7 +105,7 @@ public class SlotCont<T>
     // create slot
     @PostMapping("")
     public ResponseEntity<GenericDto<SlotDao>> createSlot(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody SlotDao slotDao)
     {
         if (Objects.equals(requestKey, LEADER_KEY))
@@ -131,8 +131,8 @@ public class SlotCont<T>
     // edit slot
     @PutMapping("")
     public ResponseEntity<GenericDto<SlotDao>> editSlot(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @RequestBody SlotDao slotDao)
     {
         if (Objects.equals(requestKey, LEADER_KEY))
@@ -165,8 +165,8 @@ public class SlotCont<T>
     // delete slot
     @DeleteMapping("/{slotID}")
     public ResponseEntity<GenericDto<Boolean>> deleteSlot(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("slotID") int slotID)
     {
         if (Objects.equals(requestKey, LEADER_KEY))

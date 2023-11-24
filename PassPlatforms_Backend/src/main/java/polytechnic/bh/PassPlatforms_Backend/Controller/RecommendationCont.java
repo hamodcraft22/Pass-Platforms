@@ -24,7 +24,7 @@ public class RecommendationCont
     // get all recommendations
     @GetMapping("")
     public ResponseEntity<GenericDto<List<RecommendationDao>>> getAllRecommendations(
-            @RequestHeader(value = "Authorization", required = false) String requestKey)
+            @RequestHeader(value = "Authorization") String requestKey)
     {
 
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
@@ -49,8 +49,8 @@ public class RecommendationCont
     // get recommendation details
     @GetMapping("/{recID}")
     public ResponseEntity<GenericDto<RecommendationDao>> getRecommendationDetails(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("recID") int recID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
@@ -95,7 +95,7 @@ public class RecommendationCont
     // create recommendation
     @PostMapping("")
     public ResponseEntity<GenericDto<RecommendationDao>> createRecommendation(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
+            @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody RecommendationDao recommendationDao)
     {
         if (Objects.equals(requestKey, TUTOR_KEY))
@@ -119,8 +119,8 @@ public class RecommendationCont
     // edit recommendation
     @PutMapping("")
     public ResponseEntity<GenericDto<RecommendationDao>> editRecommendation(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @RequestBody RecommendationDao recommendationDao)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
@@ -165,8 +165,8 @@ public class RecommendationCont
     // delete recommendation
     @DeleteMapping("/{recID}")
     public ResponseEntity<GenericDto<Void>> deleteRecommendation(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("recID") int recID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))

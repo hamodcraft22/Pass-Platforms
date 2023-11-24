@@ -34,7 +34,7 @@ public class BookingNoteCont
     // get all booking notes
     @GetMapping("")
     public ResponseEntity<GenericDto<List<BookingNoteDao>>> getAllBookingNotes(
-            @RequestHeader(value = "Authorization", required = false) String requestKey)
+            @RequestHeader(value = "Authorization") String requestKey)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
@@ -58,8 +58,8 @@ public class BookingNoteCont
     // get all booking notes for a booking
     @GetMapping("/booking/{bookingID}")
     public ResponseEntity<GenericDto<List<BookingNoteDao>>> getBookingNotes(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("bookingID") int bookingID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
@@ -148,8 +148,8 @@ public class BookingNoteCont
     // get booking note details
     @GetMapping("/{noteID}")
     public ResponseEntity<GenericDto<BookingNoteDao>> getBookingNoteDetails(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("noteID") int noteID)
     {
         if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
@@ -196,8 +196,8 @@ public class BookingNoteCont
     // create booking note
     @PostMapping("")
     public ResponseEntity<GenericDto<BookingNoteDao>> createBookingNote(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @RequestBody BookingNoteDao bookingNoteDao)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
@@ -291,8 +291,8 @@ public class BookingNoteCont
     // delete booking note
     @DeleteMapping("/{noteID}")
     public ResponseEntity<GenericDto<Void>> deleteBookingNote(
-            @RequestHeader(value = "Authorization", required = false) String requestKey,
-            @RequestHeader(value = "Requester", required = false) String requisterID,
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("noteID") int noteID)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
