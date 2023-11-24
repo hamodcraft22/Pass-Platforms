@@ -17,6 +17,8 @@ public class Log
 {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pp_log_SEQ")
+    @SequenceGenerator(name = "pp_log_SEQ", sequenceName = "pp_log_SEQ", allocationSize = 1)
     private int logid;
     private String errormsg;
     private java.sql.Timestamp datetime;

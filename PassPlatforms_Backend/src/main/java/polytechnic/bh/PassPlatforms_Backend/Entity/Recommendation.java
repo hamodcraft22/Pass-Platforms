@@ -17,6 +17,8 @@ public class Recommendation
 {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pp_recommendation_SEQ")
+    @SequenceGenerator(name = "pp_recommendation_SEQ", sequenceName = "pp_recommendation_SEQ", allocationSize = 1)
     private int recid;
     private java.sql.Timestamp datetime;
     private String note;

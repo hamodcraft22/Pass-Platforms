@@ -17,6 +17,8 @@ public class BookingMember
 {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pp_member_SEQ")
+    @SequenceGenerator(name = "pp_member_SEQ", sequenceName = "pp_member_SEQ", allocationSize = 1)
     private int memberid;
     private java.sql.Timestamp datetime;
 

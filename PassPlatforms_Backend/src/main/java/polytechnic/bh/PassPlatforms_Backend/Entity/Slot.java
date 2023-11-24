@@ -17,6 +17,8 @@ public class Slot
 {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pp_slot_SEQ")
+    @SequenceGenerator(name = "pp_slot_SEQ", sequenceName = "pp_slot_SEQ", allocationSize = 1)
     private int slotid;
     private java.sql.Timestamp starttime;
     private java.sql.Timestamp endtime;

@@ -15,6 +15,8 @@ public class OfferedCourse
 {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pp_offer_SEQ")
+    @SequenceGenerator(name = "pp_offer_SEQ", sequenceName = "pp_offer_SEQ", allocationSize = 1)
     private int offerid;
 
     @ManyToOne

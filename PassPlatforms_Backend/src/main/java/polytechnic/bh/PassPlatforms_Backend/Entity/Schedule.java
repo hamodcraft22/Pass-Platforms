@@ -17,6 +17,8 @@ public class Schedule
 {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pp_schedule_SEQ")
+    @SequenceGenerator(name = "pp_schedule_SEQ", sequenceName = "pp_schedule_SEQ", allocationSize = 1)
     private int scheduleid;
     private java.sql.Timestamp starttime;
     private java.sql.Timestamp endtime;

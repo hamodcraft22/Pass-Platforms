@@ -17,6 +17,8 @@ public class ApplicationNote
 {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pp_applicationnote_SEQ")
+    @SequenceGenerator(name = "pp_applicationnote_SEQ", sequenceName = "pp_applicationnote_SEQ", allocationSize = 1)
     private int noteid;
     private java.sql.Timestamp datetime;
     private String notebody;

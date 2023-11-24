@@ -17,6 +17,8 @@ public class Audit
 {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pp_audit_SEQ")
+    @SequenceGenerator(name = "pp_audit_SEQ", sequenceName = "pp_audit_SEQ", allocationSize = 1)
     private int auditid;
     private char changetype;
     private String entityname;

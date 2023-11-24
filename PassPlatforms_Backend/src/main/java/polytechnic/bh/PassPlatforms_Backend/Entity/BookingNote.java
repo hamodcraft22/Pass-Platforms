@@ -18,11 +18,12 @@ public class BookingNote
 {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pp_bnote_SEQ")
+    @SequenceGenerator(name = "pp_bnote_SEQ", sequenceName = "pp_bnote_SEQ", allocationSize = 1)
     private int noteid;
     private java.sql.Timestamp datetime;
     private String notebody;
 
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "BOOKINGID", referencedColumnName = "BOOKINGID")
     private Booking booking;

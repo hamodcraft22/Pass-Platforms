@@ -15,6 +15,8 @@ public class Transcript
 {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pp_transcript_SEQ")
+    @SequenceGenerator(name = "pp_transcript_SEQ", sequenceName = "pp_transcript_SEQ", allocationSize = 1)
     private int transid;
     private String grade;
 

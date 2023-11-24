@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
 
 import java.sql.Date;
@@ -19,6 +20,8 @@ public class Booking
 {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pp_booking_SEQ")
+    @SequenceGenerator(name = "pp_booking_SEQ", sequenceName = "pp_booking_SEQ", allocationSize = 1)
     private int bookingid;
     private java.sql.Timestamp datebooked;
     private java.sql.Date bookingdate;
@@ -47,12 +50,12 @@ public class Booking
     private Course course;
 
     // custom (multi item) entities
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "BOOKINGID", referencedColumnName = "BOOKINGID")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "booking")
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     private List<BookingMember> bookingMembers;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "BOOKINGID", referencedColumnName = "BOOKINGID")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "booking")
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     private List<BookingNote> bookingNotes;
 
     public Booking(BookingDao bookingDao)
