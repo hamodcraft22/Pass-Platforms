@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import polytechnic.bh.PassPlatforms_Backend.Dao.CourseDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.OfferedCourseDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
+import polytechnic.bh.PassPlatforms_Backend.Entity.Course;
+import polytechnic.bh.PassPlatforms_Backend.Service.CourseServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.OfferedCourseServ;
 
 import java.util.List;
@@ -20,6 +23,9 @@ public class OfferedCourseCont
 
     @Autowired
     private OfferedCourseServ offeredCourseServ;
+
+    @Autowired
+    private CourseServ courseServ;
 
     // get all offered courses
     @GetMapping("")
@@ -104,12 +110,21 @@ public class OfferedCourseCont
     {
         if (Objects.equals(requestKey, LEADER_KEY))
         {
-            OfferedCourseDao createdOfferedCourse = offeredCourseServ.createOfferedCourse(
-                    offeredCourseDao.getLeader().getUserid(),
-                    offeredCourseDao.getCourse().getCourseid()
-            );
+            CourseDao course = courseServ.getCourseDetails(offeredCourseDao.getCourse().getCourseid());
 
-            return new ResponseEntity<>(new GenericDto<>(null, createdOfferedCourse, null), HttpStatus.CREATED);
+            if (course!= null && course.isAvailable())
+            {
+                OfferedCourseDao createdOfferedCourse = offeredCourseServ.createOfferedCourse(
+                        offeredCourseDao.getLeader().getUserid(),
+                        offeredCourseDao.getCourse().getCourseid()
+                );
+
+                return new ResponseEntity<>(new GenericDto<>(null, createdOfferedCourse, null), HttpStatus.CREATED);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
         }
         else
         {
