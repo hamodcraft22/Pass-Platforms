@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.CourseDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.OfferedCourseDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
-import polytechnic.bh.PassPlatforms_Backend.Entity.Course;
 import polytechnic.bh.PassPlatforms_Backend.Service.CourseServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.OfferedCourseServ;
 
