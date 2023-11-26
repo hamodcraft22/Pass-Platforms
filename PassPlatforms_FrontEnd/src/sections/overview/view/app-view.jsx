@@ -1,6 +1,5 @@
-import Cookies from 'js-cookie';
-import * as CryptoJS from 'crypto-js';
 import { faker } from '@faker-js/faker';
+import {useState, useEffect} from "react";
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -10,6 +9,7 @@ import Iconify from 'src/components/iconify';
 
 import AppTasks from '../app-tasks';
 import AppNewsUpdate from '../app-news-update';
+import UserProfile from "../../../Auth/UserInfo";
 import AppOrderTimeline from '../app-order-timeline';
 import AppCurrentVisits from '../app-current-visits';
 import AppWebsiteVisits from '../app-website-visits';
@@ -25,27 +25,26 @@ import AppConversionRates from '../app-conversion-rates';
 
 export default function AppView() {
 
-    const data = {"userID":"202002789","role":"student","apikey":"sjkldfsdkl"};
+    function chnageName()
+    {
+        UserProfile.setName("chile");
+        setUserID(UserProfile.getName);
+    }
 
-    // encrypting api key for user type
-    // Cookies.set("ID_INF",CryptoJS.AES.encrypt(JSON.stringify(data), "zift").toString());
+    const [userID, setUserID] = useState("");
 
-    const encData = Cookies.get("ID_INF");
-    const decData = CryptoJS.AES.decrypt(encData, 'zift');
-    const parsedData = JSON.parse(decData.toString(CryptoJS.enc.Utf8));
-
-    const stringData = parsedData.userID
+    useEffect(() => {setUserID(UserProfile.getName)}, []);
 
   return (
 
     <Container maxWidth="xl">
       <Typography variant="h4" sx={{ mb: 5 }}>
-        Hi, Welcome Back 👋🏼 {stringData}
+        Hi, Welcome Back 👋🏼 {userID}
       </Typography>
 
         <form>
             <input type="text" id="userID input"/>
-            <button type="button" id="idunno">Log</button>
+            <button type="button" id="idunno" onClick={chnageName}>Log</button>
         </form>
 
       <Grid container spacing={3}>
