@@ -31,9 +31,7 @@ export default function AppView() {
         setUserID(UserProfile.getName);
     }
 
-    const [userID, setUserID] = useState("");
-
-    useEffect(() => {setUserID(UserProfile.getName)}, []);
+    const [userID, setUserID] = useState(UserProfile.getName);
 
   return (
 
