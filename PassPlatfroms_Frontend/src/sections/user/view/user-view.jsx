@@ -35,6 +35,20 @@ export default function UserPage() {
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
+
+    // fake users
+
+    const users = [...Array(24)].map((_, index) => ({
+        id: 567,
+        avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
+        name: "faker.person.fullName()",
+        company: "faker.company.name()",
+        isVerified: true,
+        status: "active",
+        role: "Leader"
+    }));
+
+
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
         if (id !== '') {

@@ -47,13 +47,13 @@ export default function Nav({openNav, onCloseNav}) {
                 bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
             }}
         >
-            <Avatar src={account.photoURL} alt="photoURL"/>
+            <Avatar src="{account.photoURL}" alt="photoURL"/>
 
             <Box sx={{ml: 2}}>
-                <Typography variant="subtitle2">{account.displayName}</Typography>
+                {/*<Typography variant="subtitle2">{account.displayName}</Typography>*/}
 
                 <Typography variant="body2" sx={{color: 'text.secondary'}}>
-                    {account.role}
+                    {/*{account.role}*/}
                 </Typography>
             </Box>
         </Box>

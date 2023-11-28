@@ -1,10 +1,6 @@
-import {useState} from "react";
-
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
-import TextField from "@mui/material/TextField";
 import Typography from '@mui/material/Typography';
-import Autocomplete from "@mui/material/Autocomplete";
 
 import Iconify from '../../../components/iconify';
 
@@ -26,17 +22,8 @@ export default function AppView() {
 
         <Container maxWidth="xl">
             <Typography variant="h4" sx={{mb: 5}}>
-                Hi, Welcome Back 👋🏼 {userID}
+                Hi, Welcome Back 👋🏼
             </Typography>
-
-            <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={top100Films}
-                multiple
-                sx={{width: 300}}
-                renderInput={(params) => <TextField {...params} label="Movie"/>}
-            />
 
 
             <Grid container spacing={3}>
@@ -136,11 +123,10 @@ export default function AppView() {
                     <AppNewsUpdate
                         title="News Update"
                         list={[...Array(5)].map((_, index) => ({
-                            id: faker.string.uuid(),
-                            title: faker.person.jobTitle(),
-                            description: faker.commerce.productDescription(),
+                            id: 32423,
+                            title: "faker.person.jobTitle()",
+                            description: "faker.commerce.productDescription()",
                             image: `/assets/images/covers/cover_${index + 1}.jpg`,
-                            postedAt: faker.date.recent(),
                         }))}
                     />
                 </Grid>
@@ -149,7 +135,7 @@ export default function AppView() {
                     <AppOrderTimeline
                         title="Order Timeline"
                         list={[...Array(5)].map((_, index) => ({
-                            id: faker.string.uuid(),
+                            id: 768,
                             title: [
                                 '1983, orders, $4220',
                                 '12 Invoices have been paid',
@@ -158,7 +144,6 @@ export default function AppView() {
                                 'New order placed #XF-2346',
                             ][index],
                             type: `order${index + 1}`,
-                            time: faker.date.past(),
                         }))}
                     />
                 </Grid>
