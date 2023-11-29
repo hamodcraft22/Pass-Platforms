@@ -3,14 +3,12 @@ import {useState} from 'react';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import Iconify from '../../../components/iconify';
 import Scrollbar from '../../../components/scrollbar';
 
 import TableNoData from '../table-no-data';
@@ -39,12 +37,9 @@ export default function UserPage() {
     // fake users
 
     const users = [...Array(24)].map((_, index) => ({
-        id: 567,
+        userid: 567,
         avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
         name: "faker.person.fullName()",
-        company: "faker.company.name()",
-        isVerified: true,
-        status: "active",
         role: "Leader"
     }));
 
@@ -111,9 +106,9 @@ export default function UserPage() {
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Users</Typography>
 
-                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}>
-                    New User
-                </Button>
+                {/*<Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}>*/}
+                {/*    New User*/}
+                {/*</Button>*/}
             </Stack>
 
             <Card>
@@ -134,12 +129,11 @@ export default function UserPage() {
                                 onRequestSort={handleSort}
                                 onSelectAllClick={handleSelectAllClick}
                                 headLabel={[
+                                    {id: '', label: ''},
                                     {id: 'name', label: 'Name'},
                                     {id: 'User ID', label: 'User ID'},
                                     {id: 'role', label: 'Role'},
-                                    {id: 'isVerified', label: 'Verified', align: 'center'},
-                                    {id: 'status', label: 'Status'},
-                                    {id: ''},
+                                    {id: '', label: ''}
                                 ]}
                             />
                             <TableBody>
@@ -147,13 +141,11 @@ export default function UserPage() {
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
                                         <UserTableRow
-                                            key={row.id}
+                                            key={row.userid}
                                             name={row.name}
+                                            userid={row.userid}
                                             role={row.role}
-                                            status={row.status}
-                                            company={row.company}
                                             avatarUrl={row.avatarUrl}
-                                            isVerified={row.isVerified}
                                             selected={selected.indexOf(row.name) !== -1}
                                             handleClick={(event) => handleClick(event, row.name)}
                                         />
@@ -176,7 +168,7 @@ export default function UserPage() {
                     count={users.length}
                     rowsPerPage={rowsPerPage}
                     onPageChange={handleChangePage}
-                    rowsPerPageOptions={[5, 10, 25]}
+                    rowsPerPageOptions={[5, 10, 25, 50]}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Card>

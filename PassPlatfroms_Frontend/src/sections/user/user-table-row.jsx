@@ -5,7 +5,6 @@ import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import Popover from '@mui/material/Popover';
 import TableRow from '@mui/material/TableRow';
-import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
@@ -20,10 +19,8 @@ export default function UserTableRow({
                                          selected,
                                          name,
                                          avatarUrl,
-                                         company,
                                          role,
-                                         isVerified,
-                                         status,
+                                         userid,
                                          handleClick,
                                      }) {
     const [open, setOpen] = useState(null);
@@ -39,8 +36,9 @@ export default function UserTableRow({
     return (
         <>
             <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
-                <TableCell padding="checkbox">
-                    <Checkbox disableRipple checked={selected} onChange={handleClick}/>
+
+                <TableCell>
+
                 </TableCell>
 
                 <TableCell component="th" scope="row" padding="none">
@@ -52,15 +50,10 @@ export default function UserTableRow({
                     </Stack>
                 </TableCell>
 
-                <TableCell>{company}</TableCell>
+                <TableCell>{userid}</TableCell>
 
-                <TableCell>{role}</TableCell>
+                <TableCell><Label color={(role === 'banned' && 'error') || 'success'}>{role}</Label></TableCell>
 
-                <TableCell align="center">{isVerified ? 'Yes' : 'No'}</TableCell>
-
-                <TableCell>
-                    <Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label>
-                </TableCell>
 
                 <TableCell align="right">
                     <IconButton onClick={handleOpenMenu}>
@@ -81,13 +74,16 @@ export default function UserTableRow({
             >
                 <MenuItem onClick={handleCloseMenu}>
                     <Iconify icon="eva:edit-fill" sx={{mr: 2}}/>
-                    Edit
+                    View
                 </MenuItem>
 
-                <MenuItem onClick={handleCloseMenu} sx={{color: 'error.main'}}>
-                    <Iconify icon="eva:trash-2-outline" sx={{mr: 2}}/>
-                    Delete
-                </MenuItem>
+                {
+                    role === "Student" &&
+                    <MenuItem onClick={handleCloseMenu} sx={{color: 'info.main'}}>
+                        <Iconify icon="eva:trash-2-outline" sx={{mr: 2}}/>
+                        Leader-ify
+                    </MenuItem>
+                }
             </Popover>
         </>
     );
@@ -95,11 +91,8 @@ export default function UserTableRow({
 
 UserTableRow.propTypes = {
     avatarUrl: PropTypes.any,
-    company: PropTypes.any,
     handleClick: PropTypes.func,
-    isVerified: PropTypes.any,
     name: PropTypes.any,
     role: PropTypes.any,
     selected: PropTypes.any,
-    status: PropTypes.string,
 };

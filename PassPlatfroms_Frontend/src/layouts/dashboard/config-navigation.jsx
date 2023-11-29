@@ -18,19 +18,9 @@ const navConfig = [
         icon: icon('ic_user'),
     },
     {
-        title: 'product',
-        path: '/products',
-        icon: icon('ic_cart'),
-    },
-    {
-        title: 'blog',
-        path: '/blog',
-        icon: icon('ic_blog'),
-    },
-    {
-        title: 'login',
-        path: '/login',
-        icon: icon('ic_lock'),
+        title: 'booking',
+        path: '/booking',
+        icon: icon('ic_user'),
     },
     {
         title: 'Not found',
