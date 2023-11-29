@@ -18,21 +18,21 @@ export default function BookingPage() {
     const selectedIntervals = [
         {
             uid: 1,
-            start: moment({h: 10, m: 5}),
-            end: moment({h: 12, m: 5}),
+            start: moment({h: 10, m: 0}),
+            end: moment({h: 11, m: 0}),
             color: "#94E387FF"
         },
         {
             uid: 2,
-            start: moment({h: 13, m: 0}).add(2, 'd'),
-            end: moment({h: 13, m: 45}).add(2, 'd'),
+            start: moment({h: 12, m: 0}).add(2, 'd'),
+            end: moment({h: 13, m: 0}).add(2, 'd'),
             online: true,
             color: "#E494EEFF"
         },
         {
             uid: 3,
-            start: moment({h: 10, m: 5}).add(-1, 'd').add(-1, 'h'),
-            end: moment({h: 12, m: 5}).add(-1, 'd').add(-1, 'h'),
+            start: moment({h: 10, m: 0}).add(-1, 'd').add(-1, 'h'),
+            end: moment({h: 11, m: 0}).add(-1, 'd').add(-1, 'h'),
             online: true,
             color: "#94E387FF"
         }
