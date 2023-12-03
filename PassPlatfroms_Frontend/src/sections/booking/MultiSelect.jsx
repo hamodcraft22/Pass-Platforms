@@ -1,7 +1,8 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Autocomplete, Checkbox, Chip, TextField} from "@mui/material";
 import {createFilterOptions} from "@mui/material/Autocomplete";
 import SquareRoundedIcon from '@mui/icons-material/SquareRounded';
+import Paper from "@mui/material/Paper";
 
 export default function MultiSelect({
                                         items,
@@ -43,8 +44,13 @@ export default function MultiSelect({
 
     useEffect(() => {return leaders(selectedOptions)}, [leaders, selectedOptions]);
 
+    const CustomPaper = (props) => {
+        return <Paper elevation={8} {...props} />;
+    };
+
     return (
         <Autocomplete
+            PaperComponent={CustomPaper}
             style={{width: "100%"}}
             multiple
             disableCloseOnSelect
