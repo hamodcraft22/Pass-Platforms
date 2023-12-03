@@ -6,7 +6,7 @@ import PublicIcon from '@mui/icons-material/Public';
 const propTypes = {
     start: PropTypes.object.isRequired,
     end: PropTypes.object.isRequired,
-    value: PropTypes.string.isRequired,
+    color: PropTypes.string.isRequired,
 };
 
 

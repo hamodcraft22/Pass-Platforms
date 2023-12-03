@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Autocomplete, Checkbox, Chip, TextField} from "@mui/material";
 import {createFilterOptions} from "@mui/material/Autocomplete";
 import SquareRoundedIcon from '@mui/icons-material/SquareRounded';
@@ -31,11 +31,8 @@ export default function MultiSelect({
         if (reason === "selectOption" || reason === "removeOption") {
             if (selectedOps.find((option) => option.name === "All")) {
                 handleToggleSelectAll();
-                const result = items.filter((el) => el.name !== "All");
-                return leaders(result);
             } else {
                 handleToggleOption && handleToggleOption(selectedOps);
-                return leaders(selectedOps);
             }
         } else if (reason === "clear") {
             handleClearOptions && handleClearOptions();
@@ -43,6 +40,8 @@ export default function MultiSelect({
     };
 
     const filter = createFilterOptions();
+
+    useEffect(() => {return leaders(selectedOptions)}, [leaders, selectedOptions]);
 
     return (
         <Autocomplete
@@ -78,10 +77,10 @@ export default function MultiSelect({
                     variant="outlined"
                     label={option.name}
                     sx={{background: `${option.color}`, marginRight:"3px"}}
-                    onDelete={() => (setSelectedOptions([
+                    onDelete={() => {setSelectedOptions([
                       ...selectedOptions.slice(0, index),
                       ...selectedOptions.slice(index + 1)
-                    ]))}
+                    ]);}}
                 />
             ))}
         />

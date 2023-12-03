@@ -64,7 +64,7 @@ export const warning = {
 
 export const error = {
     lighter: '#FFE9D5',
-    light: '#FFAC82',
+    light: '#e82f2f',
     main: '#FF5630',
     dark: '#B71D18',
     darker: '#7A0916',
