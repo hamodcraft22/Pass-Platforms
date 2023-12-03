@@ -7,7 +7,7 @@ export default function MultiSelect({
                                         items,
                                         label,
                                         selectAllLabel,
-                                        slots
+                                        leaders
                                     }) {
     const [selectedOptions, setSelectedOptions] = useState(items);
     const allSelected = items.length === selectedOptions.length;
@@ -32,10 +32,10 @@ export default function MultiSelect({
             if (selectedOps.find((option) => option.name === "All")) {
                 handleToggleSelectAll();
                 const result = items.filter((el) => el.name !== "All");
-                return slots(result);
+                return leaders(result);
             } else {
                 handleToggleOption && handleToggleOption(selectedOps);
-                return slots(selectedOps);
+                return leaders(selectedOps);
             }
         } else if (reason === "clear") {
             handleClearOptions && handleClearOptions();
