@@ -11,18 +11,38 @@ import MultiSelect from "../MultiSelect";
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {Alert, Autocomplete, CircularProgress, FormHelperText, Snackbar, TextField} from "@mui/material";
+import {
+    Alert,
+    Autocomplete,
+    CircularProgress,
+    FormHelperText,
+    ListItem,
+    ListItemIcon,
+    Snackbar,
+    TextField
+} from "@mui/material";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import LinearProgress from '@mui/material/LinearProgress';
+import InputAdornment from "@mui/material/InputAdornment";
+import {AccountCircle} from "@mui/icons-material";
+import List from "@mui/material/List";
+import ListItemText from "@mui/material/ListItemText";
+
 
 
 // ----------------------------------------------------------------------
 
 export default function BookingPage() {
+
+    const [shownSection, setShownSection] = useState(1);
+    const [progPercent, setProgPercent] = useState(0);
+    useEffect(() => {(setProgPercent(((shownSection-1)/4)*100))}, [shownSection]);
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
@@ -105,12 +125,14 @@ export default function BookingPage() {
     useEffect(() => {if(selctedSlot!==null && selctedSlot!==undefined && Object.keys(selctedSlot).length !== 0){nextSection()}}, [selctedSlot]);
 
 
-    const [shownSection, setShownSection] = useState(1);
+    // group & information setup elements
+    const [groupMembers, setGroupMembers] = useState([]);
+
+    const [helpInText, setHelpInText] = useState("");
+
 
     function nextSection()
     {
-        if (shownSection !== 4)
-        {
             if (shownSection === 1)
             {
                 if (selectedSchool !== null && selectedCourse !== null && selectedSchool !== undefined && selectedCourse !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0)
@@ -137,7 +159,26 @@ export default function BookingPage() {
                 }
             }
 
-        }
+            if (shownSection === 3)
+            {
+                if (selectedSchool !== null && selectedCourse !== null && selctedSlot !== null && helpInText!== null && selectedSchool !== undefined && selectedCourse !== undefined && selctedSlot !== undefined && helpInText!== undefined && helpInText !== "" && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(selctedSlot).length !== 0 && Object.keys(helpInText).length !== 0)
+                {
+                    setShownSection((shownSection)+1);
+                }
+                else
+                {
+                    setErrorMsg("Please input the help area necessary");
+                    setErrorShow(true);
+                }
+            }
+
+            if (shownSection === 4)
+            {
+                alert("call api and show results based on api return");
+                setProgPercent(100);
+                // change color of progress to red if it is error etc
+            }
+
     }
 
     function prevSection()
@@ -145,10 +186,6 @@ export default function BookingPage() {
         setShownSection((shownSection)-1);
     }
 
-
-    const [value, setValue] = useState([]);
-
-    useEffect(() => {console.log(value)}, [value]);
 
     const CustomPaper = (props) => {
         return <Paper elevation={8} {...props} />;
@@ -183,7 +220,12 @@ export default function BookingPage() {
                     </Button>
                 </div>
 
+
             </Stack>
+
+            <Box sx={{ width: '100%', mb: 2 }}>
+                <LinearProgress variant="determinate" value={progPercent} style={{ borderRadius: 5, height: 10 }}/>
+            </Box>
 
             {/* elements */}
             {/*select course and school card */}
@@ -199,7 +241,7 @@ export default function BookingPage() {
                             sx={{ width: '100%', mt:1 }}
                             renderInput={(params) => <TextField {...params} label="School" />}
                             getOptionLabel={(option) => option.schoolName}
-                            renderOption={(props, option, {selected}) => {
+                            renderOption={(props, option) => {
                                 return (
                                     <li {...props}>
                                         {option.schoolName}
@@ -220,7 +262,7 @@ export default function BookingPage() {
                             sx={{ width: '100%', mt:1}}
                             renderInput={(params) => <TextField {...params} label="Course" />}
                             getOptionLabel={(option) => option.courseName}
-                            renderOption={(props, option, {selected}) => {
+                            renderOption={(props, option) => {
                                 return (
                                     <li {...props}>
                                         {option.courseName}
@@ -317,15 +359,15 @@ export default function BookingPage() {
                             freeSolo
                             sx={{ width: '100%', mt:1}}
                             options={[]}
-                            value={value}
-                            onChange={(event,newValue) => {setValue(newValue)}}
-                            renderInput={(params) => <TextField {...params} label="Student ID" />}
+                            value={groupMembers}
+                            onChange={(event,newValue) => {setGroupMembers(newValue)}}
+                            renderInput={(params) => <TextField {...params} label="Student ID/s - Optional" />}
                         />
 
-                        <FormHelperText>Please note that if other students did not upload their schedules before hand, they might have clashes within your selected session.</FormHelperText>
+                        <FormHelperText>Please note that if other students did not upload their schedules before hand, they might have clashes within your selected session. Add Student ID and press enter</FormHelperText>
 
                         <Typography variant="h6" sx={{mt:3}}>Help Area:</Typography>
-                        <TextField sx={{ width: '100%', mt:1}} label="I want the Pass Leader to Help Me In:" variant="outlined" multiline rows={4}/>
+                        <TextField sx={{ width: '100%', mt:1}} label="I want the Pass Leader to Help Me In:" variant="outlined" multiline rows={4} value={helpInText} onChange={(newValue) => setHelpInText(newValue.target.value)}/>
                         <FormHelperText>Please email the Pass Leader any material that you would be discussing during the session.</FormHelperText>
                     </div>
                 </Card>
@@ -333,7 +375,47 @@ export default function BookingPage() {
 
             {/* overview and submit card */}
             {
+                shownSection===4 && <Card>
+                    <div style={{padding: "15px"}}>
+                        <Typography variant="h6">Overview:</Typography>
+                        <FormHelperText>Please validate your booking before submitting.</FormHelperText>
 
+                        <TextField label="School" variant="standard" fullWidth sx={{ mb: 1, mt:3 }} InputProps={{readOnly: true}} defaultValue={selectedSchool.schoolName}/>
+                        <TextField label="Course" variant="standard" fullWidth sx={{ mb: 1, mt:1 }} InputProps={{readOnly: true}} defaultValue={selectedCourse.courseName}/>
+
+                        <TextField label="Date" variant="standard" fullWidth sx={{ mb: 1, mt:2 }} InputProps={{readOnly: true}} defaultValue={moment(selctedSlot.start).format("DD/MM/YYYY")}/>
+
+                        <TextField label="From" variant="standard" sx={{ mb: 1, mt:1, mr: 1}} InputProps={{readOnly: true}} defaultValue={moment(selctedSlot.start).format("hh:mma")}/>
+                        <TextField label="To" variant="standard" sx={{ mb: 1, mt:1, }} InputProps={{readOnly: true}} defaultValue={moment(selctedSlot.end).format("hh:mma")}/>
+
+                        <TextField label="Leader" variant="standard" fullWidth sx={{ mb: 2, mt:2 }} InputProps={{startAdornment: (<InputAdornment position="start"><AccountCircle /></InputAdornment>), readOnly: true}} defaultValue={selctedSlot.leader}/>
+
+                        {/* loop of members - if added - maybe add name get? */}
+                        {
+                            groupMembers !== null && groupMembers !== undefined && Object.keys(groupMembers).length !== 0 ?
+                                (
+                                    <>
+                                        <FormHelperText>Members</FormHelperText>
+                                        <List dense>
+                                            {
+                                                groupMembers && groupMembers.map((studentID) => (
+                                                    <ListItem>
+                                                        <ListItemIcon><AccountCircle /></ListItemIcon>
+                                                        <ListItemText primary={studentID}/>
+                                                    </ListItem>
+                                                ))
+                                            }
+                                        </List>
+                                    </>
+                                ):(<></>)
+
+                        }
+
+                        <TextField label="Area of help" variant="standard" fullWidth sx={{ mb: 1, mt:2 }} InputProps={{readOnly: true}} defaultValue={helpInText} multiline maxRows={4}/>
+
+
+                    </div>
+                </Card>
             }
         </Container>
     );
