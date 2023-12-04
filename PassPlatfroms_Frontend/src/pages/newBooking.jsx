@@ -1,6 +1,6 @@
 import {Helmet} from 'react-helmet-async';
 
-import {BookingView} from '../sections/booking/view';
+import {NewBookingView} from '../sections/newBooking/view';
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ export default function BookingPage() {
                 <title> User | Minimal UI </title>
             </Helmet>
 
-            <BookingView/>
+            <NewBookingView/>
         </>
     );
 }

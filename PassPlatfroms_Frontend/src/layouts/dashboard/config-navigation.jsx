@@ -18,8 +18,8 @@ const navConfig = [
         icon: icon('ic_user'),
     },
     {
-        title: 'booking',
-        path: '/booking',
+        title: 'New Booking',
+        path: '/newBooking',
         icon: icon('ic_user'),
     },
     {

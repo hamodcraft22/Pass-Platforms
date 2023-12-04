@@ -38,7 +38,7 @@ import ListItemText from "@mui/material/ListItemText";
 
 // ----------------------------------------------------------------------
 
-export default function BookingPage() {
+export default function NewBookingPage() {
 
     const [shownSection, setShownSection] = useState(1);
     const [progPercent, setProgPercent] = useState(0);
