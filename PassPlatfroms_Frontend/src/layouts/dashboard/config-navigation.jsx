@@ -8,12 +8,12 @@ const icon = (name) => (
 
 const navConfig = [
     {
-        title: 'dashboard',
+        title: 'home',
         path: '/',
         icon: icon('ic_analytics'),
     },
     {
-        title: 'user',
+        title: 'users',
         path: '/user',
         icon: icon('ic_user'),
     },
@@ -21,6 +21,16 @@ const navConfig = [
         title: 'New Booking',
         path: '/newBooking',
         icon: icon('ic_user'),
+    },
+    {
+        title: 'New Revision',
+        path: '/newRevision',
+        icon: icon('ic_user'),
+    },
+    {
+        title: 'about',
+        path: '/404',
+        icon: icon('ic_disabled'),
     },
     {
         title: 'Not found',

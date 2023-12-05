@@ -4,11 +4,11 @@ import {NewBookingView} from '../sections/newBooking/view';
 
 // ----------------------------------------------------------------------
 
-export default function BookingPage() {
+export default function NewBookingPage() {
     return (
         <>
             <Helmet>
-                <title> User | Minimal UI </title>
+                <title> New Booking </title>
             </Helmet>
 
             <NewBookingView/>
