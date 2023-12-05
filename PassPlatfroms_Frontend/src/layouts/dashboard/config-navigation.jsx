@@ -28,6 +28,11 @@ const navConfig = [
         icon: icon('ic_user'),
     },
     {
+        title: 'Schools',
+        path: '/schools',
+        icon: icon('ic_user'),
+    },
+    {
         title: 'about',
         path: '/404',
         icon: icon('ic_disabled'),
