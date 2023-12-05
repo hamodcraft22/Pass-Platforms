@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import React, {useState} from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -20,6 +20,13 @@ import {applyFilter, emptyRows, getComparator} from '../utils';
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
 import {useSearchParams} from "react-router-dom";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import {FormHelperText, TextField, ToggleButton} from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import DialogActions from "@mui/material/DialogActions";
 
 // ----------------------------------------------------------------------
 
@@ -68,24 +75,6 @@ export default function SchoolsPage() {
         setSelected([]);
     };
 
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected = [];
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1)
-            );
-        }
-        setSelected(newSelected);
-    };
-
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -108,12 +97,34 @@ export default function SchoolsPage() {
 
     const notFound = !dataFiltered.length && !!filterName;
 
+
+    const [showAddDialog, setShowAddDialog] = useState(false);
+    const [addCourseName, setAddCourseName] = useState(null);
+    const [addCourseDesc, setAddCourseDesc] = useState(null);
+    const [addCourseSem, setAddCourseSem] = useState(null);
+    const [addCourseAvalb, setAddCourseAvalb] = useState(false);
+    const handleEditClickOpen = () => {
+        setShowAddDialog(true);
+    };
+    const handleAddClose = () => {
+        setShowAddDialog(false);
+
+        setAddCourseName(null);
+        setAddCourseDesc(null);
+        setAddCourseSem(null);
+        setAddCourseAvalb(null);
+    };
+    const handleAddSave = () => {
+        setShowAddDialog(false);
+    };
+
+
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Courses</Typography>
 
-                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}>
+                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} onClick={handleEditClickOpen}>
                     New Course
                 </Button>
             </Stack>
@@ -173,6 +184,54 @@ export default function SchoolsPage() {
                     rowsPerPageOptions={[5, 10, 25, 50]}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
+
+
+                {/* Edit dialog */}
+                <Dialog
+                    open={showAddDialog}
+                    onClose={handleAddClose}
+                >
+                    <DialogTitle >
+                        Add New Course
+                    </DialogTitle>
+                    <DialogContent>
+                        <TextField sx={{ width: '100%', mt: 1}} label="Course Name" variant="outlined" value={addCourseName} onChange={(newValue) => setAddCourseName(newValue.target.value)}/>
+
+
+
+                        <TextField sx={{ width: '100%', mt: 1}} label="Course Description" variant="outlined" multiline rows={2} value={addCourseDesc} onChange={(newValue) => setAddCourseDesc(newValue.target.value)}/>
+
+                        <TextField
+                            select
+                            label="Semester"
+                            sx={{ width: '100%', mt: 1}}
+                            value={addCourseSem}
+                            onChange={(event, newValue) => {setAddCourseSem(newValue.props.value)}}
+                        >
+                            <MenuItem value={'A'}>A</MenuItem>
+                            <MenuItem value={'B'}>B</MenuItem>
+                            <MenuItem value={'S'}>Summer</MenuItem>
+                        </TextField>
+
+                        <FormHelperText sx={{ml: 2}}>Available</FormHelperText>
+                        <ToggleButton
+                            value={addCourseAvalb}
+                            selected={addCourseAvalb}
+                            sx={{ width: '100%'}}
+                            color={"primary"}
+                            onChange={() => {setAddCourseAvalb(!addCourseAvalb)}}
+                        >
+                            <CheckBoxIcon />
+                        </ToggleButton>
+
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleAddClose}>Cancel</Button>
+                        <Button onClick={handleAddSave} autoFocus>
+                            Save
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </Card>
         </Container>
     );

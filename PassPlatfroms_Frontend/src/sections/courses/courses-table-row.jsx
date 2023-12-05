@@ -129,7 +129,7 @@ export default function CoursesTableRow({courseID, name, desc, sem, avlb})
                         label="Semester"
                         sx={{ width: '100%', mt: 1}}
                         value={editCourseSem}
-                        onChange={(event, newValue) => {setEditCourseSem(newValue)}}
+                        onChange={(event, newValue) => {setEditCourseSem(newValue.props.value)}}
                     >
                         <MenuItem value={'A'}>A</MenuItem>
                         <MenuItem value={'B'}>B</MenuItem>
