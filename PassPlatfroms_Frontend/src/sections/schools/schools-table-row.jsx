@@ -65,7 +65,7 @@ export default function SchoolsTableRow({schoolID, name, desc})
     // go to courses
     let navigate = useNavigate();
     const goToCourse = () =>{
-        let path = `/courses/${schoolID}`;
+        let path = `/courses?schoolID=${schoolID}`;
         navigate(path);
     }
 

@@ -19,10 +19,15 @@ import CoursesTableToolbar from '../courses-table-toolbar';
 import {applyFilter, emptyRows, getComparator} from '../utils';
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
+import {useSearchParams} from "react-router-dom";
 
 // ----------------------------------------------------------------------
 
 export default function SchoolsPage() {
+
+    const [schoolParm, setSchoolParm] = useSearchParams();
+    schoolParm.get("schoolID")
+
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState('asc');
@@ -106,10 +111,10 @@ export default function SchoolsPage() {
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4">Schools</Typography>
+                <Typography variant="h4">Courses</Typography>
 
                 <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}>
-                    New School
+                    New Course
                 </Button>
             </Stack>
 
