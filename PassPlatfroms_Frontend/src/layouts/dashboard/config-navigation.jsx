@@ -53,6 +53,11 @@ const navConfig = [
         icon: icon('ic_user'),
     },
     {
+        title: 'Slot',
+        path: '/slot',
+        icon: icon('ic_user'),
+    },
+    {
         title: 'about',
         path: '/404',
         icon: icon('ic_disabled'),
