@@ -2,7 +2,9 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import polytechnic.bh.PassPlatforms_Backend.Dao.CourseDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.SchoolDao;
+import polytechnic.bh.PassPlatforms_Backend.Entity.Course;
 import polytechnic.bh.PassPlatforms_Backend.Entity.School;
 import polytechnic.bh.PassPlatforms_Backend.Repository.SchoolRepo;
 
@@ -16,6 +18,9 @@ public class SchoolServ
 
     @Autowired
     private SchoolRepo schoolRepo;
+
+    @Autowired
+    private CourseServ courseServ;
 
     public List<SchoolDao> getAllSchools()
     {
@@ -36,12 +41,29 @@ public class SchoolServ
         return retrievedSchool.map(SchoolDao::new).orElse(null);
     }
 
-    public SchoolDao createSchool(String schoolName, String schoolDesc)
+    public SchoolDao createSchool(String schoolID, String schoolName, String schoolDesc, List<CourseDao> courses)
     {
         School newSchool = new School();
 
+        newSchool.setSchoolid(schoolID);
         newSchool.setSchoolname(schoolName);
         newSchool.setSchooldesc(schoolDesc);
+
+        if (courses != null && !courses.isEmpty())
+        {
+            // save the school first
+            SchoolDao savedSchool = new SchoolDao(schoolRepo.save(newSchool));
+
+            // add all the courses to the school
+            List<CourseDao> savedCourses = courseServ.createMultiCourse(courses);
+
+            // add the courses to the object
+            savedSchool.setCourses(savedCourses);
+
+            // return
+            return (savedSchool);
+        }
+
 
         return new SchoolDao(schoolRepo.save(newSchool));
     }

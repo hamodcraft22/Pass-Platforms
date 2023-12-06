@@ -67,7 +67,7 @@ public class SchoolCont
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
-            SchoolDao createdSchool = schoolServ.createSchool(schoolDao.getSchoolname(), schoolDao.getSchooldesc());
+            SchoolDao createdSchool = schoolServ.createSchool(schoolDao.getSchoolid(), schoolDao.getSchoolname(), schoolDao.getSchooldesc(), schoolDao.getCourses());
 
             return new ResponseEntity<>(new GenericDto<>(null, createdSchool, null), HttpStatus.CREATED);
         }

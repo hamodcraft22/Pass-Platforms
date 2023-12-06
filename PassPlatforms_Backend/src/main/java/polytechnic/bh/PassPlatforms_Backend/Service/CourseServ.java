@@ -40,10 +40,11 @@ public class CourseServ
         return retrievedCourse.map(CourseDao::new).orElse(null);
     }
 
-    public CourseDao createCourse(String courseName, String courseDesc, char semester, boolean available, String schoolID)
+    public CourseDao createCourse(String courseID, String courseName, String courseDesc, char semester, boolean available, String schoolID)
     {
         Course newCourse = new Course();
 
+        newCourse.setCourseid(courseID);
         newCourse.setCoursename(courseName);
         newCourse.setCoursedesc(courseDesc);
         newCourse.setSemaster(semester);
@@ -51,6 +52,21 @@ public class CourseServ
         newCourse.setSchool(schoolRepo.getReferenceById(schoolID));
 
         return new CourseDao(courseRepo.save(newCourse));
+    }
+
+    public List<CourseDao> createMultiCourse(List<CourseDao> courses)
+    {
+        List<CourseDao> addedCourses = new ArrayList<>();
+
+        for (CourseDao course : courses)
+        {
+            Course newCourse = new Course(course.getCourseid(),course.getCoursename(),course.getCoursedesc(),course.getSemaster(),course.isAvailable(),schoolRepo.getReferenceById(course.getSchool().getSchoolid()));
+
+            addedCourses.add(new CourseDao(courseRepo.save(newCourse)));
+        }
+
+
+        return addedCourses;
     }
 
     public CourseDao editCourse(CourseDao updatedCourse)

@@ -67,6 +67,7 @@ public class CourseCont
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
             CourseDao createdCourse = courseServ.createCourse(
+                    courseDao.getCourseid(),
                     courseDao.getCoursename(),
                     courseDao.getCoursedesc(),
                     courseDao.getSemaster(),
@@ -75,6 +76,24 @@ public class CourseCont
             );
 
             return new ResponseEntity<>(new GenericDto<>(null, createdCourse, null), HttpStatus.CREATED);
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    // multi create course
+    @PostMapping("/multi/")
+    public ResponseEntity<GenericDto<List<CourseDao>>> createMultiCourse(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestBody List<CourseDao> coursesDao)
+    {
+        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
+        {
+            List<CourseDao> createdCourses = courseServ.createMultiCourse(coursesDao);
+
+            return new ResponseEntity<>(new GenericDto<>(null, createdCourses, null), HttpStatus.CREATED);
         }
         else
         {
