@@ -35,29 +35,35 @@ import List from "@mui/material/List";
 import ListItemText from "@mui/material/ListItemText";
 
 
-
 // ----------------------------------------------------------------------
 
 export default function NewBookingPage() {
 
     const [shownSection, setShownSection] = useState(1);
     const [progPercent, setProgPercent] = useState(0);
-    useEffect(() => {(setProgPercent(((shownSection-1)/4)*100))}, [shownSection]);
+    useEffect(() => {
+        (setProgPercent(((shownSection - 1) / 4) * 100))
+    }, [shownSection]);
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway')
-        {
+        if (reason === 'clickaway') {
             return;
         }
         setErrorShow(false);
     };
 
     // school and courses elements
-    const mockSchools = [{"schoolID":"zift1", "schoolName":"ziftSchool1"}, {"schoolID":"zift2", "schoolName":"ziftSchool2"}];
-    const mockCourses = [{"courseID":"zift1", "courseName":"ziftcourse1"}, {"courseID":"zift2", "courseName":"asdsd"}];
+    const mockSchools = [{"schoolID": "zift1", "schoolName": "ziftSchool1"}, {
+        "schoolID": "zift2",
+        "schoolName": "ziftSchool2"
+    }];
+    const mockCourses = [{"courseID": "zift1", "courseName": "ziftcourse1"}, {
+        "courseID": "zift2",
+        "courseName": "asdsd"
+    }];
 
     const [schools, setSchools] = useState(mockSchools);
     const [selectedSchool, setSelectedSchool] = useState();
@@ -98,8 +104,8 @@ export default function NewBookingPage() {
     ]
 
     const leaders = [
-        { id: 202002789, name: "Mohamed Hasan", color: "#94E387FF" },
-        { id: 202001478, name: "Sara Alshamari", color: "#E494EEFF" },
+        {id: 202002789, name: "Mohamed Hasan", color: "#94E387FF"},
+        {id: 202001478, name: "Sara Alshamari", color: "#E494EEFF"},
     ];
 
     let selectedLeaders = [];
@@ -121,8 +127,16 @@ export default function NewBookingPage() {
     const handleSlotSelect = (slot) => {
         setSlotToConfirm(slot);
     };
-    useEffect(() => {if(slotToConfirm!==null && slotToConfirm!==undefined && Object.keys(slotToConfirm).length !== 0){setSlotConfirmShow(true)}}, [slotToConfirm]);
-    useEffect(() => {if(selctedSlot!==null && selctedSlot!==undefined && Object.keys(selctedSlot).length !== 0){nextSection()}}, [selctedSlot]);
+    useEffect(() => {
+        if (slotToConfirm !== null && slotToConfirm !== undefined && Object.keys(slotToConfirm).length !== 0) {
+            setSlotConfirmShow(true)
+        }
+    }, [slotToConfirm]);
+    useEffect(() => {
+        if (selctedSlot !== null && selctedSlot !== undefined && Object.keys(selctedSlot).length !== 0) {
+            nextSection()
+        }
+    }, [selctedSlot]);
 
 
     // group & information setup elements
@@ -131,59 +145,44 @@ export default function NewBookingPage() {
     const [helpInText, setHelpInText] = useState("");
 
 
-    function nextSection()
-    {
-            if (shownSection === 1)
-            {
-                if (selectedSchool !== null && selectedCourse !== null && selectedSchool !== undefined && selectedCourse !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0)
-                {
-                    setShownSection((shownSection)+1);
-                }
-                else
-                {
-                    setErrorMsg("Select a School and a Course Please");
-                    setErrorShow(true);
-                }
+    function nextSection() {
+        if (shownSection === 1) {
+            if (selectedSchool !== null && selectedCourse !== null && selectedSchool !== undefined && selectedCourse !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0) {
+                setShownSection((shownSection) + 1);
+            } else {
+                setErrorMsg("Select a School and a Course Please");
+                setErrorShow(true);
             }
+        }
 
-            if (shownSection === 2)
-            {
-                if (selectedSchool !== null && selectedCourse !== null && selctedSlot !== null && selectedSchool !== undefined && selectedCourse !== undefined && selctedSlot !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(selctedSlot).length !== 0)
-                {
-                    setShownSection((shownSection)+1);
-                }
-                else
-                {
-                    setErrorMsg("Select a Slot Please");
-                    setErrorShow(true);
-                }
+        if (shownSection === 2) {
+            if (selectedSchool !== null && selectedCourse !== null && selctedSlot !== null && selectedSchool !== undefined && selectedCourse !== undefined && selctedSlot !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(selctedSlot).length !== 0) {
+                setShownSection((shownSection) + 1);
+            } else {
+                setErrorMsg("Select a Slot Please");
+                setErrorShow(true);
             }
+        }
 
-            if (shownSection === 3)
-            {
-                if (selectedSchool !== null && selectedCourse !== null && selctedSlot !== null && helpInText!== null && selectedSchool !== undefined && selectedCourse !== undefined && selctedSlot !== undefined && helpInText!== undefined && helpInText !== "" && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(selctedSlot).length !== 0 && Object.keys(helpInText).length !== 0)
-                {
-                    setShownSection((shownSection)+1);
-                }
-                else
-                {
-                    setErrorMsg("Please input the help area necessary");
-                    setErrorShow(true);
-                }
+        if (shownSection === 3) {
+            if (selectedSchool !== null && selectedCourse !== null && selctedSlot !== null && helpInText !== null && selectedSchool !== undefined && selectedCourse !== undefined && selctedSlot !== undefined && helpInText !== undefined && helpInText !== "" && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(selctedSlot).length !== 0 && Object.keys(helpInText).length !== 0) {
+                setShownSection((shownSection) + 1);
+            } else {
+                setErrorMsg("Please input the help area necessary");
+                setErrorShow(true);
             }
+        }
 
-            if (shownSection === 4)
-            {
-                alert("call api and show results based on api return");
-                setProgPercent(100);
-                // change color of progress to red if it is error etc
-            }
+        if (shownSection === 4) {
+            alert("call api and show results based on api return");
+            setProgPercent(100);
+            // change color of progress to red if it is error etc
+        }
 
     }
 
-    function prevSection()
-    {
-        setShownSection((shownSection)-1);
+    function prevSection() {
+        setShownSection((shownSection) - 1);
     }
 
 
@@ -197,8 +196,9 @@ export default function NewBookingPage() {
         <Container>
 
             {/* alerts */}
-            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} >
-                <Alert onClose={handleAlertClose} severity="error" sx={{ width: '100%' }}>
+            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%'}}>
                     {errorMsg}
                 </Alert>
             </Snackbar>
@@ -207,12 +207,14 @@ export default function NewBookingPage() {
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">New Booking</Typography>
 
-                <div >
-                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:arrow-ios-back-fill"/>} disabled={shownSection===1} onClick={prevSection} sx={{ m: 1 }}>
+                <div>
+                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:arrow-ios-back-fill"/>}
+                            disabled={shownSection === 1} onClick={prevSection} sx={{m: 1}}>
                         Back
                     </Button>
-                    <Button variant="contained" color="inherit" endIcon={<Iconify icon="eva:arrow-ios-forward-fill"/>} onClick={nextSection}>
-                        {shownSection===4 ? (
+                    <Button variant="contained" color="inherit" endIcon={<Iconify icon="eva:arrow-ios-forward-fill"/>}
+                            onClick={nextSection}>
+                        {shownSection === 4 ? (
                             <>Submit</>
                         ) : (
                             <>Next</>
@@ -223,23 +225,25 @@ export default function NewBookingPage() {
 
             </Stack>
 
-            <Box sx={{ width: '100%', mb: 2 }}>
-                <LinearProgress variant="determinate" value={progPercent} style={{ borderRadius: 5, height: 10 }}/>
+            <Box sx={{width: '100%', mb: 2}}>
+                <LinearProgress variant="determinate" value={progPercent} style={{borderRadius: 5, height: 10}}/>
             </Box>
 
             {/* elements */}
             {/*select course and school card */}
             {
-                shownSection===1 && <Card>
-                    <div style={{padding: "15px"}} >
+                shownSection === 1 && <Card>
+                    <div style={{padding: "15px"}}>
                         <Typography variant="h6">Select School:</Typography>
                         <Autocomplete
                             PaperComponent={CustomPaper}
                             options={schools}
                             value={selectedSchool}
-                            onChange={(event, newValue) => {setSelectedSchool(newValue)}}
-                            sx={{ width: '100%', mt:1 }}
-                            renderInput={(params) => <TextField {...params} label="School" />}
+                            onChange={(event, newValue) => {
+                                setSelectedSchool(newValue)
+                            }}
+                            sx={{width: '100%', mt: 1}}
+                            renderInput={(params) => <TextField {...params} label="School"/>}
                             getOptionLabel={(option) => option.schoolName}
                             renderOption={(props, option) => {
                                 return (
@@ -252,15 +256,16 @@ export default function NewBookingPage() {
                         <FormHelperText>Select a School to show all of the courses available.</FormHelperText>
 
 
-
-                        <Typography variant="h6" sx={{mt:3}}>Select Course:</Typography>
+                        <Typography variant="h6" sx={{mt: 3}}>Select Course:</Typography>
                         <Autocomplete
                             PaperComponent={CustomPaper}
                             options={courses}
                             value={selectedCourse}
-                            onChange={(event, newValue) => {setSelectedCourse(newValue)}}
-                            sx={{ width: '100%', mt:1}}
-                            renderInput={(params) => <TextField {...params} label="Course" />}
+                            onChange={(event, newValue) => {
+                                setSelectedCourse(newValue)
+                            }}
+                            sx={{width: '100%', mt: 1}}
+                            renderInput={(params) => <TextField {...params} label="Course"/>}
                             getOptionLabel={(option) => option.courseName}
                             renderOption={(props, option) => {
                                 return (
@@ -277,9 +282,9 @@ export default function NewBookingPage() {
 
             {/*select slot card */}
             {
-                shownSection===2 && <Card>
+                shownSection === 2 && <Card>
                     <div style={{padding: "15px"}}>
-                        <Typography variant="h6" sx={{mb:1}}>Select Slot:</Typography>
+                        <Typography variant="h6" sx={{mb: 1}}>Select Slot:</Typography>
                         <Toolbar
                             sx={{
                                 minHeight: 96,
@@ -294,7 +299,10 @@ export default function NewBookingPage() {
                                 items={leaders}
                                 label="Leaders"
                                 selectAllLabel="All"
-                                leaders={(items) => {selectedLeaders = items; console.log(leaders)}}
+                                leaders={(items) => {
+                                    selectedLeaders = items;
+                                    console.log(leaders)
+                                }}
                             />
 
 
@@ -334,7 +342,12 @@ export default function NewBookingPage() {
                         <DialogContentText id="alert-dialog-description">
                             {
                                 slotToConfirm !== null && slotToConfirm !== undefined && Object.keys(slotToConfirm).length !== 0 ?
-                                (<>Your Session will be on <b>{moment(slotToConfirm.start).format("DD/MM/YYYY")}</b> - <b>{moment(slotToConfirm.start).format("dddd")}</b>, and will be conducted by <b>{slotToConfirm.leader}</b> from <b>{moment(slotToConfirm.start).format("hh:mma")}</b> till <b>{moment(slotToConfirm.end).format("hh:mma")}</b>, {slotToConfirm.online ? (<b>Online</b>) : (<b>Physically</b>)}</>) : (<CircularProgress color="inherit" />)
+                                    (<>Your Session will be
+                                        on <b>{moment(slotToConfirm.start).format("DD/MM/YYYY")}</b> - <b>{moment(slotToConfirm.start).format("dddd")}</b>,
+                                        and will be conducted
+                                        by <b>{slotToConfirm.leader}</b> from <b>{moment(slotToConfirm.start).format("hh:mma")}</b> till <b>{moment(slotToConfirm.end).format("hh:mma")}</b>, {slotToConfirm.online ? (
+                                            <b>Online</b>) : (<b>Physically</b>)}</>) : (
+                                        <CircularProgress color="inherit"/>)
                             }
                         </DialogContentText>
                     </DialogContent>
@@ -349,7 +362,7 @@ export default function NewBookingPage() {
 
             {/* group formation & information card */}
             {
-                shownSection===3 && <Card>
+                shownSection === 3 && <Card>
                     <div style={{padding: "15px"}}>
                         <Typography variant="h6">Group Session? Add Others:</Typography>
 
@@ -357,38 +370,53 @@ export default function NewBookingPage() {
                             PaperComponent={CustomPaper}
                             multiple
                             freeSolo
-                            sx={{ width: '100%', mt:1}}
+                            sx={{width: '100%', mt: 1}}
                             options={[]}
                             value={groupMembers}
-                            onChange={(event,newValue) => {setGroupMembers(newValue)}}
-                            renderInput={(params) => <TextField {...params} label="Student ID/s - Optional" />}
+                            onChange={(event, newValue) => {
+                                setGroupMembers(newValue)
+                            }}
+                            renderInput={(params) => <TextField {...params} label="Student ID/s - Optional"/>}
                         />
 
-                        <FormHelperText>Please note that if other students did not upload their schedules before hand, they might have clashes within your selected session. Add Student ID and press enter</FormHelperText>
+                        <FormHelperText>Please note that if other students did not upload their schedules before hand, they
+                            might have clashes within your selected session. Add Student ID and press enter</FormHelperText>
 
-                        <Typography variant="h6" sx={{mt:3}}>Help Area:</Typography>
-                        <TextField sx={{ width: '100%', mt:1}} label="I want the Pass Leader to Help Me In:" variant="outlined" multiline rows={4} value={helpInText} onChange={(newValue) => setHelpInText(newValue.target.value)}/>
-                        <FormHelperText>Please email the Pass Leader any material that you would be discussing during the session.</FormHelperText>
+                        <Typography variant="h6" sx={{mt: 3}}>Help Area:</Typography>
+                        <TextField sx={{width: '100%', mt: 1}} label="I want the Pass Leader to Help Me In:"
+                                   variant="outlined" multiline rows={4} value={helpInText}
+                                   onChange={(newValue) => setHelpInText(newValue.target.value)}/>
+                        <FormHelperText>Please email the Pass Leader any material that you would be discussing during the
+                            session.</FormHelperText>
                     </div>
                 </Card>
             }
 
             {/* overview and submit card */}
             {
-                shownSection===4 && <Card>
+                shownSection === 4 && <Card>
                     <div style={{padding: "15px"}}>
                         <Typography variant="h6">Overview:</Typography>
                         <FormHelperText>Please validate your booking before submitting.</FormHelperText>
 
-                        <TextField label="School" variant="standard" fullWidth sx={{ mb: 1, mt:3 }} InputProps={{readOnly: true}} defaultValue={selectedSchool.schoolName}/>
-                        <TextField label="Course" variant="standard" fullWidth sx={{ mb: 1, mt:1 }} InputProps={{readOnly: true}} defaultValue={selectedCourse.courseName}/>
+                        <TextField label="School" variant="standard" fullWidth sx={{mb: 1, mt: 3}}
+                                   InputProps={{readOnly: true}} defaultValue={selectedSchool.schoolName}/>
+                        <TextField label="Course" variant="standard" fullWidth sx={{mb: 1, mt: 1}}
+                                   InputProps={{readOnly: true}} defaultValue={selectedCourse.courseName}/>
 
-                        <TextField label="Date" variant="standard" fullWidth sx={{ mb: 1, mt:2 }} InputProps={{readOnly: true}} defaultValue={moment(selctedSlot.start).format("DD/MM/YYYY")}/>
+                        <TextField label="Date" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
+                                   InputProps={{readOnly: true}}
+                                   defaultValue={moment(selctedSlot.start).format("DD/MM/YYYY")}/>
 
-                        <TextField label="From" variant="standard" sx={{ mb: 1, mt:1, mr: 1}} InputProps={{readOnly: true}} defaultValue={moment(selctedSlot.start).format("hh:mma")}/>
-                        <TextField label="To" variant="standard" sx={{ mb: 1, mt:1, }} InputProps={{readOnly: true}} defaultValue={moment(selctedSlot.end).format("hh:mma")}/>
+                        <TextField label="From" variant="standard" sx={{mb: 1, mt: 1, mr: 1}} InputProps={{readOnly: true}}
+                                   defaultValue={moment(selctedSlot.start).format("hh:mma")}/>
+                        <TextField label="To" variant="standard" sx={{mb: 1, mt: 1,}} InputProps={{readOnly: true}}
+                                   defaultValue={moment(selctedSlot.end).format("hh:mma")}/>
 
-                        <TextField label="Leader" variant="standard" fullWidth sx={{ mb: 2, mt:2 }} InputProps={{startAdornment: (<InputAdornment position="start"><AccountCircle /></InputAdornment>), readOnly: true}} defaultValue={selctedSlot.leader}/>
+                        <TextField label="Leader" variant="standard" fullWidth sx={{mb: 2, mt: 2}} InputProps={{
+                            startAdornment: (<InputAdornment position="start"><AccountCircle/></InputAdornment>),
+                            readOnly: true
+                        }} defaultValue={selctedSlot.leader}/>
 
                         {/* loop of members - if added - maybe add name get? */}
                         {
@@ -400,18 +428,19 @@ export default function NewBookingPage() {
                                             {
                                                 groupMembers && groupMembers.map((studentID) => (
                                                     <ListItem>
-                                                        <ListItemIcon><AccountCircle /></ListItemIcon>
+                                                        <ListItemIcon><AccountCircle/></ListItemIcon>
                                                         <ListItemText primary={studentID}/>
                                                     </ListItem>
                                                 ))
                                             }
                                         </List>
                                     </>
-                                ):(<></>)
+                                ) : (<></>)
 
                         }
 
-                        <TextField label="Area of help" variant="standard" fullWidth sx={{ mb: 1, mt:2 }} InputProps={{readOnly: true}} defaultValue={helpInText} multiline maxRows={4}/>
+                        <TextField label="Area of help" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
+                                   InputProps={{readOnly: true}} defaultValue={helpInText} multiline maxRows={4}/>
 
 
                     </div>

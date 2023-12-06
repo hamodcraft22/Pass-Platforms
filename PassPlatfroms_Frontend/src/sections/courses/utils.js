@@ -47,8 +47,7 @@ export function applyFilter({inputData, comparator, filterName}) {
 
     inputData = stabilizedThis.map((el) => el[0]);
 
-    if (filterName)
-    {
+    if (filterName) {
         inputData = inputData.filter(
             (user) => user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
         );

@@ -33,6 +33,11 @@ const navConfig = [
         icon: icon('ic_user'),
     },
     {
+        title: 'New School',
+        path: '/newSchool',
+        icon: icon('ic_user'),
+    },
+    {
         title: 'Courses',
         path: '/courses',
         icon: icon('ic_user'),

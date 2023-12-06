@@ -11,11 +11,11 @@ import {visuallyHidden} from './utils';
 // ----------------------------------------------------------------------
 
 export default function CoursesTableHead({
-                                          order,
-                                          orderBy,
-                                          headLabel,
-                                          onRequestSort,
-                                      }) {
+                                             order,
+                                             orderBy,
+                                             headLabel,
+                                             onRequestSort,
+                                         }) {
     const onSort = (property) => (event) => {
         onRequestSort(event, property);
     };

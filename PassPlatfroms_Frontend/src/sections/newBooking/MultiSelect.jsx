@@ -42,7 +42,9 @@ export default function MultiSelect({
 
     const filter = createFilterOptions();
 
-    useEffect(() => {return leaders(selectedOptions)}, [leaders, selectedOptions]);
+    useEffect(() => {
+        return leaders(selectedOptions)
+    }, [leaders, selectedOptions]);
 
     const CustomPaper = (props) => {
         return <Paper elevation={8} {...props} />;
@@ -69,24 +71,26 @@ export default function MultiSelect({
                 return (
                     <li {...props}>
                         <Checkbox checked={selected} {...selectAllProps} />
-                        <SquareRoundedIcon fontSize="small" style={{marginRight: 8, color:`${option.color}`}} />
+                        <SquareRoundedIcon fontSize="small" style={{marginRight: 8, color: `${option.color}`}}/>
                         {option.name}
                     </li>
                 );
             }}
             renderInput={(params) => (
-                <TextField {...params} label={label} />
+                <TextField {...params} label={label}/>
             )}
             renderTags={(value) => value.map((option, index) => (
                 <Chip
                     key={index}
                     variant="outlined"
                     label={option.name}
-                    sx={{background: `${option.color}`, marginRight:"3px"}}
-                    onDelete={() => {setSelectedOptions([
-                      ...selectedOptions.slice(0, index),
-                      ...selectedOptions.slice(index + 1)
-                    ]);}}
+                    sx={{background: `${option.color}`, marginRight: "3px"}}
+                    onDelete={() => {
+                        setSelectedOptions([
+                            ...selectedOptions.slice(0, index),
+                            ...selectedOptions.slice(index + 1)
+                        ]);
+                    }}
                 />
             ))}
         />

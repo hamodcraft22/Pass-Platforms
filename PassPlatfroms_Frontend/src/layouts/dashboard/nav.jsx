@@ -19,7 +19,7 @@ import Scrollbar from '../../components/scrollbar';
 
 import {NAV} from './config-layout';
 import navConfig from './config-navigation';
-import { Divider } from '@mui/material';
+import {Divider} from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -86,7 +86,7 @@ export default function Nav({openNav, onCloseNav}) {
 
             {renderMenu}
 
-            <Divider sx={{ mt:2, mb:2 }}/>
+            <Divider sx={{mt: 2, mb: 2}}/>
 
             {/* add logged in user elements here  */}
 

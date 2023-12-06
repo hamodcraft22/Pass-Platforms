@@ -99,16 +99,18 @@ export default function SchoolsPage() {
 
 
     const [showAddDialog, setShowAddDialog] = useState(false);
+    const [addCourseID, setAddCourseID] = useState(null);
     const [addCourseName, setAddCourseName] = useState(null);
     const [addCourseDesc, setAddCourseDesc] = useState(null);
     const [addCourseSem, setAddCourseSem] = useState(null);
     const [addCourseAvalb, setAddCourseAvalb] = useState(false);
-    const handleEditClickOpen = () => {
+    const handleAddClickOpen = () => {
         setShowAddDialog(true);
     };
     const handleAddClose = () => {
         setShowAddDialog(false);
 
+        setAddCourseID(null);
         setAddCourseName(null);
         setAddCourseDesc(null);
         setAddCourseSem(null);
@@ -124,7 +126,8 @@ export default function SchoolsPage() {
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Courses</Typography>
 
-                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} onClick={handleEditClickOpen}>
+                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
+                        onClick={handleAddClickOpen}>
                     New Course
                 </Button>
             </Stack>
@@ -149,8 +152,8 @@ export default function SchoolsPage() {
                                 headLabel={[
                                     {id: '', label: ''},
                                     {id: 'name', label: 'Name'},
-                                    {id: 'semester', label: 'Semester', align:'center'},
-                                    {id: 'available', label: 'Available', align:'center'},
+                                    {id: 'semester', label: 'Semester', align: 'center'},
+                                    {id: 'available', label: 'Available', align: 'center'},
                                     {id: '', label: ''}
                                 ]}
                             />
@@ -186,27 +189,34 @@ export default function SchoolsPage() {
                 />
 
 
-                {/* Edit dialog */}
+                {/* Add dialog */}
                 <Dialog
                     open={showAddDialog}
                     onClose={handleAddClose}
                 >
-                    <DialogTitle >
+                    <DialogTitle>
                         Add New Course
                     </DialogTitle>
                     <DialogContent>
-                        <TextField sx={{ width: '100%', mt: 1}} label="Course Name" variant="outlined" value={addCourseName} onChange={(newValue) => setAddCourseName(newValue.target.value)}/>
+                        <TextField sx={{width: '100%', mt: 1}} label="Course Code" variant="outlined"
+                                   value={addCourseID} onChange={(newValue) => setAddCourseID(newValue.target.value)}/>
 
+                        <TextField sx={{width: '100%', mt: 1}} label="Course Name" variant="outlined"
+                                   value={addCourseName}
+                                   onChange={(newValue) => setAddCourseName(newValue.target.value)}/>
 
-
-                        <TextField sx={{ width: '100%', mt: 1}} label="Course Description" variant="outlined" multiline rows={2} value={addCourseDesc} onChange={(newValue) => setAddCourseDesc(newValue.target.value)}/>
+                        <TextField sx={{width: '100%', mt: 1}} label="Course Description" variant="outlined" multiline
+                                   rows={2} value={addCourseDesc}
+                                   onChange={(newValue) => setAddCourseDesc(newValue.target.value)}/>
 
                         <TextField
                             select
                             label="Semester"
-                            sx={{ width: '100%', mt: 1}}
+                            sx={{width: '100%', mt: 1}}
                             value={addCourseSem}
-                            onChange={(event, newValue) => {setAddCourseSem(newValue.props.value)}}
+                            onChange={(event, newValue) => {
+                                setAddCourseSem(newValue.props.value)
+                            }}
                         >
                             <MenuItem value={'A'}>A</MenuItem>
                             <MenuItem value={'B'}>B</MenuItem>
@@ -217,11 +227,13 @@ export default function SchoolsPage() {
                         <ToggleButton
                             value={addCourseAvalb}
                             selected={addCourseAvalb}
-                            sx={{ width: '100%'}}
+                            sx={{width: '100%'}}
                             color={"primary"}
-                            onChange={() => {setAddCourseAvalb(!addCourseAvalb)}}
+                            onChange={() => {
+                                setAddCourseAvalb(!addCourseAvalb)
+                            }}
                         >
-                            <CheckBoxIcon />
+                            <CheckBoxIcon/>
                         </ToggleButton>
 
                     </DialogContent>

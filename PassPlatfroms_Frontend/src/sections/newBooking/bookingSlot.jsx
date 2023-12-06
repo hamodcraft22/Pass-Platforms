@@ -19,7 +19,7 @@ class bookingSlot extends React.PureComponent {
             color
         } = this.props;
         return (
-            <div className="slotEvent" style={{ padding:5}}>
+            <div className="slotEvent" style={{padding: 5}}>
                 <Box
                     sx={{
                         width: '100%',
@@ -33,7 +33,10 @@ class bookingSlot extends React.PureComponent {
                     }}
                 >
                     {online && <PublicIcon></PublicIcon>}
-                    <span style={{ fontSize:"0.7em", textAlign:"center"}}>{start.format('h:mm a')} - {end.format('h:mm a')}</span>
+                    <span style={{
+                        fontSize: "0.7em",
+                        textAlign: "center"
+                    }}>{start.format('h:mm a')} - {end.format('h:mm a')}</span>
                 </Box>
             </div>
         );

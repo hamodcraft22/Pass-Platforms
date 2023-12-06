@@ -8,6 +8,7 @@ export const UserPage = lazy(() => import('../pages/user'));
 export const Page404 = lazy(() => import('../pages/page-not-found'));
 export const NewBookingPage = lazy(() => import('../pages/newBooking'));
 export const NewRevisionPage = lazy(() => import('../pages/newRevision'));
+export const NewSchoolPage = lazy(() => import('../pages/newSchool'));
 export const SchoolsPage = lazy(() => import('../pages/schools'));
 export const CoursesPage = lazy(() => import('../pages/courses'));
 
@@ -28,6 +29,7 @@ export default function Router() {
                 {path: 'user', element: <UserPage/>},
                 {path: 'newBooking', element: <NewBookingPage/>},
                 {path: 'newRevision', element: <NewRevisionPage/>},
+                {path: 'newSchool', element: <NewSchoolPage/>},
                 {path: 'schools', element: <SchoolsPage/>},
                 {path: 'courses', element: <CoursesPage/>}
             ],

@@ -4,27 +4,23 @@ import PropTypes from 'prop-types';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
 
 
 import InfoIcon from '@mui/icons-material/Info';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ListAltIcon from '@mui/icons-material/ListAlt';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {FormHelperText, InputLabel, Select, TextField, ToggleButton} from "@mui/material";
+import {FormHelperText, TextField, ToggleButton} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import moment from "moment/moment";
 import MenuItem from "@mui/material/MenuItem";
 
 // ----------------------------------------------------------------------
 
-export default function CoursesTableRow({courseID, name, desc, sem, avlb})
-{
+export default function CoursesTableRow({courseID, name, desc, sem, avlb}) {
     const [showViewDialog, setShowViewDialog] = useState(false);
     const handleViewClickOpen = () => {
         setShowViewDialog(true);
@@ -85,9 +81,12 @@ export default function CoursesTableRow({courseID, name, desc, sem, avlb})
                 <TableCell align={"center"}><CheckBoxIcon/></TableCell>
 
                 <TableCell align={"right"}>
-                    <Button variant="contained" sx={{ ml:1 }} size={"small"} onClick={handleViewClickOpen}><InfoIcon fontSize={"small"}/></Button>
-                    <Button variant="contained" sx={{ ml:1 }} size={"small"} color={"warning"} onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
-                    <Button variant="contained" sx={{ ml:1 }} size={"small"} color={"error"} onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon
+                        fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"}
+                            onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
+                            onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
                 </TableCell>
 
             </TableRow>
@@ -97,14 +96,17 @@ export default function CoursesTableRow({courseID, name, desc, sem, avlb})
                 open={showViewDialog}
                 onClose={handleViewClose}
             >
-                <DialogTitle >
+                <DialogTitle>
                     {name}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        <TextField label="Course Description" variant="standard" fullWidth sx={{ mb: 1 }} InputProps={{readOnly: true}} defaultValue={desc} multiline maxRows={4}/>
-                        <TextField label="Semaster" variant="standard" fullWidth sx={{ mb: 1, mt:2 }} InputProps={{readOnly: true}} defaultValue={sem}/>
-                        <TextField label="Avaliable" variant="standard" fullWidth sx={{ mb: 1, mt:2 }} InputProps={{readOnly: true}} defaultValue={avlb}/>
+                        <TextField label="Course Description" variant="standard" fullWidth sx={{mb: 1}}
+                                   InputProps={{readOnly: true}} defaultValue={desc} multiline maxRows={4}/>
+                        <TextField label="Semaster" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
+                                   InputProps={{readOnly: true}} defaultValue={sem}/>
+                        <TextField label="Avaliable" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
+                                   InputProps={{readOnly: true}} defaultValue={avlb}/>
                     </DialogContentText>
                 </DialogContent>
             </Dialog>
@@ -114,22 +116,26 @@ export default function CoursesTableRow({courseID, name, desc, sem, avlb})
                 open={showEditDialog}
                 onClose={handleEditClose}
             >
-                <DialogTitle >
+                <DialogTitle>
                     {name}
                 </DialogTitle>
                 <DialogContent>
-                    <TextField sx={{ width: '100%', mt: 1}} label="Course Name" variant="outlined" value={editCourseName} onChange={(newValue) => setEditCourseName(newValue.target.value)}/>
+                    <TextField sx={{width: '100%', mt: 1}} label="Course Name" variant="outlined" value={editCourseName}
+                               onChange={(newValue) => setEditCourseName(newValue.target.value)}/>
 
 
-
-                    <TextField sx={{ width: '100%', mt: 1}} label="Course Description" variant="outlined" multiline rows={2} value={editCourseDesc} onChange={(newValue) => setEditCourseDesc(newValue.target.value)}/>
+                    <TextField sx={{width: '100%', mt: 1}} label="Course Description" variant="outlined" multiline
+                               rows={2} value={editCourseDesc}
+                               onChange={(newValue) => setEditCourseDesc(newValue.target.value)}/>
 
                     <TextField
                         select
                         label="Semester"
-                        sx={{ width: '100%', mt: 1}}
+                        sx={{width: '100%', mt: 1}}
                         value={editCourseSem}
-                        onChange={(event, newValue) => {setEditCourseSem(newValue.props.value)}}
+                        onChange={(event, newValue) => {
+                            setEditCourseSem(newValue.props.value)
+                        }}
                     >
                         <MenuItem value={'A'}>A</MenuItem>
                         <MenuItem value={'B'}>B</MenuItem>
@@ -140,11 +146,13 @@ export default function CoursesTableRow({courseID, name, desc, sem, avlb})
                     <ToggleButton
                         value={editCourseAvalb}
                         selected={editCourseAvalb}
-                        sx={{ width: '100%'}}
+                        sx={{width: '100%'}}
                         color={"primary"}
-                        onChange={() => {setEditCourseAvalb(!editCourseAvalb)}}
+                        onChange={() => {
+                            setEditCourseAvalb(!editCourseAvalb)
+                        }}
                     >
-                        <CheckBoxIcon />
+                        <CheckBoxIcon/>
                     </ToggleButton>
 
                 </DialogContent>
@@ -161,12 +169,13 @@ export default function CoursesTableRow({courseID, name, desc, sem, avlb})
                 open={showDeleteDialog}
                 onClose={handleDeleteClose}
             >
-                <DialogTitle >
+                <DialogTitle>
                     {name}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete <b>{name}</b>? this will delete all bookings, and revisions within this course.
+                        Are you sure you want to delete <b>{name}</b>? this will delete all bookings, and revisions
+                        within this course.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

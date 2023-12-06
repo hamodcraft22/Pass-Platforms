@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 
 import InfoIcon from '@mui/icons-material/Info';
@@ -20,8 +20,7 @@ import DialogActions from "@mui/material/DialogActions";
 
 // ----------------------------------------------------------------------
 
-export default function SchoolsTableRow({schoolID, name, desc})
-{
+export default function SchoolsTableRow({schoolID, name, desc}) {
     const [showViewDialog, setShowViewDialog] = useState(false);
     const handleViewClickOpen = () => {
         setShowViewDialog(true);
@@ -64,7 +63,7 @@ export default function SchoolsTableRow({schoolID, name, desc})
 
     // go to courses
     let navigate = useNavigate();
-    const goToCourse = () =>{
+    const goToCourse = () => {
         let path = `/courses?schoolID=${schoolID}`;
         navigate(path);
     }
@@ -78,10 +77,14 @@ export default function SchoolsTableRow({schoolID, name, desc})
                 <TableCell>{name}</TableCell>
 
                 <TableCell align={"right"}>
-                    <Button variant="contained" sx={{ ml:1 }} size={"small"} onClick={handleViewClickOpen}><InfoIcon fontSize={"small"}/></Button>
-                    <Button variant="contained" sx={{ ml:1 }} size={"small"} color={"warning"} onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
-                    <Button variant="contained" sx={{ ml:1 }} size={"small"} color={"success"} onClick={goToCourse}><ListAltIcon fontSize={"small"}/></Button>
-                    <Button variant="contained" sx={{ ml:1 }} size={"small"} color={"error"} onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon
+                        fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"}
+                            onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"success"}
+                            onClick={goToCourse}><ListAltIcon fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
+                            onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
                 </TableCell>
 
             </TableRow>
@@ -91,7 +94,7 @@ export default function SchoolsTableRow({schoolID, name, desc})
                 open={showViewDialog}
                 onClose={handleViewClose}
             >
-                <DialogTitle >
+                <DialogTitle>
                     {name}
                 </DialogTitle>
                 <DialogContent>
@@ -106,12 +109,15 @@ export default function SchoolsTableRow({schoolID, name, desc})
                 open={showEditDialog}
                 onClose={handleEditClose}
             >
-                <DialogTitle >
+                <DialogTitle>
                     {name}
                 </DialogTitle>
                 <DialogContent>
-                    <TextField sx={{ width: '100%', mt: 1}} label="School Name" variant="outlined" value={editSchoolName} onChange={(newValue) => setEditSchoolName(newValue.target.value)}/>
-                    <TextField sx={{ width: '100%', mt: 1}} label="School Description" variant="outlined" multiline rows={2} value={editSchoolDesc} onChange={(newValue) => setEditSchoolDesc(newValue.target.value)}/>
+                    <TextField sx={{width: '100%', mt: 1}} label="School Name" variant="outlined" value={editSchoolName}
+                               onChange={(newValue) => setEditSchoolName(newValue.target.value)}/>
+                    <TextField sx={{width: '100%', mt: 1}} label="School Description" variant="outlined" multiline
+                               rows={2} value={editSchoolDesc}
+                               onChange={(newValue) => setEditSchoolDesc(newValue.target.value)}/>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleEditClose}>Cancel</Button>
@@ -126,12 +132,13 @@ export default function SchoolsTableRow({schoolID, name, desc})
                 open={showDeleteDialog}
                 onClose={handleDeleteClose}
             >
-                <DialogTitle >
+                <DialogTitle>
                     {name}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete <b>{name}</b>? this will delete all courses, bookings, and revisions within this school.
+                        Are you sure you want to delete <b>{name}</b>? this will delete all courses, bookings, and
+                        revisions within this school.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
