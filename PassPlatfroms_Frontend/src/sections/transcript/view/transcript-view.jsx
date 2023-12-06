@@ -23,20 +23,15 @@ import {useSearchParams} from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import {FormHelperText, TextField, ToggleButton} from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import DialogActions from "@mui/material/DialogActions";
 import extractTextFromPdf from '../extractTextFromPdf';
 import extractCoursesFromText from '../extractCoursesFromText';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { styled } from '@mui/material/styles';
+import {styled} from '@mui/material/styles';
 import TableHead from "@mui/material/TableHead";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import {set} from "date-fns";
-
 
 
 // ----------------------------------------------------------------------
@@ -241,15 +236,15 @@ export default function TranscriptPage() {
                         Upload Transcript File
                     </DialogTitle>
                     <DialogContent>
-                        <Button component="label" variant="contained" startIcon={<CloudUploadIcon />} fullWidth>
+                        <Button component="label" variant="contained" startIcon={<CloudUploadIcon/>} fullWidth>
                             Upload file
                             <VisuallyHiddenInput type="file" onChange={handleFileChange} accept=".pdf"/>
                         </Button>
 
                         {
                             Object.keys(courses).length !== 0 &&
-                            <TableContainer component={CustomPaper} sx={{mt:3}}>
-                                <Table aria-label="simple table" sx={{minWidth:"200px"}}>
+                            <TableContainer component={CustomPaper} sx={{mt: 3}}>
+                                <Table aria-label="simple table" sx={{minWidth: "200px"}}>
                                     <TableHead>
                                         <TableRow>
                                             <TableCell>Course</TableCell>
@@ -260,7 +255,7 @@ export default function TranscriptPage() {
                                         {courses.map((course, index) => (
                                             <TableRow
                                                 key={index}
-                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                             >
                                                 <TableCell component="th" scope="row">
                                                     {course.code}{course.number}

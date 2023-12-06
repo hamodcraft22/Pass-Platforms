@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {Alert, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField, ToggleButton} from "@mui/material";
+import {Alert, FormHelperText, Snackbar, TextField, ToggleButton} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import LinearProgress from '@mui/material/LinearProgress';
@@ -25,11 +25,6 @@ import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultR
 import InfoIcon from "@mui/icons-material/Info";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DialogContentText from "@mui/material/DialogContentText";
-import moment from "moment/moment";
-import InputAdornment from "@mui/material/InputAdornment";
-import {AccountCircle} from "@mui/icons-material";
-import List from "@mui/material/List";
-import ListItemText from "@mui/material/ListItemText";
 
 
 // ----------------------------------------------------------------------
@@ -251,10 +246,16 @@ export default function NewSchoolPage() {
                                                 <TableCell component="th" scope="row">{course.coursename}</TableCell>
                                                 <TableCell align="right">{course.courseid}</TableCell>
                                                 <TableCell align="right">{course.coursesem}</TableCell>
-                                                <TableCell align="right">{course.courseavlb ? (<CheckBoxIcon/>) : (<DisabledByDefaultRoundedIcon/>)}</TableCell>
+                                                <TableCell align="right">{course.courseavlb ? (<CheckBoxIcon/>) : (
+                                                    <DisabledByDefaultRoundedIcon/>)}</TableCell>
                                                 <TableCell align="right">
-                                                    <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={() => handleViewClickOpen(course)}><InfoIcon fontSize={"small"}/></Button>
-                                                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"} onClick={() => {setCourses([...courses.slice(0,index),...courses.slice(index+1)])}} ><DeleteIcon fontSize={"small"}/></Button>
+                                                    <Button variant="contained" sx={{ml: 1}} size={"small"}
+                                                            onClick={() => handleViewClickOpen(course)}><InfoIcon
+                                                        fontSize={"small"}/></Button>
+                                                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
+                                                            onClick={() => {
+                                                                setCourses([...courses.slice(0, index), ...courses.slice(index + 1)])
+                                                            }}><DeleteIcon fontSize={"small"}/></Button>
                                                 </TableCell>
                                             </TableRow>
                                         ))}
@@ -273,15 +274,18 @@ export default function NewSchoolPage() {
                         <Typography variant="h6">Overview:</Typography>
                         <FormHelperText>Please validate School Details before submitting.</FormHelperText>
 
-                        <TextField label="School Code" variant="standard" fullWidth sx={{mb: 1, mt: 3}} InputProps={{readOnly: true}} defaultValue={schoolID}/>
-                        <TextField label="School Name" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={schoolName}/>
-                        <TextField label="School Description" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={schoolDesc} multiline maxRows={4}/>
+                        <TextField label="School Code" variant="standard" fullWidth sx={{mb: 1, mt: 3}}
+                                   InputProps={{readOnly: true}} defaultValue={schoolID}/>
+                        <TextField label="School Name" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
+                                   InputProps={{readOnly: true}} defaultValue={schoolName}/>
+                        <TextField label="School Description" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
+                                   InputProps={{readOnly: true}} defaultValue={schoolDesc} multiline maxRows={4}/>
 
                         {
                             Object.keys(courses).length !== 0 &&
                             <>
                                 <FormHelperText sx={{mt: 2}}>School Courses</FormHelperText>
-                                <TableContainer component={CustomPaper} >
+                                <TableContainer component={CustomPaper}>
                                     <Table sx={{minWidth: 650}}>
                                         <TableHead>
                                             <TableRow>
@@ -301,9 +305,12 @@ export default function NewSchoolPage() {
                                                     <TableCell component="th" scope="row">{course.coursename}</TableCell>
                                                     <TableCell align="right">{course.courseid}</TableCell>
                                                     <TableCell align="right">{course.coursesem}</TableCell>
-                                                    <TableCell align="right">{course.courseavlb ? (<CheckBoxIcon/>) : (<DisabledByDefaultRoundedIcon/>)}</TableCell>
+                                                    <TableCell align="right">{course.courseavlb ? (<CheckBoxIcon/>) : (
+                                                        <DisabledByDefaultRoundedIcon/>)}</TableCell>
                                                     <TableCell align="right">
-                                                        <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={() => handleViewClickOpen(course)}><InfoIcon fontSize={"small"}/></Button>
+                                                        <Button variant="contained" sx={{ml: 1}} size={"small"}
+                                                                onClick={() => handleViewClickOpen(course)}><InfoIcon
+                                                            fontSize={"small"}/></Button>
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
@@ -382,10 +389,14 @@ export default function NewSchoolPage() {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        <TextField label="Name" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={viewCourseName}/>
-                        <TextField label="Course Description" variant="standard" fullWidth sx={{mb: 1}} InputProps={{readOnly: true}} defaultValue={viewCoursedesc} multiline maxRows={4}/>
-                        <TextField label="Semaster" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={viewCoursesem}/>
-                        <TextField label="Avaliable" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={viewCourseavlb}/>
+                        <TextField label="Name" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
+                                   InputProps={{readOnly: true}} defaultValue={viewCourseName}/>
+                        <TextField label="Course Description" variant="standard" fullWidth sx={{mb: 1}}
+                                   InputProps={{readOnly: true}} defaultValue={viewCoursedesc} multiline maxRows={4}/>
+                        <TextField label="Semaster" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
+                                   InputProps={{readOnly: true}} defaultValue={viewCoursesem}/>
+                        <TextField label="Avaliable" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
+                                   InputProps={{readOnly: true}} defaultValue={viewCourseavlb}/>
                     </DialogContentText>
                 </DialogContent>
             </Dialog>

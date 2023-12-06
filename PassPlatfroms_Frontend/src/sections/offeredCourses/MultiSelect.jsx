@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {Autocomplete, Checkbox, Chip, TextField} from "@mui/material";
+import {Autocomplete, Checkbox, TextField} from "@mui/material";
 import {createFilterOptions} from "@mui/material/Autocomplete";
-import SquareRoundedIcon from '@mui/icons-material/SquareRounded';
 import Paper from "@mui/material/Paper";
 
 export default function MultiSelect({
@@ -53,7 +52,7 @@ export default function MultiSelect({
     return (
         <Autocomplete
             PaperComponent={CustomPaper}
-            style={{width: "100%", minWidth:"350px"}}
+            style={{width: "100%", minWidth: "350px"}}
             multiple
             disableCloseOnSelect
             options={items}
@@ -62,7 +61,7 @@ export default function MultiSelect({
             getOptionLabel={(option) => option.courseID + " " + option.name}
             filterOptions={(options, params) => {
                 const filtered = filter(options, params);
-                return [{id: 0, courseID:"", name: selectAllLabel}, ...filtered];
+                return [{id: 0, courseID: "", name: selectAllLabel}, ...filtered];
             }}
             renderOption={(props, option, {selected}) => {
                 // To control the state of 'select-all' checkbox

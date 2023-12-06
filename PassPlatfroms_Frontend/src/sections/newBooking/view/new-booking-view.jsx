@@ -398,13 +398,19 @@ export default function NewBookingPage() {
                         <Typography variant="h6">Overview:</Typography>
                         <FormHelperText>Please validate your booking before submitting.</FormHelperText>
 
-                        <TextField label="School" variant="standard" fullWidth sx={{mb: 1, mt: 3}} InputProps={{readOnly: true}} defaultValue={selectedSchool.schoolName}/>
-                        <TextField label="Course" variant="standard" fullWidth sx={{mb: 1, mt: 1}} InputProps={{readOnly: true}} defaultValue={selectedCourse.courseName}/>
+                        <TextField label="School" variant="standard" fullWidth sx={{mb: 1, mt: 3}}
+                                   InputProps={{readOnly: true}} defaultValue={selectedSchool.schoolName}/>
+                        <TextField label="Course" variant="standard" fullWidth sx={{mb: 1, mt: 1}}
+                                   InputProps={{readOnly: true}} defaultValue={selectedCourse.courseName}/>
 
-                        <TextField label="Date" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={moment(selctedSlot.start).format("DD/MM/YYYY")}/>
+                        <TextField label="Date" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
+                                   InputProps={{readOnly: true}}
+                                   defaultValue={moment(selctedSlot.start).format("DD/MM/YYYY")}/>
 
-                        <TextField label="From" variant="standard" sx={{mb: 1, mt: 1, mr: 1}} InputProps={{readOnly: true}} defaultValue={moment(selctedSlot.start).format("hh:mma")}/>
-                        <TextField label="To" variant="standard" sx={{mb: 1, mt: 1,}} InputProps={{readOnly: true}} defaultValue={moment(selctedSlot.end).format("hh:mma")}/>
+                        <TextField label="From" variant="standard" sx={{mb: 1, mt: 1, mr: 1}} InputProps={{readOnly: true}}
+                                   defaultValue={moment(selctedSlot.start).format("hh:mma")}/>
+                        <TextField label="To" variant="standard" sx={{mb: 1, mt: 1,}} InputProps={{readOnly: true}}
+                                   defaultValue={moment(selctedSlot.end).format("hh:mma")}/>
 
                         <TextField label="Leader" variant="standard" fullWidth sx={{mb: 2, mt: 2}} InputProps={{
                             startAdornment: (<InputAdornment position="start"><AccountCircle/></InputAdornment>),
@@ -432,7 +438,8 @@ export default function NewBookingPage() {
 
                         }
 
-                        <TextField label="Area of help" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={helpInText} multiline maxRows={4}/>
+                        <TextField label="Area of help" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
+                                   InputProps={{readOnly: true}} defaultValue={helpInText} multiline maxRows={4}/>
 
 
                     </div>

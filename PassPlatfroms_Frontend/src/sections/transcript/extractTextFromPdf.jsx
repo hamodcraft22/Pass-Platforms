@@ -15,7 +15,7 @@ const extractTextFromPdf = (file) => {
             const arrayBuffer = event.target.result;
 
             try {
-                const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
+                const loadingTask = pdfjs.getDocument({data: arrayBuffer});
                 const pdf = await loadingTask.promise;
                 let pdfText = '';
 

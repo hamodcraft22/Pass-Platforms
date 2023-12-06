@@ -23,11 +23,7 @@ import {useSearchParams} from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import {Autocomplete, Checkbox, FormHelperText, TextField, ToggleButton} from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import DialogActions from "@mui/material/DialogActions";
-import SquareRoundedIcon from "@mui/icons-material/SquareRounded";
 import MultiSelect from "../MultiSelect";
 
 // ----------------------------------------------------------------------
@@ -102,7 +98,10 @@ export default function OfferedCoursesPage() {
 
     const [showAddDialog, setShowAddDialog] = useState(false);
 
-    const coursesAvlb = [{courseID: "it6008",name:"Maths for computing"},{courseID: "it6010",name:"Mathasdasds for computing"},{courseID: "it7008",name:"chile the getto"}];
+    const coursesAvlb = [{courseID: "it6008", name: "Maths for computing"}, {
+        courseID: "it6010",
+        name: "Mathasdasds for computing"
+    }, {courseID: "it7008", name: "chile the getto"}];
     let coursesToAdd = [];
 
     const handleAddClickOpen = () => {
@@ -114,7 +113,6 @@ export default function OfferedCoursesPage() {
     const handleAddSave = () => {
         setShowAddDialog(false);
     };
-
 
 
     return (
@@ -194,7 +192,7 @@ export default function OfferedCoursesPage() {
                         Add New Course
                     </DialogTitle>
                     <DialogContent>
-                        <div style={{marginTop:"5px"}}>
+                        <div style={{marginTop: "5px"}}>
                             <MultiSelect
                                 items={coursesAvlb}
                                 label="Courses"
