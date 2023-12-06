@@ -11,6 +11,8 @@ export const NewRevisionPage = lazy(() => import('../pages/newRevision'));
 export const NewSchoolPage = lazy(() => import('../pages/newSchool'));
 export const SchoolsPage = lazy(() => import('../pages/schools'));
 export const CoursesPage = lazy(() => import('../pages/courses'));
+export const OfferedCoursesPage = lazy(() => import('../pages/offeredCourses'));
+
 
 // ----------------------------------------------------------------------
 
@@ -31,7 +33,8 @@ export default function Router() {
                 {path: 'newRevision', element: <NewRevisionPage/>},
                 {path: 'newSchool', element: <NewSchoolPage/>},
                 {path: 'schools', element: <SchoolsPage/>},
-                {path: 'courses', element: <CoursesPage/>}
+                {path: 'courses', element: <CoursesPage/>},
+                {path: 'offeredCourses', element: <OfferedCoursesPage/>}
             ],
         },
         {

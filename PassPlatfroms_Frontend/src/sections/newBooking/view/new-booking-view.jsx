@@ -301,7 +301,6 @@ export default function NewBookingPage() {
                                 selectAllLabel="All"
                                 leaders={(items) => {
                                     selectedLeaders = items;
-                                    console.log(leaders)
                                 }}
                             />
 

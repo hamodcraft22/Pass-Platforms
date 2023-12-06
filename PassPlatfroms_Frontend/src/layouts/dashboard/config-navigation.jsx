@@ -43,6 +43,11 @@ const navConfig = [
         icon: icon('ic_user'),
     },
     {
+        title: 'Offered Courses',
+        path: '/offeredCourses',
+        icon: icon('ic_user'),
+    },
+    {
         title: 'about',
         path: '/404',
         icon: icon('ic_disabled'),

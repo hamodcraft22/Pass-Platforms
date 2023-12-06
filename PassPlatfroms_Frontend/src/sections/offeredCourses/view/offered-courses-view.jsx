@@ -23,14 +23,16 @@ import {useSearchParams} from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import {FormHelperText, TextField, ToggleButton} from "@mui/material";
+import {Autocomplete, Checkbox, FormHelperText, TextField, ToggleButton} from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import DialogActions from "@mui/material/DialogActions";
+import SquareRoundedIcon from "@mui/icons-material/SquareRounded";
+import MultiSelect from "../MultiSelect";
 
 // ----------------------------------------------------------------------
 
-export default function CoursesPage() {
+export default function OfferedCoursesPage() {
 
     const [schoolParm, setSchoolParm] = useSearchParams();
     schoolParm.get("schoolID")
@@ -45,7 +47,7 @@ export default function CoursesPage() {
 
     const [filterName, setFilterName] = useState('');
 
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
 
     // fake users
@@ -99,27 +101,20 @@ export default function CoursesPage() {
 
 
     const [showAddDialog, setShowAddDialog] = useState(false);
-    const [addCourseID, setAddCourseID] = useState(null);
-    const [addCourseName, setAddCourseName] = useState(null);
-    const [addCourseDesc, setAddCourseDesc] = useState(null);
-    const [addCourseSem, setAddCourseSem] = useState(null);
-    const [addCourseAvalb, setAddCourseAvalb] = useState(false);
+
+    const coursesAvlb = [{courseID: "it6008",name:"Maths for computing"},{courseID: "it6010",name:"Mathasdasds for computing"},{courseID: "it7008",name:"chile the getto"}];
+    let coursesToAdd = [];
 
     const handleAddClickOpen = () => {
         setShowAddDialog(true);
     };
     const handleAddClose = () => {
         setShowAddDialog(false);
-
-        setAddCourseID(null);
-        setAddCourseName(null);
-        setAddCourseDesc(null);
-        setAddCourseSem(null);
-        setAddCourseAvalb(null);
     };
     const handleAddSave = () => {
         setShowAddDialog(false);
     };
+
 
 
     return (
@@ -152,9 +147,8 @@ export default function CoursesPage() {
                                 onSelectAllClick={handleSelectAllClick}
                                 headLabel={[
                                     {id: '', label: ''},
+                                    {id: 'code', label: 'Code'},
                                     {id: 'name', label: 'Name'},
-                                    {id: 'semester', label: 'Semester', align: 'center'},
-                                    {id: 'available', label: 'Available', align: 'center'},
                                     {id: '', label: ''}
                                 ]}
                             />
@@ -163,8 +157,9 @@ export default function CoursesPage() {
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
                                         <CoursesTableRow
-                                            schoolID={row.userid}
-                                            name={row.name}
+                                            offerID={row.offerID}
+                                            courseID={row.userid}
+                                            courseName={row.name}
                                         />
                                     ))}
 
@@ -199,44 +194,16 @@ export default function CoursesPage() {
                         Add New Course
                     </DialogTitle>
                     <DialogContent>
-                        <TextField sx={{width: '100%', mt: 1}} label="Course Code" variant="outlined"
-                                   value={addCourseID} onChange={(newValue) => setAddCourseID(newValue.target.value)}/>
-
-                        <TextField sx={{width: '100%', mt: 1}} label="Course Name" variant="outlined"
-                                   value={addCourseName}
-                                   onChange={(newValue) => setAddCourseName(newValue.target.value)}/>
-
-                        <TextField sx={{width: '100%', mt: 1}} label="Course Description" variant="outlined" multiline
-                                   rows={2} value={addCourseDesc}
-                                   onChange={(newValue) => setAddCourseDesc(newValue.target.value)}/>
-
-                        <TextField
-                            select
-                            label="Semester"
-                            sx={{width: '100%', mt: 1}}
-                            value={addCourseSem}
-                            onChange={(event, newValue) => {
-                                setAddCourseSem(newValue.props.value)
-                            }}
-                        >
-                            <MenuItem value={'A'}>A</MenuItem>
-                            <MenuItem value={'B'}>B</MenuItem>
-                            <MenuItem value={'S'}>Summer</MenuItem>
-                        </TextField>
-
-                        <FormHelperText sx={{ml: 2}}>Available</FormHelperText>
-                        <ToggleButton
-                            value={addCourseAvalb}
-                            selected={addCourseAvalb}
-                            sx={{width: '100%'}}
-                            color={"primary"}
-                            onChange={() => {
-                                setAddCourseAvalb(!addCourseAvalb)
-                            }}
-                        >
-                            <CheckBoxIcon/>
-                        </ToggleButton>
-
+                        <div style={{marginTop:"5px"}}>
+                            <MultiSelect
+                                items={coursesAvlb}
+                                label="Courses"
+                                selectAllLabel="All"
+                                courses={(items) => {
+                                    coursesToAdd = items;
+                                }}
+                            />
+                        </div>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleAddClose}>Cancel</Button>
