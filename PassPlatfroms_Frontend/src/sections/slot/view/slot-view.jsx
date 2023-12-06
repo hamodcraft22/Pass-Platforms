@@ -25,7 +25,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import {FormHelperText, TextField, ToggleButton} from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import DialogActions from "@mui/material/DialogActions";
 import PublicIcon from '@mui/icons-material/Public';
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
@@ -218,7 +217,10 @@ export default function SlotPage() {
                     </DialogTitle>
                     <DialogContent>
 
-                        <TextField select label="Day" sx={{width: '100%', mt: 1}} value={addSlotDay} onChange={(event, newValue) => {setAddSlotDay(newValue.props.value)}}>
+                        <TextField select label="Day" sx={{width: '100%', mt: 1}} value={addSlotDay}
+                                   onChange={(event, newValue) => {
+                                       setAddSlotDay(newValue.props.value)
+                                   }}>
                             <MenuItem value={'U'}>Sunday</MenuItem>
                             <MenuItem value={'M'}>Monday</MenuItem>
                             <MenuItem value={'T'}>Tuesday</MenuItem>
@@ -253,7 +255,9 @@ export default function SlotPage() {
                             selected={addSlotOnline}
                             sx={{width: '100%'}}
                             color={"primary"}
-                            onChange={() => {setAddSlotOnline(!addSlotOnline)}}
+                            onChange={() => {
+                                setAddSlotOnline(!addSlotOnline)
+                            }}
                         >
                             <PublicIcon/>
                         </ToggleButton>

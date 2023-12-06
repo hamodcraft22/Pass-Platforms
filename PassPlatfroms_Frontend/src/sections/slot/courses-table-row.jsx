@@ -15,7 +15,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {FormHelperText, TextField, ToggleButton} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import MenuItem from "@mui/material/MenuItem";
 import PublicIcon from '@mui/icons-material/Public';
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
@@ -36,8 +35,7 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
     };
 
     const dayWord = (dayChar) => {
-        switch (dayChar)
-        {
+        switch (dayChar) {
             case 'U':
                 return "Sunday";
             case 'M':
@@ -140,10 +138,14 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        <TextField label="Day" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={day}/>
-                        <TextField label="Start Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={startTime}/>
-                        <TextField label="End Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={endTime} />
-                        <TextField label="Note" variant="standard" fullWidth sx={{mb: 2}} InputProps={{readOnly: true}} multiline maxRows={2} defaultValue={note}/>
+                        <TextField label="Day" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
+                                   InputProps={{readOnly: true}} defaultValue={day}/>
+                        <TextField label="Start Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
+                                   InputProps={{readOnly: true}} defaultValue={startTime}/>
+                        <TextField label="End Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
+                                   InputProps={{readOnly: true}} defaultValue={endTime}/>
+                        <TextField label="Note" variant="standard" fullWidth sx={{mb: 2}} InputProps={{readOnly: true}}
+                                   multiline maxRows={2} defaultValue={note}/>
                     </DialogContentText>
                 </DialogContent>
             </Dialog>
@@ -160,7 +162,8 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
                     <FormHelperText>You can only change the note and the online rule.</FormHelperText>
 
 
-                    <TextField InputProps={{readOnly: true}} select label="Day" sx={{mt: 1}} value={editSlotDay} fullWidth>
+                    <TextField InputProps={{readOnly: true}} select label="Day" sx={{mt: 1}} value={editSlotDay}
+                               fullWidth>
                         <MenuItem value={'U'}>Sunday</MenuItem>
                         <MenuItem value={'M'}>Monday</MenuItem>
                         <MenuItem value={'T'}>Tuesday</MenuItem>
@@ -193,7 +196,9 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
                         selected={editSlotOnline}
                         sx={{width: '100%'}}
                         color={"primary"}
-                        onChange={() => {setEditSlotOnline(!editSlotOnline)}}
+                        onChange={() => {
+                            setEditSlotOnline(!editSlotOnline)
+                        }}
                     >
                         <PublicIcon/>
                     </ToggleButton>
@@ -217,7 +222,8 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete the slot on <b>{day}</b> from <b>{startTime}</b> till <b>{endTime}</b>?
+                        Are you sure you want to delete the slot
+                        on <b>{day}</b> from <b>{startTime}</b> till <b>{endTime}</b>?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
