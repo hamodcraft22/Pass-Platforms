@@ -81,12 +81,9 @@ export default function CoursesTableRow({courseID, name, desc, sem, avlb}) {
                 <TableCell align={"center"}><CheckBoxIcon/></TableCell>
 
                 <TableCell align={"right"}>
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon
-                        fontSize={"small"}/></Button>
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"}
-                            onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
-                            onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"} onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"} onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
                 </TableCell>
 
             </TableRow>
@@ -101,12 +98,9 @@ export default function CoursesTableRow({courseID, name, desc, sem, avlb}) {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        <TextField label="Course Description" variant="standard" fullWidth sx={{mb: 1}}
-                                   InputProps={{readOnly: true}} defaultValue={desc} multiline maxRows={4}/>
-                        <TextField label="Semaster" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
-                                   InputProps={{readOnly: true}} defaultValue={sem}/>
-                        <TextField label="Avaliable" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
-                                   InputProps={{readOnly: true}} defaultValue={avlb}/>
+                        <TextField label="Course Description" variant="standard" fullWidth sx={{mb: 1}} InputProps={{readOnly: true}} defaultValue={desc} multiline maxRows={4}/>
+                        <TextField label="Semaster" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={sem}/>
+                        <TextField label="Avaliable" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={avlb}/>
                     </DialogContentText>
                 </DialogContent>
             </Dialog>
@@ -120,13 +114,8 @@ export default function CoursesTableRow({courseID, name, desc, sem, avlb}) {
                     {name}
                 </DialogTitle>
                 <DialogContent>
-                    <TextField sx={{width: '100%', mt: 1}} label="Course Name" variant="outlined" value={editCourseName}
-                               onChange={(newValue) => setEditCourseName(newValue.target.value)}/>
-
-
-                    <TextField sx={{width: '100%', mt: 1}} label="Course Description" variant="outlined" multiline
-                               rows={2} value={editCourseDesc}
-                               onChange={(newValue) => setEditCourseDesc(newValue.target.value)}/>
+                    <TextField sx={{width: '100%', mt: 1}} label="Course Name" variant="outlined" value={editCourseName} onChange={(newValue) => setEditCourseName(newValue.target.value)}/>
+                    <TextField sx={{width: '100%', mt: 1}} label="Course Description" variant="outlined" multiline rows={2} value={editCourseDesc} onChange={(newValue) => setEditCourseDesc(newValue.target.value)}/>
 
                     <TextField
                         select
