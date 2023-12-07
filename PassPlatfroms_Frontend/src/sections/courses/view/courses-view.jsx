@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -32,71 +32,31 @@ import DialogActions from "@mui/material/DialogActions";
 
 export default function CoursesPage() {
 
-    const [schoolParm, setSchoolParm] = useSearchParams();
-    schoolParm.get("schoolID")
+    const queryParameters = new URLSearchParams(window.location.search)
+    const schoolIDParm = queryParameters.get("schoolID")
 
-    const [page, setPage] = useState(0);
+    const [school, setSchool] = useState([]);
+    const [courses, setCourses] = useState([]);
 
-    const [order, setOrder] = useState('asc');
+    // get school and courses api
+    async function getSchoolCourses()
+    {
+        try
+        {
+            const requestOptions = {method: "GET", headers: { 'Content-Type': 'application/json' }};
 
-    const [selected, setSelected] = useState([]);
-
-    const [orderBy, setOrderBy] = useState('name');
-
-    const [filterName, setFilterName] = useState('');
-
-    const [rowsPerPage, setRowsPerPage] = useState(5);
-
-
-    // fake users
-
-    const users = [...Array(24)].map((_, index) => ({
-        userid: 567,
-        avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
-        name: "faker.person.fullName()",
-        role: "Leader"
-    }));
-
-
-    const handleSort = (event, id) => {
-        const isAsc = orderBy === id && order === 'asc';
-        if (id !== '') {
-            setOrder(isAsc ? 'desc' : 'asc');
-            setOrderBy(id);
+            await fetch(`http://localhost:8080/api/school/${schoolIDParm}`, requestOptions)
+                .then(response => {return response.json()})
+                .then((data) => {setSchool(data.transObject); setCourses(data.transObject.courses)})
         }
-    };
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = users.map((n) => n.name);
-            setSelected(newSelecteds);
-            return;
+        catch (error)
+        {
+            console.log(error)
         }
-        setSelected([]);
-    };
+    }
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setPage(0);
-        setRowsPerPage(parseInt(event.target.value, 10));
-    };
-
-    const handleFilterByName = (event) => {
-        setPage(0);
-        setFilterName(event.target.value);
-    };
-
-    const dataFiltered = applyFilter({
-        inputData: users,
-        comparator: getComparator(order, orderBy),
-        filterName,
-    });
-
-    const notFound = !dataFiltered.length && !!filterName;
-
+    // get school and courses on load
+    useEffect(() => {getSchoolCourses()}, [])
 
     const [showAddDialog, setShowAddDialog] = useState(false);
     const [addCourseID, setAddCourseID] = useState(null);
@@ -122,10 +82,64 @@ export default function CoursesPage() {
     };
 
 
+    // table vars and functions
+
+    const [page, setPage] = useState(0);
+
+    const [order, setOrder] = useState('asc');
+
+    const [selected, setSelected] = useState([]);
+
+    const [orderBy, setOrderBy] = useState('name');
+
+    const [filterName, setFilterName] = useState('');
+
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    const handleSort = (event, id) => {
+        const isAsc = orderBy === id && order === 'asc';
+        if (id !== '') {
+            setOrder(isAsc ? 'desc' : 'asc');
+            setOrderBy(id);
+        }
+    };
+
+    const handleSelectAllClick = (event) => {
+        if (event.target.checked) {
+            const newSelecteds = courses.map((n) => n.name);
+            setSelected(newSelecteds);
+            return;
+        }
+        setSelected([]);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setPage(0);
+        setRowsPerPage(parseInt(event.target.value, 10));
+    };
+
+    const handleFilterByName = (event) => {
+        setPage(0);
+        setFilterName(event.target.value);
+    };
+
+    const dataFiltered = applyFilter({
+        inputData: courses,
+        comparator: getComparator(order, orderBy),
+        filterName,
+    });
+
+    const notFound = !dataFiltered.length && !!filterName;
+
+
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4">Courses</Typography>
+                <Typography variant="h4">{school.schoolname} Courses</Typography>
 
                 <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
                         onClick={handleAddClickOpen}>
@@ -146,7 +160,7 @@ export default function CoursesPage() {
                             <CoursesTableHead
                                 order={order}
                                 orderBy={orderBy}
-                                rowCount={users.length}
+                                rowCount={courses.length}
                                 numSelected={selected.length}
                                 onRequestSort={handleSort}
                                 onSelectAllClick={handleSelectAllClick}
@@ -163,14 +177,17 @@ export default function CoursesPage() {
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
                                         <CoursesTableRow
-                                            schoolID={row.userid}
-                                            name={row.name}
+                                            courseID={row.courseid}
+                                            courseName={row.coursename}
+                                            courseDesc={row.coursedesc}
+                                            sem={row.semaster}
+                                            avlb={row.available}
                                         />
                                     ))}
 
                                 <TableEmptyRows
                                     height={77}
-                                    emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                                    emptyRows={emptyRows(page, rowsPerPage, courses.length)}
                                 />
 
                                 {notFound && <TableNoData query={filterName}/>}
@@ -182,7 +199,7 @@ export default function CoursesPage() {
                 <TablePagination
                     page={page}
                     component="div"
-                    count={users.length}
+                    count={courses.length}
                     rowsPerPage={rowsPerPage}
                     onPageChange={handleChangePage}
                     rowsPerPageOptions={[5, 10, 25, 50]}

@@ -28,7 +28,7 @@ public class SchoolServ
 
         for (School retrievedSchool : schoolRepo.findAll())
         {
-            schools.add(new SchoolDao(retrievedSchool));
+            schools.add(new SchoolDao(retrievedSchool.getSchoolid(),retrievedSchool.getSchoolname(),retrievedSchool.getSchooldesc(),null));
         }
 
         return schools;

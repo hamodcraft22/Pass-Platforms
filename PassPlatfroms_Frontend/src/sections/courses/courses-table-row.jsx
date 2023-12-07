@@ -17,10 +17,11 @@ import {FormHelperText, TextField, ToggleButton} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import MenuItem from "@mui/material/MenuItem";
+import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
 
 // ----------------------------------------------------------------------
 
-export default function CoursesTableRow({courseID, name, desc, sem, avlb}) {
+export default function CoursesTableRow({courseID, courseName, courseDesc, sem, avlb}) {
     const [showViewDialog, setShowViewDialog] = useState(false);
     const handleViewClickOpen = () => {
         setShowViewDialog(true);
@@ -36,8 +37,8 @@ export default function CoursesTableRow({courseID, name, desc, sem, avlb}) {
     const [editCourseSem, setEditCourseSem] = useState(null);
     const [editCourseAvalb, setEditCourseAvalb] = useState(true);
     const handleEditClickOpen = () => {
-        setEditCourseName(name);
-        setEditCourseDesc(desc);
+        setEditCourseName(courseName);
+        setEditCourseDesc(courseDesc);
         setEditCourseSem(sem);
         setEditCourseAvalb(avlb);
 
@@ -74,11 +75,11 @@ export default function CoursesTableRow({courseID, name, desc, sem, avlb}) {
 
                 <TableCell></TableCell>
 
-                <TableCell>{name}</TableCell>
+                <TableCell>{courseID} {courseName}</TableCell>
 
-                <TableCell align={"center"}>A</TableCell>
+                <TableCell align={"center"}>{sem}</TableCell>
 
-                <TableCell align={"center"}><CheckBoxIcon/></TableCell>
+                <TableCell align={"center"}>{avlb ? (<CheckBoxIcon/>):(<DisabledByDefaultRoundedIcon/>)}</TableCell>
 
                 <TableCell align={"right"}>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon
@@ -97,12 +98,12 @@ export default function CoursesTableRow({courseID, name, desc, sem, avlb}) {
                 onClose={handleViewClose}
             >
                 <DialogTitle>
-                    {name}
+                    {courseName}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         <TextField label="Course Description" variant="standard" fullWidth sx={{mb: 1}}
-                                   InputProps={{readOnly: true}} defaultValue={desc} multiline maxRows={4}/>
+                                   InputProps={{readOnly: true}} defaultValue={courseDesc} multiline maxRows={4}/>
                         <TextField label="Semaster" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
                                    InputProps={{readOnly: true}} defaultValue={sem}/>
                         <TextField label="Avaliable" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
@@ -117,7 +118,7 @@ export default function CoursesTableRow({courseID, name, desc, sem, avlb}) {
                 onClose={handleEditClose}
             >
                 <DialogTitle>
-                    {name}
+                    {courseName}
                 </DialogTitle>
                 <DialogContent>
                     <TextField sx={{width: '100%', mt: 1}} label="Course Name" variant="outlined" value={editCourseName}
@@ -168,11 +169,11 @@ export default function CoursesTableRow({courseID, name, desc, sem, avlb}) {
                 onClose={handleDeleteClose}
             >
                 <DialogTitle>
-                    {name}
+                    {courseName}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete <b>{name}</b>? this will delete all bookings, and revisions
+                        Are you sure you want to delete <b>{courseName}</b>? this will delete all bookings, and revisions
                         within this course.
                     </DialogContentText>
                 </DialogContent>
@@ -190,7 +191,7 @@ export default function CoursesTableRow({courseID, name, desc, sem, avlb}) {
 CoursesTableRow.propTypes = {
     avatarUrl: PropTypes.any,
     handleClick: PropTypes.func,
-    name: PropTypes.any,
+    courseName: PropTypes.any,
     role: PropTypes.any,
     selected: PropTypes.any,
 };

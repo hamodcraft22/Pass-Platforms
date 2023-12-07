@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -23,6 +23,32 @@ import Iconify from "../../../components/iconify";
 // ----------------------------------------------------------------------
 
 export default function SchoolsPage() {
+
+    // schools
+    const [schools, setSchools] = useState([]);
+
+
+    // get schools api
+    async function getSchools()
+    {
+        try
+        {
+            const requestOptions = {method: "GET", headers: { 'Content-Type': 'application/json' }};
+
+            await fetch(`http://localhost:8080/api/school`, requestOptions)
+                .then(response => {return response.json()})
+                .then((data) => {setSchools(data.transObject)})
+        }
+        catch (error)
+        {
+            console.log(error)
+        }
+    }
+
+    // get all schools on load
+    useEffect(() => {getSchools()}, [])
+
+    // table vars
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState('asc');
@@ -35,17 +61,7 @@ export default function SchoolsPage() {
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-
-    // fake users
-
-    const users = [...Array(24)].map((_, index) => ({
-        userid: 567,
-        avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
-        name: "faker.person.fullName()",
-        role: "Leader"
-    }));
-
-
+    // table functions
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
         if (id !== '') {
@@ -56,7 +72,7 @@ export default function SchoolsPage() {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = users.map((n) => n.name);
+            const newSelecteds = schools.map((n) => n.name);
             setSelected(newSelecteds);
             return;
         }
@@ -96,7 +112,7 @@ export default function SchoolsPage() {
     };
 
     const dataFiltered = applyFilter({
-        inputData: users,
+        inputData: schools,
         comparator: getComparator(order, orderBy),
         filterName,
     });
@@ -126,7 +142,7 @@ export default function SchoolsPage() {
                             <SchoolsTableHead
                                 order={order}
                                 orderBy={orderBy}
-                                rowCount={users.length}
+                                rowCount={schools.length}
                                 numSelected={selected.length}
                                 onRequestSort={handleSort}
                                 onSelectAllClick={handleSelectAllClick}
@@ -141,14 +157,15 @@ export default function SchoolsPage() {
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
                                         <SchoolsTableRow
-                                            schoolID={row.userid}
-                                            name={row.name}
+                                            schoolID={row.schoolid}
+                                            schoolName={row.schoolname}
+                                            schoolDesc={row.schooldesc}
                                         />
                                     ))}
 
                                 <TableEmptyRows
                                     height={77}
-                                    emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                                    emptyRows={emptyRows(page, rowsPerPage, schools.length)}
                                 />
 
                                 {notFound && <TableNoData query={filterName}/>}
@@ -160,7 +177,7 @@ export default function SchoolsPage() {
                 <TablePagination
                     page={page}
                     component="div"
-                    count={users.length}
+                    count={schools.length}
                     rowsPerPage={rowsPerPage}
                     onPageChange={handleChangePage}
                     rowsPerPageOptions={[5, 10, 25, 50]}

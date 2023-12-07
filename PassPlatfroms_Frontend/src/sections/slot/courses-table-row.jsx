@@ -138,14 +138,10 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        <TextField label="Day" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
-                                   InputProps={{readOnly: true}} defaultValue={day}/>
-                        <TextField label="Start Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
-                                   InputProps={{readOnly: true}} defaultValue={startTime}/>
-                        <TextField label="End Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
-                                   InputProps={{readOnly: true}} defaultValue={endTime}/>
-                        <TextField label="Note" variant="standard" fullWidth sx={{mb: 2}} InputProps={{readOnly: true}}
-                                   multiline maxRows={2} defaultValue={note}/>
+                        <TextField label="Day" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={day}/>
+                        <TextField label="Start Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={startTime}/>
+                        <TextField label="End Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={endTime}/>
+                        <TextField label="Note" variant="standard" fullWidth sx={{mb: 2}} InputProps={{readOnly: true}} multiline maxRows={2} defaultValue={note}/>
                     </DialogContentText>
                 </DialogContent>
             </Dialog>
@@ -174,21 +170,17 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
                     </TextField>
 
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker readOnly sx={{mt: 2, mr: 1}} label="Start Time" minTime={slotStartTime}
-                                    maxTime={slotEndTime} value={slotSelectedStartTime} onChange={(newValue) => {
+                        <TimePicker readOnly sx={{mt: 2, mr: 1}} label="Start Time" minTime={slotStartTime} maxTime={slotEndTime} value={slotSelectedStartTime} onChange={(newValue) => {
                             setSlotSelectedStartTime(newValue)
                         }}/>
                     </LocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker readOnly sx={{mt: 2}} label="End Time" minTime={slotStartTime} maxTime={slotEndTime}
-                                    value={slotSelectedEndTime} onChange={(newValue) => {
+                        <TimePicker readOnly sx={{mt: 2}} label="End Time" minTime={slotStartTime} maxTime={slotEndTime} value={slotSelectedEndTime} onChange={(newValue) => {
                             setSlotSelectedEndTime(newValue)
                         }}/>
                     </LocalizationProvider>
 
-                    <TextField sx={{width: '100%', mt: 2}} label="Slot Note" variant="outlined" multiline
-                               rows={2} value={editSlotNote}
-                               onChange={(newValue) => setEditSlotNote(newValue.target.value)}/>
+                    <TextField sx={{width: '100%', mt: 2}} label="Slot Note" variant="outlined" multiline rows={2} value={editSlotNote} onChange={(newValue) => setEditSlotNote(newValue.target.value)}/>
 
                     <FormHelperText sx={{ml: 2}}>Online</FormHelperText>
                     <ToggleButton

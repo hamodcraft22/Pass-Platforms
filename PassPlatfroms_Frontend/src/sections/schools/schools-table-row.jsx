@@ -20,7 +20,7 @@ import DialogActions from "@mui/material/DialogActions";
 
 // ----------------------------------------------------------------------
 
-export default function SchoolsTableRow({schoolID, name, desc}) {
+export default function SchoolsTableRow({schoolID, schoolName, schoolDesc}) {
     const [showViewDialog, setShowViewDialog] = useState(false);
     const handleViewClickOpen = () => {
         setShowViewDialog(true);
@@ -34,8 +34,8 @@ export default function SchoolsTableRow({schoolID, name, desc}) {
     const [editSchoolName, setEditSchoolName] = useState(null);
     const [editSchoolDesc, setEditSchoolDesc] = useState(null);
     const handleEditClickOpen = () => {
-        setEditSchoolName(name);
-        setEditSchoolDesc(desc);
+        setEditSchoolName(schoolName);
+        setEditSchoolDesc(schoolDesc);
 
         setShowEditDialog(true);
     };
@@ -46,7 +46,8 @@ export default function SchoolsTableRow({schoolID, name, desc}) {
         setEditSchoolDesc(null);
     };
     const handleEditSave = () => {
-        setShowEditDialog(false);
+        // add validation TODO
+        editSchool();
     };
 
 
@@ -68,13 +69,44 @@ export default function SchoolsTableRow({schoolID, name, desc}) {
         navigate(path);
     }
 
+    // edit schools api
+    async function editSchool()
+    {
+        try
+        {
+            const requestOptions =
+                {
+                    method: "PUT",
+                    headers: { 'Content-Type': 'application/json', 'Authorization': '27afc256-2734-4a04-8c8e-49997bb0f638'},
+                    body: JSON.stringify({"schoolid":schoolID, "schoolname":editSchoolName, "schooldesc":editSchoolDesc})
+                };
+
+            await fetch(`http://localhost:8080/api/school`, requestOptions)
+                .then(response => {return response.json()})
+                .then(() => {window.location.reload(false)});
+        }
+        catch (error)
+        {
+            console.log(error)
+        }
+        finally
+        {
+            setShowEditDialog(false);
+
+            setEditSchoolName(null);
+            setEditSchoolDesc(null);
+        }
+    }
+
+    // delete api - add
+
     return (
         <>
             <TableRow hover tabIndex={-1}>
 
                 <TableCell></TableCell>
 
-                <TableCell>{name}</TableCell>
+                <TableCell>{schoolName}</TableCell>
 
                 <TableCell align={"right"}>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon
@@ -95,11 +127,11 @@ export default function SchoolsTableRow({schoolID, name, desc}) {
                 onClose={handleViewClose}
             >
                 <DialogTitle>
-                    {name}
+                    {schoolName}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        {desc}
+                        {schoolDesc}
                     </DialogContentText>
                 </DialogContent>
             </Dialog>
@@ -110,7 +142,7 @@ export default function SchoolsTableRow({schoolID, name, desc}) {
                 onClose={handleEditClose}
             >
                 <DialogTitle>
-                    {name}
+                    {schoolName}
                 </DialogTitle>
                 <DialogContent>
                     <TextField sx={{width: '100%', mt: 1}} label="School Name" variant="outlined" value={editSchoolName}
@@ -133,11 +165,11 @@ export default function SchoolsTableRow({schoolID, name, desc}) {
                 onClose={handleDeleteClose}
             >
                 <DialogTitle>
-                    {name}
+                    {schoolName}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete <b>{name}</b>? this will delete all courses, bookings, and
+                        Are you sure you want to delete <b>{schoolName}</b>? this will delete all courses, bookings, and
                         revisions within this school.
                     </DialogContentText>
                 </DialogContent>
@@ -155,7 +187,7 @@ export default function SchoolsTableRow({schoolID, name, desc}) {
 SchoolsTableRow.propTypes = {
     avatarUrl: PropTypes.any,
     handleClick: PropTypes.func,
-    name: PropTypes.any,
+    schoolName: PropTypes.any,
     role: PropTypes.any,
     selected: PropTypes.any,
 };

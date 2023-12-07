@@ -14,6 +14,7 @@ import java.util.Objects;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN_KEY;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.MANAGER_KEY;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/school")
 public class SchoolCont
@@ -27,7 +28,6 @@ public class SchoolCont
     public ResponseEntity<GenericDto<List<SchoolDao>>> getAllSchools()
     {
         // Any person can use these
-
         List<SchoolDao> schools = schoolServ.getAllSchools();
 
         if (schools != null && !schools.isEmpty())
