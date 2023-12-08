@@ -14,6 +14,7 @@ export const CoursesPage = lazy(() => import('../pages/courses'));
 export const OfferedCoursesPage = lazy(() => import('../pages/offeredCourses'));
 export const TranscriptPage = lazy(() => import('../pages/transcript'));
 export const SlotPage = lazy(() => import('../pages/slot'));
+export const SchedulePage = lazy(() => import('../pages/schedule'));
 
 
 // ----------------------------------------------------------------------
@@ -38,7 +39,8 @@ export default function Router() {
                 {path: 'courses', element: <CoursesPage/>},
                 {path: 'offeredCourses', element: <OfferedCoursesPage/>},
                 {path: 'transcript', element: <TranscriptPage/>},
-                {path: 'slot', element: <SlotPage/>}
+                {path: 'slot', element: <SlotPage/>},
+                {path: 'schedule', element: <SchedulePage/>}
             ],
         },
         {
