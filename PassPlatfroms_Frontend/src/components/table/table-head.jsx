@@ -10,12 +10,12 @@ import {visuallyHidden} from './utils';
 
 // ----------------------------------------------------------------------
 
-export default function SchoolsTableHead({
-                                             order,
-                                             orderBy,
-                                             headLabel,
-                                             onRequestSort,
-                                         }) {
+export default function TableMainHead({
+                                          order,
+                                          orderBy,
+                                          headLabel,
+                                          onRequestSort,
+                                      }) {
     const onSort = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -51,7 +51,7 @@ export default function SchoolsTableHead({
     );
 }
 
-SchoolsTableHead.propTypes = {
+TableHead.propTypes = {
     order: PropTypes.oneOf(['asc', 'desc']),
     orderBy: PropTypes.string,
     rowCount: PropTypes.number,

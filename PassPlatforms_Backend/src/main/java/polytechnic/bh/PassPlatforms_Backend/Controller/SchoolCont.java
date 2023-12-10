@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN_KEY;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.MANAGER_KEY;
+import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -25,9 +26,14 @@ public class SchoolCont
 
     // get all schools
     @GetMapping("")
-    public ResponseEntity<GenericDto<List<SchoolDao>>> getAllSchools()
+    public ResponseEntity<GenericDto<List<SchoolDao>>> getAllSchools(@RequestHeader(value = "Authorization") String authToken)
     {
         // Any person can use these
+
+        // testing the auth token thing
+        if(isValidToken(authToken))
+        {System.out.println("it work i guess");}
+
         List<SchoolDao> schools = schoolServ.getAllSchools();
 
         if (schools != null && !schools.isEmpty())

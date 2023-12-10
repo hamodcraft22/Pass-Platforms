@@ -11,12 +11,14 @@ import TablePagination from '@mui/material/TablePagination';
 
 import Scrollbar from '../../../components/scrollbar';
 
-import TableNoData from '../table-no-data';
+import TableNoData from '../../../components/table/table-no-data';
+import TableMainHead from '../../../components/table/table-head';
+import TableEmptyRows from '../../../components/table/table-empty-rows';
+import {emptyRows, getComparator} from '../../../components/table/utils';
+import {applyFilter} from '../filterUtil';
+
 import UserTableRow from '../user-table-row';
-import UserTableHead from '../user-table-head';
-import TableEmptyRows from '../table-empty-rows';
 import UserTableToolbar from '../user-table-toolbar';
-import {applyFilter, emptyRows, getComparator} from '../utils';
 
 // ----------------------------------------------------------------------
 
@@ -121,7 +123,7 @@ export default function UserPage() {
                 <Scrollbar>
                     <TableContainer sx={{overflow: 'unset'}}>
                         <Table sx={{minWidth: 800}}>
-                            <UserTableHead
+                            <TableMainHead
                                 order={order}
                                 orderBy={orderBy}
                                 rowCount={users.length}

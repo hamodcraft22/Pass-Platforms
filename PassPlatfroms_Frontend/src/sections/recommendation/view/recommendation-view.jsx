@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -14,45 +14,17 @@ import Scrollbar from '../../../components/scrollbar';
 import TableNoData from '../../../components/table/table-no-data';
 import TableMainHead from '../../../components/table/table-head';
 import TableEmptyRows from '../../../components/table/table-empty-rows';
+
+import UserTableRow from '../user-table-row';
+import UserTableToolbar from '../user-table-toolbar';
+
 import {emptyRows, getComparator} from '../../../components/table/utils';
 import {applyFilter} from '../filterUtil';
 
-import SchoolsTableRow from '../schools-table-row';
-import SchoolsTableToolbar from '../schools-table-toolbar';
-import Button from "@mui/material/Button";
-import Iconify from "../../../components/iconify";
 
 // ----------------------------------------------------------------------
 
-export default function SchoolsPage() {
-
-    // schools
-    const [schools, setSchools] = useState([]);
-
-
-    // get schools api
-    async function getSchools() {
-        try {
-            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json'}};
-
-            await fetch(`http://localhost:8080/api/school`, requestOptions)
-                .then(response => {
-                    return response.json()
-                })
-                .then((data) => {
-                    setSchools(data.transObject)
-                })
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    // get all schools on load
-    useEffect(() => {
-        getSchools()
-    }, [])
-
-    // table vars
+export default function RecommendationPage() {
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState('asc');
@@ -65,7 +37,17 @@ export default function SchoolsPage() {
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    // table functions
+
+    // fake users
+
+    const users = [...Array(24)].map((_, index) => ({
+        userid: 567,
+        avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
+        name: "faker.person.fullName()",
+        role: "Leader"
+    }));
+
+
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
         if (id !== '') {
@@ -76,7 +58,7 @@ export default function SchoolsPage() {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = schools.map((n) => n.name);
+            const newSelecteds = users.map((n) => n.name);
             setSelected(newSelecteds);
             return;
         }
@@ -116,7 +98,7 @@ export default function SchoolsPage() {
     };
 
     const dataFiltered = applyFilter({
-        inputData: schools,
+        inputData: users,
         comparator: getComparator(order, orderBy),
         filterName,
     });
@@ -126,15 +108,15 @@ export default function SchoolsPage() {
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4">Schools</Typography>
+                <Typography variant="h4">Users</Typography>
 
-                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}>
-                    New School
-                </Button>
+                {/*<Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}>*/}
+                {/*    New User*/}
+                {/*</Button>*/}
             </Stack>
 
             <Card>
-                <SchoolsTableToolbar
+                <UserTableToolbar
                     numSelected={selected.length}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
@@ -146,13 +128,15 @@ export default function SchoolsPage() {
                             <TableMainHead
                                 order={order}
                                 orderBy={orderBy}
-                                rowCount={schools.length}
+                                rowCount={users.length}
                                 numSelected={selected.length}
                                 onRequestSort={handleSort}
                                 onSelectAllClick={handleSelectAllClick}
                                 headLabel={[
                                     {id: '', label: ''},
                                     {id: 'name', label: 'Name'},
+                                    {id: 'User ID', label: 'User ID'},
+                                    {id: 'role', label: 'Role'},
                                     {id: '', label: ''}
                                 ]}
                             />
@@ -160,16 +144,20 @@ export default function SchoolsPage() {
                                 {dataFiltered
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
-                                        <SchoolsTableRow
-                                            schoolID={row.schoolid}
-                                            schoolName={row.schoolname}
-                                            schoolDesc={row.schooldesc}
+                                        <UserTableRow
+                                            key={row.userid}
+                                            name={row.name}
+                                            userid={row.userid}
+                                            role={row.role}
+                                            avatarUrl={row.avatarUrl}
+                                            selected={selected.indexOf(row.name) !== -1}
+                                            handleClick={(event) => handleClick(event, row.name)}
                                         />
                                     ))}
 
                                 <TableEmptyRows
                                     height={77}
-                                    emptyRows={emptyRows(page, rowsPerPage, schools.length)}
+                                    emptyRows={emptyRows(page, rowsPerPage, users.length)}
                                 />
 
                                 {notFound && <TableNoData query={filterName}/>}
@@ -181,7 +169,7 @@ export default function SchoolsPage() {
                 <TablePagination
                     page={page}
                     component="div"
-                    count={schools.length}
+                    count={users.length}
                     rowsPerPage={rowsPerPage}
                     onPageChange={handleChangePage}
                     rowsPerPageOptions={[5, 10, 25, 50]}

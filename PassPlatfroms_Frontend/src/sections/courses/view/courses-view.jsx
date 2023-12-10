@@ -11,15 +11,19 @@ import TablePagination from '@mui/material/TablePagination';
 
 import Scrollbar from '../../../components/scrollbar';
 
-import TableNoData from '../table-no-data';
+
+import TableNoData from '../../../components/table/table-no-data';
+import TableMainHead from '../../../components/table/table-head';
+import TableEmptyRows from '../../../components/table/table-empty-rows';
+import {emptyRows, getComparator} from '../../../components/table/utils';
+import {applyFilter} from '../filterUtil';
+
 import CoursesTableRow from '../courses-table-row';
-import CoursesTableHead from '../courses-table-head';
-import TableEmptyRows from '../table-empty-rows';
 import CoursesTableToolbar from '../courses-table-toolbar';
-import {applyFilter, emptyRows, getComparator} from '../utils';
+
+
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {useSearchParams} from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -39,24 +43,27 @@ export default function CoursesPage() {
     const [courses, setCourses] = useState([]);
 
     // get school and courses api
-    async function getSchoolCourses()
-    {
-        try
-        {
-            const requestOptions = {method: "GET", headers: { 'Content-Type': 'application/json' }};
+    async function getSchoolCourses() {
+        try {
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json'}};
 
             await fetch(`http://localhost:8080/api/school/${schoolIDParm}`, requestOptions)
-                .then(response => {return response.json()})
-                .then((data) => {setSchool(data.transObject); setCourses(data.transObject.courses)})
-        }
-        catch (error)
-        {
+                .then(response => {
+                    return response.json()
+                })
+                .then((data) => {
+                    setSchool(data.transObject);
+                    setCourses(data.transObject.courses)
+                })
+        } catch (error) {
             console.log(error)
         }
     }
 
     // get school and courses on load
-    useEffect(() => {getSchoolCourses()}, [])
+    useEffect(() => {
+        getSchoolCourses()
+    }, [])
 
     const [showAddDialog, setShowAddDialog] = useState(false);
     const [addCourseID, setAddCourseID] = useState(null);
@@ -157,7 +164,7 @@ export default function CoursesPage() {
                 <Scrollbar>
                     <TableContainer sx={{overflow: 'unset'}}>
                         <Table sx={{minWidth: 800}}>
-                            <CoursesTableHead
+                            <TableMainHead
                                 order={order}
                                 orderBy={orderBy}
                                 rowCount={courses.length}

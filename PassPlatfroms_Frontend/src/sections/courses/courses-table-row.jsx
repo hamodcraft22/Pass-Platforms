@@ -79,7 +79,7 @@ export default function CoursesTableRow({courseID, courseName, courseDesc, sem, 
 
                 <TableCell align={"center"}>{sem}</TableCell>
 
-                <TableCell align={"center"}>{avlb ? (<CheckBoxIcon/>):(<DisabledByDefaultRoundedIcon/>)}</TableCell>
+                <TableCell align={"center"}>{avlb ? (<CheckBoxIcon/>) : (<DisabledByDefaultRoundedIcon/>)}</TableCell>
 
                 <TableCell align={"right"}>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon

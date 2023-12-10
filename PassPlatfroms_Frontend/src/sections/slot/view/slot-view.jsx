@@ -11,12 +11,15 @@ import TablePagination from '@mui/material/TablePagination';
 
 import Scrollbar from '../../../components/scrollbar';
 
-import TableNoData from '../table-no-data';
+import TableNoData from '../../../components/table/table-no-data';
+import TableMainHead from '../../../components/table/table-head';
+import TableEmptyRows from '../../../components/table/table-empty-rows';
+import {emptyRows, getComparator} from '../../../components/table/utils';
+import {applyFilter} from '../filterUtil';
+
+
 import CoursesTableRow from '../courses-table-row';
-import CoursesTableHead from '../courses-table-head';
-import TableEmptyRows from '../table-empty-rows';
 import CoursesTableToolbar from '../courses-table-toolbar';
-import {applyFilter, emptyRows, getComparator} from '../utils';
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
 import {useSearchParams} from "react-router-dom";
@@ -155,7 +158,7 @@ export default function SlotPage() {
                 <Scrollbar>
                     <TableContainer sx={{overflow: 'unset'}}>
                         <Table sx={{minWidth: 800}}>
-                            <CoursesTableHead
+                            <TableMainHead
                                 order={order}
                                 orderBy={orderBy}
                                 rowCount={userSlots.length}

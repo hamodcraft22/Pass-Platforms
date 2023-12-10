@@ -70,27 +70,25 @@ export default function SchoolsTableRow({schoolID, schoolName, schoolDesc}) {
     }
 
     // edit schools api
-    async function editSchool()
-    {
-        try
-        {
+    async function editSchool() {
+        try {
             const requestOptions =
                 {
                     method: "PUT",
-                    headers: { 'Content-Type': 'application/json', 'Authorization': '27afc256-2734-4a04-8c8e-49997bb0f638'},
-                    body: JSON.stringify({"schoolid":schoolID, "schoolname":editSchoolName, "schooldesc":editSchoolDesc})
+                    headers: {'Content-Type': 'application/json', 'Authorization': '27afc256-2734-4a04-8c8e-49997bb0f638'},
+                    body: JSON.stringify({"schoolid": schoolID, "schoolname": editSchoolName, "schooldesc": editSchoolDesc})
                 };
 
             await fetch(`http://localhost:8080/api/school`, requestOptions)
-                .then(response => {return response.json()})
-                .then(() => {window.location.reload(false)});
-        }
-        catch (error)
-        {
+                .then(response => {
+                    return response.json()
+                })
+                .then(() => {
+                    window.location.reload(false)
+                });
+        } catch (error) {
             console.log(error)
-        }
-        finally
-        {
+        } finally {
             setShowEditDialog(false);
 
             setEditSchoolName(null);
