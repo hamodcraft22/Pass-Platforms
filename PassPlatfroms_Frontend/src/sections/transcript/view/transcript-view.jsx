@@ -18,8 +18,8 @@ import {emptyRows, getComparator} from '../../../components/table/utils';
 import {applyFilter} from '../filterUtil';
 
 
-import CoursesTableRow from '../courses-table-row';
-import CoursesTableToolbar from '../courses-table-toolbar';
+import TranscriptTableRow from '../transcript-table-row';
+import TranscriptTableToolbar from '../transcript-table-toolbar';
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
 import {useSearchParams} from "react-router-dom";
@@ -174,7 +174,7 @@ export default function TranscriptPage() {
             </Stack>
 
             <Card>
-                <CoursesTableToolbar
+                <TranscriptTableToolbar
                     numSelected={selected.length}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
@@ -201,7 +201,7 @@ export default function TranscriptPage() {
                                 {dataFiltered
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
-                                        <CoursesTableRow
+                                        <TranscriptTableRow
                                             courseID={row.userid}
                                             name={row.name}
                                             grade={row.grade}

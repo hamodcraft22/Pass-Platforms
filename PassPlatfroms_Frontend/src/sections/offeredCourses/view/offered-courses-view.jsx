@@ -19,9 +19,9 @@ import {emptyRows, getComparator} from '../../../components/table/utils';
 import {applyFilter} from '../filterUtil';
 
 
-import CoursesTableRow from '../courses-table-row';
+import OfferedCoursesTableRow from '../offeredCourses-table-row';
 
-import CoursesTableToolbar from '../courses-table-toolbar';
+import OfferedCoursesTableToolbar from '../offeredCourses-table-toolbar';
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
 import {useSearchParams} from "react-router-dom";
@@ -132,7 +132,7 @@ export default function OfferedCoursesPage() {
             </Stack>
 
             <Card>
-                <CoursesTableToolbar
+                <OfferedCoursesTableToolbar
                     numSelected={selected.length}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
@@ -159,7 +159,7 @@ export default function OfferedCoursesPage() {
                                 {dataFiltered
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
-                                        <CoursesTableRow
+                                        <OfferedCoursesTableRow
                                             offerID={row.offerID}
                                             courseID={row.userid}
                                             courseName={row.name}

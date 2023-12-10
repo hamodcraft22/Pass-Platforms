@@ -18,8 +18,8 @@ import {emptyRows, getComparator} from '../../../components/table/utils';
 import {applyFilter} from '../filterUtil';
 
 
-import CoursesTableRow from '../courses-table-row';
-import CoursesTableToolbar from '../courses-table-toolbar';
+import SlotTableRow from '../slot-table-row';
+import SlotTableToolbar from '../slot-table-toolbar';
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
 import {useSearchParams} from "react-router-dom";
@@ -149,7 +149,7 @@ export default function SlotPage() {
             </Stack>
 
             <Card>
-                <CoursesTableToolbar
+                <SlotTableToolbar
                     numSelected={selected.length}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
@@ -178,7 +178,7 @@ export default function SlotPage() {
                                 {dataFiltered
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
-                                        <CoursesTableRow
+                                        <SlotTableRow
                                             slotID={row.slotID}
                                             day={row.day}
                                             startTime={row.startTime}

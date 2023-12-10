@@ -9,7 +9,7 @@ import Iconify from '../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function CoursesTableToolbar({numSelected, filterName, onFilterName}) {
+export default function ScheduleTableToolbar({numSelected, filterName, onFilterName}) {
     return (
         <Toolbar
             sx={{
@@ -47,7 +47,7 @@ export default function CoursesTableToolbar({numSelected, filterName, onFilterNa
     );
 }
 
-CoursesTableToolbar.propTypes = {
+ScheduleTableToolbar.propTypes = {
     numSelected: PropTypes.number,
     filterName: PropTypes.string,
     onFilterName: PropTypes.func,

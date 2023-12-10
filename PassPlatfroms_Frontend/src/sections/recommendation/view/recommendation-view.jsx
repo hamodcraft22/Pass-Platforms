@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import React, {useState} from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -15,11 +15,19 @@ import TableNoData from '../../../components/table/table-no-data';
 import TableMainHead from '../../../components/table/table-head';
 import TableEmptyRows from '../../../components/table/table-empty-rows';
 
-import UserTableRow from '../user-table-row';
-import UserTableToolbar from '../user-table-toolbar';
+import RecommendationTableRow from '../recommendation-table-row';
+import RecommendationTableToolbar from '../recommendation-table-toolbar';
 
 import {emptyRows, getComparator} from '../../../components/table/utils';
 import {applyFilter} from '../filterUtil';
+import Button from "@mui/material/Button";
+import Iconify from "../../../components/iconify";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import MultiSelect from "../../offeredCourses/MultiSelect";
+import DialogActions from "@mui/material/DialogActions";
+import {Autocomplete, TextField} from "@mui/material";
 
 
 // ----------------------------------------------------------------------
@@ -105,18 +113,31 @@ export default function RecommendationPage() {
 
     const notFound = !dataFiltered.length && !!filterName;
 
+
+    const [showAddDialog, setShowAddDialog] = useState(false);
+
+    const handleAddClickOpen = () => {
+        setShowAddDialog(true);
+    };
+    const handleAddClose = () => {
+        setShowAddDialog(false);
+    };
+    const handleAddSave = () => {
+        setShowAddDialog(false);
+    };
+
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4">Users</Typography>
+                <Typography variant="h4">Recommendations</Typography>
 
-                {/*<Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}>*/}
-                {/*    New User*/}
-                {/*</Button>*/}
+                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} onClick={handleAddClickOpen}>
+                    New Recommendation
+                </Button>
             </Stack>
 
             <Card>
-                <UserTableToolbar
+                <RecommendationTableToolbar
                     numSelected={selected.length}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
@@ -134,8 +155,8 @@ export default function RecommendationPage() {
                                 onSelectAllClick={handleSelectAllClick}
                                 headLabel={[
                                     {id: '', label: ''},
-                                    {id: 'name', label: 'Name'},
-                                    {id: 'User ID', label: 'User ID'},
+                                    {id: 'student', label: 'Student'},
+                                    {id: 'date', label: 'Date'},
                                     {id: 'role', label: 'Role'},
                                     {id: '', label: ''}
                                 ]}
@@ -144,14 +165,13 @@ export default function RecommendationPage() {
                                 {dataFiltered
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
-                                        <UserTableRow
-                                            key={row.userid}
-                                            name={row.name}
-                                            userid={row.userid}
-                                            role={row.role}
-                                            avatarUrl={row.avatarUrl}
-                                            selected={selected.indexOf(row.name) !== -1}
-                                            handleClick={(event) => handleClick(event, row.name)}
+                                        <RecommendationTableRow
+                                            key={row.recID}
+                                            student={row.student}
+                                            tutor={row.tutor}
+                                            date={row.date}
+                                            note={row.note}
+                                            status={row.status}
                                         />
                                     ))}
 
@@ -175,6 +195,33 @@ export default function RecommendationPage() {
                     rowsPerPageOptions={[5, 10, 25, 50]}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
+
+                {/* Add dialog */}
+                <Dialog
+                    open={showAddDialog}
+                    onClose={handleAddClose}
+                >
+                    <DialogTitle>
+                        Add New Recommendation
+                    </DialogTitle>
+                    <DialogContent>
+                        <div style={{marginTop: "5px"}}>
+                            <Autocomplete
+                                disablePortal
+                                options={[]}
+                                sx={{ width: 300 }}
+                                renderInput={(params) => <TextField {...params} label="Student" />}
+                            />
+                            <TextField label="Note" multiline rows={2} fullWidth sx={{mt:2}}/>
+                        </div>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleAddClose}>Cancel</Button>
+                        <Button onClick={handleAddSave} autoFocus>
+                            Save
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </Card>
         </Container>
     );

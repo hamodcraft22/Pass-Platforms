@@ -24,7 +24,7 @@ import moment from "moment";
 
 // ----------------------------------------------------------------------
 
-export default function CoursesTableRow({slotID, day, startTime, endTime, note, isOnline}) {
+export default function ScheduleTableRow({slotID, day, startTime, endTime, note, isOnline}) {
     const [showViewDialog, setShowViewDialog] = useState(false);
     const handleViewClickOpen = () => {
         setShowViewDialog(true);
@@ -57,12 +57,10 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
     const [showEditDialog, setShowEditDialog] = useState(false);
 
     const [editSlotDay, setEditSlotDay] = useState(null);
-    const [editSlotOnline, setEditSlotOnline] = useState(false);
 
     const [slotStartTime, setSlotStartTime] = useState(moment({h: 8, m: 0}));
     const [slotEndTime, setSlotEndTime] = useState(moment({h: 22, m: 0}));
 
-    const [editSlotNote, setEditSlotNote] = useState(null);
 
     const [slotSelectedStartTime, setSlotSelectedStartTime] = useState();
     const [slotSelectedEndTime, setSlotSelectedEndTime] = useState();
@@ -71,19 +69,15 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
         setShowEditDialog(true);
 
         setEditSlotDay(day);
-        setEditSlotOnline(isOnline);
         //setSlotSelectedStartTime(startTime);
         //setSlotSelectedEndTime(endTime);
-        setEditSlotNote(note);
     };
     const handleEditClose = () => {
         setShowEditDialog(false);
 
         setEditSlotDay(null);
-        setEditSlotOnline(null);
         setSlotSelectedStartTime(null);
         setSlotSelectedEndTime(null);
-        setEditSlotNote(null);
     };
     const handleEditSave = () => {
         setShowEditDialog(false);
@@ -151,11 +145,8 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
                     Edit Slot
                 </DialogTitle>
                 <DialogContent>
-                    <FormHelperText>You can only change the note and the online rule.</FormHelperText>
 
-
-                    <TextField InputProps={{readOnly: true}} select label="Day" sx={{mt: 1}} value={editSlotDay}
-                               fullWidth>
+                    <TextField select label="Day" sx={{width: '100%', mt: 1}} value={editSlotDay} onChange={(event, newValue) => {setEditSlotDay(newValue.props.value)}}>
                         <MenuItem value={'U'}>Sunday</MenuItem>
                         <MenuItem value={'M'}>Monday</MenuItem>
                         <MenuItem value={'T'}>Tuesday</MenuItem>
@@ -164,18 +155,16 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
                         <MenuItem value={'F'}>Friday</MenuItem>
                         <MenuItem value={'S'}>Saturday</MenuItem>
                     </TextField>
+                    <FormHelperText>Which day is your session.</FormHelperText>
 
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker sx={{mt: 2, mr: 1}} label="Start Time" minTime={slotStartTime} maxTime={slotEndTime} value={slotSelectedStartTime} onChange={(newValue) => {
-                            setSlotSelectedStartTime(newValue)
-                        }}/>
+                        <TimePicker sx={{mt: 2, mr: 1}} label="Start Time" minTime={slotStartTime}
+                                    maxTime={slotEndTime} value={slotSelectedStartTime} onChange={(newValue) => {setSlotSelectedStartTime(newValue)}}/>
                     </LocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker sx={{mt: 2}} label="End Time" minTime={slotStartTime} maxTime={slotEndTime} value={slotSelectedEndTime} onChange={(newValue) => {
-                            setSlotSelectedEndTime(newValue)
-                        }}/>
+                        <TimePicker sx={{mt: 2}} label="End Time" minTime={slotStartTime} maxTime={slotEndTime} value={slotSelectedEndTime} onChange={(newValue) => {setSlotSelectedEndTime(newValue)}}/>
                     </LocalizationProvider>
-
+                    <FormHelperText>Select start and end time for the scheduled session.</FormHelperText>
 
                 </DialogContent>
                 <DialogActions>
@@ -211,7 +200,7 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
     );
 }
 
-CoursesTableRow.propTypes = {
+ScheduleTableRow.propTypes = {
     avatarUrl: PropTypes.any,
     handleClick: PropTypes.func,
     name: PropTypes.any,

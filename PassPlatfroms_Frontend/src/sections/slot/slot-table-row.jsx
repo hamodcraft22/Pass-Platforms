@@ -25,7 +25,7 @@ import moment from "moment";
 
 // ----------------------------------------------------------------------
 
-export default function CoursesTableRow({slotID, day, startTime, endTime, note, isOnline}) {
+export default function SlotTableRow({slotID, day, startTime, endTime, note, isOnline}) {
     const [showViewDialog, setShowViewDialog] = useState(false);
     const handleViewClickOpen = () => {
         setShowViewDialog(true);
@@ -155,9 +155,6 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
                     Edit Slot
                 </DialogTitle>
                 <DialogContent>
-                    <FormHelperText>You can only change the note and the online rule.</FormHelperText>
-
-
                     <TextField InputProps={{readOnly: true}} select label="Day" sx={{mt: 1}} value={editSlotDay}
                                fullWidth>
                         <MenuItem value={'U'}>Sunday</MenuItem>
@@ -168,6 +165,7 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
                         <MenuItem value={'F'}>Friday</MenuItem>
                         <MenuItem value={'S'}>Saturday</MenuItem>
                     </TextField>
+                    <FormHelperText>Day is none-editable</FormHelperText>
 
                     <LocalizationProvider dateAdapter={AdapterMoment}>
                         <TimePicker readOnly sx={{mt: 2, mr: 1}} label="Start Time" minTime={slotStartTime} maxTime={slotEndTime} value={slotSelectedStartTime} onChange={(newValue) => {
@@ -179,6 +177,7 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
                             setSlotSelectedEndTime(newValue)
                         }}/>
                     </LocalizationProvider>
+                    <FormHelperText>Times are none-editable</FormHelperText>
 
                     <TextField sx={{width: '100%', mt: 2}} label="Slot Note" variant="outlined" multiline rows={2} value={editSlotNote} onChange={(newValue) => setEditSlotNote(newValue.target.value)}/>
 
@@ -229,7 +228,7 @@ export default function CoursesTableRow({slotID, day, startTime, endTime, note, 
     );
 }
 
-CoursesTableRow.propTypes = {
+SlotTableRow.propTypes = {
     avatarUrl: PropTypes.any,
     handleClick: PropTypes.func,
     name: PropTypes.any,

@@ -13,7 +13,7 @@ import DialogActions from "@mui/material/DialogActions";
 
 // ----------------------------------------------------------------------
 
-export default function CoursesTableRow({courseID, name, grade, desc, sem, avlb}) {
+export default function TranscriptTableRow({courseID, name, grade, desc, sem, avlb}) {
 
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -67,7 +67,7 @@ export default function CoursesTableRow({courseID, name, grade, desc, sem, avlb}
     );
 }
 
-CoursesTableRow.propTypes = {
+TranscriptTableRow.propTypes = {
     avatarUrl: PropTypes.any,
     handleClick: PropTypes.func,
     name: PropTypes.any,

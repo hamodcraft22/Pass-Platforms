@@ -17,8 +17,8 @@ import TableEmptyRows from '../../../components/table/table-empty-rows';
 import {emptyRows, getComparator} from '../../../components/table/utils';
 import {applyFilter} from '../filterUtil';
 
-import CoursesTableRow from '../courses-table-row';
-import CoursesTableToolbar from '../courses-table-toolbar';
+import ScheduleTableRow from '../schedule-table-row';
+import ScheduleTableToolbar from '../schedule-table-toolbar';
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
 import {useSearchParams} from "react-router-dom";
@@ -147,7 +147,7 @@ export default function SchedulePage() {
             </Stack>
 
             <Card>
-                <CoursesTableToolbar
+                <ScheduleTableToolbar
                     numSelected={selected.length}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
@@ -175,7 +175,7 @@ export default function SchedulePage() {
                                 {dataFiltered
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
-                                        <CoursesTableRow
+                                        <ScheduleTableRow
                                             slotID={row.slotID}
                                             day={row.day}
                                             startTime={row.startTime}
