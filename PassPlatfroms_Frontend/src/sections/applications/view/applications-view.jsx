@@ -21,11 +21,9 @@ import ApplicationsTableToolbar from '../applications-table-toolbar';
 import {emptyRows, getComparator} from '../../../components/table/utils';
 import {applyFilter} from '../filterUtil';
 import Button from "@mui/material/Button";
-import Iconify from "../../../components/iconify";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import MultiSelect from "../../offeredCourses/MultiSelect";
 import DialogActions from "@mui/material/DialogActions";
 import {Autocomplete, TextField} from "@mui/material";
 
@@ -204,10 +202,10 @@ export default function ApplicationsPage() {
                             <Autocomplete
                                 disablePortal
                                 options={[]}
-                                sx={{ width: 300 }}
-                                renderInput={(params) => <TextField {...params} label="Student" />}
+                                sx={{width: 300}}
+                                renderInput={(params) => <TextField {...params} label="Student"/>}
                             />
-                            <TextField label="Note" multiline rows={2} fullWidth sx={{mt:2}}/>
+                            <TextField label="Note" multiline rows={2} fullWidth sx={{mt: 2}}/>
                         </div>
                     </DialogContent>
                     <DialogActions>

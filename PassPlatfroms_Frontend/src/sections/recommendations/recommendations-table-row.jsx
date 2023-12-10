@@ -1,17 +1,10 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-
-import Stack from '@mui/material/Stack';
-import Avatar from '@mui/material/Avatar';
-import Popover from '@mui/material/Popover';
 import TableRow from '@mui/material/TableRow';
-import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
 
 import Label from '../../components/label';
-import Iconify from '../../components/iconify';
 import Button from "@mui/material/Button";
 import InfoIcon from "@mui/icons-material/Info";
 import EditIcon from "@mui/icons-material/Edit";
@@ -20,16 +13,12 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import {Autocomplete, FormHelperText, TextField} from "@mui/material";
-import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
-import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
-import {TimePicker} from "@mui/x-date-pickers";
+import {Autocomplete, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 
 // ----------------------------------------------------------------------
 
-export default function RecommendationsTableRow({key, student, tutor, date, note, status})
-{
+export default function RecommendationsTableRow({key, student, tutor, date, note, status}) {
     const [showViewDialog, setShowViewDialog] = useState(false);
     const handleViewClickOpen = () => {
         setShowViewDialog(true);
@@ -69,9 +58,9 @@ export default function RecommendationsTableRow({key, student, tutor, date, note
                 <TableCell></TableCell>
 
                 <TableCell component="th" scope="row" padding="none">
-                        <Typography variant="subtitle2" noWrap>
-                            {student}
-                        </Typography>
+                    <Typography variant="subtitle2" noWrap>
+                        {student}
+                    </Typography>
                 </TableCell>
 
                 <TableCell>{date}</TableCell>
@@ -115,11 +104,11 @@ export default function RecommendationsTableRow({key, student, tutor, date, note
                     Edit Recommendation
                 </DialogTitle>
                 <DialogContent>
-                    <div style={{margin:"5px"}}>
+                    <div style={{margin: "5px"}}>
                         <Autocomplete
                             options={[]}
-                            sx={{ width: 300 }}
-                            renderInput={(params) => <TextField {...params} label="Status" />}
+                            sx={{width: 300}}
+                            renderInput={(params) => <TextField {...params} label="Status"/>}
                         />
                     </div>
                 </DialogContent>

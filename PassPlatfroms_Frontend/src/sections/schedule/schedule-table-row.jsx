@@ -146,7 +146,9 @@ export default function ScheduleTableRow({slotID, day, startTime, endTime, note,
                 </DialogTitle>
                 <DialogContent>
 
-                    <TextField select label="Day" sx={{width: '100%', mt: 1}} value={editSlotDay} onChange={(event, newValue) => {setEditSlotDay(newValue.props.value)}}>
+                    <TextField select label="Day" sx={{width: '100%', mt: 1}} value={editSlotDay} onChange={(event, newValue) => {
+                        setEditSlotDay(newValue.props.value)
+                    }}>
                         <MenuItem value={'U'}>Sunday</MenuItem>
                         <MenuItem value={'M'}>Monday</MenuItem>
                         <MenuItem value={'T'}>Tuesday</MenuItem>
@@ -159,10 +161,14 @@ export default function ScheduleTableRow({slotID, day, startTime, endTime, note,
 
                     <LocalizationProvider dateAdapter={AdapterMoment}>
                         <TimePicker sx={{mt: 2, mr: 1}} label="Start Time" minTime={slotStartTime}
-                                    maxTime={slotEndTime} value={slotSelectedStartTime} onChange={(newValue) => {setSlotSelectedStartTime(newValue)}}/>
+                                    maxTime={slotEndTime} value={slotSelectedStartTime} onChange={(newValue) => {
+                            setSlotSelectedStartTime(newValue)
+                        }}/>
                     </LocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker sx={{mt: 2}} label="End Time" minTime={slotStartTime} maxTime={slotEndTime} value={slotSelectedEndTime} onChange={(newValue) => {setSlotSelectedEndTime(newValue)}}/>
+                        <TimePicker sx={{mt: 2}} label="End Time" minTime={slotStartTime} maxTime={slotEndTime} value={slotSelectedEndTime} onChange={(newValue) => {
+                            setSlotSelectedEndTime(newValue)
+                        }}/>
                     </LocalizationProvider>
                     <FormHelperText>Select start and end time for the scheduled session.</FormHelperText>
 
