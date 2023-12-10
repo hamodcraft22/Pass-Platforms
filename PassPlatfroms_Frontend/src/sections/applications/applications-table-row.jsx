@@ -28,16 +28,8 @@ import DialogActions from "@mui/material/DialogActions";
 
 // ----------------------------------------------------------------------
 
-export default function RecommendationTableRow({key, student, tutor, date, note, status})
+export default function ApplicationsTableRow({key, student, tutor, date, note, status})
 {
-    const [showViewDialog, setShowViewDialog] = useState(false);
-    const handleViewClickOpen = () => {
-        setShowViewDialog(true);
-    };
-    const handleViewClose = () => {
-        setShowViewDialog(false);
-    };
-
     const [showEditDialog, setShowEditDialog] = useState(false);
 
     const handleEditClickOpen = () => {
@@ -79,32 +71,12 @@ export default function RecommendationTableRow({key, student, tutor, date, note,
                 <TableCell><Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label></TableCell>
 
                 <TableCell align="right">
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"}><InfoIcon fontSize={"small"}/></Button>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"} onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"} onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
                 </TableCell>
             </TableRow>
 
-            {/* view dialog */}
-            <Dialog
-                open={showViewDialog}
-                onClose={handleViewClose}
-            >
-                <DialogTitle>
-                    Recommendation Information
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        <TextField label="Student" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={student}/>
-                        {/*only show tutor when user is manager or admin*/}
-                        <TextField label="Tutor" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={tutor}/>
-
-                        <TextField label="Status" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={status}/>
-                        <TextField label="Date" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={date}/>
-                        <TextField label="Note" variant="standard" fullWidth sx={{mb: 1, mt: 2}} multiline rows={2} InputProps={{readOnly: true}} defaultValue={note}/>
-                    </DialogContentText>
-                </DialogContent>
-            </Dialog>
 
             {/* Edit dialog */}
             <Dialog
@@ -112,7 +84,7 @@ export default function RecommendationTableRow({key, student, tutor, date, note,
                 onClose={handleEditClose}
             >
                 <DialogTitle>
-                    Edit Recommendation
+                    Edit Application
                 </DialogTitle>
                 <DialogContent>
                     <div style={{margin:"5px"}}>
@@ -137,11 +109,11 @@ export default function RecommendationTableRow({key, student, tutor, date, note,
                 onClose={handleDeleteClose}
             >
                 <DialogTitle>
-                    Delete Recommendation
+                    Delete Application
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete the Recommendation for <b>{student}</b>?
+                        Are you sure you want to delete the Application for <b>{student}</b>? it will be fully deleted from the database.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -155,7 +127,7 @@ export default function RecommendationTableRow({key, student, tutor, date, note,
     );
 }
 
-RecommendationTableRow.propTypes = {
+ApplicationsTableRow.propTypes = {
     avatarUrl: PropTypes.any,
     handleClick: PropTypes.func,
     name: PropTypes.any,

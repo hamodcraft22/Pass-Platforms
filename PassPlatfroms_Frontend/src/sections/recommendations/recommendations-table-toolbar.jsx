@@ -9,7 +9,7 @@ import Iconify from '../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function RecommendationTableToolbar({numSelected, filterName, onFilterName}) {
+export default function RecommendationsTableToolbar({numSelected, filterName, onFilterName}) {
     return (
         <Toolbar
             sx={{
@@ -47,7 +47,7 @@ export default function RecommendationTableToolbar({numSelected, filterName, onF
     );
 }
 
-RecommendationTableToolbar.propTypes = {
+RecommendationsTableToolbar.propTypes = {
     numSelected: PropTypes.number,
     filterName: PropTypes.string,
     onFilterName: PropTypes.func,

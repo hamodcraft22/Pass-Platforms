@@ -15,8 +15,8 @@ import TableNoData from '../../../components/table/table-no-data';
 import TableMainHead from '../../../components/table/table-head';
 import TableEmptyRows from '../../../components/table/table-empty-rows';
 
-import RecommendationTableRow from '../recommendation-table-row';
-import RecommendationTableToolbar from '../recommendation-table-toolbar';
+import ApplicationsTableRow from '../applications-table-row';
+import ApplicationsTableToolbar from '../applications-table-toolbar';
 
 import {emptyRows, getComparator} from '../../../components/table/utils';
 import {applyFilter} from '../filterUtil';
@@ -32,7 +32,7 @@ import {Autocomplete, TextField} from "@mui/material";
 
 // ----------------------------------------------------------------------
 
-export default function RecommendationPage() {
+export default function ApplicationsPage() {
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState('asc');
@@ -129,15 +129,11 @@ export default function RecommendationPage() {
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4">Recommendations</Typography>
-
-                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} onClick={handleAddClickOpen}>
-                    New Recommendation
-                </Button>
+                <Typography variant="h4">Applications</Typography>
             </Stack>
 
             <Card>
-                <RecommendationTableToolbar
+                <ApplicationsTableToolbar
                     numSelected={selected.length}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
@@ -157,7 +153,7 @@ export default function RecommendationPage() {
                                     {id: '', label: ''},
                                     {id: 'student', label: 'Student'},
                                     {id: 'date', label: 'Date'},
-                                    {id: 'role', label: 'Role'},
+                                    {id: 'status', label: 'Status'},
                                     {id: '', label: ''}
                                 ]}
                             />
@@ -165,10 +161,9 @@ export default function RecommendationPage() {
                                 {dataFiltered
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
-                                        <RecommendationTableRow
-                                            key={row.recID}
+                                        <ApplicationsTableRow
+                                            key={row.applicationID}
                                             student={row.student}
-                                            tutor={row.tutor}
                                             date={row.date}
                                             note={row.note}
                                             status={row.status}

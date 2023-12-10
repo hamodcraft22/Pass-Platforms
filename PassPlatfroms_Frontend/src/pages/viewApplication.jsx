@@ -1,17 +1,17 @@
 import {Helmet} from 'react-helmet-async';
 
-import {RecommendationView} from '../sections/recommendation/view';
+import {ViewApplicationView} from '../sections/viewApplication/view';
 
 // ----------------------------------------------------------------------
 
-export default function RecommendationPage() {
+export default function ViewApplicationPage() {
     return (
         <>
             <Helmet>
-                <title> Recommendations </title>
+                <title> View Application </title>
             </Helmet>
 
-            <RecommendationView/>
+            <ViewApplicationView/>
         </>
     );
 }
