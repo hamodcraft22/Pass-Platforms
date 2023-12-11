@@ -261,7 +261,7 @@ export default function TranscriptPage() {
                                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                             >
                                                 <TableCell component="th" scope="row">
-                                                    {course.code}{course.number}
+                                                    {course.code}{course.number} {course.title}
                                                 </TableCell>
                                                 <TableCell align="center">{course.grade}</TableCell>
                                             </TableRow>
