@@ -171,7 +171,7 @@ export default function ViewApplicationPage() {
                     <Grid xs={12} md={6} lg={4}>
                         <Card sx={{backgroundColor: '#f5f5f5'}}>
                             <CardContent>
-                                <Typography variant="h6">Booking Information</Typography>
+                                <Typography variant="h6">Application Information</Typography>
 
                                 <TextField label="Student" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={"asd"}/>
                                 <TextField label="Application Date" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={"asd"}/>
@@ -194,7 +194,7 @@ export default function ViewApplicationPage() {
                     <Grid xs={12} md={6} lg={8}>
                         <Card>
                             <CardContent>
-                                <Typography variant="h6" sx={{mb: 2}}>Booking Notes</Typography>
+                                <Typography variant="h6" sx={{mb: 2}}>Application Notes</Typography>
 
                                 {/* loop to display all notes */}
                                 <Card sx={{mb: 2, backgroundColor: '#fafff8'}}>

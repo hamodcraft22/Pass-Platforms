@@ -19,6 +19,7 @@ export const RecommendationsPage = lazy(() => import('../pages/recommendations')
 export const ApplicationsPage = lazy(() => import('../pages/applications'));
 export const ViewApplicationPage = lazy(() => import('../pages/viewApplication'));
 export const BookingsPage = lazy(() => import('../pages/bookings'));
+export const ViewBookingPage = lazy(() => import('../pages/viewBooking'));
 
 
 // ----------------------------------------------------------------------
@@ -49,6 +50,7 @@ export default function Router() {
                 {path: 'applications', element: <ApplicationsPage/>},
                 {path: 'viewApplication', element: <ViewApplicationPage/>},
                 {path: 'bookings', element: <BookingsPage/>},
+                {path: 'viewBooking', element: <ViewBookingPage/>},
             ],
         },
         {
