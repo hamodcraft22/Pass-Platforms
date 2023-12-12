@@ -4,7 +4,7 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
-import {Alert, Autocomplete, CardContent, Divider, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField} from "@mui/material";
+import {Alert, CardContent, Divider, FormHelperText, Snackbar, TextField} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
@@ -23,11 +23,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import moment from "moment/moment";
-import InputAdornment from "@mui/material/InputAdornment";
-import {AccountCircle} from "@mui/icons-material";
-import List from "@mui/material/List";
-import ListItemText from "@mui/material/ListItemText";
 
 
 // ----------------------------------------------------------------------
@@ -56,35 +51,26 @@ export default function ViewApplicationPage() {
     const [applicationNote, setApplicationNote] = useState("");
 
     function nextSection() {
-        if (shownSection === 1)
-        {
-            if (courses !== null && courses !== undefined && Object.keys(courses).length !== 0)
-            {
+        if (shownSection === 1) {
+            if (courses !== null && courses !== undefined && Object.keys(courses).length !== 0) {
                 setShownSection((shownSection) + 1);
-            }
-            else
-            {
+            } else {
                 setErrorMsg("Please Upload your transcript.");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 2)
-        {
-            if (applicationNote !== null && applicationNote !== undefined && Object.keys(applicationNote).length !== 0)
-            {
+        if (shownSection === 2) {
+            if (applicationNote !== null && applicationNote !== undefined && Object.keys(applicationNote).length !== 0) {
                 setShownSection((shownSection) + 1);
-            }
-            else
-            {
+            } else {
                 setErrorMsg("Please type your note.");
                 setErrorShow(true);
             }
         }
 
 
-        if (shownSection === 3)
-        {
+        if (shownSection === 3) {
             alert("call api and show results based on api return");
             setProgPercent(100);
             // change color of progress to red if it is error etc
@@ -268,7 +254,7 @@ export default function ViewApplicationPage() {
                         shownSection === 1 && <Card>
                             <div style={{padding: "15px"}}>
                                 <Typography variant="h6">Uplaod Transcript:</Typography>
-                                <Button component="label" variant="contained" startIcon={<CloudUploadIcon/>} fullWidth sx={{mt:2}}>
+                                <Button component="label" variant="contained" startIcon={<CloudUploadIcon/>} fullWidth sx={{mt: 2}}>
                                     Upload file
                                     <VisuallyHiddenInput type="file" onChange={handleFileChange} accept=".pdf"/>
                                 </Button>
@@ -308,7 +294,7 @@ export default function ViewApplicationPage() {
                         shownSection === 2 && <Card>
                             <div style={{padding: "15px"}}>
                                 <Typography variant="h6">Application Note:</Typography>
-                                <TextField sx={{mt:2}} fullWidth multiline minRows={4} label={"Application Note"}  variant={"outlined"} value={applicationNote} onChange={(event) => setApplicationNote(event.target.value) }/>
+                                <TextField sx={{mt: 2}} fullWidth multiline minRows={4} label={"Application Note"} variant={"outlined"} value={applicationNote} onChange={(event) => setApplicationNote(event.target.value)}/>
                             </div>
                         </Card>
                     }
@@ -325,7 +311,7 @@ export default function ViewApplicationPage() {
                                 <FormHelperText sx={{mt: 3, mb: 1}}>Transcript Courses</FormHelperText>
                                 {
                                     Object.keys(courses).length !== 0 &&
-                                    <TableContainer component={CustomPaper} >
+                                    <TableContainer component={CustomPaper}>
                                         <Table aria-label="simple table" sx={{minWidth: "200px"}}>
                                             <TableHead>
                                                 <TableRow>

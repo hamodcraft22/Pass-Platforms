@@ -22,11 +22,6 @@ import {emptyRows, getComparator} from '../../../components/table/utils';
 import {applyFilter} from '../filterUtil';
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import {Autocomplete, TextField} from "@mui/material";
 
 
 // ----------------------------------------------------------------------
@@ -95,26 +90,25 @@ export default function RecommendationsPage() {
     const notFound = !dataFiltered.length && !!filterName;
 
 
-
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4"> Student Name - Bookings</Typography>
 
                 {/* only show if a student */}
-                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} >
+                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}>
                     New Booking
                 </Button>
             </Stack>
 
             {/* leader selection bar - only show if a leader - switch between my bookings & leader bookings / */}
-            <Card sx={{mb:2, p:2, display: 'flex', justifyContent: 'space-around'}}>
+            <Card sx={{mb: 2, p: 2, display: 'flex', justifyContent: 'space-around'}}>
                 <Button variant="contained" color="inherit">My Bookings</Button>
                 <Button variant="contained">Student Bookings</Button>
             </Card>
 
             {/* student selection bar - only show if a student - switch between my bookings & member bookings / */}
-            <Card sx={{mb:2, p:2, display: 'flex', justifyContent: 'space-around'}}>
+            <Card sx={{mb: 2, p: 2, display: 'flex', justifyContent: 'space-around'}}>
                 <Button variant="contained" color="inherit">My Bookings</Button>
                 <Button variant="contained">Member Bookings</Button>
             </Card>

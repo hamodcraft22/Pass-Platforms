@@ -18,8 +18,7 @@ import DialogActions from "@mui/material/DialogActions";
 
 // ----------------------------------------------------------------------
 
-export default function BookingsTableRow({key, student, date, status})
-{
+export default function BookingsTableRow({key, student, date, status}) {
     const [showEditDialog, setShowEditDialog] = useState(false);
 
     const handleEditClickOpen = () => {
@@ -61,7 +60,7 @@ export default function BookingsTableRow({key, student, date, status})
                 <TableCell><Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label></TableCell>
 
                 <TableCell align="right">
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} ><InfoIcon fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"}><InfoIcon fontSize={"small"}/></Button>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"} onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"} onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
                 </TableCell>
