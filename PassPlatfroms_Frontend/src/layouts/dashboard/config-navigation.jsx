@@ -98,6 +98,11 @@ const navConfig = [
         icon: icon('ic_user'),
     },
     {
+        title: 'Revision Registration',
+        path: '/revisionRegistration',
+        icon: icon('ic_user'),
+    },
+    {
         title: 'about',
         path: '/404',
         icon: icon('ic_disabled'),
