@@ -88,6 +88,16 @@ const navConfig = [
         icon: icon('ic_user'),
     },
     {
+        title: 'Revisions',
+        path: '/revisions',
+        icon: icon('ic_user'),
+    },
+    {
+        title: 'View Revision',
+        path: '/viewRevision',
+        icon: icon('ic_user'),
+    },
+    {
         title: 'about',
         path: '/404',
         icon: icon('ic_disabled'),

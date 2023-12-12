@@ -27,7 +27,7 @@ export default function ViewBookingPage() {
 
             {/* top bar */}
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4">Student - Booking</Typography>
+                <Typography variant="h4">Leader / Course - Revision</Typography>
             </Stack>
 
             {/* view application elements - if student with application or a manager / admin */}
@@ -37,19 +37,18 @@ export default function ViewBookingPage() {
                 <Grid xs={12} md={6} lg={4}>
                     <Card sx={{backgroundColor: '#f5f5f5'}}>
                         <CardContent>
-                            <Typography variant="h6">Booking Information</Typography>
-
-                            <TextField label="Student" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={"asd"}/>
+                            <Typography variant="h6">Revision Information</Typography>
 
                             <TextField label="Leader" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={"asd"}/>
 
-                            <TextField label="Booked Date" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={"asd"}/>
+                            <TextField label="Revision Date" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={"asd"}/>
 
+                            {/* Should be renamed to actual time once completed */}
                             <TextField label="Scheduled Time" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={"asd"}/>
 
-                            <TextField label="Booked Status" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={"asd"}/>
+                            <TextField label="Revision Status" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={"asd"}/>
 
-                            <TextField label="Booking Note" variant="standard" fullWidth sx={{mt: 2}} multiline InputProps={{readOnly: true}} defaultValue={"asd"}/>
+                            <TextField label="Revision Note" variant="standard" fullWidth sx={{mt: 2}} multiline InputProps={{readOnly: true}} defaultValue={"asd"}/>
 
                             {/* show icon if online */}
 
@@ -87,10 +86,6 @@ export default function ViewBookingPage() {
                                 Cancel Booking
                             </Button>
 
-                            <Button variant="contained" color={"secondary"} sx={{m: 1}}>
-                                Add Members
-                            </Button>
-
                             {/* finalize booking  - leader only - set actual start and end time, and what was discussed (as final note) */}
                             <Button variant="contained" color={"info"} sx={{m: 1}}>
                                 Complete Session
@@ -104,7 +99,7 @@ export default function ViewBookingPage() {
                 <Grid xs={12} md={6} lg={8}>
                     <Card>
                         <CardContent>
-                            <Typography variant="h6" sx={{mb: 2}}>Booking Notes</Typography>
+                            <Typography variant="h6" sx={{mb: 2}}>Revision Notes</Typography>
 
                             {/* loop to display all notes */}
                             <Card sx={{mb: 2, backgroundColor: '#fafff8'}}>

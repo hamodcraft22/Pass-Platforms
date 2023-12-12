@@ -15,8 +15,8 @@ import TableNoData from '../../../components/table/table-no-data';
 import TableMainHead from '../../../components/table/table-head';
 import TableEmptyRows from '../../../components/table/table-empty-rows';
 
-import BookingsTableRow from '../bookings-table-row';
-import BookingsTableToolbar from '../bookings-table-toolbar';
+import RevisionsTableRow from '../revisions-table-row';
+import RevisionsTableToolbar from '../revisions-table-toolbar';
 
 import {emptyRows, getComparator} from '../../../components/table/utils';
 import {applyFilter} from '../filterUtil';
@@ -93,28 +93,23 @@ export default function RecommendationsPage() {
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4"> Student Name - Bookings</Typography>
+                <Typography variant="h4"> Student Name - Revisions</Typography>
 
-                {/* only show if a student */}
+                {/* only show if a leader */}
                 <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}>
-                    New Booking
+                    New Revision
                 </Button>
             </Stack>
 
             {/* leader selection bar - only show if a leader - switch between my bookings & leader bookings / */}
             <Card sx={{mb: 2, p: 2, display: 'flex', justifyContent: 'space-around'}}>
-                <Button variant="contained" color="inherit">My Bookings</Button>
-                <Button variant="contained">Student Bookings</Button>
+                <Button variant="contained" color="inherit">My Revisions</Button>
+                <Button variant="contained">Student Revisions</Button>
             </Card>
 
-            {/* student selection bar - only show if a student - switch between my bookings & member bookings / */}
-            <Card sx={{mb: 2, p: 2, display: 'flex', justifyContent: 'space-around'}}>
-                <Button variant="contained" color="inherit">My Bookings</Button>
-                <Button variant="contained">Member Bookings</Button>
-            </Card>
 
             <Card>
-                <BookingsTableToolbar
+                <RevisionsTableToolbar
                     numSelected={selected.length}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
@@ -145,7 +140,7 @@ export default function RecommendationsPage() {
                                 {dataFiltered
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
-                                        <BookingsTableRow
+                                        <RevisionsTableRow
                                             key={row.bookingID}
                                             subject={row.course}
                                             student={row.student}

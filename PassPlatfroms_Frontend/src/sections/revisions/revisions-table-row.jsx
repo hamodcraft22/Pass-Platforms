@@ -18,7 +18,7 @@ import DialogActions from "@mui/material/DialogActions";
 
 // ----------------------------------------------------------------------
 
-export default function BookingsTableRow({key, student, date, status}) {
+export default function RevisionsTableRow({key, student, date, status}) {
     const [showEditDialog, setShowEditDialog] = useState(false);
 
     const handleEditClickOpen = () => {
@@ -56,6 +56,7 @@ export default function BookingsTableRow({key, student, date, status}) {
                 </TableCell>
 
                 <TableCell>{date}</TableCell>
+
                 <TableCell>{date}</TableCell>
                 <TableCell>{date}</TableCell>
 
@@ -118,7 +119,7 @@ export default function BookingsTableRow({key, student, date, status}) {
     );
 }
 
-BookingsTableRow.propTypes = {
+RevisionsTableRow.propTypes = {
     avatarUrl: PropTypes.any,
     handleClick: PropTypes.func,
     name: PropTypes.any,
