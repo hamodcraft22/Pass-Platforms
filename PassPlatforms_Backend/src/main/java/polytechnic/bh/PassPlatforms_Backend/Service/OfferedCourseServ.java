@@ -6,7 +6,6 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.OfferedCourseDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.OfferedCourse;
 import polytechnic.bh.PassPlatforms_Backend.Repository.CourseRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.OfferedCourseRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ public class OfferedCourseServ
     private CourseRepo courseRepo;
 
     @Autowired
-    private UserRepo userRepo;
+    private UserServ userServ;
 
     // get all courses - not needed
     public List<OfferedCourseDao> getAllOfferedCourses()
@@ -75,7 +74,7 @@ public class OfferedCourseServ
     {
         OfferedCourse newOfferedCourse = new OfferedCourse();
 
-        newOfferedCourse.setLeader(userRepo.getReferenceById(leaderID));
+        newOfferedCourse.setLeader(userServ.getUser(leaderID));
         newOfferedCourse.setCourse(courseRepo.getReferenceById(courseID));
 
         return new OfferedCourseDao(offeredCourseRepo.save(newOfferedCourse));

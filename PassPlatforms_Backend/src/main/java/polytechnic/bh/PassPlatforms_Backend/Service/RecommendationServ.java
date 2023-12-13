@@ -6,7 +6,6 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.RecommendationDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Recommendation;
 import polytechnic.bh.PassPlatforms_Backend.Repository.RecStatusRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.RecommendationRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -25,7 +24,7 @@ public class RecommendationServ
     private RecStatusRepo recStatusRepo;
 
     @Autowired
-    private UserRepo userRepo;
+    private UserServ userServ;
 
     public List<RecommendationDao> getAllRecommendations()
     {
@@ -53,8 +52,8 @@ public class RecommendationServ
         newRecommendation.setDatetime(Timestamp.from(datetime));
         newRecommendation.setNote(note);
         newRecommendation.setStatus(recStatusRepo.getReferenceById(recStatusID));
-        newRecommendation.setTutor(userRepo.getReferenceById(tutorID));
-        newRecommendation.setStudent(userRepo.getReferenceById(studentID));
+        newRecommendation.setTutor(userServ.getUser(tutorID));
+        newRecommendation.setStudent(userServ.getUser(studentID));
 
         return new RecommendationDao(recommendationRepo.save(newRecommendation));
     }

@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.SlotDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
+import polytechnic.bh.PassPlatforms_Backend.Entity.Child.Leader;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Slot;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.DayRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.SlotRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.SlotTypeRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -26,7 +26,7 @@ public class SlotServ
     private DayRepo dayRepo;
 
     @Autowired
-    private UserRepo userRepo;
+    private UserServ userServ;
 
     @Autowired
     private SlotTypeRepo slotTypeRepo;
@@ -51,17 +51,17 @@ public class SlotServ
 
         for (String userID : userIDs)
         {
-            Optional<User> retrivedUser = userRepo.findById(userID);
-            if (retrivedUser.isPresent())
+            User retrivedUser = userServ.getUser(userID);
+            if (retrivedUser instanceof Leader)
             {
                 List<SlotDao> slots = new ArrayList<>();
 
-                for (Slot retrievedSlot : slotRepo.findSlotsByLeader(retrivedUser.get()))
+                for (Slot retrievedSlot : slotRepo.findSlotsByLeader(retrivedUser))
                 {
                     slots.add(new SlotDao(retrievedSlot));
                 }
 
-                leaderSlots.put(new UserDao(retrivedUser.get()), slots);
+                leaderSlots.put(new UserDao(retrivedUser), slots);
             }
 
         }
@@ -87,7 +87,7 @@ public class SlotServ
         newSlot.setNote(note);
         newSlot.setSlotType(slotTypeRepo.getReferenceById(typeID));
         newSlot.setDay(dayRepo.getReferenceById(dayID));
-        newSlot.setLeader(userRepo.getReferenceById(leaderID));
+        newSlot.setLeader(userServ.getUser(leaderID));
 
         return new SlotDao(slotRepo.save(newSlot));
     }

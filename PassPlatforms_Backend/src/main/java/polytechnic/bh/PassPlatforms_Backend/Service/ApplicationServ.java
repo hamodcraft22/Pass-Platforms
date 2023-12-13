@@ -7,7 +7,6 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationStatusDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Application;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationStatusRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -20,13 +19,13 @@ public class ApplicationServ
 {
 
     @Autowired
-    ApplicationRepo applicationRepo;
+    private ApplicationRepo applicationRepo;
 
     @Autowired
-    ApplicationStatusRepo applicationStatusRepo;
+    private ApplicationStatusRepo applicationStatusRepo;
 
     @Autowired
-    UserRepo userRepo;
+    private UserServ userServ;
 
     // get all applications (with details if needed)
     public List<ApplicationDao> getAllApplications(Boolean details)
@@ -80,7 +79,7 @@ public class ApplicationServ
         newapplicationton.setDatetime(Timestamp.from(Instant.now()));
         newapplicationton.setNote(applicationNote);
         newapplicationton.setApplicationStatus(applicationStatusRepo.getReferenceById('c'));
-        newapplicationton.setUser(userRepo.getReferenceById(studentID));
+        newapplicationton.setUser(userServ.getUser(studentID));
 
         return new ApplicationDao(applicationRepo.save(newapplicationton));
     }

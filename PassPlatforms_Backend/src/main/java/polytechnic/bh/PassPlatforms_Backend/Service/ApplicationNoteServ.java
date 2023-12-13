@@ -8,7 +8,6 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Application;
 import polytechnic.bh.PassPlatforms_Backend.Entity.ApplicationNote;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationNoteRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -27,7 +26,7 @@ public class ApplicationNoteServ
     private ApplicationNoteRepo applicationNoteRepo;
 
     @Autowired
-    private UserRepo userRepo;
+    private UserServ userServ;
 
 
     // get all application Notes - not needed
@@ -96,7 +95,7 @@ public class ApplicationNoteServ
         newApplicationNote.setDatetime(Timestamp.from(Instant.now()));
         newApplicationNote.setNotebody(noteBody);
         newApplicationNote.setApplication(applicationRepo.getReferenceById(applicationID));
-        newApplicationNote.setUser(userRepo.getReferenceById(userID));
+        newApplicationNote.setUser(userServ.getUser(userID));
 
         return new ApplicationNoteDao(applicationNoteRepo.save(newApplicationNote));
     }

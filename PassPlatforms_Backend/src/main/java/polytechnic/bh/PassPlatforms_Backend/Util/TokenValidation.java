@@ -48,9 +48,7 @@ public class TokenValidation
             Date notBefore = jwt.getNotBefore();
             Date expiresAt = jwt.getExpiresAt();
             System.out.println(jwt.getClaims().get("unique_name").toString().substring(1, jwt.getClaims().get("unique_name").toString().indexOf("@")));
-            return notBefore != null && expiresAt != null
-                    && now.toInstant().compareTo(notBefore.toInstant()) >= 0
-                    && now.toInstant().isBefore(expiresAt.toInstant()); // valid
+            return notBefore != null && expiresAt != null && now.toInstant().compareTo(notBefore.toInstant()) >= 0 && now.toInstant().isBefore(expiresAt.toInstant()); // valid
         }
         catch (MalformedURLException | JwkException | SignatureVerificationException e)
         {

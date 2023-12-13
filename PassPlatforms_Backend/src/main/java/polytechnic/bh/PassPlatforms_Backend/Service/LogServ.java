@@ -6,7 +6,6 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.LogDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Log;
 import polytechnic.bh.PassPlatforms_Backend.Repository.LogRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -18,10 +17,10 @@ import java.util.Optional;
 public class LogServ
 {
     @Autowired
-    LogRepo logRepo;
+    private LogRepo logRepo;
 
     @Autowired
-    UserRepo userRepo;
+    private UserServ userServ;
 
     // get all logs
     public List<LogDao> getAllLogs()
@@ -56,7 +55,7 @@ public class LogServ
 
         newLog.setErrormsg(errorMsg);
         newLog.setDatetime(Timestamp.from(Instant.now()));
-        newLog.setUser(userRepo.getReferenceById(userID));
+        newLog.setUser(userServ.getUser(userID));
 
         return new LogDao(logRepo.save(newLog));
     }

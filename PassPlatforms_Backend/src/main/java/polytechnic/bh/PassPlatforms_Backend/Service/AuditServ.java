@@ -7,7 +7,6 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.AuditDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Audit;
 import polytechnic.bh.PassPlatforms_Backend.Repository.AuditRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -20,10 +19,10 @@ import java.util.Optional;
 public class AuditServ
 {
     @Autowired
-    AuditRepo auditRepo;
+    private AuditRepo auditRepo;
 
     @Autowired
-    UserRepo userRepo;
+    private UserServ userServ;
 
     // get all audits
     public List<AuditDao> getAllAudits()
@@ -64,7 +63,7 @@ public class AuditServ
         newAudit.setDatetime(Timestamp.from(Instant.now()));
         newAudit.setOldvalue(SerializationUtils.serialize(oldValue));
         newAudit.setOldvalue(SerializationUtils.serialize(newValue));
-        newAudit.setUser(userRepo.getReferenceById(userID));
+        newAudit.setUser(userServ.getUser(userID));
 
         return new AuditDao(auditRepo.save(newAudit));
     }

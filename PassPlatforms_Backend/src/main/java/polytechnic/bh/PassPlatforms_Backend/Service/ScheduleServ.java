@@ -6,7 +6,6 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.ScheduleDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Schedule;
 import polytechnic.bh.PassPlatforms_Backend.Repository.DayRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ScheduleRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -25,7 +24,7 @@ public class ScheduleServ
     private DayRepo dayRepo;
 
     @Autowired
-    private UserRepo userRepo;
+    private UserServ userServ;
 
     // get all schedules
     public List<ScheduleDao> getAllSchedules()
@@ -68,7 +67,7 @@ public class ScheduleServ
         newSchedule.setStarttime(Timestamp.from(startTime));
         newSchedule.setEndtime(Timestamp.from(endTime));
         newSchedule.setDay(dayRepo.getReferenceById(dayID));
-        newSchedule.setUser(userRepo.getReferenceById(userID));
+        newSchedule.setUser(userServ.getUser(userID));
 
         return new ScheduleDao(scheduleRepo.save(newSchedule));
     }

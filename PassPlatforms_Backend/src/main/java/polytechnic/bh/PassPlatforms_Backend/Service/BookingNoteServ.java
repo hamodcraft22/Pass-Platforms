@@ -6,7 +6,6 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.BookingNoteDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingNote;
 import polytechnic.bh.PassPlatforms_Backend.Repository.BookingNoteRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.BookingRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class BookingNoteServ
     private BookingRepo bookingRepo;
 
     @Autowired
-    private UserRepo userRepo;
+    private UserServ userServ;
 
     public List<BookingNoteDao> getAllBookingNotes()
     {
@@ -64,7 +63,7 @@ public class BookingNoteServ
         newBookingNote.setDatetime(Timestamp.from(bookingNoteDao.getDatetime()));
         newBookingNote.setNotebody(bookingNoteDao.getNotebody());
         newBookingNote.setBooking(bookingRepo.getReferenceById(bookingNoteDao.getBooking().getBookingid()));
-        newBookingNote.setUser(userRepo.getReferenceById(bookingNoteDao.getUser().getUserid()));
+        newBookingNote.setUser(userServ.getUser(bookingNoteDao.getUser().getUserid()));
 
         return new BookingNoteDao(bookingNoteRepo.save(newBookingNote));
     }

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
-import polytechnic.bh.PassPlatforms_Backend.Repository.StudentRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
 import java.util.List;
@@ -26,12 +25,9 @@ public class UserCont
     @Autowired
     UserRepo userRepo;
 
-    @Autowired
-    StudentRepo studentRepo;
-
     // get all users
     @GetMapping("")
-    public ResponseEntity<GenericDto<List<User>>> getAllTutorials(@RequestHeader(value = "Authorization", required = false) String requestKey)
+    public ResponseEntity<GenericDto<List<User>>> getAllUsers(@RequestHeader(value = "Authorization", required = false) String requestKey)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {

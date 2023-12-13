@@ -6,7 +6,6 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.TranscriptDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Transcript;
 import polytechnic.bh.PassPlatforms_Backend.Repository.CourseRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.TranscriptRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public class TranscriptServ
     private TranscriptRepo transcriptRepo;
 
     @Autowired
-    private UserRepo userRepo;
+    private UserServ userServ;
 
     @Autowired
     private CourseRepo courseRepo;
@@ -65,7 +64,7 @@ public class TranscriptServ
         Transcript newTranscript = new Transcript();
 
         newTranscript.setGrade(grade);
-        newTranscript.setStudent(userRepo.getReferenceById(leaderID));
+        newTranscript.setStudent(userServ.getUser(leaderID));
         newTranscript.setCourse(courseRepo.getReferenceById(courseID));
 
         return new TranscriptDao(transcriptRepo.save(newTranscript));

@@ -8,7 +8,6 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingNoteDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
-import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 import polytechnic.bh.PassPlatforms_Backend.Service.BookingNoteServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.BookingServ;
 
@@ -28,8 +27,6 @@ public class BookingNoteCont
     @Autowired
     private BookingServ bookingServ;
 
-    @Autowired
-    private UserRepo userRepo;
 
     // get all booking notes
     @GetMapping("")

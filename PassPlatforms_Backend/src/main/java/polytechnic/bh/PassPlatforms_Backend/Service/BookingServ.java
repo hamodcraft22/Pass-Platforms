@@ -17,26 +17,29 @@ import java.util.*;
 public class BookingServ
 {
     @Autowired
-    BookingRepo bookingRepo;
+    private BookingRepo bookingRepo;
 
     @Autowired
-    UserRepo userRepo;
+    private UserServ userServ;
 
     @Autowired
-    SlotRepo slotRepo;
+    private SlotRepo slotRepo;
 
     @Autowired
-    CourseRepo courseRepo;
+    private CourseRepo courseRepo;
 
     @Autowired
-    OfferedCourseRepo offeredCourseRepo;
+    private OfferedCourseRepo offeredCourseRepo;
 
     @Autowired
-    ScheduleRepo scheduleRepo;
+    private ScheduleRepo scheduleRepo;
+
     @Autowired
-    BookingStatusRepo bookingStatusRepo;
+    private BookingStatusRepo bookingStatusRepo;
+
     @Autowired
-    BookingMemberRepo bookingMemberRepo;
+    private BookingMemberRepo bookingMemberRepo;
+
     @Autowired
     private BookingTypeRepo bookingTypeRepo;
 
@@ -188,7 +191,7 @@ public class BookingServ
             }
 
             newBooking.setBookingStatus(bookingStatusRepo.getReferenceById('F'));
-            newBooking.setStudent(userRepo.getReferenceById(studentID));
+            newBooking.setStudent(userServ.getUser(studentID));
 
             // if it has members, make the type of booking to be grouped
             if (bookingMembers != null && !bookingMembers.isEmpty())
@@ -210,7 +213,7 @@ public class BookingServ
                     BookingMember newBookingMember = new BookingMember();
 
                     newBookingMember.setDatetime(Timestamp.from(Instant.now()));
-                    newBookingMember.setStudent(userRepo.getReferenceById(member.getStudent().getUserid()));
+                    newBookingMember.setStudent(userServ.getUser(member.getStudent().getUserid()));
                     newBookingMember.setBooking(bookingRepo.getReferenceById(createdBooking.getBookingid()));
 
                     bookingMemberRepo.save(newBookingMember);

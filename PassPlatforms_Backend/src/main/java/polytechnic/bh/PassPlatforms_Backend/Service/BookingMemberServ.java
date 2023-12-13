@@ -8,7 +8,6 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
 import polytechnic.bh.PassPlatforms_Backend.Repository.BookingMemberRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.BookingRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ScheduleRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +17,16 @@ import java.util.Optional;
 public class BookingMemberServ
 {
     @Autowired
-    BookingRepo bookingRepo;
+    private BookingRepo bookingRepo;
 
     @Autowired
-    BookingMemberRepo bookingMemberRepo;
+    private BookingMemberRepo bookingMemberRepo;
 
     @Autowired
-    ScheduleRepo scheduleRepo;
+    private ScheduleRepo scheduleRepo;
 
     @Autowired
-    UserRepo userRepo;
+    private UserServ userServ;
 
     // add student to group
     public BookingMemberDao addStudentMember(int bookingID, String studentID)
@@ -82,7 +81,7 @@ public class BookingMemberServ
             BookingMember newRevMember = new BookingMember();
 
             newRevMember.setBooking(bookingRepo.getReferenceById(retrivedBooking.get().getBookingid()));
-            newRevMember.setStudent(userRepo.getReferenceById(studentID));
+            newRevMember.setStudent(userServ.getUser(studentID));
 
             return new BookingMemberDao(bookingMemberRepo.save(newRevMember));
         }
@@ -141,7 +140,7 @@ public class BookingMemberServ
             BookingMember newRevMember = new BookingMember();
 
             newRevMember.setBooking(bookingRepo.getReferenceById(retrivedBooking.get().getBookingid()));
-            newRevMember.setStudent(userRepo.getReferenceById(studentID));
+            newRevMember.setStudent(userServ.getUser(studentID));
 
             return new BookingMemberDao(bookingMemberRepo.save(newRevMember));
         }
