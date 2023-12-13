@@ -8,6 +8,7 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Slot;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.DayRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.SlotRepo;
+import polytechnic.bh.PassPlatforms_Backend.Repository.SlotTypeRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
 import java.sql.Timestamp;
@@ -26,6 +27,9 @@ public class SlotServ
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private SlotTypeRepo slotTypeRepo;
 
     // get all slots - not needed (to get all slots saved in the system)
     public List<SlotDao> getAllSlots()
@@ -74,15 +78,14 @@ public class SlotServ
     }
 
     // creating new slot
-    public SlotDao createSlot(Instant startTime, Instant endTime, String note, boolean isRevision, boolean isOnline, char dayID, String leaderID)
+    public SlotDao createSlot(Instant startTime, Instant endTime, String note, char typeID, char dayID, String leaderID)
     {
         Slot newSlot = new Slot();
 
         newSlot.setStarttime(Timestamp.from(startTime));
         newSlot.setEndtime(Timestamp.from(endTime));
         newSlot.setNote(note);
-        newSlot.setIsrevision(isRevision);
-        newSlot.setIsonline(isOnline);
+        newSlot.setSlotType(slotTypeRepo.getReferenceById(typeID));
         newSlot.setDay(dayRepo.getReferenceById(dayID));
         newSlot.setLeader(userRepo.getReferenceById(leaderID));
 
@@ -99,8 +102,7 @@ public class SlotServ
             retrivedSlot.get().setStarttime(Timestamp.from(gottenSlot.getStarttime()));
             retrivedSlot.get().setEndtime(Timestamp.from(gottenSlot.getEndtime()));
             retrivedSlot.get().setNote(gottenSlot.getNote());
-            retrivedSlot.get().setIsrevision(gottenSlot.isIsrevision());
-            retrivedSlot.get().setIsonline(gottenSlot.isIsonline());
+            retrivedSlot.get().setSlotType(slotTypeRepo.getReferenceById(gottenSlot.getSlotType().getTypeid()));
             retrivedSlot.get().setDay(dayRepo.getReferenceById(gottenSlot.getDay().getDayid()));
 
             return new SlotDao(slotRepo.save(retrivedSlot.get()));

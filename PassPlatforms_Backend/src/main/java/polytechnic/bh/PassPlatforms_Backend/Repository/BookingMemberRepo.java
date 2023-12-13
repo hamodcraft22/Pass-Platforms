@@ -32,25 +32,25 @@ public interface BookingMemberRepo extends JpaRepository<BookingMember, Integer>
     boolean existsByStudent_UseridAndBooking_Bookingid(String studentID, int bookingID);
 
     // check if student has a revision within the same course (active or has passed)
-    boolean existsByStudent_UseridAndBooking_Course_CourseidAndBooking_BookingStatus_StatusidAndBooking_Isrevision(String studentID, String courseID, char statusID, boolean isrevision);
+    boolean existsByStudent_UseridAndBooking_Course_CourseidAndBooking_BookingStatus_StatusidAndBooking_BookingType_Typeid(String studentID, String courseID, char statusID, char typeID);
 
 
     // check if user has a booking - they are a part off at this time
-    boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_IsgroupAndBooking_IsrevisionAndBooking_Slot_StarttimeBetween(String studentID, Date bookingDate, char statusID, boolean isGroup, boolean isRevision, Timestamp startTime, Timestamp startTime2);
-
-    boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_IsgroupAndBooking_IsrevisionAndBooking_Slot_EndtimeBetween(String studentID, Date bookingDate, char statusID, boolean isGroup, boolean isRevision, Timestamp endTime, Timestamp endTime2);
+//    boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_IsgroupAndBooking_IsrevisionAndBooking_Slot_StarttimeBetween(String studentID, Date bookingDate, char statusID, boolean isGroup, boolean isRevision, Timestamp startTime, Timestamp startTime2);
+//
+//    boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_IsgroupAndBooking_IsrevisionAndBooking_Slot_EndtimeBetween(String studentID, Date bookingDate, char statusID, boolean isGroup, boolean isRevision, Timestamp endTime, Timestamp endTime2);
 
     // check if user has a booking - they are a part off - check if or (for start and end time) TODO
-    boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_IsgroupAndBooking_IsrevisionAndBooking_Slot_StarttimeBetweenOrBooking_Slot_EndtimeBetween(String studentID, Date bookingDate, char statusID, boolean isGroup, boolean isRevision, Timestamp startTime, Timestamp startTime2, Timestamp endTime, Timestamp endTime2);
+    boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_BookingType_TypeidAndBooking_Slot_StarttimeBetweenOrBooking_Slot_EndtimeBetween(String studentID, Date bookingDate, char statusID, char typeID, Timestamp startTime, Timestamp startTime2, Timestamp endTime, Timestamp endTime2);
 
 
     // check if user has a revision - they are a part off at this time
-    boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_IsrevisionAndBooking_StarttimeBetween(String studentID, Date bookingDate, boolean isRevision, Timestamp startTime, Timestamp startTime2);
-
-    boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_IsrevisionAndBooking_EndtimeBetween(String studentID, Date bookingDate, boolean isRevision, Timestamp endTime, Timestamp endTime2);
+//    boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_IsrevisionAndBooking_StarttimeBetween(String studentID, Date bookingDate, boolean isRevision, Timestamp startTime, Timestamp startTime2);
+//
+//    boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_IsrevisionAndBooking_EndtimeBetween(String studentID, Date bookingDate, boolean isRevision, Timestamp endTime, Timestamp endTime2);
 
     // check if user has a revision - they are a part off - check if or (for start and end time) TODO
-    boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_IsrevisionAndBooking_StarttimeBetweenOrBooking_EndtimeBetween(String studentID, Date bookingDate, boolean isRevision, Timestamp startTime, Timestamp startTime2, Timestamp endTime, Timestamp endTime2);
+    boolean existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingType_TypeidAndBooking_StarttimeBetweenOrBooking_EndtimeBetween(String studentID, Date bookingDate, char typeID, Timestamp startTime, Timestamp startTime2, Timestamp endTime, Timestamp endTime2);
 
 
     // delete by student user id and booking id

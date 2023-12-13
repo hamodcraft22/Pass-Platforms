@@ -30,8 +30,10 @@ public class Booking
     private java.sql.Timestamp endtime;
     private int bookinglimit;
     private boolean isonline;
-    private boolean isgroup;
-    private boolean isrevision;
+
+    @ManyToOne
+    @JoinColumn(name = "TYPEID", referencedColumnName = "TYPEID")
+    private BookingType bookingType;
 
     @ManyToOne
     @JoinColumn(name = "SLOTID", referencedColumnName = "SLOTID")
@@ -68,8 +70,7 @@ public class Booking
         this.endtime = Timestamp.from(bookingDao.getEndtime());
         this.bookinglimit = bookingDao.getBookinglimit();
         this.isonline = bookingDao.isIsonline();
-        this.isgroup = bookingDao.isIsgroup();
-        this.isrevision = bookingDao.isIsrevision();
+        this.bookingType = new BookingType(bookingDao.getBookingType());
         this.slot = new Slot(bookingDao.getSlot());
         this.bookingStatus = new BookingStatus(bookingDao.getBookingStatus());
         this.student = new User(bookingDao.getStudent());

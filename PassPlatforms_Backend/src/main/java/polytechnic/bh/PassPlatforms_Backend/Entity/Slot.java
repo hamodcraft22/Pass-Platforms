@@ -23,8 +23,10 @@ public class Slot
     private java.sql.Timestamp starttime;
     private java.sql.Timestamp endtime;
     private String note;
-    private boolean isrevision;
-    private boolean isonline;
+
+    @ManyToOne
+    @JoinColumn(name = "typeid", referencedColumnName = "typeid")
+    private SlotType slotType;
 
     @ManyToOne
     @JoinColumn(name = "DAYID", referencedColumnName = "DAYID")
@@ -40,8 +42,7 @@ public class Slot
         this.starttime = Timestamp.from(slotDao.getStarttime());
         this.endtime = Timestamp.from(slotDao.getEndtime());
         this.note = slotDao.getNote();
-        this.isrevision = slotDao.isIsrevision();
-        this.isonline = slotDao.isIsonline();
+        this.slotType = new SlotType(slotDao.getSlotType());
         this.day = new Day(slotDao.getDay());
         this.leader = new User(slotDao.getLeader());
     }

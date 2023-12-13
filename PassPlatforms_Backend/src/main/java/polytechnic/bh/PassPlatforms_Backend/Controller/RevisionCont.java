@@ -10,6 +10,7 @@ import polytechnic.bh.PassPlatforms_Backend.Service.BookingMemberServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.BookingServ;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
@@ -163,11 +164,13 @@ public class RevisionCont
             @RequestHeader(value = "Authorization") String requestKey,
             @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("revisionID") int revisionID,
-            @RequestAttribute(value = "statusID") char statusID)
+            @RequestAttribute(value = "statusID") char statusID,
+            @RequestAttribute(value = "startTime", required = false) Instant startTime,
+            @RequestAttribute(value = "endTime", required = false) Instant endTime)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
-            if (bookingServ.updateBooking(revisionID, statusID) != null)
+            if (bookingServ.updateBooking(revisionID, statusID, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
             {
                 return new ResponseEntity<>(null, HttpStatus.OK);
             }
@@ -181,7 +184,7 @@ public class RevisionCont
             // does the leader own this booking?
             if (Objects.equals(bookingServ.getBookingDetails(revisionID).getStudent().getUserid(), requisterID))
             {
-                if (bookingServ.updateBooking(revisionID, statusID) != null)
+                if (bookingServ.updateBooking(revisionID, statusID, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
                 {
                     return new ResponseEntity<>(null, HttpStatus.OK);
                 }

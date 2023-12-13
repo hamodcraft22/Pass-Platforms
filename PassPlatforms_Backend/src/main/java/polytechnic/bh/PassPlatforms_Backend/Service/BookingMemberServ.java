@@ -43,13 +43,13 @@ public class BookingMemberServ
             if (retrivedBooking.get().getBookingMembers().size() < retrivedBooking.get().getBookinglimit() && retrivedBooking.get().getBookingStatus().getStatusid() == 'a')
             {
                 // check if user has current bookings at this time
-                if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndIsrevisionAndSlot_StarttimeBetweenOrSlot_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), 'a', false, retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime(), retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime()))
+                if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndBookingType_TypeidAndSlot_StarttimeBetweenOrSlot_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), 'a', 'N', retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime(), retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime()))
                 {
                     errors.add("you have another booking at the same time");
                 }
 
                 // check if user is a member of any sessions at this time
-                if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_IsgroupAndBooking_IsrevisionAndBooking_Slot_StarttimeBetweenOrBooking_Slot_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), 'a', true, false, retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime(), retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime()))
+                if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_BookingType_TypeidAndBooking_Slot_StarttimeBetweenOrBooking_Slot_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), 'a', 'G', retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime(), retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime()))
                 {
                     errors.add("you have another revision session you are a part of (group) at the same time");
                 }
@@ -114,13 +114,13 @@ public class BookingMemberServ
             if (retrivedBooking.get().getBookingMembers().size() < retrivedBooking.get().getBookinglimit() && retrivedBooking.get().getBookingStatus().getStatusid() == 'a')
             {
                 // check if user has another revision session within same time
-                if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_IsrevisionAndBooking_StarttimeBetweenOrBooking_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), true, retrivedBooking.get().getStarttime(), retrivedBooking.get().getEndtime(), retrivedBooking.get().getStarttime(), retrivedBooking.get().getEndtime()))
+                if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingType_TypeidAndBooking_StarttimeBetweenOrBooking_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), 'R', retrivedBooking.get().getStarttime(), retrivedBooking.get().getEndtime(), retrivedBooking.get().getStarttime(), retrivedBooking.get().getEndtime()))
                 {
                     errors.add("you have another revision session booked at the same time");
                 }
 
-                // check if they have an active or complete booking in the same course
-                if (bookingMemberRepo.existsByStudent_UseridAndBooking_Course_CourseidAndBooking_BookingStatus_StatusidAndBooking_Isrevision(studentID, retrivedBooking.get().getCourse().getCourseid(), 'a', true) || bookingMemberRepo.existsByStudent_UseridAndBooking_Course_CourseidAndBooking_BookingStatus_StatusidAndBooking_Isrevision(studentID, retrivedBooking.get().getCourse().getCourseid(), 'c', true))
+                // check if they have an active or complete revisions in the same course
+                if (bookingMemberRepo.existsByStudent_UseridAndBooking_Course_CourseidAndBooking_BookingStatus_StatusidAndBooking_BookingType_Typeid(studentID, retrivedBooking.get().getCourse().getCourseid(), 'a', 'R') || bookingMemberRepo.existsByStudent_UseridAndBooking_Course_CourseidAndBooking_BookingStatus_StatusidAndBooking_BookingType_Typeid(studentID, retrivedBooking.get().getCourse().getCourseid(), 'c', 'R'))
                 {
                     errors.add("you have already booked in this course");
                 }

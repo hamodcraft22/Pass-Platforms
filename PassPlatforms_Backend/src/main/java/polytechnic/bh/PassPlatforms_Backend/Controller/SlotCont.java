@@ -114,8 +114,7 @@ public class SlotCont
                     slotDao.getStarttime(),
                     slotDao.getEndtime(),
                     slotDao.getNote(),
-                    slotDao.isIsrevision(),
-                    slotDao.isIsonline(),
+                    slotDao.getSlotType().getTypeid(),
                     slotDao.getDay().getDayid(),
                     slotDao.getLeader().getUserid()
             );

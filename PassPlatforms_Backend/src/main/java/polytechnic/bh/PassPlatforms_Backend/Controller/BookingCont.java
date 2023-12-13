@@ -10,6 +10,9 @@ import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.BookingMemberServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.BookingServ;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
@@ -162,7 +165,7 @@ public class BookingCont
         }
     }
 
-    // post a booking
+    // post a normal booking (as a student)
     @PostMapping("")
     public ResponseEntity<GenericDto<BookingDao>> createNewBooking(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -173,7 +176,35 @@ public class BookingCont
         {
             // TODO null checks
 
-            if (bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsgroup(), bookingDao.getSlot().getSlotid(), requisterID, bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers()) != null)
+            if (bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), requisterID, bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), false, null, null) != null)
+            {
+                return new ResponseEntity<>(null, HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+    }
+
+    // post an unscheduled booking (as a leader for a student)
+    @PostMapping("/unscheduled")
+    public ResponseEntity<GenericDto<BookingDao>> createUnscheduledBooking(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestHeader(value = "Requester") String requisterID,
+            @RequestBody BookingDao bookingDao)
+    {
+        if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
+        {
+            // TODO null checks
+
+            if (bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), bookingDao.getStudent().getUserid(), bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), true, Timestamp.from(bookingDao.getStarttime()), Timestamp.from(bookingDao.getEndtime())) != null)
             {
                 return new ResponseEntity<>(null, HttpStatus.OK);
             }
@@ -262,17 +293,19 @@ public class BookingCont
 
     }
 
-    // update booking - only status
+    // update booking - only status / times for leader
     @PutMapping("/{bookingID}")
     public ResponseEntity<GenericDto<BookingDao>> updateBooking(
             @RequestHeader(value = "Authorization") String requestKey,
             @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("bookingID") int bookingID,
-            @RequestAttribute(value = "statusID") char statusID)
+            @RequestAttribute(value = "statusID") char statusID,
+            @RequestAttribute(value = "startTime", required = false) Instant startTime,
+            @RequestAttribute(value = "endTime", required = false) Instant endTime)
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
-            if (bookingServ.updateBooking(bookingID, statusID) != null)
+            if (bookingServ.updateBooking(bookingID, statusID, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
             {
                 return new ResponseEntity<>(null, HttpStatus.OK);
             }
@@ -287,7 +320,7 @@ public class BookingCont
 
             if (Objects.equals(bookingServ.getBookingDetails(bookingID).getSlot().getLeader().getUserid(), requisterID))
             {
-                if (bookingServ.updateBooking(bookingID, statusID) != null)
+                if (bookingServ.updateBooking(bookingID, statusID, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
                 {
                     return new ResponseEntity<>(null, HttpStatus.OK);
                 }
@@ -307,7 +340,7 @@ public class BookingCont
 
             if (Objects.equals(bookingServ.getBookingDetails(bookingID).getStudent().getUserid(), requisterID))
             {
-                if (bookingServ.updateBooking(bookingID, statusID) != null)
+                if (bookingServ.updateBooking(bookingID, statusID, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
                 {
                     return new ResponseEntity<>(null, HttpStatus.OK);
                 }

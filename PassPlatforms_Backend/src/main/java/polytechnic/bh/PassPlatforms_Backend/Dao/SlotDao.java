@@ -18,8 +18,7 @@ public class SlotDao
     private Instant starttime;
     private Instant endtime;
     private String note;
-    private boolean isrevision;
-    private boolean isonline;
+    private SlotTypeDao slotType;
     private DayDao day;
     private UserDao leader;
 
@@ -29,8 +28,7 @@ public class SlotDao
         this.starttime = slot.getStarttime().toInstant();
         this.endtime = slot.getEndtime().toInstant();
         this.note = slot.getNote();
-        this.isrevision = slot.isIsrevision();
-        this.isonline = slot.isIsonline();
+        this.slotType = new SlotTypeDao(slot.getSlotType());
         this.day = new DayDao(slot.getDay());
         this.leader = new UserDao(slot.getLeader());
     }

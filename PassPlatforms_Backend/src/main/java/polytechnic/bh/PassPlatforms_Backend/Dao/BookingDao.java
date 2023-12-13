@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Booking;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingNote;
+import polytechnic.bh.PassPlatforms_Backend.Entity.BookingType;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -27,8 +28,7 @@ public class BookingDao
     private Instant endtime; // for leader - when did it start irl
     private int bookinglimit; // only for revision sessions
     private boolean isonline;
-    private boolean isgroup;
-    private boolean isrevision;
+    private BookingTypeDao bookingType;
     private SlotDao slot;
     private BookingStatusDao bookingStatus;
     private UserDao student;
@@ -46,9 +46,8 @@ public class BookingDao
         this.endtime = booking.getEndtime().toInstant();
         this.bookinglimit = booking.getBookinglimit();
         this.isonline = booking.isIsonline();
-        this.isgroup = booking.isIsgroup();
-        this.isrevision = booking.isIsrevision();
 
+        this.bookingType = new BookingTypeDao(booking.getBookingType());
         this.slot = new SlotDao(booking.getSlot());
         this.bookingStatus = new BookingStatusDao(booking.getBookingStatus());
         this.student = new UserDao(booking.getStudent());
