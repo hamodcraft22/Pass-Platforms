@@ -15,7 +15,8 @@ public class SlotTypeDao
     private char typeid;
     private String typename;
 
-    public SlotTypeDao(SlotType slotType) {
+    public SlotTypeDao(SlotType slotType)
+    {
         this.typeid = slotType.getTypeid();
         this.typename = slotType.getTypename();
     }

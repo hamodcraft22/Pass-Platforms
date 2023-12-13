@@ -60,7 +60,7 @@ public class CourseServ
 
         for (CourseDao course : courses)
         {
-            Course newCourse = new Course(course.getCourseid(),course.getCoursename(),course.getCoursedesc(),course.getSemaster(),course.isAvailable(),schoolRepo.getReferenceById(course.getSchool().getSchoolid()));
+            Course newCourse = new Course(course.getCourseid(), course.getCoursename(), course.getCoursedesc(), course.getSemaster(), course.isAvailable(), schoolRepo.getReferenceById(course.getSchool().getSchoolid()));
 
             addedCourses.add(new CourseDao(courseRepo.save(newCourse)));
         }

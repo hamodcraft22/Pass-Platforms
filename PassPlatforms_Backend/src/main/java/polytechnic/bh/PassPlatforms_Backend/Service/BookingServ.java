@@ -33,15 +33,12 @@ public class BookingServ
 
     @Autowired
     ScheduleRepo scheduleRepo;
-
-    @Autowired
-    private BookingTypeRepo bookingTypeRepo;
-
     @Autowired
     BookingStatusRepo bookingStatusRepo;
-
     @Autowired
     BookingMemberRepo bookingMemberRepo;
+    @Autowired
+    private BookingTypeRepo bookingTypeRepo;
 
     // get all bookings / revisions - manager
     public List<BookingDao> getAllBookings()

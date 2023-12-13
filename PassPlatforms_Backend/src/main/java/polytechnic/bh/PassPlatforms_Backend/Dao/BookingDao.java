@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Booking;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingNote;
-import polytechnic.bh.PassPlatforms_Backend.Entity.BookingType;
 
 import java.time.Instant;
 import java.util.ArrayList;

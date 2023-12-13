@@ -1,7 +1,7 @@
 package polytechnic.bh.PassPlatforms_Backend.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import polytechnic.bh.PassPlatforms_Backend.Entity.*;
+import polytechnic.bh.PassPlatforms_Backend.Entity.Booking;
 
 import java.sql.Timestamp;
 import java.util.Date;

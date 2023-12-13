@@ -111,7 +111,7 @@ public class OfferedCourseCont
         {
             CourseDao course = courseServ.getCourseDetails(offeredCourseDao.getCourse().getCourseid());
 
-            if (course!= null && course.isAvailable())
+            if (course != null && course.isAvailable())
             {
                 OfferedCourseDao createdOfferedCourse = offeredCourseServ.createOfferedCourse(
                         offeredCourseDao.getLeader().getUserid(),

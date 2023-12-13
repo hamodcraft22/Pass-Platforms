@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.CourseDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.SchoolDao;
-import polytechnic.bh.PassPlatforms_Backend.Entity.Course;
 import polytechnic.bh.PassPlatforms_Backend.Entity.School;
 import polytechnic.bh.PassPlatforms_Backend.Repository.SchoolRepo;
 
@@ -28,7 +27,7 @@ public class SchoolServ
 
         for (School retrievedSchool : schoolRepo.findAll())
         {
-            schools.add(new SchoolDao(retrievedSchool.getSchoolid(),retrievedSchool.getSchoolname(),retrievedSchool.getSchooldesc(),null));
+            schools.add(new SchoolDao(retrievedSchool.getSchoolid(), retrievedSchool.getSchoolname(), retrievedSchool.getSchooldesc(), null));
         }
 
         return schools;

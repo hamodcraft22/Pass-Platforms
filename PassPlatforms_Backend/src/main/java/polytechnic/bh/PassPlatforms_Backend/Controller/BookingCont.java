@@ -10,7 +10,6 @@ import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.BookingMemberServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.BookingServ;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;

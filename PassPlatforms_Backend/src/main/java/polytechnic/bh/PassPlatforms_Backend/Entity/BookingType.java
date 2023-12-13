@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingTypeDao;
-import polytechnic.bh.PassPlatforms_Backend.Dao.SlotTypeDao;
 
 @Data
 @Entity
@@ -20,7 +19,8 @@ public class BookingType
     private char typeid;
     private String typename;
 
-    public BookingType(BookingTypeDao bookingTypeDao) {
+    public BookingType(BookingTypeDao bookingTypeDao)
+    {
         this.typeid = bookingTypeDao.getTypeid();
         this.typename = bookingTypeDao.getTypename();
     }

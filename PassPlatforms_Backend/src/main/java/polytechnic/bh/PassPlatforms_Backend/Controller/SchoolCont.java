@@ -31,8 +31,10 @@ public class SchoolCont
         // Any person can use these
 
         // testing the auth token thing
-        if(isValidToken(authToken))
-        {System.out.println("it work i guess");}
+        if (isValidToken(authToken))
+        {
+            System.out.println("it work i guess");
+        }
 
         List<SchoolDao> schools = schoolServ.getAllSchools();
 
