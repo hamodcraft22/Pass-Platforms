@@ -20,7 +20,7 @@ public class TokenValidation
 {
     private static final String JWK_PROVIDER_URL = "https://login.microsoftonline.com/040cb881-0963-47cf-89ce-b06f6e0256a3/discovery/v2.0/keys";
 
-    public static boolean isValidToken(String token)
+    public static String isValidToken(String token)
     {
         // first, check if it is as bearer token
         if (token != null && token.startsWith("Bearer "))
@@ -30,7 +30,7 @@ public class TokenValidation
         }
         else
         {
-            return false; // invalid if not bearer
+            return null; // invalid if not bearer
         }
         // decode it
         DecodedJWT jwt = JWT.decode(token);
@@ -47,13 +47,21 @@ public class TokenValidation
             Date now = new Date();
             Date notBefore = jwt.getNotBefore();
             Date expiresAt = jwt.getExpiresAt();
-            System.out.println(jwt.getClaims().get("unique_name").toString().substring(1, jwt.getClaims().get("unique_name").toString().indexOf("@")));
-            return notBefore != null && expiresAt != null && now.toInstant().compareTo(notBefore.toInstant()) >= 0 && now.toInstant().isBefore(expiresAt.toInstant()); // valid
+
+            if (notBefore != null && expiresAt != null && now.toInstant().compareTo(notBefore.toInstant()) >= 0 && now.toInstant().isBefore(expiresAt.toInstant()))
+            {
+                return jwt.getClaims().get("unique_name").toString().substring(1, jwt.getClaims().get("unique_name").toString().indexOf("@"));
+            }
+            else
+            {
+                return null;
+            }
+
         }
         catch (MalformedURLException | JwkException | SignatureVerificationException e)
         {
             log.warn(e.getMessage(), e);
-            return false; // invalid
+            return null; // invalid
         }
     }
 }
