@@ -6,13 +6,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
+import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Service.ApplicationServ;
+import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
 import java.util.List;
 import java.util.Objects;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.*;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.ApplicationStatusConstant.*;
+import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 
 @RestController
 @RequestMapping("/api/application")
@@ -20,24 +23,40 @@ public class ApplicationCont
 {
 
     @Autowired
-    ApplicationServ applicationServ;
+    private ApplicationServ applicationServ;
+
+    @Autowired
+    private UserServ userServ;
 
     @GetMapping("")
     public ResponseEntity<GenericDto<List<ApplicationDao>>> getAllApplications(
             @RequestHeader(value = "Authorization") String requestKey)
     {
-        if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
-        {
-            //retrieve from service
-            List<ApplicationDao> applicationDaos = applicationServ.getAllApplications(false);
+        String userID = isValidToken(requestKey);
 
-            if (applicationDaos != null && !applicationDaos.isEmpty())
+        if (userID != null)
+        {
+            // token is valid, get user and role
+            User user = userServ.getUser(userID);
+
+            // check roles for api
+            if (user.getRole().getRoleid() == 4 || user.getRole().getRoleid() == 5)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, applicationDaos, null), HttpStatus.OK);
+                //retrieve from service
+                List<ApplicationDao> applicationDaos = applicationServ.getAllApplications(false);
+
+                if (applicationDaos != null && !applicationDaos.isEmpty())
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, applicationDaos, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else

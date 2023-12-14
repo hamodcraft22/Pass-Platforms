@@ -17,9 +17,25 @@ public class UsersCont
 {
     // get all users
     @GetMapping("")
-    public ResponseEntity<?> getAllADUsers(@RequestHeader(value = "Authorization", required = false) String requestKey) throws JSONException
+    public ResponseEntity<?> getAllADUsers(@RequestHeader(value = "Authorization", required = false) String requestKey)
     {
-        return new ResponseEntity<>(allAzureAdUsers, HttpStatus.OK);
+        try
+        {
+            if (allAzureAdUsers != null && !allAzureAdUsers.isEmpty())
+            {
+                return new ResponseEntity<>(allAzureAdUsers, HttpStatus.OK);
+            }
+            else
+            {
+                refreshUsers();
+
+                return new ResponseEntity<>(allAzureAdUsers, HttpStatus.OK);
+            }
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/refresh")
