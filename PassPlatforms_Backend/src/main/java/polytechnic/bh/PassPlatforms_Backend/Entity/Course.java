@@ -17,9 +17,6 @@ public class Course
     @Id
     private String courseid;
     private String coursename;
-    private String coursedesc;
-    private char semaster;
-    private boolean available;
 
     @ManyToOne
     @JoinColumn(name = "SCHOOLID", referencedColumnName = "SCHOOLID")
@@ -29,9 +26,6 @@ public class Course
     {
         this.courseid = courseDao.getCourseid();
         this.coursename = courseDao.getCoursename();
-        this.coursedesc = courseDao.getCoursedesc();
-        this.semaster = courseDao.getSemaster();
-        this.available = courseDao.isAvailable();
         this.school = new School(courseDao.getSchool());
     }
 }

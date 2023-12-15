@@ -40,15 +40,12 @@ public class CourseServ
         return retrievedCourse.map(CourseDao::new).orElse(null);
     }
 
-    public CourseDao createCourse(String courseID, String courseName, String courseDesc, char semester, boolean available, String schoolID)
+    public CourseDao createCourse(String courseID, String courseName, String schoolID)
     {
         Course newCourse = new Course();
 
         newCourse.setCourseid(courseID);
         newCourse.setCoursename(courseName);
-        newCourse.setCoursedesc(courseDesc);
-        newCourse.setSemaster(semester);
-        newCourse.setAvailable(available);
         newCourse.setSchool(schoolRepo.getReferenceById(schoolID));
 
         return new CourseDao(courseRepo.save(newCourse));
@@ -60,7 +57,7 @@ public class CourseServ
 
         for (CourseDao course : courses)
         {
-            Course newCourse = new Course(course.getCourseid(), course.getCoursename(), course.getCoursedesc(), course.getSemaster(), course.isAvailable(), schoolRepo.getReferenceById(course.getSchool().getSchoolid()));
+            Course newCourse = new Course(course.getCourseid(), course.getCoursename(), schoolRepo.getReferenceById(course.getSchool().getSchoolid()));
 
             addedCourses.add(new CourseDao(courseRepo.save(newCourse)));
         }
@@ -76,9 +73,6 @@ public class CourseServ
         if (retrievedCourse.isPresent())
         {
             retrievedCourse.get().setCoursename(updatedCourse.getCoursename());
-            retrievedCourse.get().setCoursedesc(updatedCourse.getCoursedesc());
-            retrievedCourse.get().setSemaster(updatedCourse.getSemaster());
-            retrievedCourse.get().setAvailable(updatedCourse.isAvailable());
             retrievedCourse.get().setSchool(schoolRepo.getReferenceById(updatedCourse.getSchool().getSchoolid()));
 
             return new CourseDao(courseRepo.save(retrievedCourse.get()));

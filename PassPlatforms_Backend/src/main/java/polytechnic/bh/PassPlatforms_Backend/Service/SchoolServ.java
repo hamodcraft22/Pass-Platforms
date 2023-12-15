@@ -27,7 +27,7 @@ public class SchoolServ
 
         for (School retrievedSchool : schoolRepo.findAll())
         {
-            schools.add(new SchoolDao(retrievedSchool.getSchoolid(), retrievedSchool.getSchoolname(), retrievedSchool.getSchooldesc(), null));
+            schools.add(new SchoolDao(retrievedSchool.getSchoolid(), retrievedSchool.getSchoolname(), null));
         }
 
         return schools;
@@ -40,13 +40,12 @@ public class SchoolServ
         return retrievedSchool.map(SchoolDao::new).orElse(null);
     }
 
-    public SchoolDao createSchool(String schoolID, String schoolName, String schoolDesc, List<CourseDao> courses)
+    public SchoolDao createSchool(String schoolID, String schoolName, List<CourseDao> courses)
     {
         School newSchool = new School();
 
         newSchool.setSchoolid(schoolID);
         newSchool.setSchoolname(schoolName);
-        newSchool.setSchooldesc(schoolDesc);
 
         if (courses != null && !courses.isEmpty())
         {
@@ -74,7 +73,6 @@ public class SchoolServ
         if (retrievedSchool.isPresent())
         {
             retrievedSchool.get().setSchoolname(updatedSchool.getSchoolname());
-            retrievedSchool.get().setSchooldesc(updatedSchool.getSchooldesc());
 
             return new SchoolDao(schoolRepo.save(retrievedSchool.get()));
         }

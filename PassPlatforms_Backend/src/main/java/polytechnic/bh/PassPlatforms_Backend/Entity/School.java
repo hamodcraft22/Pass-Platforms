@@ -20,7 +20,6 @@ public class School
     @Id
     private String schoolid;
     private String schoolname;
-    private String schooldesc;
 
     // custom (multi item) entities
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "school")
@@ -31,6 +30,5 @@ public class School
     {
         this.schoolid = schoolDao.getSchoolid();
         this.schoolname = schoolDao.getSchoolname();
-        this.schooldesc = schoolDao.getSchooldesc();
     }
 }

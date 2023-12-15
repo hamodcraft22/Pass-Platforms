@@ -18,7 +18,6 @@ public class SchoolDao
 {
     private String schoolid;
     private String schoolname;
-    private String schooldesc;
 
     private List<CourseDao> courses;
 
@@ -26,7 +25,6 @@ public class SchoolDao
     {
         this.schoolid = school.getSchoolid();
         this.schoolname = school.getSchoolname();
-        this.schooldesc = school.getSchooldesc();
 
         //building custom list of objects while removing infinite recursion
         List<CourseDao> courses = new ArrayList<>();
@@ -37,9 +35,6 @@ public class SchoolDao
                 courses.add(new CourseDao(
                                 course.getCourseid(),
                                 course.getCoursename(),
-                                course.getCoursedesc(),
-                                course.getSemaster(),
-                                course.isAvailable(),
                                 null
                         )
                 );

@@ -69,9 +69,6 @@ public class CourseCont
             CourseDao createdCourse = courseServ.createCourse(
                     courseDao.getCourseid(),
                     courseDao.getCoursename(),
-                    courseDao.getCoursedesc(),
-                    courseDao.getSemaster(),
-                    courseDao.isAvailable(),
                     courseDao.getSchool().getSchoolid()
             );
 

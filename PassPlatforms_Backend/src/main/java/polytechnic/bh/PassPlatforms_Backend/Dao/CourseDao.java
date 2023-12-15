@@ -14,18 +14,12 @@ public class CourseDao
 {
     private String courseid;
     private String coursename;
-    private String coursedesc;
-    private char semaster;
-    private boolean available;
     private SchoolDao school;
 
     public CourseDao(Course course)
     {
         this.courseid = course.getCourseid();
         this.coursename = course.getCoursename();
-        this.coursedesc = course.getCoursedesc();
-        this.semaster = course.getSemaster();
-        this.available = course.isAvailable();
         this.school = new SchoolDao(course.getSchool());
     }
 }
