@@ -3,10 +3,7 @@ package polytechnic.bh.PassPlatforms_Backend.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
@@ -47,7 +44,7 @@ public class UserCont
         }
     }
 
-    // get user
+    // get user / create if first time login
     @GetMapping("/userlog")
     public ResponseEntity<GenericDto<User>> userLog(@RequestHeader(value = "Authorization") String barerKey)
     {
@@ -56,6 +53,33 @@ public class UserCont
         if (userID != null)
         {
             return new ResponseEntity<>(new GenericDto<>(null, userServ.getUser(userID), null), HttpStatus.OK);
+        }
+        else
+        {
+            return new ResponseEntity<>(new GenericDto<>(null, null , null), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    // get user / create if first time login
+    @PostMapping("/")
+    public ResponseEntity<GenericDto<List<User>>> makeLeaders(@RequestHeader(value = "Authorization") String barerKey, @RequestBody List<String> studentIDs)
+    {
+        String userID = isValidToken(barerKey);
+
+        if (userID != null)
+        {
+            User retrivedUser = userServ.getUser(userID);
+
+            if (retrivedUser.getRole().getRoleid() == 4 || retrivedUser.getRole().getRoleid() == 5)
+            {
+                List<User> newLeaders = userServ.makeLeaders(studentIDs);
+
+                return new ResponseEntity<>(new GenericDto<>(null, newLeaders , null), HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, null , null), HttpStatus.UNAUTHORIZED);
+            }
         }
         else
         {

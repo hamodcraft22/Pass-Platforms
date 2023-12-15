@@ -5,8 +5,11 @@ import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Child.Student;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Child.Tutor;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
+import polytechnic.bh.PassPlatforms_Backend.Repository.RoleRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 // first time sign in / members adding
@@ -15,6 +18,9 @@ public class UserServ
 {
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private RoleRepo roleRepo;
 
     // create user if it's not registered in the system
     public User getUser(String userID)
@@ -44,5 +50,20 @@ public class UserServ
                 return userRepo.save(newTutor);
             }
         }
+    }
+
+    public List<User> makeLeaders(List<String> users)
+    {
+        List<User> newLeaders = new ArrayList<>();
+
+        for (String userID : users)
+        {
+            User retirvedUser = getUser(userID);
+            retirvedUser.setRole(roleRepo.getReferenceById(2));
+
+            userRepo.save(retirvedUser);
+        }
+
+        return newLeaders;
     }
 }
