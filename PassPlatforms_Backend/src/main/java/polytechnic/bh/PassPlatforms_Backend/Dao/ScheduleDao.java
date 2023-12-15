@@ -26,6 +26,6 @@ public class ScheduleDao
         this.starttime = schedule.getStarttime().toInstant();
         this.endtime = schedule.getEndtime().toInstant();
         this.day = new DayDao(schedule.getDay());
-        this.user = new UserDao(schedule.getUser());
+        this.user = new UserDao(schedule.getUser().getUserid(), new RoleDao(schedule.getUser().getRole()), null);
     }
 }

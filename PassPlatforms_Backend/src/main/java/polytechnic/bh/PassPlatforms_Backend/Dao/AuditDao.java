@@ -30,6 +30,6 @@ public class AuditDao
         this.datetime = audit.getDatetime().toInstant();
         this.oldvalue = audit.getOldvalue();
         this.newvalue = audit.getNewvalue();
-        this.user = new UserDao(audit.getUser());
+        this.user = new UserDao(audit.getUser().getUserid(), new RoleDao(audit.getUser().getRole()), null);
     }
 }

@@ -29,8 +29,8 @@ public class ApplicationNoteDao
                 applicationNote.getApplication().getDatetime().toInstant(),
                 applicationNote.getApplication().getNote(),
                 new ApplicationStatusDao(applicationNote.getApplication().getApplicationStatus()),
-                new UserDao(applicationNote.getApplication().getUser()),
+                new UserDao(applicationNote.getApplication().getUser().getUserid(), new RoleDao(applicationNote.getApplication().getUser().getRole()), null),
                 null);
-        this.user = new UserDao(applicationNote.getUser());
+        this.user = new UserDao(applicationNote.getUser().getUserid(), new RoleDao(applicationNote.getUser().getRole()), null);
     }
 }

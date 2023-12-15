@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.SerializationUtils;
 import polytechnic.bh.PassPlatforms_Backend.Dao.AuditDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.RoleDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Audit;
 import polytechnic.bh.PassPlatforms_Backend.Repository.AuditRepo;
@@ -38,7 +39,7 @@ public class AuditServ
                     retrivedAudit.getDatetime().toInstant(),
                     null,
                     null,
-                    new UserDao(retrivedAudit.getUser())
+                    new UserDao(retrivedAudit.getUser().getUserid(), new RoleDao(retrivedAudit.getUser().getRole()), null)
             ));
         }
 

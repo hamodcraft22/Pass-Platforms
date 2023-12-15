@@ -21,7 +21,7 @@ public class TranscriptDao
     {
         this.transid = transcript.getTransid();
         this.grade = transcript.getGrade();
-        this.student = new UserDao(transcript.getStudent());
+        this.student = new UserDao(transcript.getStudent().getUserid(), new RoleDao(transcript.getStudent().getRole()), null);
         this.course = new CourseDao(transcript.getCourse());
     }
 }

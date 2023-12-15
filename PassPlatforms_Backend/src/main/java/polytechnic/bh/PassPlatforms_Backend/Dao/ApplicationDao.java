@@ -32,7 +32,7 @@ public class ApplicationDao
 
         //building custom dto objects for linked elements
         this.applicationStatus = new ApplicationStatusDao(application.getApplicationStatus());
-        this.user = new UserDao(application.getUser());
+        this.user = new UserDao(application.getUser().getUserid(), new RoleDao(application.getUser().getRole()), null);
 
         //building custom list of objects while removing infinite recursion
         List<ApplicationNoteDao> applicationNotes = new ArrayList<>();
@@ -44,7 +44,7 @@ public class ApplicationDao
                         note.getDatetime().toInstant(),
                         note.getNotebody(),
                         null,
-                        new UserDao(note.getUser())));
+                        new UserDao(note.getUser().getUserid(), new RoleDao(note.getUser().getRole()), null)));
             }
         }
         this.applicationNotes = applicationNotes;

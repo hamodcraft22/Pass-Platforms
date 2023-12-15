@@ -2,9 +2,9 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import polytechnic.bh.PassPlatforms_Backend.Dao.RoleDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.SlotDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
-import polytechnic.bh.PassPlatforms_Backend.Entity.Child.Leader;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Slot;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.DayRepo;
@@ -52,7 +52,7 @@ public class SlotServ
         for (String userID : userIDs)
         {
             User retrivedUser = userServ.getUser(userID);
-            if (retrivedUser instanceof Leader)
+            if (retrivedUser.getRole().getRoleid() == 2)
             {
                 List<SlotDao> slots = new ArrayList<>();
 
@@ -61,7 +61,7 @@ public class SlotServ
                     slots.add(new SlotDao(retrievedSlot));
                 }
 
-                leaderSlots.put(new UserDao(retrivedUser), slots);
+                leaderSlots.put(new UserDao(retrivedUser.getUserid(), new RoleDao(retrivedUser.getRole()), null), slots);
             }
 
         }

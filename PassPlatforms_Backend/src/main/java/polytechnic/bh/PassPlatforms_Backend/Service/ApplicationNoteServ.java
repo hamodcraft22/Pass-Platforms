@@ -3,6 +3,7 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationNoteDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.RoleDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Application;
 import polytechnic.bh.PassPlatforms_Backend.Entity.ApplicationNote;
@@ -43,7 +44,7 @@ public class ApplicationNoteServ
                         retrivedNote.getDatetime().toInstant(),
                         retrivedNote.getNotebody(),
                         null,
-                        new UserDao(retrivedNote.getUser())
+                        new UserDao(retrivedNote.getUser().getUserid(), new RoleDao(retrivedNote.getUser().getRole()), null)
                 ));
             }
         }

@@ -1,6 +1,5 @@
 package polytechnic.bh.PassPlatforms_Backend.Controller;
 
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

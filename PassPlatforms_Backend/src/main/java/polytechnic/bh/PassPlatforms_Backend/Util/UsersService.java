@@ -36,7 +36,8 @@ public class UsersService
 
             JSONObject myjson = new JSONObject(response.getBody());
 
-            try {
+            try
+            {
                 // Create an ObjectMapper instance
                 ObjectMapper objectMapper = new ObjectMapper();
 

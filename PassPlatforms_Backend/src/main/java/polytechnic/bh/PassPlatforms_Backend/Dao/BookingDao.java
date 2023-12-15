@@ -49,7 +49,7 @@ public class BookingDao
         this.bookingType = new BookingTypeDao(booking.getBookingType());
         this.slot = new SlotDao(booking.getSlot());
         this.bookingStatus = new BookingStatusDao(booking.getBookingStatus());
-        this.student = new UserDao(booking.getStudent());
+        this.student = new UserDao(booking.getStudent().getUserid(), new RoleDao(booking.getStudent().getRole()), null);
         this.course = new CourseDao(booking.getCourse());
 
         List<BookingMemberDao> bookingMembers = new ArrayList<>();
@@ -59,7 +59,7 @@ public class BookingDao
             {
                 bookingMembers.add(new BookingMemberDao(member.getMemberid(),
                         member.getDatetime().toInstant(),
-                        new UserDao(member.getStudent()),
+                        new UserDao(member.getStudent().getUserid(), new RoleDao(member.getStudent().getRole()), null),
                         null));
             }
         }
@@ -73,7 +73,7 @@ public class BookingDao
                         note.getDatetime().toInstant(),
                         note.getNotebody(),
                         null,
-                        new UserDao(note.getUser())));
+                        new UserDao(note.getUser().getUserid(), new RoleDao(note.getUser().getRole()), null)));
             }
         }
 

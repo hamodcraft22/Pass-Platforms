@@ -30,6 +30,6 @@ public class SlotDao
         this.note = slot.getNote();
         this.slotType = new SlotTypeDao(slot.getSlotType());
         this.day = new DayDao(slot.getDay());
-        this.leader = new UserDao(slot.getLeader());
+        this.leader = new UserDao(slot.getLeader().getUserid(), new RoleDao(slot.getLeader().getRole()), null);
     }
 }

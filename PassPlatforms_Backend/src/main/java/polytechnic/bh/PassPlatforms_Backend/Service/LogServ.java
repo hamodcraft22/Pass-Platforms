@@ -3,6 +3,7 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.LogDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.RoleDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Log;
 import polytechnic.bh.PassPlatforms_Backend.Repository.LogRepo;
@@ -33,7 +34,7 @@ public class LogServ
                     retrivedLog.getLogid(),
                     null,
                     retrivedLog.getDatetime().toInstant(),
-                    new UserDao(retrivedLog.getUser())
+                    new UserDao(retrivedLog.getUser().getUserid(), new RoleDao(retrivedLog.getUser().getRole()), null)
             ));
         }
 

@@ -27,7 +27,7 @@ public class RecommendationDao
         this.datetime = recommendation.getDatetime().toInstant();
         this.note = recommendation.getNote();
         this.recStatus = new RecStatusDao(recommendation.getStatus());
-        this.student = new UserDao(recommendation.getStudent());
-        this.tutor = new UserDao(recommendation.getTutor());
+        this.student = new UserDao(recommendation.getStudent().getUserid(), new RoleDao(recommendation.getStudent().getRole()), null);
+        this.tutor = new UserDao(recommendation.getTutor().getUserid(), new RoleDao(recommendation.getTutor().getRole()), null);
     }
 }

@@ -2,8 +2,8 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import polytechnic.bh.PassPlatforms_Backend.Entity.Child.Student;
-import polytechnic.bh.PassPlatforms_Backend.Entity.Child.Tutor;
+import polytechnic.bh.PassPlatforms_Backend.Dao.RoleDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.RoleRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
@@ -37,31 +37,36 @@ public class UserServ
             // logic is if user id start with a 2 (start of our student ids, it's a student, in any other case - it's a tutor)
             if (userID.startsWith("20"))
             {
-                Student newStudent = new Student();
+                User newStudent = new User();
                 newStudent.setUserid(userID);
+                newStudent.setRole(roleRepo.getReferenceById(1));
 
                 return userRepo.save(newStudent);
             }
             else
             {
-                Tutor newTutor = new Tutor();
+                User newTutor = new User();
                 newTutor.setUserid(userID);
+                newTutor.setRole(roleRepo.getReferenceById(3));
 
                 return userRepo.save(newTutor);
             }
         }
     }
 
-    public List<User> makeLeaders(List<String> users)
+    public List<UserDao> makeLeaders(List<String> users)
     {
-        List<User> newLeaders = new ArrayList<>();
+        List<UserDao> newLeaders = new ArrayList<>();
 
         for (String userID : users)
         {
             User retirvedUser = getUser(userID);
-            retirvedUser.setRole(roleRepo.getReferenceById(2));
 
-            userRepo.save(retirvedUser);
+            userRepo.makeLeaders(retirvedUser.getUserid());
+
+            User updatedUser = getUser(retirvedUser.getUserid());
+
+            newLeaders.add(new UserDao(updatedUser.getUserid(), new RoleDao(updatedUser.getRole()), null));
         }
 
         return newLeaders;

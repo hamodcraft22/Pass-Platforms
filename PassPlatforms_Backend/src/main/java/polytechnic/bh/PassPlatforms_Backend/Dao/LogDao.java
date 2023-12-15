@@ -24,6 +24,6 @@ public class LogDao
         this.logid = log.getLogid();
         this.errormsg = log.getErrormsg();
         this.datetime = log.getDatetime().toInstant();
-        this.user = new UserDao(log.getUser());
+        this.user = new UserDao(log.getUser().getUserid(), new RoleDao(log.getUser().getRole()), null);
     }
 }
