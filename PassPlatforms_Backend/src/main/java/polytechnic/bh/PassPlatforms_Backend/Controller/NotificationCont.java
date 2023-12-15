@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import polytechnic.bh.PassPlatforms_Backend.Dao.LogDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.NotificationDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.NotificationServ;

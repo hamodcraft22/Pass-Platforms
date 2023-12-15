@@ -42,7 +42,9 @@ public class UsersService
                 ObjectMapper objectMapper = new ObjectMapper();
 
                 // Convert the JSON string to a List of Map objects
-                List<Map<String, Object>> userList = objectMapper.readValue(myjson.get("value").toString(), new TypeReference<List<Map<String, Object>>>() {});
+                List<Map<String, Object>> userList = objectMapper.readValue(myjson.get("value").toString(), new TypeReference<List<Map<String, Object>>>()
+                {
+                });
 
                 // Create a Map to store the key-value pairs
                 Map<String, String> resultMap = new HashMap<>();

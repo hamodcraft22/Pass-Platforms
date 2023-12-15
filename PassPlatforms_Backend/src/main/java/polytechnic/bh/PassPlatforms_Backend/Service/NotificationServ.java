@@ -2,7 +2,6 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import polytechnic.bh.PassPlatforms_Backend.Dao.AuditDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.NotificationDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
 import polytechnic.bh.PassPlatforms_Backend.Repository.NotificationRepo;
@@ -23,7 +22,7 @@ public class NotificationServ
     {
         List<NotificationDao> notifications = new ArrayList<>();
 
-        for(Notification notification : notificationRepo.findAllByUser_Userid(userID))
+        for (Notification notification : notificationRepo.findAllByUser_Userid(userID))
         {
             notifications.add(new NotificationDao(notification));
         }
