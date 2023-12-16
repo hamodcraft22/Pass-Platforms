@@ -103,7 +103,6 @@ public class RecommendationCont
             RecommendationDao createdRecommendation = recommendationServ.createRecommendation(
                     recommendationDao.getDatetime(),
                     recommendationDao.getNote(),
-                    recommendationDao.getRecStatus().getStatusid(),
                     recommendationDao.getTutor().getUserid(),
                     recommendationDao.getStudent().getUserid()
             );

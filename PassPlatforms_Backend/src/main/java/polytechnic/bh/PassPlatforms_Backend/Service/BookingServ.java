@@ -14,6 +14,11 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
 
+import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingStatusConstant.BKNGSTAT_ACTIVE;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingStatusConstant.BKNGSTAT_FINISHED;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingTypeConstant.*;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.SlotTypeConstant.SLTYP_UNSCHEDULED;
+
 @Service
 public class BookingServ
 {
@@ -78,8 +83,8 @@ public class BookingServ
 
         List<Booking> schoolBookings = new ArrayList<>();
 
-        schoolBookings.addAll(bookingRepo.findBookingsByCourse_School_SchoolidAndBookingType_Typeid(schoolID, 'N'));
-        schoolBookings.addAll(bookingRepo.findBookingsByCourse_School_SchoolidAndBookingType_Typeid(schoolID, 'U'));
+        schoolBookings.addAll(bookingRepo.findBookingsByCourse_School_SchoolidAndBookingType_Typeid(schoolID, BKNGTYP_NORMAL));
+        schoolBookings.addAll(bookingRepo.findBookingsByCourse_School_SchoolidAndBookingType_Typeid(schoolID, BKNGTYP_UNSCHEDULED));
 
         for (Booking retrivedBooking : schoolBookings)
         {
@@ -94,7 +99,7 @@ public class BookingServ
     {
         List<BookingDao> bookings = new ArrayList<>();
 
-        for (Booking retrivedBooking : bookingRepo.findBookingsByCourse_School_SchoolidAndBookingType_Typeid(schoolID, 'R'))
+        for (Booking retrivedBooking : bookingRepo.findBookingsByCourse_School_SchoolidAndBookingType_Typeid(schoolID, BKNGTYP_REVISION))
         {
             bookings.add(new BookingDao(retrivedBooking));
         }
@@ -136,7 +141,7 @@ public class BookingServ
                 else
                 {
                     // check if any active bookings are under this slot in the date selected
-                    if (bookingRepo.existsBySlot_SlotidAndBookingdateAndBookingStatus_Statusid(slotID, bookingDate, 'a'))
+                    if (bookingRepo.existsBySlot_SlotidAndBookingdateAndBookingStatus_Statusid(slotID, bookingDate, BKNGSTAT_ACTIVE))
                     {
                         errors.add("the booking slot is booked by another student");
                     }
@@ -149,13 +154,13 @@ public class BookingServ
                 }
 
                 // check if user has current bookings at this time
-                if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndBookingType_TypeidAndSlot_StarttimeBetweenOrSlot_EndtimeBetween(studentID, bookingDate, 'a', 'N', retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime(), retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime()))
+                if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndBookingType_TypeidAndSlot_StarttimeBetweenOrSlot_EndtimeBetween(studentID, bookingDate, BKNGSTAT_ACTIVE, BKNGTYP_NORMAL, retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime(), retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime()))
                 {
                     errors.add("you have another booking at the same time");
                 }
 
                 // check if user is a member of any sessions at this time
-                if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_BookingType_TypeidAndBooking_Slot_StarttimeBetweenOrBooking_Slot_EndtimeBetween(studentID, bookingDate, 'a', 'G', retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime(), retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime()))
+                if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_BookingType_TypeidAndBooking_Slot_StarttimeBetweenOrBooking_Slot_EndtimeBetween(studentID, bookingDate, BKNGSTAT_ACTIVE, BKNGTYP_GROUP, retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime(), retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime()))
                 {
                     errors.add("you have another revision session you are a part of (group) at the same time");
                 }
@@ -192,10 +197,10 @@ public class BookingServ
                 newBooking.setStarttime(startTime);
                 newBooking.setEndtime(endTime);
 
-                newBooking.setBookingStatus(bookingStatusRepo.getReferenceById('F'));
+                newBooking.setBookingStatus(bookingStatusRepo.getReferenceById(BKNGSTAT_FINISHED));
 
                 // create or get unscheduled slot
-                Optional<Slot> unselectedSlot = slotRepo.findSlotByLeader_UseridAndSlotType_Typeid(leaderID, 'U');
+                Optional<Slot> unselectedSlot = slotRepo.findSlotByLeader_UseridAndSlotType_Typeid(leaderID, SLTYP_UNSCHEDULED);
                 if (unselectedSlot.isPresent())
                 {
                     newBooking.setSlot(unselectedSlot.get());
@@ -203,7 +208,7 @@ public class BookingServ
                 else
                 {
                     Slot newSlot = new Slot();
-                    newSlot.setSlotType(slotTypeRepo.getReferenceById('U'));
+                    newSlot.setSlotType(slotTypeRepo.getReferenceById(SLTYP_UNSCHEDULED));
                     newSlot.setLeader(userServ.getUser(leaderID));
 
                     Slot savedSlot = slotRepo.save(newSlot);
@@ -212,7 +217,7 @@ public class BookingServ
             }
             else
             {
-                newBooking.setBookingStatus(bookingStatusRepo.getReferenceById('A'));
+                newBooking.setBookingStatus(bookingStatusRepo.getReferenceById(BKNGSTAT_ACTIVE));
                 newBooking.setSlot(slotRepo.getReferenceById(slotID));
             }
 
@@ -223,11 +228,11 @@ public class BookingServ
                 // group booking
                 if (unscheduled)
                 {
-                    newBooking.setBookingType(bookingTypeRepo.getReferenceById('Z'));
+                    newBooking.setBookingType(bookingTypeRepo.getReferenceById(BKNGTYP_GROUP_UNSCHEDULED));
                 }
                 else
                 {
-                    newBooking.setBookingType(bookingTypeRepo.getReferenceById('G'));
+                    newBooking.setBookingType(bookingTypeRepo.getReferenceById(BKNGTYP_GROUP));
                 }
 
                 Booking createdBooking = bookingRepo.save(newBooking);
@@ -268,11 +273,11 @@ public class BookingServ
                 // normal booking
                 if (unscheduled)
                 {
-                    newBooking.setBookingType(bookingTypeRepo.getReferenceById('U'));
+                    newBooking.setBookingType(bookingTypeRepo.getReferenceById(BKNGTYP_UNSCHEDULED));
                 }
                 else
                 {
-                    newBooking.setBookingType(bookingTypeRepo.getReferenceById('N'));
+                    newBooking.setBookingType(bookingTypeRepo.getReferenceById(BKNGTYP_NORMAL));
                 }
 
                 Booking createdBooking = bookingRepo.save(newBooking);
@@ -304,7 +309,7 @@ public class BookingServ
         List<String> errors = new ArrayList<>();
 
         // check if there is any other revisions at this time by this leader
-        if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndBookingType_TypeidAndStarttimeBetweenOrEndtimeBetween(leaderID, bookingDate, 'a', 'R', startTime, endTime, startTime, endTime))
+        if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndBookingType_TypeidAndStarttimeBetweenOrEndtimeBetween(leaderID, bookingDate, BKNGSTAT_ACTIVE, BKNGTYP_REVISION, startTime, endTime, startTime, endTime))
         {
             errors.add("there is another session or schedule within the selected time");
         }
@@ -326,8 +331,8 @@ public class BookingServ
             newRevision.setEndtime(endTime);
             newRevision.setBookinglimit(bookingLimit);
             newRevision.setIsonline(online);
-            newRevision.setBookingType(bookingTypeRepo.getReferenceById('R'));
-            newRevision.setBookingStatus(bookingStatusRepo.getReferenceById('a'));
+            newRevision.setBookingType(bookingTypeRepo.getReferenceById(BKNGTYP_REVISION));
+            newRevision.setBookingStatus(bookingStatusRepo.getReferenceById(BKNGSTAT_ACTIVE));
             newRevision.setCourse(courseRepo.getReferenceById(courseID));
 
             Booking savedRevision = bookingRepo.save(newRevision);
@@ -347,7 +352,7 @@ public class BookingServ
         {
             bookingToUpdate.get().setBookingStatus(bookingStatusRepo.getReferenceById(statusID));
 
-            if (statusID == 'F')
+            if (statusID == BKNGSTAT_FINISHED)
             {
                 bookingToUpdate.get().setStarttime(startTime);
                 bookingToUpdate.get().setEndtime(endTime);
@@ -378,7 +383,7 @@ public class BookingServ
                 notificationRepo.save(newNotification);
             }
 
-            if (bookingToUpdate.get().getBookingType().getTypeid() == 'G')
+            if (bookingToUpdate.get().getBookingType().getTypeid() == BKNGTYP_GROUP)
             {
                 for (BookingMember member : bookingToUpdate.get().getBookingMembers())
                 {

@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static polytechnic.bh.PassPlatforms_Backend.Constant.ApplicationStatusConstant.APLC_CREATED;
+
 @Service
 public class ApplicationServ
 {
@@ -83,7 +85,7 @@ public class ApplicationServ
 
         newapplicationton.setDatetime(Timestamp.from(Instant.now()));
         newapplicationton.setNote(applicationNote);
-        newapplicationton.setApplicationStatus(applicationStatusRepo.getReferenceById('c'));
+        newapplicationton.setApplicationStatus(applicationStatusRepo.getReferenceById(APLC_CREATED));
         newapplicationton.setUser(userServ.getUser(studentID));
 
         Application createdApplication = applicationRepo.save(newapplicationton);

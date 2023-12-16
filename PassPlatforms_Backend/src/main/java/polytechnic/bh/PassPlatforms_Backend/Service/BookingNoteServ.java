@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingTypeConstant.BKNGTYP_GROUP;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingTypeConstant.BKNGTYP_GROUP_UNSCHEDULED;
+
 @Service
 public class BookingNoteServ
 {
@@ -95,7 +98,7 @@ public class BookingNoteServ
         }
 
         // if group send to all students as well
-        if (addedBookingNote.getBooking().getBookingType().getTypeid() == 'G' || addedBookingNote.getBooking().getBookingType().getTypeid() == 'Z')
+        if (addedBookingNote.getBooking().getBookingType().getTypeid() == BKNGTYP_GROUP || addedBookingNote.getBooking().getBookingType().getTypeid() == BKNGTYP_GROUP_UNSCHEDULED)
         {
             for (BookingMember bookingMember : addedBookingNote.getBooking().getBookingMembers())
             {

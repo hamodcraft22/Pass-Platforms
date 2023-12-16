@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static polytechnic.bh.PassPlatforms_Backend.Constant.RecommendationStatusConstant.RECSTS_CREATED;
+
 @Service
 public class RecommendationServ
 {
@@ -50,13 +52,13 @@ public class RecommendationServ
         return retrievedRecommendation.map(RecommendationDao::new).orElse(null);
     }
 
-    public RecommendationDao createRecommendation(Instant datetime, String note, char recStatusID, String tutorID, String studentID)
+    public RecommendationDao createRecommendation(Instant datetime, String note, String tutorID, String studentID)
     {
         Recommendation newRecommendation = new Recommendation();
 
         newRecommendation.setDatetime(Timestamp.from(datetime));
         newRecommendation.setNote(note);
-        newRecommendation.setStatus(recStatusRepo.getReferenceById(recStatusID));
+        newRecommendation.setStatus(recStatusRepo.getReferenceById(RECSTS_CREATED));
         newRecommendation.setTutor(userServ.getUser(tutorID));
         newRecommendation.setStudent(userServ.getUser(studentID));
 

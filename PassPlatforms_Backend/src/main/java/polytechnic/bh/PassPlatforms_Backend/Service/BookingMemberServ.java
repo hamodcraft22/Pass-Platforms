@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingStatusConstant.*;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingTypeConstant.*;
+
 @Service
 public class BookingMemberServ
 {
@@ -44,16 +47,16 @@ public class BookingMemberServ
         if (retrivedBooking.isPresent())
         {
             // check if it can be booked - has not been closed
-            if (retrivedBooking.get().getBookingMembers().size() < retrivedBooking.get().getBookinglimit() && retrivedBooking.get().getBookingStatus().getStatusid() == 'a')
+            if (retrivedBooking.get().getBookingMembers().size() < retrivedBooking.get().getBookinglimit() && retrivedBooking.get().getBookingStatus().getStatusid() == BKNGSTAT_ACTIVE)
             {
                 // check if user has current bookings at this time
-                if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndBookingType_TypeidAndSlot_StarttimeBetweenOrSlot_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), 'a', 'N', retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime(), retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime()))
+                if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndBookingType_TypeidAndSlot_StarttimeBetweenOrSlot_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), BKNGSTAT_ACTIVE, BKNGTYP_NORMAL, retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime(), retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime()))
                 {
                     errors.add("you have another booking at the same time");
                 }
 
                 // check if user is a member of any sessions at this time
-                if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_BookingType_TypeidAndBooking_Slot_StarttimeBetweenOrBooking_Slot_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), 'a', 'G', retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime(), retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime()))
+                if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_BookingType_TypeidAndBooking_Slot_StarttimeBetweenOrBooking_Slot_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), BKNGSTAT_ACTIVE, BKNGTYP_GROUP, retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime(), retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime()))
                 {
                     errors.add("you have another revision session you are a part of (group) at the same time");
                 }
@@ -132,16 +135,16 @@ public class BookingMemberServ
         {
             // check if it can be booked
 
-            if (retrivedBooking.get().getBookingMembers().size() < retrivedBooking.get().getBookinglimit() && retrivedBooking.get().getBookingStatus().getStatusid() == 'a')
+            if (retrivedBooking.get().getBookingMembers().size() < retrivedBooking.get().getBookinglimit() && retrivedBooking.get().getBookingStatus().getStatusid() == BKNGSTAT_ACTIVE)
             {
                 // check if user has another revision session within same time
-                if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingType_TypeidAndBooking_StarttimeBetweenOrBooking_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), 'R', retrivedBooking.get().getStarttime(), retrivedBooking.get().getEndtime(), retrivedBooking.get().getStarttime(), retrivedBooking.get().getEndtime()))
+                if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingType_TypeidAndBooking_StarttimeBetweenOrBooking_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), BKNGTYP_REVISION, retrivedBooking.get().getStarttime(), retrivedBooking.get().getEndtime(), retrivedBooking.get().getStarttime(), retrivedBooking.get().getEndtime()))
                 {
                     errors.add("you have another revision session booked at the same time");
                 }
 
                 // check if they have an active or complete revisions in the same course
-                if (bookingMemberRepo.existsByStudent_UseridAndBooking_Course_CourseidAndBooking_BookingStatus_StatusidAndBooking_BookingType_Typeid(studentID, retrivedBooking.get().getCourse().getCourseid(), 'a', 'R') || bookingMemberRepo.existsByStudent_UseridAndBooking_Course_CourseidAndBooking_BookingStatus_StatusidAndBooking_BookingType_Typeid(studentID, retrivedBooking.get().getCourse().getCourseid(), 'c', 'R'))
+                if (bookingMemberRepo.existsByStudent_UseridAndBooking_Course_CourseidAndBooking_BookingStatus_StatusidAndBooking_BookingType_Typeid(studentID, retrivedBooking.get().getCourse().getCourseid(), BKNGSTAT_ACTIVE, BKNGTYP_REVISION) || bookingMemberRepo.existsByStudent_UseridAndBooking_Course_CourseidAndBooking_BookingStatus_StatusidAndBooking_BookingType_Typeid(studentID, retrivedBooking.get().getCourse().getCourseid(), BKNGSTAT_FINISHED, BKNGTYP_REVISION))
                 {
                     errors.add("you have already booked in this course");
                 }
