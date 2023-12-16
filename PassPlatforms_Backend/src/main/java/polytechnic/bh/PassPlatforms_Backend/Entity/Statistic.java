@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Dao.StatisticDao;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 
 @Data
 @Entity

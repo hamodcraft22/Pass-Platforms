@@ -20,7 +20,7 @@ public class StatisticServ
     {
         List<StatisticDao> statistics = new ArrayList<>();
 
-        for(Statistic statistic : statisticRepo.getLatest10Stats())
+        for (Statistic statistic : statisticRepo.getLatest10Stats())
         {
             statistics.add(new StatisticDao(statistic));
         }
