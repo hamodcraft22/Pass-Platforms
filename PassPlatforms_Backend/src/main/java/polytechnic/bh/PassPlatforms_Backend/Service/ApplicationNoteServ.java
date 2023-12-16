@@ -7,13 +7,16 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.RoleDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Application;
 import polytechnic.bh.PassPlatforms_Backend.Entity.ApplicationNote;
+import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationNoteRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationRepo;
+import polytechnic.bh.PassPlatforms_Backend.Repository.NotificationRepo;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -28,6 +31,9 @@ public class ApplicationNoteServ
 
     @Autowired
     private UserServ userServ;
+
+    @Autowired
+    private NotificationRepo notificationRepo;
 
 
     // get all application Notes - not needed
@@ -93,11 +99,31 @@ public class ApplicationNoteServ
     {
         ApplicationNote newApplicationNote = new ApplicationNote();
 
+        // create application
         newApplicationNote.setDatetime(Timestamp.from(Instant.now()));
         newApplicationNote.setNotebody(noteBody);
         newApplicationNote.setApplication(applicationRepo.getReferenceById(applicationID));
         newApplicationNote.setUser(userServ.getUser(userID));
 
+        // send notification to manager or user
+        Notification newNotification = new Notification();
+        newNotification.setEntity("Application");
+        newNotification.setItemid(String.valueOf(applicationID));
+        newNotification.setNotficmsg("new note added to application");
+        if (Objects.equals(userID, "MANAGERID"))
+        {
+            // send to student
+            newNotification.setUser(userServ.getUser(applicationRepo.getReferenceById(applicationID).getUser().getUserid()));
+        }
+        else
+        {
+            // send to manager
+            newNotification.setUser(userServ.getUser("MANAGERID"));
+        }
+        newNotification.setSeen(false);
+        notificationRepo.save(newNotification);
+
+        // return
         return new ApplicationNoteDao(applicationNoteRepo.save(newApplicationNote));
     }
 

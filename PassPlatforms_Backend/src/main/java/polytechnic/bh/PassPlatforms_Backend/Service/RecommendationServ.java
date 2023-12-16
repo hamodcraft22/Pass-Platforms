@@ -3,7 +3,9 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.RecommendationDao;
+import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Recommendation;
+import polytechnic.bh.PassPlatforms_Backend.Repository.NotificationRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.RecStatusRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.RecommendationRepo;
 
@@ -25,6 +27,9 @@ public class RecommendationServ
 
     @Autowired
     private UserServ userServ;
+
+    @Autowired
+    private NotificationRepo notificationRepo;
 
     public List<RecommendationDao> getAllRecommendations()
     {
@@ -55,7 +60,19 @@ public class RecommendationServ
         newRecommendation.setTutor(userServ.getUser(tutorID));
         newRecommendation.setStudent(userServ.getUser(studentID));
 
-        return new RecommendationDao(recommendationRepo.save(newRecommendation));
+        Recommendation savedRec = recommendationRepo.save(newRecommendation);
+
+        // notify manager
+        Notification newNotification = new Notification();
+        newNotification.setEntity("Recommendation");
+        newNotification.setItemid(String.valueOf(savedRec.getRecid()));
+        newNotification.setNotficmsg("new recommendation by tutor");
+        newNotification.setUser(userServ.getUser("MANAGERID"));
+        newNotification.setSeen(false);
+
+        notificationRepo.save(newNotification);
+
+        return new RecommendationDao(savedRec);
     }
 
     public RecommendationDao editRecommendation(RecommendationDao updatedRecommendation)
@@ -67,6 +84,16 @@ public class RecommendationServ
             retrievedRecommendation.get().setDatetime(Timestamp.from(updatedRecommendation.getDatetime()));
             retrievedRecommendation.get().setNote(updatedRecommendation.getNote());
             retrievedRecommendation.get().setStatus(recStatusRepo.getReferenceById(updatedRecommendation.getRecStatus().getStatusid()));
+
+            // notify tutor
+            Notification newNotification = new Notification();
+            newNotification.setEntity("Recommendation");
+            newNotification.setItemid(String.valueOf(retrievedRecommendation.get().getRecid()));
+            newNotification.setNotficmsg("recommendation stats updated");
+            newNotification.setUser(retrievedRecommendation.get().getTutor());
+            newNotification.setSeen(false);
+
+            notificationRepo.save(newNotification);
 
             return new RecommendationDao(recommendationRepo.save(retrievedRecommendation.get()));
         }

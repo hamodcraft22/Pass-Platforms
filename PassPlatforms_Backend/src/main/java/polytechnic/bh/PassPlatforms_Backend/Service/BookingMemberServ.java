@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Booking;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
+import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
 import polytechnic.bh.PassPlatforms_Backend.Repository.BookingMemberRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.BookingRepo;
+import polytechnic.bh.PassPlatforms_Backend.Repository.NotificationRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ScheduleRepo;
 
 import java.util.ArrayList;
@@ -27,6 +29,9 @@ public class BookingMemberServ
 
     @Autowired
     private UserServ userServ;
+
+    @Autowired
+    private NotificationRepo notificationRepo;
 
     // add student to group
     public BookingMemberDao addStudentMember(int bookingID, String studentID)
@@ -83,7 +88,25 @@ public class BookingMemberServ
             newRevMember.setBooking(bookingRepo.getReferenceById(retrivedBooking.get().getBookingid()));
             newRevMember.setStudent(userServ.getUser(studentID));
 
-            return new BookingMemberDao(bookingMemberRepo.save(newRevMember));
+            BookingMember addedMember = bookingMemberRepo.save(newRevMember);
+
+            // notify leader
+            Notification newNotification = new Notification();
+            newNotification.setEntity("Booking");
+            newNotification.setItemid(String.valueOf(addedMember.getBooking().getBookingid()));
+            newNotification.setNotficmsg("new student added to booking");
+            newNotification.setUser(addedMember.getBooking().getSlot().getLeader());
+            newNotification.setSeen(false);
+
+            notificationRepo.save(newNotification);
+
+            // notify student added
+            newNotification.setNotficmsg("you have been added to a booking");
+            newNotification.setUser(addedMember.getStudent());
+
+            notificationRepo.save(newNotification);
+
+            return new BookingMemberDao();
         }
 
 
@@ -93,7 +116,6 @@ public class BookingMemberServ
     // remove student from group / revision
     public boolean removeStudentMember(int bookingID, String studentID)
     {
-
         bookingMemberRepo.deleteByStudent_UseridAndBooking_Bookingid(studentID, bookingID);
         return true;
     }
@@ -142,7 +164,19 @@ public class BookingMemberServ
             newRevMember.setBooking(bookingRepo.getReferenceById(retrivedBooking.get().getBookingid()));
             newRevMember.setStudent(userServ.getUser(studentID));
 
-            return new BookingMemberDao(bookingMemberRepo.save(newRevMember));
+            BookingMember addedMember = bookingMemberRepo.save(newRevMember);
+
+            // notify student
+            Notification newNotification = new Notification();
+            newNotification.setEntity("Booking");
+            newNotification.setItemid(String.valueOf(addedMember.getBooking().getBookingid()));
+            newNotification.setNotficmsg("you have registered in a revision");
+            newNotification.setUser(addedMember.getStudent());
+            newNotification.setSeen(false);
+
+            notificationRepo.save(newNotification);
+
+            return new BookingMemberDao();
         }
 
 

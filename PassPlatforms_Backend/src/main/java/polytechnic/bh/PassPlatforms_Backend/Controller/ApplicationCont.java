@@ -177,7 +177,7 @@ public class ApplicationCont
 
                     if ((retrivedApplicationDao.getApplicationStatus().getStatusid() == APLC_CANCLED && applicationGotten.getApplicationStatus().getStatusid() == APLC_REOPENED) || ((retrivedApplicationDao.getApplicationStatus().getStatusid() != APLC_ACCEPTED && retrivedApplicationDao.getApplicationStatus().getStatusid() != APLC_REJECTED && retrivedApplicationDao.getApplicationStatus().getStatusid() != APLC_CANCLED) && (applicationGotten.getApplicationStatus().getStatusid() == APLC_CANCLED)))
                     {
-                        ApplicationDao responseAplDao = applicationServ.updateApplication(retrivedApplicationDao.getApplicationid(), applicationStatus);
+                        ApplicationDao responseAplDao = applicationServ.updateApplication(retrivedApplicationDao.getApplicationid(), applicationStatus, true);
 
                         if (responseAplDao != null)
                         {
@@ -215,7 +215,7 @@ public class ApplicationCont
 
                 if (applicationStatus != APLC_CREATED && applicationStatus != APLC_CANCLED && applicationStatus != APLC_REOPENED)
                 {
-                    ApplicationDao responseAplDao = applicationServ.updateApplication(retrivedApplicationDao.getApplicationid(), applicationStatus);
+                    ApplicationDao responseAplDao = applicationServ.updateApplication(retrivedApplicationDao.getApplicationid(), applicationStatus, false);
 
                     if (responseAplDao != null)
                     {

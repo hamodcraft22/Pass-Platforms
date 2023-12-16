@@ -170,7 +170,7 @@ public class RevisionCont
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
-            if (bookingServ.updateBooking(revisionID, statusID, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
+            if (bookingServ.updateBooking(revisionID, statusID, false, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
             {
                 return new ResponseEntity<>(null, HttpStatus.OK);
             }
@@ -184,7 +184,7 @@ public class RevisionCont
             // does the leader own this booking?
             if (Objects.equals(bookingServ.getBookingDetails(revisionID).getStudent().getUserid(), requisterID))
             {
-                if (bookingServ.updateBooking(revisionID, statusID, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
+                if (bookingServ.updateBooking(revisionID, statusID, false, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
                 {
                     return new ResponseEntity<>(null, HttpStatus.OK);
                 }

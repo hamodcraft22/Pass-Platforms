@@ -175,7 +175,7 @@ public class BookingCont
         {
             // TODO null checks
 
-            if (bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), requisterID, bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), false, null, null) != null)
+            if (bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), requisterID, bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), false, null, null, null) != null)
             {
                 return new ResponseEntity<>(null, HttpStatus.OK);
             }
@@ -203,7 +203,7 @@ public class BookingCont
         {
             // TODO null checks
 
-            if (bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), bookingDao.getStudent().getUserid(), bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), true, Timestamp.from(bookingDao.getStarttime()), Timestamp.from(bookingDao.getEndtime())) != null)
+            if (bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), bookingDao.getStudent().getUserid(), bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), true, Timestamp.from(bookingDao.getStarttime()), Timestamp.from(bookingDao.getEndtime()), "LEADERID") != null)
             {
                 return new ResponseEntity<>(null, HttpStatus.OK);
             }
@@ -304,7 +304,7 @@ public class BookingCont
     {
         if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
         {
-            if (bookingServ.updateBooking(bookingID, statusID, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
+            if (bookingServ.updateBooking(bookingID, statusID, false, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
             {
                 return new ResponseEntity<>(null, HttpStatus.OK);
             }
@@ -319,7 +319,7 @@ public class BookingCont
 
             if (Objects.equals(bookingServ.getBookingDetails(bookingID).getSlot().getLeader().getUserid(), requisterID))
             {
-                if (bookingServ.updateBooking(bookingID, statusID, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
+                if (bookingServ.updateBooking(bookingID, statusID, false, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
                 {
                     return new ResponseEntity<>(null, HttpStatus.OK);
                 }
@@ -339,7 +339,7 @@ public class BookingCont
 
             if (Objects.equals(bookingServ.getBookingDetails(bookingID).getStudent().getUserid(), requisterID))
             {
-                if (bookingServ.updateBooking(bookingID, statusID, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
+                if (bookingServ.updateBooking(bookingID, statusID, true, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
                 {
                     return new ResponseEntity<>(null, HttpStatus.OK);
                 }

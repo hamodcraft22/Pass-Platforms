@@ -5,4 +5,5 @@ public final class SlotTypeConstant
     public static final char SLTYP_ONLINE = 'O';
     public static final char SLTYP_PHYSICAL = 'P';
     public static final char SLTYP_BOTH = 'B';
+    public static final char SLTYP_UNSCHEDULED = 'U';
 }

@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationStatusDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Application;
+import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationStatusRepo;
+import polytechnic.bh.PassPlatforms_Backend.Repository.NotificationRepo;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -26,6 +28,9 @@ public class ApplicationServ
 
     @Autowired
     private UserServ userServ;
+
+    @Autowired
+    private NotificationRepo notificationRepo;
 
     // get all applications (with details if needed)
     public List<ApplicationDao> getAllApplications(Boolean details)
@@ -81,16 +86,54 @@ public class ApplicationServ
         newapplicationton.setApplicationStatus(applicationStatusRepo.getReferenceById('c'));
         newapplicationton.setUser(userServ.getUser(studentID));
 
-        return new ApplicationDao(applicationRepo.save(newapplicationton));
+        Application createdApplication = applicationRepo.save(newapplicationton);
+
+        // send notification to manager
+        Notification newNotification = new Notification();
+        newNotification.setEntity("Application");
+        newNotification.setItemid(String.valueOf(createdApplication.getApplicationid()));
+        newNotification.setNotficmsg("new application by student");
+        newNotification.setUser(userServ.getUser("MANAGERID"));
+        newNotification.setSeen(false);
+
+        notificationRepo.save(newNotification);
+
+        return new ApplicationDao(createdApplication);
     }
 
-    public ApplicationDao updateApplication(int applicationID, char statusID)
+    public ApplicationDao updateApplication(int applicationID, char statusID, boolean studentRequest)
     {
         Optional<Application> applicationToUpdate = applicationRepo.findById(applicationID);
 
         if (applicationToUpdate.isPresent())
         {
             applicationToUpdate.get().setApplicationStatus(applicationStatusRepo.getReferenceById(statusID));
+
+            if (studentRequest)
+            {
+                // notify manager
+                Notification newNotification = new Notification();
+                newNotification.setEntity("Application");
+                newNotification.setItemid(String.valueOf(applicationToUpdate.get().getApplicationid()));
+                newNotification.setNotficmsg("application updated by student");
+                newNotification.setUser(userServ.getUser("MANAGERID"));
+                newNotification.setSeen(false);
+
+                notificationRepo.save(newNotification);
+            }
+            else
+            {
+                // notify student
+                Notification newNotification = new Notification();
+                newNotification.setEntity("Application");
+                newNotification.setItemid(String.valueOf(applicationToUpdate.get().getApplicationid()));
+                newNotification.setNotficmsg("application updated by student");
+                newNotification.setUser(userServ.getUser(applicationToUpdate.get().getUser().getUserid()));
+                newNotification.setSeen(false);
+
+                notificationRepo.save(newNotification);
+            }
+
             return new ApplicationDao(applicationRepo.save(applicationToUpdate.get()));
         }
         else

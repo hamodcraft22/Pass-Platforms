@@ -26,7 +26,7 @@ public class MetadataController
     }
 
     // Update metadata
-    @PutMapping("/")
+    @PutMapping("")
     public ResponseEntity<MetadataDao> updateMetadata(@RequestBody MetadataDao metadataDao)
     {
         MetadataDao updatedMetadata = metadataServ.updateMetadata(metadataDao);

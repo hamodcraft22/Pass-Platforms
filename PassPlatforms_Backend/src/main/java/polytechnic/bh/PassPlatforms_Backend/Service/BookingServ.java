@@ -6,6 +6,7 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Booking;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
+import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Slot;
 import polytechnic.bh.PassPlatforms_Backend.Repository.*;
 
@@ -26,6 +27,9 @@ public class BookingServ
     private SlotRepo slotRepo;
 
     @Autowired
+    private SlotTypeRepo slotTypeRepo;
+
+    @Autowired
     private CourseRepo courseRepo;
 
     @Autowired
@@ -42,6 +46,9 @@ public class BookingServ
 
     @Autowired
     private BookingTypeRepo bookingTypeRepo;
+
+    @Autowired
+    private NotificationRepo notificationRepo;
 
     // get all bookings / revisions - manager
     public List<BookingDao> getAllBookings()
@@ -96,7 +103,7 @@ public class BookingServ
     }
 
     // create booking / group booking
-    public BookingDao createNewBooking(Date bookingDate, String note, boolean online, int slotID, String studentID, String courseID, List<BookingMemberDao> bookingMembers, boolean unscheduled, Timestamp startTime, Timestamp endTime)
+    public BookingDao createNewBooking(Date bookingDate, String note, boolean online, int slotID, String studentID, String courseID, List<BookingMemberDao> bookingMembers, boolean unscheduled, Timestamp startTime, Timestamp endTime, String leaderID)
     {
         List<String> errors = new ArrayList<>();
 
@@ -176,22 +183,39 @@ public class BookingServ
             newBooking.setDatebooked(Timestamp.from(Instant.now()));
             newBooking.setBookingdate(new java.sql.Date(bookingDate.getTime()));
             newBooking.setNote(note);
+            newBooking.setIsonline(online);
+            newBooking.setStudent(userServ.getUser(studentID));
+            newBooking.setCourse(courseRepo.getReferenceById(courseID));
 
             if (unscheduled)
             {
                 newBooking.setStarttime(startTime);
                 newBooking.setEndtime(endTime);
+
+                newBooking.setBookingStatus(bookingStatusRepo.getReferenceById('F'));
+
+                // create or get unscheduled slot
+                Optional<Slot> unselectedSlot = slotRepo.findSlotByLeader_UseridAndSlotType_Typeid(leaderID, 'U');
+                if (unselectedSlot.isPresent())
+                {
+                    newBooking.setSlot(unselectedSlot.get());
+                }
+                else
+                {
+                    Slot newSlot = new Slot();
+                    newSlot.setSlotType(slotTypeRepo.getReferenceById('U'));
+                    newSlot.setLeader(userServ.getUser(leaderID));
+
+                    Slot savedSlot = slotRepo.save(newSlot);
+                    newBooking.setSlot(savedSlot);
+                }
             }
-
-            newBooking.setIsonline(online);
-
-            if (!unscheduled)
+            else
             {
+                newBooking.setBookingStatus(bookingStatusRepo.getReferenceById('A'));
                 newBooking.setSlot(slotRepo.getReferenceById(slotID));
             }
 
-            newBooking.setBookingStatus(bookingStatusRepo.getReferenceById('F'));
-            newBooking.setStudent(userServ.getUser(studentID));
 
             // if it has members, make the type of booking to be grouped
             if (bookingMembers != null && !bookingMembers.isEmpty())
@@ -205,9 +229,20 @@ public class BookingServ
                 {
                     newBooking.setBookingType(bookingTypeRepo.getReferenceById('G'));
                 }
+
                 Booking createdBooking = bookingRepo.save(newBooking);
 
-                // add group memebers
+                // notify leader by booking
+                Notification newNotification = new Notification();
+                newNotification.setEntity("Booking");
+                newNotification.setItemid(String.valueOf(createdBooking.getBookingid()));
+                newNotification.setNotficmsg("new student booking");
+                newNotification.setUser(createdBooking.getSlot().getLeader());
+                newNotification.setSeen(false);
+
+                notificationRepo.save(newNotification);
+
+                // add group members
                 for (BookingMemberDao member : bookingMembers)
                 {
                     BookingMember newBookingMember = new BookingMember();
@@ -216,7 +251,13 @@ public class BookingServ
                     newBookingMember.setStudent(userServ.getUser(member.getStudent().getUserid()));
                     newBookingMember.setBooking(bookingRepo.getReferenceById(createdBooking.getBookingid()));
 
-                    bookingMemberRepo.save(newBookingMember);
+                    BookingMember savedMember = bookingMemberRepo.save(newBookingMember);
+
+                    // notify each student
+                    newNotification.setNotficmsg("you have been added to a booking");
+                    newNotification.setUser(savedMember.getStudent());
+
+                    notificationRepo.save(newNotification);
                 }
 
                 // return dto with correct things
@@ -235,6 +276,16 @@ public class BookingServ
                 }
 
                 Booking createdBooking = bookingRepo.save(newBooking);
+
+                // notify leader
+                Notification newNotification = new Notification();
+                newNotification.setEntity("Booking");
+                newNotification.setItemid(String.valueOf(createdBooking.getBookingid()));
+                newNotification.setNotficmsg("new student booking");
+                newNotification.setUser(createdBooking.getSlot().getLeader());
+                newNotification.setSeen(false);
+
+                notificationRepo.save(newNotification);
 
                 // return dto with correct things
                 return new BookingDao(bookingRepo.findById(createdBooking.getBookingid()).get());
@@ -288,7 +339,7 @@ public class BookingServ
     }
 
     // edit booking / revision -- can set to canceled or change time etc
-    public BookingDao updateBooking(int bookingID, char statusID, Timestamp startTime, Timestamp endTime)
+    public BookingDao updateBooking(int bookingID, char statusID, boolean studentRequest, Timestamp startTime, Timestamp endTime)
     {
         Optional<Booking> bookingToUpdate = bookingRepo.findById(bookingID);
 
@@ -300,6 +351,47 @@ public class BookingServ
             {
                 bookingToUpdate.get().setStarttime(startTime);
                 bookingToUpdate.get().setEndtime(endTime);
+            }
+
+            if (studentRequest)
+            {
+                // notify leader
+                Notification newNotification = new Notification();
+                newNotification.setEntity("Booking");
+                newNotification.setItemid(String.valueOf(bookingID));
+                newNotification.setNotficmsg("booking status changed");
+                newNotification.setUser(bookingToUpdate.get().getSlot().getLeader());
+                newNotification.setSeen(false);
+
+                notificationRepo.save(newNotification);
+            }
+            else
+            {
+                // notify student
+                Notification newNotification = new Notification();
+                newNotification.setEntity("Booking");
+                newNotification.setItemid(String.valueOf(bookingID));
+                newNotification.setNotficmsg("booking status changed");
+                newNotification.setUser(bookingToUpdate.get().getStudent());
+                newNotification.setSeen(false);
+
+                notificationRepo.save(newNotification);
+            }
+
+            if (bookingToUpdate.get().getBookingType().getTypeid() == 'G')
+            {
+                for (BookingMember member : bookingToUpdate.get().getBookingMembers())
+                {
+                    // notify each student
+                    Notification newNotification = new Notification();
+                    newNotification.setEntity("Booking");
+                    newNotification.setItemid(String.valueOf(bookingID));
+                    newNotification.setNotficmsg("booking status changed");
+                    newNotification.setUser(member.getStudent());
+                    newNotification.setSeen(false);
+
+                    notificationRepo.save(newNotification);
+                }
             }
 
             return new BookingDao(bookingRepo.save(bookingToUpdate.get()));
