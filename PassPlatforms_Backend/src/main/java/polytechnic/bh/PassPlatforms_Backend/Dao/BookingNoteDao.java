@@ -11,6 +11,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,7 +30,7 @@ public class BookingNoteDao
         this.noteid = bookingNote.getNoteid();
         this.datetime = bookingNote.getDatetime().toInstant();
         this.notebody = bookingNote.getNotebody();
-        this.user = new UserDao(bookingNote.getUser().getUserid(), new RoleDao(bookingNote.getUser().getRole()), null);
+        this.user = new UserDao(bookingNote.getUser().getUserid(), new RoleDao(bookingNote.getUser().getRole()), getAzureAdName(bookingNote.getUser().getUserid()), null);
 
         List<BookingMemberDao> bookingMembers = new ArrayList<>();
         if (!bookingNote.getBooking().getBookingMembers().isEmpty())
@@ -37,7 +39,7 @@ public class BookingNoteDao
             {
                 bookingMembers.add(new BookingMemberDao(member.getMemberid(),
                         member.getDatetime().toInstant(),
-                        new UserDao(member.getStudent().getUserid(), new RoleDao(member.getStudent().getRole()), null),
+                        new UserDao(member.getStudent().getUserid(), new RoleDao(member.getStudent().getRole()), getAzureAdName(member.getStudent().getUserid()), null),
                         null));
             }
         }
@@ -53,7 +55,7 @@ public class BookingNoteDao
                 new BookingTypeDao(bookingNote.getBooking().getBookingType()),
                 new SlotDao(bookingNote.getBooking().getSlot()),
                 new BookingStatusDao(bookingNote.getBooking().getBookingStatus()),
-                new UserDao(bookingNote.getBooking().getStudent().getUserid(), new RoleDao(bookingNote.getBooking().getStudent().getRole()), null),
+                new UserDao(bookingNote.getBooking().getStudent().getUserid(), new RoleDao(bookingNote.getBooking().getStudent().getRole()), getAzureAdName(bookingNote.getBooking().getStudent().getUserid()), null),
                 new CourseDao(bookingNote.getBooking().getCourse()),
                 bookingMembers,
                 null);

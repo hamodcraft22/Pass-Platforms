@@ -11,6 +11,8 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,7 +40,7 @@ public class TutorDao
         List<RecommendationDao> recommendations = new ArrayList<>();
         for (Recommendation recommendation : user.getRecommendations())
         {
-            recommendations.add(new RecommendationDao(recommendation.getRecid(), recommendation.getDatetime().toInstant(), recommendation.getNote(), new RecStatusDao(recommendation.getStatus()), new UserDao(recommendation.getStudent().getUserid(), new RoleDao(recommendation.getStudent().getRole()), null), null));
+            recommendations.add(new RecommendationDao(recommendation.getRecid(), recommendation.getDatetime().toInstant(), recommendation.getNote(), new RecStatusDao(recommendation.getStatus()), new UserDao(recommendation.getStudent().getUserid(), new RoleDao(recommendation.getStudent().getRole()), getAzureAdName(recommendation.getStudent().getUserid()), null), null));
         }
         this.recommendations = recommendations;
     }

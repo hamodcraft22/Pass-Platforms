@@ -6,6 +6,7 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationStatusDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Application;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
+import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationStatusRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.NotificationRepo;
@@ -86,7 +87,7 @@ public class ApplicationServ
         newapplicationton.setDatetime(Timestamp.from(Instant.now()));
         newapplicationton.setNote(applicationNote);
         newapplicationton.setApplicationStatus(applicationStatusRepo.getReferenceById(APLC_CREATED));
-        newapplicationton.setUser(userServ.getUser(studentID));
+        newapplicationton.setUser(new User(userServ.getUser(studentID)));
 
         Application createdApplication = applicationRepo.save(newapplicationton);
 
@@ -95,7 +96,7 @@ public class ApplicationServ
         newNotification.setEntity("Application");
         newNotification.setItemid(String.valueOf(createdApplication.getApplicationid()));
         newNotification.setNotficmsg("new application by student");
-        newNotification.setUser(userServ.getUser("MANAGERID"));
+        newNotification.setUser(new User(userServ.getUser("MANAGERID")));
         newNotification.setSeen(false);
 
         notificationRepo.save(newNotification);
@@ -118,7 +119,7 @@ public class ApplicationServ
                 newNotification.setEntity("Application");
                 newNotification.setItemid(String.valueOf(applicationToUpdate.get().getApplicationid()));
                 newNotification.setNotficmsg("application updated by student");
-                newNotification.setUser(userServ.getUser("MANAGERID"));
+                newNotification.setUser(new User(userServ.getUser("MANAGERID")));
                 newNotification.setSeen(false);
 
                 notificationRepo.save(newNotification);
@@ -130,7 +131,7 @@ public class ApplicationServ
                 newNotification.setEntity("Application");
                 newNotification.setItemid(String.valueOf(applicationToUpdate.get().getApplicationid()));
                 newNotification.setNotficmsg("application updated by student");
-                newNotification.setUser(userServ.getUser(applicationToUpdate.get().getUser().getUserid()));
+                newNotification.setUser(new User(userServ.getUser(applicationToUpdate.get().getUser().getUserid())));
                 newNotification.setSeen(false);
 
                 notificationRepo.save(newNotification);

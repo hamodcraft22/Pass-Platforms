@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.OfferedCourseDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.OfferedCourse;
+import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.CourseRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.OfferedCourseRepo;
 
@@ -74,7 +75,7 @@ public class OfferedCourseServ
     {
         OfferedCourse newOfferedCourse = new OfferedCourse();
 
-        newOfferedCourse.setLeader(userServ.getUser(leaderID));
+        newOfferedCourse.setLeader(new User(userServ.getUser(leaderID)));
         newOfferedCourse.setCourse(courseRepo.getReferenceById(courseID));
 
         return new OfferedCourseDao(offeredCourseRepo.save(newOfferedCourse));

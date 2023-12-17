@@ -10,6 +10,8 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,12 +20,14 @@ public class UserDao
 {
     private String userid;
     private RoleDao role;
+    private String userName;
     private List<NotificationDao> notifications;
 
     public UserDao(User user)
     {
         this.userid = user.getUserid();
         this.role = new RoleDao(user.getRole());
+        this.userName = getAzureAdName(user.getUserid());
 
         List<NotificationDao> notificationDaos = new ArrayList<>();
         for (Notification notification : user.getNotifications())

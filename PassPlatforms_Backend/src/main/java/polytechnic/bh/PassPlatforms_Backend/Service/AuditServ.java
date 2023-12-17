@@ -7,6 +7,7 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.AuditDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.RoleDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Audit;
+import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.AuditRepo;
 
 import java.sql.Timestamp;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
 
 @Service
 public class AuditServ
@@ -39,7 +42,7 @@ public class AuditServ
                     retrivedAudit.getDatetime().toInstant(),
                     null,
                     null,
-                    new UserDao(retrivedAudit.getUser().getUserid(), new RoleDao(retrivedAudit.getUser().getRole()), null)
+                    new UserDao(retrivedAudit.getUser().getUserid(), new RoleDao(retrivedAudit.getUser().getRole()), getAzureAdName(retrivedAudit.getUser().getUserid()), null)
             ));
         }
 
@@ -64,7 +67,7 @@ public class AuditServ
         newAudit.setDatetime(Timestamp.from(Instant.now()));
         newAudit.setOldvalue(SerializationUtils.serialize(oldValue));
         newAudit.setOldvalue(SerializationUtils.serialize(newValue));
-        newAudit.setUser(userServ.getUser(userID));
+        newAudit.setUser(new User(userServ.getUser(userID)));
 
         return new AuditDao(auditRepo.save(newAudit));
     }

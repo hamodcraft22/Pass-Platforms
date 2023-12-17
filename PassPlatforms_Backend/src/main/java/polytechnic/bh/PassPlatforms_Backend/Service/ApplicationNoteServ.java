@@ -8,6 +8,7 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Application;
 import polytechnic.bh.PassPlatforms_Backend.Entity.ApplicationNote;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
+import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationNoteRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ApplicationRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.NotificationRepo;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
 
 @Service
 public class ApplicationNoteServ
@@ -50,7 +53,7 @@ public class ApplicationNoteServ
                         retrivedNote.getDatetime().toInstant(),
                         retrivedNote.getNotebody(),
                         null,
-                        new UserDao(retrivedNote.getUser().getUserid(), new RoleDao(retrivedNote.getUser().getRole()), null)
+                        new UserDao(retrivedNote.getUser().getUserid(), new RoleDao(retrivedNote.getUser().getRole()), getAzureAdName(retrivedNote.getUser().getUserid()), null)
                 ));
             }
         }
@@ -103,7 +106,7 @@ public class ApplicationNoteServ
         newApplicationNote.setDatetime(Timestamp.from(Instant.now()));
         newApplicationNote.setNotebody(noteBody);
         newApplicationNote.setApplication(applicationRepo.getReferenceById(applicationID));
-        newApplicationNote.setUser(userServ.getUser(userID));
+        newApplicationNote.setUser(new User(userServ.getUser(userID)));
 
         // send notification to manager or user
         Notification newNotification = new Notification();
@@ -113,12 +116,12 @@ public class ApplicationNoteServ
         if (Objects.equals(userID, "MANAGERID"))
         {
             // send to student
-            newNotification.setUser(userServ.getUser(applicationRepo.getReferenceById(applicationID).getUser().getUserid()));
+            newNotification.setUser(new User(userServ.getUser(applicationRepo.getReferenceById(applicationID).getUser().getUserid())));
         }
         else
         {
             // send to manager
-            newNotification.setUser(userServ.getUser("MANAGERID"));
+            newNotification.setUser(new User(userServ.getUser("MANAGERID")));
         }
         newNotification.setSeen(false);
         notificationRepo.save(newNotification);

@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -61,7 +63,7 @@ public class BookingDao
             this.slot = new SlotDao(booking.getSlot());
         }
         this.bookingStatus = new BookingStatusDao(booking.getBookingStatus());
-        this.student = new UserDao(booking.getStudent().getUserid(), new RoleDao(booking.getStudent().getRole()), null);
+        this.student = new UserDao(booking.getStudent().getUserid(), new RoleDao(booking.getStudent().getRole()), getAzureAdName(booking.getStudent().getUserid()), null);
         this.course = new CourseDao(booking.getCourse());
 
         List<BookingMemberDao> bookingMembers = new ArrayList<>();
@@ -71,7 +73,7 @@ public class BookingDao
             {
                 bookingMembers.add(new BookingMemberDao(member.getMemberid(),
                         member.getDatetime().toInstant(),
-                        new UserDao(member.getStudent().getUserid(), new RoleDao(member.getStudent().getRole()), null),
+                        new UserDao(member.getStudent().getUserid(), new RoleDao(member.getStudent().getRole()), getAzureAdName(member.getStudent().getUserid()), null),
                         null));
             }
         }
@@ -85,7 +87,7 @@ public class BookingDao
                         note.getDatetime().toInstant(),
                         note.getNotebody(),
                         null,
-                        new UserDao(note.getUser().getUserid(), new RoleDao(note.getUser().getRole()), null)));
+                        new UserDao(note.getUser().getUserid(), new RoleDao(note.getUser().getRole()), getAzureAdName(note.getUser().getUserid()), null)));
             }
         }
 

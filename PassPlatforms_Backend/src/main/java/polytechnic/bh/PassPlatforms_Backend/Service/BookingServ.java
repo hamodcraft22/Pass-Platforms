@@ -6,10 +6,7 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.MetadataDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
-import polytechnic.bh.PassPlatforms_Backend.Entity.Booking;
-import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
-import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
-import polytechnic.bh.PassPlatforms_Backend.Entity.Slot;
+import polytechnic.bh.PassPlatforms_Backend.Entity.*;
 import polytechnic.bh.PassPlatforms_Backend.Repository.*;
 
 import java.sql.Timestamp;
@@ -247,7 +244,7 @@ public class BookingServ
             }
 
             // other booking static info
-            newBooking.setStudent(userServ.getUser(studentID));
+            newBooking.setStudent(new User(userServ.getUser(studentID)));
             newBooking.setCourse(courseRepo.getReferenceById(courseID));
 
             // if the booking is unscheduled - leader did it at their own - none slot - time, add the unscheduled slot
@@ -270,7 +267,7 @@ public class BookingServ
                 {
                     Slot newSlot = new Slot();
                     newSlot.setSlotType(slotTypeRepo.getReferenceById(SLTYP_UNSCHEDULED));
-                    newSlot.setLeader(userServ.getUser(leaderID));
+                    newSlot.setLeader(new User(userServ.getUser(leaderID)));
 
                     Slot savedSlot = slotRepo.save(newSlot);
                     newBooking.setSlot(savedSlot);

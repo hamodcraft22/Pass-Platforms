@@ -2,8 +2,10 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import polytechnic.bh.PassPlatforms_Backend.Dao.NotificationDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.RoleDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
+import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.RoleRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
@@ -11,6 +13,8 @@ import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
 
 // first time sign in / members adding
 @Service
@@ -23,14 +27,25 @@ public class UserServ
     private RoleRepo roleRepo;
 
     // create user if it's not registered in the system
-    public User getUser(String userID)
+    public UserDao getUser(String userID)
     {
         // first get user from db
         Optional<User> wantedUser = userRepo.findById(userID);
 
         if (wantedUser.isPresent())
         {
-            return wantedUser.get();
+            List<NotificationDao> newNotifications = null;
+
+            if (wantedUser.get().getNotifications() != null)
+            {
+                newNotifications = new ArrayList<>();
+                for (Notification notification : wantedUser.get().getNotifications())
+                {
+                    newNotifications.add(new NotificationDao(notification));
+                }
+            }
+
+            return new UserDao(wantedUser.get().getUserid(), new RoleDao(wantedUser.get().getRole()), getAzureAdName(wantedUser.get().getUserid()), newNotifications);
         }
         else
         {
@@ -41,7 +56,9 @@ public class UserServ
                 newStudent.setUserid(userID);
                 newStudent.setRole(roleRepo.getReferenceById(1));
 
-                return userRepo.save(newStudent);
+                User savedStudent = userRepo.save(newStudent);
+
+                return new UserDao(savedStudent.getUserid(), new RoleDao(newStudent.getRole()), getAzureAdName(savedStudent.getUserid()), null);
             }
             else
             {
@@ -49,7 +66,9 @@ public class UserServ
                 newTutor.setUserid(userID);
                 newTutor.setRole(roleRepo.getReferenceById(3));
 
-                return userRepo.save(newTutor);
+                User savedTutor = userRepo.save(newTutor);
+
+                return new UserDao(savedTutor.getUserid(), new RoleDao(savedTutor.getRole()), getAzureAdName(savedTutor.getUserid()), null);
             }
         }
     }
@@ -60,13 +79,13 @@ public class UserServ
 
         for (String userID : users)
         {
-            User retirvedUser = getUser(userID);
+            UserDao retirvedUser = getUser(userID);
 
             userRepo.makeLeaders(retirvedUser.getUserid());
 
-            User updatedUser = getUser(retirvedUser.getUserid());
+            UserDao updatedUser = getUser(retirvedUser.getUserid());
 
-            newLeaders.add(new UserDao(updatedUser.getUserid(), new RoleDao(updatedUser.getRole()), null));
+            newLeaders.add(new UserDao(updatedUser.getUserid(), updatedUser.getRole(), getAzureAdName(updatedUser.getUserid()), null));
         }
 
         return newLeaders;

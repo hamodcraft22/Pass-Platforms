@@ -8,6 +8,8 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.ApplicationNote;
 
 import java.time.Instant;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,8 +31,8 @@ public class ApplicationNoteDao
                 applicationNote.getApplication().getDatetime().toInstant(),
                 applicationNote.getApplication().getNote(),
                 new ApplicationStatusDao(applicationNote.getApplication().getApplicationStatus()),
-                new UserDao(applicationNote.getApplication().getUser().getUserid(), new RoleDao(applicationNote.getApplication().getUser().getRole()), null),
+                new UserDao(applicationNote.getApplication().getUser().getUserid(), new RoleDao(applicationNote.getApplication().getUser().getRole()), getAzureAdName(applicationNote.getApplication().getUser().getUserid()), null),
                 null);
-        this.user = new UserDao(applicationNote.getUser().getUserid(), new RoleDao(applicationNote.getUser().getRole()), null);
+        this.user = new UserDao(applicationNote.getUser().getUserid(), new RoleDao(applicationNote.getUser().getRole()), getAzureAdName(applicationNote.getApplication().getUser().getUserid()), null);
     }
 }

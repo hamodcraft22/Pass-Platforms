@@ -8,6 +8,8 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Slot;
 
 import java.time.Instant;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,6 +32,6 @@ public class SlotDao
         this.note = slot.getNote();
         this.slotType = new SlotTypeDao(slot.getSlotType());
         this.day = new DayDao(slot.getDay());
-        this.leader = new UserDao(slot.getLeader().getUserid(), new RoleDao(slot.getLeader().getRole()), null);
+        this.leader = new UserDao(slot.getLeader().getUserid(), new RoleDao(slot.getLeader().getRole()), getAzureAdName(slot.getLeader().getUserid()), null);
     }
 }

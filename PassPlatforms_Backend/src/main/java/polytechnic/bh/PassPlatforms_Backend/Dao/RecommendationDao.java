@@ -8,6 +8,8 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Recommendation;
 
 import java.time.Instant;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,7 +29,7 @@ public class RecommendationDao
         this.datetime = recommendation.getDatetime().toInstant();
         this.note = recommendation.getNote();
         this.recStatus = new RecStatusDao(recommendation.getStatus());
-        this.student = new UserDao(recommendation.getStudent().getUserid(), new RoleDao(recommendation.getStudent().getRole()), null);
-        this.tutor = new UserDao(recommendation.getTutor().getUserid(), new RoleDao(recommendation.getTutor().getRole()), null);
+        this.student = new UserDao(recommendation.getStudent().getUserid(), new RoleDao(recommendation.getStudent().getRole()), getAzureAdName(recommendation.getStudent().getUserid()), null);
+        this.tutor = new UserDao(recommendation.getTutor().getUserid(), new RoleDao(recommendation.getTutor().getRole()), getAzureAdName(recommendation.getTutor().getUserid()), null);
     }
 }

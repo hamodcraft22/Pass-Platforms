@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ScheduleDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Schedule;
+import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.DayRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ScheduleRepo;
 
@@ -67,7 +68,7 @@ public class ScheduleServ
         newSchedule.setStarttime(Timestamp.from(startTime));
         newSchedule.setEndtime(Timestamp.from(endTime));
         newSchedule.setDay(dayRepo.getReferenceById(dayID));
-        newSchedule.setUser(userServ.getUser(userID));
+        newSchedule.setUser(new User(userServ.getUser(userID)));
 
         return new ScheduleDao(scheduleRepo.save(newSchedule));
     }

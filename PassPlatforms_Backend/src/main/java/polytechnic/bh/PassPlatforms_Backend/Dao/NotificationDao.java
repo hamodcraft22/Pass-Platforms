@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,6 +30,6 @@ public class NotificationDao
         this.notficmsg = notification.getNotficmsg();
         this.seen = notification.isSeen();
 
-        this.user = new UserDao(notification.getUser().getUserid(), new RoleDao(notification.getUser().getRole()), null);
+        this.user = new UserDao(notification.getUser().getUserid(), new RoleDao(notification.getUser().getRole()), getAzureAdName(notification.getUser().getUserid()), null);
     }
 }

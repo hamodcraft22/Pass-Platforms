@@ -18,6 +18,7 @@ import java.util.Optional;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN_KEY;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.MANAGER_KEY;
 import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
 
 @RestController
 @RequestMapping("/api/user")
@@ -40,7 +41,7 @@ public class UserCont
 
             for (User user : userRepo.findAll())
             {
-                users.add(new UserDao(user.getUserid(), new RoleDao(user.getRole()), null));
+                users.add(new UserDao(user.getUserid(), new RoleDao(user.getRole()), getAzureAdName(user.getUserid()), null));
             }
 
             return new ResponseEntity<>(new GenericDto<>(null, users, null, null), HttpStatus.OK);
@@ -96,7 +97,7 @@ public class UserCont
 
     // get user (logged in) / create if first time login
     @GetMapping("/userlog")
-    public ResponseEntity<GenericDto<User>> userLog(@RequestHeader(value = "Authorization") String barerKey)
+    public ResponseEntity<GenericDto<UserDao>> userLog(@RequestHeader(value = "Authorization") String barerKey)
     {
         String userID = isValidToken(barerKey);
 
@@ -118,7 +119,7 @@ public class UserCont
 
         if (userID != null)
         {
-            User retrivedUser = userServ.getUser(userID);
+            UserDao retrivedUser = userServ.getUser(userID);
 
             if (retrivedUser.getRole().getRoleid() == 4 || retrivedUser.getRole().getRoleid() == 5)
             {

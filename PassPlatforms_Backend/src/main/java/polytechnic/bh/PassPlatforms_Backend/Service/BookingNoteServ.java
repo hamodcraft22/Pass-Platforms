@@ -6,6 +6,7 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.BookingNoteDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingNote;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
+import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.BookingNoteRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.BookingRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.NotificationRepo;
@@ -73,7 +74,7 @@ public class BookingNoteServ
         newBookingNote.setDatetime(Timestamp.from(bookingNoteDao.getDatetime()));
         newBookingNote.setNotebody(bookingNoteDao.getNotebody());
         newBookingNote.setBooking(bookingRepo.getReferenceById(bookingNoteDao.getBooking().getBookingid()));
-        newBookingNote.setUser(userServ.getUser(bookingNoteDao.getUser().getUserid()));
+        newBookingNote.setUser(new User(userServ.getUser(bookingNoteDao.getUser().getUserid())));
 
         BookingNote addedBookingNote = bookingNoteRepo.save(newBookingNote);
 

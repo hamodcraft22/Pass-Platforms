@@ -11,6 +11,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,7 +34,7 @@ public class ApplicationDao
 
         //building custom dto objects for linked elements
         this.applicationStatus = new ApplicationStatusDao(application.getApplicationStatus());
-        this.user = new UserDao(application.getUser().getUserid(), new RoleDao(application.getUser().getRole()), null);
+        this.user = new UserDao(application.getUser().getUserid(), new RoleDao(application.getUser().getRole()), getAzureAdName(application.getUser().getUserid()), null);
 
         //building custom list of objects while removing infinite recursion
         List<ApplicationNoteDao> applicationNotes = new ArrayList<>();
@@ -44,7 +46,7 @@ public class ApplicationDao
                         note.getDatetime().toInstant(),
                         note.getNotebody(),
                         null,
-                        new UserDao(note.getUser().getUserid(), new RoleDao(note.getUser().getRole()), null)));
+                        new UserDao(note.getUser().getUserid(), new RoleDao(note.getUser().getRole()), getAzureAdName(note.getUser().getUserid()), null)));
             }
         }
         this.applicationNotes = applicationNotes;

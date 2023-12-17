@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Entity.OfferedCourse;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +21,7 @@ public class OfferedCourseDao
     public OfferedCourseDao(OfferedCourse offeredCourse)
     {
         this.offerid = offeredCourse.getOfferid();
-        this.leader = new UserDao(offeredCourse.getLeader().getUserid(), new RoleDao(offeredCourse.getLeader().getRole()), null);
+        this.leader = new UserDao(offeredCourse.getLeader().getUserid(), new RoleDao(offeredCourse.getLeader().getRole()), getAzureAdName(offeredCourse.getLeader().getUserid()), null);
         this.course = new CourseDao(offeredCourse.getCourse().getCourseid(), offeredCourse.getCourse().getCoursename(), null);
     }
 }

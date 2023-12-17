@@ -7,6 +7,7 @@ import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Booking;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
+import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.BookingMemberRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.BookingRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.NotificationRepo;
@@ -97,7 +98,7 @@ public class BookingMemberServ
             BookingMember newRevMember = new BookingMember();
 
             newRevMember.setBooking(bookingRepo.getReferenceById(retrivedBooking.get().getBookingid()));
-            newRevMember.setStudent(userServ.getUser(studentID));
+            newRevMember.setStudent(new User(userServ.getUser(studentID)));
 
             BookingMember addedMember = bookingMemberRepo.save(newRevMember);
 
@@ -159,7 +160,7 @@ public class BookingMemberServ
             BookingMember newRevMember = new BookingMember();
 
             newRevMember.setBooking(bookingRepo.getReferenceById(retrivedBooking.get().getBookingid()));
-            newRevMember.setStudent(userServ.getUser(studentID));
+            newRevMember.setStudent(new User(userServ.getUser(studentID)));
 
             BookingMember addedMember = bookingMemberRepo.save(newRevMember);
 

@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Transcript;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +23,7 @@ public class TranscriptDao
     {
         this.transid = transcript.getTransid();
         this.grade = transcript.getGrade();
-        this.student = new UserDao(transcript.getStudent().getUserid(), new RoleDao(transcript.getStudent().getRole()), null);
+        this.student = new UserDao(transcript.getStudent().getUserid(), new RoleDao(transcript.getStudent().getRole()), getAzureAdName(transcript.getStudent().getUserid()), null);
         this.course = new CourseDao(transcript.getCourse());
     }
 }

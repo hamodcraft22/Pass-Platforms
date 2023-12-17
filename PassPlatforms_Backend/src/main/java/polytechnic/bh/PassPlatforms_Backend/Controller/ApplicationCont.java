@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Service.ApplicationServ;
@@ -37,7 +38,7 @@ public class ApplicationCont
         if (userID != null)
         {
             // token is valid, get user and role
-            User user = userServ.getUser(userID);
+            UserDao user = userServ.getUser(userID);
 
             // check roles for api
             if (user.getRole().getRoleid() == 4 || user.getRole().getRoleid() == 5)

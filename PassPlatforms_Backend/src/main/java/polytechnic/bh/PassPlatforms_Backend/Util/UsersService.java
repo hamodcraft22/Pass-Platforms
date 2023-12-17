@@ -17,6 +17,23 @@ public class UsersService
 {
     public static Map<String, String> allAzureAdUsers = new HashMap<>();
 
+    public static String getAzureAdName(String userID)
+    {
+        try
+        {
+            if (allAzureAdUsers.isEmpty())
+            {
+                refreshUsers();
+            }
+
+            return allAzureAdUsers.get(userID);
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
     public static JSONObject refreshUsers() throws JSONException
     {
         String url = "https://graph.microsoft.com/v1.0/users";

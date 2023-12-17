@@ -8,6 +8,8 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Audit;
 
 import java.time.Instant;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,6 +32,6 @@ public class AuditDao
         this.datetime = audit.getDatetime().toInstant();
         this.oldvalue = audit.getOldvalue();
         this.newvalue = audit.getNewvalue();
-        this.user = new UserDao(audit.getUser().getUserid(), new RoleDao(audit.getUser().getRole()), null);
+        this.user = new UserDao(audit.getUser().getUserid(), new RoleDao(audit.getUser().getRole()), getAzureAdName(audit.getUser().getUserid()), null);
     }
 }

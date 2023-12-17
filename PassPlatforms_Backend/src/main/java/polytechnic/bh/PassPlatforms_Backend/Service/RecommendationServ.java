@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.RecommendationDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Recommendation;
+import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.NotificationRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.RecStatusRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.RecommendationRepo;
@@ -59,8 +60,8 @@ public class RecommendationServ
         newRecommendation.setDatetime(Timestamp.from(datetime));
         newRecommendation.setNote(note);
         newRecommendation.setStatus(recStatusRepo.getReferenceById(RECSTS_CREATED));
-        newRecommendation.setTutor(userServ.getUser(tutorID));
-        newRecommendation.setStudent(userServ.getUser(studentID));
+        newRecommendation.setTutor(new User(userServ.getUser(tutorID)));
+        newRecommendation.setStudent(new User(userServ.getUser(studentID)));
 
         Recommendation savedRec = recommendationRepo.save(newRecommendation);
 
@@ -69,7 +70,7 @@ public class RecommendationServ
         newNotification.setEntity("Recommendation");
         newNotification.setItemid(String.valueOf(savedRec.getRecid()));
         newNotification.setNotficmsg("new recommendation by tutor");
-        newNotification.setUser(userServ.getUser("MANAGERID"));
+        newNotification.setUser(new User(userServ.getUser("MANAGERID")));
         newNotification.setSeen(false);
 
         notificationRepo.save(newNotification);

@@ -11,6 +11,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,7 +28,7 @@ public class BookingMemberDao
     {
         this.memberid = bookingMember.getMemberid();
         this.datetime = bookingMember.getDatetime().toInstant();
-        this.student = new UserDao(bookingMember.getStudent().getUserid(), new RoleDao(bookingMember.getStudent().getRole()), null);
+        this.student = new UserDao(bookingMember.getStudent().getUserid(), new RoleDao(bookingMember.getStudent().getRole()), getAzureAdName(bookingMember.getStudent().getUserid()), null);
 
         List<BookingNoteDao> bookingNotes = new ArrayList<>();
         if (!bookingMember.getBooking().getBookingNotes().isEmpty())
@@ -37,7 +39,7 @@ public class BookingMemberDao
                         note.getDatetime().toInstant(),
                         note.getNotebody(),
                         null,
-                        new UserDao(note.getUser().getUserid(), new RoleDao(note.getUser().getRole()), null)));
+                        new UserDao(note.getUser().getUserid(), new RoleDao(note.getUser().getRole()), getAzureAdName(note.getUser().getUserid()), null)));
             }
         }
 
@@ -52,7 +54,7 @@ public class BookingMemberDao
                 new BookingTypeDao(bookingMember.getBooking().getBookingType()),
                 new SlotDao(bookingMember.getBooking().getSlot()),
                 new BookingStatusDao(bookingMember.getBooking().getBookingStatus()),
-                new UserDao(bookingMember.getBooking().getStudent().getUserid(), new RoleDao(bookingMember.getBooking().getStudent().getRole()), null),
+                new UserDao(bookingMember.getBooking().getStudent().getUserid(), new RoleDao(bookingMember.getBooking().getStudent().getRole()), getAzureAdName(bookingMember.getBooking().getStudent().getUserid()), null),
                 new CourseDao(bookingMember.getBooking().getCourse()),
                 null,
                 bookingNotes);

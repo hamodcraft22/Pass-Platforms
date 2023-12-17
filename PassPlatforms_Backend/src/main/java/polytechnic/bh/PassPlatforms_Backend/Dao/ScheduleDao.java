@@ -8,6 +8,8 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Schedule;
 
 import java.time.Instant;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,6 +28,6 @@ public class ScheduleDao
         this.starttime = schedule.getStarttime().toInstant();
         this.endtime = schedule.getEndtime().toInstant();
         this.day = new DayDao(schedule.getDay());
-        this.user = new UserDao(schedule.getUser().getUserid(), new RoleDao(schedule.getUser().getRole()), null);
+        this.user = new UserDao(schedule.getUser().getUserid(), new RoleDao(schedule.getUser().getRole()), getAzureAdName(schedule.getUser().getUserid()), null);
     }
 }

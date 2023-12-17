@@ -8,6 +8,8 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Log;
 
 import java.time.Instant;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +26,6 @@ public class LogDao
         this.logid = log.getLogid();
         this.errormsg = log.getErrormsg();
         this.datetime = log.getDatetime().toInstant();
-        this.user = new UserDao(log.getUser().getUserid(), new RoleDao(log.getUser().getRole()), null);
+        this.user = new UserDao(log.getUser().getUserid(), new RoleDao(log.getUser().getRole()), getAzureAdName(log.getUser().getUserid()), null);
     }
 }

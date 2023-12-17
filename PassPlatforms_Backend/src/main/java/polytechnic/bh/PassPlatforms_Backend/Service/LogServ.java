@@ -6,6 +6,7 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.LogDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.RoleDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Log;
+import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.LogRepo;
 
 import java.sql.Timestamp;
@@ -13,6 +14,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
 
 @Service
 public class LogServ
@@ -34,7 +37,7 @@ public class LogServ
                     retrivedLog.getLogid(),
                     null,
                     retrivedLog.getDatetime().toInstant(),
-                    new UserDao(retrivedLog.getUser().getUserid(), new RoleDao(retrivedLog.getUser().getRole()), null)
+                    new UserDao(retrivedLog.getUser().getUserid(), new RoleDao(retrivedLog.getUser().getRole()), getAzureAdName(retrivedLog.getUser().getUserid()), null)
             ));
         }
 
@@ -56,7 +59,7 @@ public class LogServ
 
         newLog.setErrormsg(errorMsg);
         newLog.setDatetime(Timestamp.from(Instant.now()));
-        newLog.setUser(userServ.getUser(userID));
+        newLog.setUser(new User(userServ.getUser(userID)));
 
         return new LogDao(logRepo.save(newLog));
     }
