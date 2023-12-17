@@ -36,7 +36,7 @@ public class OfferedCourseCont
 
         if (offeredCourses != null && !offeredCourses.isEmpty())
         {
-            return new ResponseEntity<>(new GenericDto<>(null, offeredCourses, null), HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, offeredCourses, null, null), HttpStatus.OK);
         }
         else
         {
@@ -55,7 +55,7 @@ public class OfferedCourseCont
 
         if (offeredCourse != null)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, offeredCourse, null), HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, offeredCourse, null, null), HttpStatus.OK);
         }
         else
         {
@@ -74,7 +74,7 @@ public class OfferedCourseCont
 
         if (offeredCourse != null)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, offeredCourse, null), HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, offeredCourse, null, null), HttpStatus.OK);
         }
         else
         {
@@ -93,7 +93,7 @@ public class OfferedCourseCont
 
         if (offeredCourse != null)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, offeredCourse, null), HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, offeredCourse, null, null), HttpStatus.OK);
         }
         else
         {
@@ -118,7 +118,7 @@ public class OfferedCourseCont
                         offeredCourseDao.getCourse().getCourseid()
                 );
 
-                return new ResponseEntity<>(new GenericDto<>(null, createdOfferedCourse, null), HttpStatus.CREATED);
+                return new ResponseEntity<>(new GenericDto<>(null, createdOfferedCourse, null, null), HttpStatus.CREATED);
             }
             else
             {

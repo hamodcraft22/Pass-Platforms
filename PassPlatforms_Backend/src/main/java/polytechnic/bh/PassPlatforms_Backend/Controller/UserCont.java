@@ -43,7 +43,7 @@ public class UserCont
                 users.add(new UserDao(user.getUserid(), new RoleDao(user.getRole()), null));
             }
 
-            return new ResponseEntity<>(new GenericDto<>(null, users, null), HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, users, null, null), HttpStatus.OK);
         }
         else
         {
@@ -65,22 +65,22 @@ public class UserCont
                 if (user.get().getRole().getRoleid() == 1)
                 {
                     // student
-                    return new ResponseEntity<>(new GenericDto<>(null, new StudentDao(user.get()), null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, new StudentDao(user.get()), null, null), HttpStatus.OK);
                 }
                 else if (user.get().getRole().getRoleid() == 2)
                 {
                     // leader
-                    return new ResponseEntity<>(new GenericDto<>(null, new LeaderDao(user.get()), null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, new LeaderDao(user.get()), null, null), HttpStatus.OK);
                 }
                 else if (user.get().getRole().getRoleid() == 3)
                 {
                     // Tutor
-                    return new ResponseEntity<>(new GenericDto<>(null, new TutorDao(user.get()), null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, new TutorDao(user.get()), null, null), HttpStatus.OK);
                 }
                 else
                 {
                     // Admin | Manager
-                    return new ResponseEntity<>(new GenericDto<>(null, new UserDao(user.get()), null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, new UserDao(user.get()), null, null), HttpStatus.OK);
                 }
             }
             else
@@ -102,11 +102,11 @@ public class UserCont
 
         if (userID != null)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, userServ.getUser(userID), null), HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, userServ.getUser(userID), null, null), HttpStatus.OK);
         }
         else
         {
-            return new ResponseEntity<>(new GenericDto<>(null, null, null), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new GenericDto<>(null, null, null, null), HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -124,16 +124,16 @@ public class UserCont
             {
                 List<UserDao> newLeaders = userServ.makeLeaders(studentIDs);
 
-                return new ResponseEntity<>(new GenericDto<>(null, newLeaders, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, newLeaders, null, null), HttpStatus.OK);
             }
             else
             {
-                return new ResponseEntity<>(new GenericDto<>(null, null, null), HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(new GenericDto<>(null, null, null, null), HttpStatus.UNAUTHORIZED);
             }
         }
         else
         {
-            return new ResponseEntity<>(new GenericDto<>(null, null, null), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new GenericDto<>(null, null, null, null), HttpStatus.UNAUTHORIZED);
         }
     }
 }

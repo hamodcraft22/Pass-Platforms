@@ -32,7 +32,7 @@ public class ScheduleCont
 
             if (schedules != null && !schedules.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, schedules, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, schedules, null, null), HttpStatus.OK);
             }
             else
             {
@@ -57,7 +57,7 @@ public class ScheduleCont
 
             if (schedules != null && !schedules.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, schedules, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, schedules, null, null), HttpStatus.OK);
             }
             else
             {
@@ -83,7 +83,7 @@ public class ScheduleCont
 
             if (schedule != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, schedule, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, schedule, null, null), HttpStatus.OK);
             }
             else
             {
@@ -98,7 +98,7 @@ public class ScheduleCont
             {
                 if (Objects.equals(schedule.getUser().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, schedule, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, schedule, null, null), HttpStatus.OK);
                 }
                 else
                 {
@@ -131,7 +131,7 @@ public class ScheduleCont
                     scheduleDao.getUser().getUserid()
             );
 
-            return new ResponseEntity<>(new GenericDto<>(null, createdSchedule, null), HttpStatus.CREATED);
+            return new ResponseEntity<>(new GenericDto<>(null, createdSchedule, null, null), HttpStatus.CREATED);
         }
         else
         {
@@ -154,7 +154,7 @@ public class ScheduleCont
             {
                 if (Objects.equals(scheduleDao.getUser().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, scheduleServ.editSchedule(scheduleDao), null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, scheduleServ.editSchedule(scheduleDao), null, null), HttpStatus.OK);
                 }
                 else
                 {

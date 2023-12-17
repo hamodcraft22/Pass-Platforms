@@ -39,7 +39,7 @@ public class BookingNoteCont
 
             if (bookingNotes != null && !bookingNotes.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, bookingNotes, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, bookingNotes, null, null), HttpStatus.OK);
             }
             else
             {
@@ -65,7 +65,7 @@ public class BookingNoteCont
 
             if (bookingNotes != null && !bookingNotes.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, bookingNotes, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, bookingNotes, null, null), HttpStatus.OK);
             }
             else
             {
@@ -82,7 +82,7 @@ public class BookingNoteCont
                 if (Objects.equals(retrivedBooking.getStudent().getUserid(), requisterID))
                 {
                     List<BookingNoteDao> bookingNotes = bookingNoteServ.getBookingNotes(bookingID);
-                    return new ResponseEntity<>(new GenericDto<>(null, bookingNotes, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, bookingNotes, null, null), HttpStatus.OK);
                 }
                 else
                 {
@@ -101,7 +101,7 @@ public class BookingNoteCont
                     if (hasAcss)
                     {
                         List<BookingNoteDao> bookingNotes = bookingNoteServ.getBookingNotes(bookingID);
-                        return new ResponseEntity<>(new GenericDto<>(null, bookingNotes, null), HttpStatus.OK);
+                        return new ResponseEntity<>(new GenericDto<>(null, bookingNotes, null, null), HttpStatus.OK);
                     }
                     else
                     {
@@ -124,7 +124,7 @@ public class BookingNoteCont
                 if (Objects.equals(retrivedBooking.getSlot().getLeader().getUserid(), requisterID))
                 {
                     List<BookingNoteDao> bookingNotes = bookingNoteServ.getBookingNotes(bookingID);
-                    return new ResponseEntity<>(new GenericDto<>(null, bookingNotes, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, bookingNotes, null, null), HttpStatus.OK);
                 }
                 else
                 {
@@ -155,7 +155,7 @@ public class BookingNoteCont
 
             if (bookingNote != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, bookingNote, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, bookingNote, null, null), HttpStatus.OK);
             }
             else
             {
@@ -170,7 +170,7 @@ public class BookingNoteCont
             {
                 if (Objects.equals(bookingNote.getUser().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, bookingNote, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, bookingNote, null, null), HttpStatus.OK);
                 }
                 else
                 {
@@ -205,7 +205,7 @@ public class BookingNoteCont
             {
                 BookingNoteDao createdBookingNote = bookingNoteServ.createBookingNote(bookingNoteDao);
 
-                return new ResponseEntity<>(new GenericDto<>(null, createdBookingNote, null), HttpStatus.CREATED);
+                return new ResponseEntity<>(new GenericDto<>(null, createdBookingNote, null, null), HttpStatus.CREATED);
             }
             else
             {
@@ -223,7 +223,7 @@ public class BookingNoteCont
                 {
                     BookingNoteDao createdBookingNote = bookingNoteServ.createBookingNote(bookingNoteDao);
 
-                    return new ResponseEntity<>(new GenericDto<>(null, createdBookingNote, null), HttpStatus.CREATED);
+                    return new ResponseEntity<>(new GenericDto<>(null, createdBookingNote, null, null), HttpStatus.CREATED);
                 }
                 else
                 {
@@ -243,7 +243,7 @@ public class BookingNoteCont
                     {
                         BookingNoteDao createdBookingNote = bookingNoteServ.createBookingNote(bookingNoteDao);
 
-                        return new ResponseEntity<>(new GenericDto<>(null, createdBookingNote, null), HttpStatus.CREATED);
+                        return new ResponseEntity<>(new GenericDto<>(null, createdBookingNote, null, null), HttpStatus.CREATED);
                     }
                     else
                     {
@@ -267,7 +267,7 @@ public class BookingNoteCont
                 {
                     BookingNoteDao createdBookingNote = bookingNoteServ.createBookingNote(bookingNoteDao);
 
-                    return new ResponseEntity<>(new GenericDto<>(null, createdBookingNote, null), HttpStatus.CREATED);
+                    return new ResponseEntity<>(new GenericDto<>(null, createdBookingNote, null, null), HttpStatus.CREATED);
                 }
                 else
                 {

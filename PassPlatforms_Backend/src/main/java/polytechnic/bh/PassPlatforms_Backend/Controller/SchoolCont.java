@@ -33,7 +33,7 @@ public class SchoolCont
 
         if (schools != null && !schools.isEmpty())
         {
-            return new ResponseEntity<>(new GenericDto<>(null, schools, null), HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, schools, null, null), HttpStatus.OK);
         }
         else
         {
@@ -52,7 +52,7 @@ public class SchoolCont
 
         if (school != null)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, school, null), HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, school, null, null), HttpStatus.OK);
         }
         else
         {
@@ -70,7 +70,7 @@ public class SchoolCont
         {
             SchoolDao createdSchool = schoolServ.createSchool(schoolDao.getSchoolid(), schoolDao.getSchoolname(), schoolDao.getCourses());
 
-            return new ResponseEntity<>(new GenericDto<>(null, createdSchool, null), HttpStatus.CREATED);
+            return new ResponseEntity<>(new GenericDto<>(null, createdSchool, null, null), HttpStatus.CREATED);
         }
         else
         {
@@ -91,7 +91,7 @@ public class SchoolCont
 
             if (editedSchool != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, editedSchool, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, editedSchool, null, null), HttpStatus.OK);
             }
             else
             {

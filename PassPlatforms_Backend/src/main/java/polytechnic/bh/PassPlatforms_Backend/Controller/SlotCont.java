@@ -33,7 +33,7 @@ public class SlotCont
 
             if (slots != null && !slots.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, slots, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, slots, null, null), HttpStatus.OK);
             }
             else
             {
@@ -60,7 +60,7 @@ public class SlotCont
 
             if (slots != null && !slots.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, slots, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, slots, null, null), HttpStatus.OK);
             }
             else
             {
@@ -86,7 +86,7 @@ public class SlotCont
 
             if (slot != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, slot, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, slot, null, null), HttpStatus.OK);
             }
             else
             {
@@ -118,7 +118,7 @@ public class SlotCont
                     slotDao.getLeader().getUserid()
             );
 
-            return new ResponseEntity<>(new GenericDto<>(null, createdSlot, null), HttpStatus.CREATED);
+            return new ResponseEntity<>(new GenericDto<>(null, createdSlot, null, null), HttpStatus.CREATED);
         }
         else
         {
@@ -141,7 +141,7 @@ public class SlotCont
             {
                 if (Objects.equals(editedSlots.getLeader().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, slotServ.editSlot(slotDao), null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, slotServ.editSlot(slotDao), null, null), HttpStatus.OK);
                 }
                 else
                 {
@@ -175,7 +175,7 @@ public class SlotCont
             {
                 if (Objects.equals(toDeleteSlots.getLeader().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, slotServ.deleteSlot(slotID), null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, slotServ.deleteSlot(slotID), null, null), HttpStatus.OK);
                 }
                 else
                 {

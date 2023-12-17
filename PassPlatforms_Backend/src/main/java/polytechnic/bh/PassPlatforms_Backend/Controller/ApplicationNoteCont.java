@@ -37,7 +37,7 @@ public class ApplicationNoteCont
 
             if (retrivedNotes != null && !retrivedNotes.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, retrivedNotes, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, retrivedNotes, null, null), HttpStatus.OK);
             }
             else
             {
@@ -65,7 +65,7 @@ public class ApplicationNoteCont
 
             if (retrivedNotes != null && !retrivedNotes.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, retrivedNotes, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, retrivedNotes, null, null), HttpStatus.OK);
             }
             else
             {
@@ -84,7 +84,7 @@ public class ApplicationNoteCont
                 // check if application is of student
                 if (Objects.equals(retrivedNotes.get(0).getApplication().getUser().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, retrivedNotes, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, retrivedNotes, null, null), HttpStatus.OK);
                 }
                 else
                 {
@@ -117,7 +117,7 @@ public class ApplicationNoteCont
 
             if (retrivedNote != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, retrivedNote, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, retrivedNote, null, null), HttpStatus.OK);
             }
             else
             {
@@ -136,7 +136,7 @@ public class ApplicationNoteCont
                 // check if application is of student
                 if (Objects.equals(retrivedNote.getApplication().getUser().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, retrivedNote, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, retrivedNote, null, null), HttpStatus.OK);
                 }
                 else
                 {

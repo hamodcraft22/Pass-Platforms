@@ -32,7 +32,7 @@ public class TranscriptCont
 
             if (transcripts != null && !transcripts.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, transcripts, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, transcripts, null, null), HttpStatus.OK);
             }
             else
             {
@@ -58,7 +58,7 @@ public class TranscriptCont
 
             if (transcripts != null && !transcripts.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, transcripts, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, transcripts, null, null), HttpStatus.OK);
             }
             else
             {
@@ -74,7 +74,7 @@ public class TranscriptCont
             {
                 if (Objects.equals(requisterID, leaderID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, transcripts, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, transcripts, null, null), HttpStatus.OK);
                 }
                 else
                 {
@@ -108,7 +108,7 @@ public class TranscriptCont
 
             if (transcript != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, transcript, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, transcript, null, null), HttpStatus.OK);
             }
             else
             {
@@ -124,7 +124,7 @@ public class TranscriptCont
             {
                 if (Objects.equals(transcript.getStudent().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, transcript, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, transcript, null, null), HttpStatus.OK);
                 }
                 else
                 {
@@ -158,7 +158,7 @@ public class TranscriptCont
                     transcriptDao.getCourse().getCourseid()
             );
 
-            return new ResponseEntity<>(new GenericDto<>(null, createdTranscript, null), HttpStatus.CREATED);
+            return new ResponseEntity<>(new GenericDto<>(null, createdTranscript, null, null), HttpStatus.CREATED);
         }
         else
         {
@@ -178,7 +178,7 @@ public class TranscriptCont
 
             if (editedTranscript != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, editedTranscript, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, editedTranscript, null, null), HttpStatus.OK);
             }
             else
             {

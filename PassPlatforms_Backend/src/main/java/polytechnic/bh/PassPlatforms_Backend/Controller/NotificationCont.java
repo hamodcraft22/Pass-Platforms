@@ -30,7 +30,7 @@ public class NotificationCont
 
             if (notifications != null && !notifications.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, notifications, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, notifications, null, null), HttpStatus.OK);
             }
             else
             {
@@ -55,7 +55,7 @@ public class NotificationCont
 
             if (notification != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, notification, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, notification, null, null), HttpStatus.OK);
             }
             else
             {

@@ -29,7 +29,7 @@ public interface BookingRepo extends JpaRepository<Booking, Integer>
 
     // check if leader has revision at the same time
     @Transactional
-    @Query(value = "select count(*) from pp_booking b where b.studentid = :studentID and trunc(b.bookingdate) = trunc(:bookingDate) and b.statusid = 'A' and b.typeid = 'R' and ( (to_char(b.starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:startTime, 'HH24:MI:SS') and to_char(b.endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:startTime, 'HH24:MI:SS')) or (to_char(b.starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:endTime, 'HH24:MI:SS') and to_char(b.endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:endTime, 'HH24:MI:SS')) or (to_char(b.starttime, 'HH24:MI:SS') >= to_char(:startTime, 'HH24:MI:SS') and to_char(b.endtime, 'HH24:MI:SS') <= to_char(:endTime, 'HH24:MI:SS')) )", nativeQuery = true)
+    @Query(value = "select count(*) from pp_booking b where b.studentid = :leaderID and trunc(b.bookingdate) = trunc(:revisionDate) and b.statusid = 'A' and b.typeid = 'R' and ( (to_char(b.starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:startTime, 'HH24:MI:SS') and to_char(b.endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:startTime, 'HH24:MI:SS')) or (to_char(b.starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:endTime, 'HH24:MI:SS') and to_char(b.endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:endTime, 'HH24:MI:SS')) or (to_char(b.starttime, 'HH24:MI:SS') >= to_char(:startTime, 'HH24:MI:SS') and to_char(b.endtime, 'HH24:MI:SS') <= to_char(:endTime, 'HH24:MI:SS')) )", nativeQuery = true)
     int sameLeaderRevisionTimeFind(String leaderID, Date revisionDate, Timestamp startTime, Timestamp endTime);
 
 }

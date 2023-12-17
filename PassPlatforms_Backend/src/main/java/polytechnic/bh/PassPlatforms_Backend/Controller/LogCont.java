@@ -30,7 +30,7 @@ public class LogCont
 
             if (logs != null && !logs.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, logs, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, logs, null, null), HttpStatus.OK);
             }
             else
             {
@@ -54,7 +54,7 @@ public class LogCont
 
             if (log != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, log, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, log, null, null), HttpStatus.OK);
             }
             else
             {

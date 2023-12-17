@@ -23,6 +23,6 @@ public class StatisticCont<T>
     @GetMapping("")
     public ResponseEntity<GenericDto<List<StatisticDao>>> getAllTutorials()
     {
-        return new ResponseEntity<>(new GenericDto<>(null, statisticServ.getLatest10(), null), HttpStatus.OK);
+        return new ResponseEntity<>(new GenericDto<>(null, statisticServ.getLatest10(), null, null), HttpStatus.OK);
     }
 }

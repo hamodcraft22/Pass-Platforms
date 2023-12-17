@@ -39,7 +39,7 @@ public class BookingCont
 
             if (bookings != null && !bookings.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, bookings, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, bookings, null, null), HttpStatus.OK);
             }
             else
             {
@@ -64,7 +64,7 @@ public class BookingCont
 
             if (bookings != null && !bookings.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, bookings, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, bookings, null, null), HttpStatus.OK);
             }
             else
             {
@@ -90,7 +90,7 @@ public class BookingCont
 
             if (booking != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, booking, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, booking, null, null), HttpStatus.OK);
             }
             else
             {
@@ -106,7 +106,7 @@ public class BookingCont
             {
                 if (Objects.equals(retrivedBooking.getStudent().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, retrivedBooking, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, retrivedBooking, null, null), HttpStatus.OK);
                 }
                 else
                 {
@@ -124,7 +124,7 @@ public class BookingCont
 
                     if (hasAcss)
                     {
-                        return new ResponseEntity<>(new GenericDto<>(null, retrivedBooking, null), HttpStatus.OK);
+                        return new ResponseEntity<>(new GenericDto<>(null, retrivedBooking, null, null), HttpStatus.OK);
                     }
                     else
                     {
@@ -146,7 +146,7 @@ public class BookingCont
             {
                 if (Objects.equals(retrivedBooking.getSlot().getLeader().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, retrivedBooking, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, retrivedBooking, null, null), HttpStatus.OK);
                 }
                 else
                 {
@@ -177,7 +177,7 @@ public class BookingCont
 
             if (newBooking != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, newBooking, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, newBooking, null, null), HttpStatus.OK);
             }
             else
             {
@@ -201,8 +201,6 @@ public class BookingCont
     {
         if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
         {
-            // TODO null checks
-
             if (bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), bookingDao.getStudent().getUserid(), bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), true, Timestamp.from(bookingDao.getStarttime()), Timestamp.from(bookingDao.getEndtime()), "LEADERID") != null)
             {
                 return new ResponseEntity<>(null, HttpStatus.OK);
@@ -230,8 +228,6 @@ public class BookingCont
     {
         if (Objects.equals(requestKey, STUDENT_KEY))
         {
-            // TODO null checks
-
             // if the user is the one who booked the session
             if (Objects.equals(bookingServ.getBookingDetails(bookingID).getStudent().getUserid(), requisterID))
             {
@@ -266,8 +262,6 @@ public class BookingCont
     {
         if (Objects.equals(requestKey, STUDENT_KEY))
         {
-            // TODO null checks
-
             // if the user is the one who booked the session
             if (Objects.equals(bookingServ.getBookingDetails(bookingID).getStudent().getUserid(), requisterID))
             {

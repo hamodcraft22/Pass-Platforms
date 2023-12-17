@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,4 +17,5 @@ public class GenericDto<T>
     UserDao userDao;
     T transObject;
     String error;
+    List<String> warnings;
 }

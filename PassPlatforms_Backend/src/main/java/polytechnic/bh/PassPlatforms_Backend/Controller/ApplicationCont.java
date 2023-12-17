@@ -47,7 +47,7 @@ public class ApplicationCont
 
                 if (applicationDaos != null && !applicationDaos.isEmpty())
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, applicationDaos, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, applicationDaos, null, null), HttpStatus.OK);
                 }
                 else
                 {
@@ -79,7 +79,7 @@ public class ApplicationCont
 
             if (applicationDao != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, applicationDao, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, applicationDao, null, null), HttpStatus.OK);
             }
             else
             {
@@ -95,7 +95,7 @@ public class ApplicationCont
             {
                 if (Objects.equals(applicationDao.getUser().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, applicationDao, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, applicationDao, null, null), HttpStatus.OK);
                 }
                 else
                 {
@@ -181,7 +181,7 @@ public class ApplicationCont
 
                         if (responseAplDao != null)
                         {
-                            return new ResponseEntity<>(new GenericDto<>(null, responseAplDao, null), HttpStatus.OK);
+                            return new ResponseEntity<>(new GenericDto<>(null, responseAplDao, null, null), HttpStatus.OK);
                         }
                         else
                         {
@@ -219,7 +219,7 @@ public class ApplicationCont
 
                     if (responseAplDao != null)
                     {
-                        return new ResponseEntity<>(new GenericDto<>(null, responseAplDao, null), HttpStatus.OK);
+                        return new ResponseEntity<>(new GenericDto<>(null, responseAplDao, null, null), HttpStatus.OK);
                     }
                     else
                     {

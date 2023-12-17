@@ -31,7 +31,7 @@ public class AuditCont
 
             if (audits != null && !audits.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, audits, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, audits, null, null), HttpStatus.OK);
             }
             else
             {
@@ -56,7 +56,7 @@ public class AuditCont
 
             if (audit != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, audit, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, audit, null, null), HttpStatus.OK);
             }
             else
             {

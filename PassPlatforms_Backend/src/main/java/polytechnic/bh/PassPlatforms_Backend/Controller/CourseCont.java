@@ -32,7 +32,7 @@ public class CourseCont
 
         if (courses != null && !courses.isEmpty())
         {
-            return new ResponseEntity<>(new GenericDto<>(null, courses, null), HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, courses, null, null), HttpStatus.OK);
         }
         else
         {
@@ -50,7 +50,7 @@ public class CourseCont
 
         if (course != null)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, course, null), HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, course, null, null), HttpStatus.OK);
         }
         else
         {
@@ -72,7 +72,7 @@ public class CourseCont
                     courseDao.getSchool().getSchoolid()
             );
 
-            return new ResponseEntity<>(new GenericDto<>(null, createdCourse, null), HttpStatus.CREATED);
+            return new ResponseEntity<>(new GenericDto<>(null, createdCourse, null, null), HttpStatus.CREATED);
         }
         else
         {
@@ -90,7 +90,7 @@ public class CourseCont
         {
             List<CourseDao> createdCourses = courseServ.createMultiCourse(coursesDao);
 
-            return new ResponseEntity<>(new GenericDto<>(null, createdCourses, null), HttpStatus.CREATED);
+            return new ResponseEntity<>(new GenericDto<>(null, createdCourses, null, null), HttpStatus.CREATED);
         }
         else
         {
@@ -110,7 +110,7 @@ public class CourseCont
 
             if (editedCourse != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, editedCourse, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, editedCourse, null, null), HttpStatus.OK);
             }
             else
             {

@@ -33,7 +33,7 @@ public class RecommendationCont
 
             if (recommendations != null && !recommendations.isEmpty())
             {
-                return new ResponseEntity<>(new GenericDto<>(null, recommendations, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, recommendations, null, null), HttpStatus.OK);
             }
             else
             {
@@ -59,7 +59,7 @@ public class RecommendationCont
 
             if (recommendation != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, recommendation, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, recommendation, null, null), HttpStatus.OK);
             }
             else
             {
@@ -74,7 +74,7 @@ public class RecommendationCont
             {
                 if (Objects.equals(recommendation.getTutor().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, recommendation, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, recommendation, null, null), HttpStatus.OK);
                 }
                 else
                 {
@@ -107,7 +107,7 @@ public class RecommendationCont
                     recommendationDao.getStudent().getUserid()
             );
 
-            return new ResponseEntity<>(new GenericDto<>(null, createdRecommendation, null), HttpStatus.CREATED);
+            return new ResponseEntity<>(new GenericDto<>(null, createdRecommendation, null, null), HttpStatus.CREATED);
         }
         else
         {
@@ -128,7 +128,7 @@ public class RecommendationCont
 
             if (editedRecommendation != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, editedRecommendation, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, editedRecommendation, null, null), HttpStatus.OK);
             }
             else
             {
@@ -143,7 +143,7 @@ public class RecommendationCont
             {
                 if (Objects.equals(editedRecommendation.getTutor().getUserid(), requisterID))
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, recommendationServ.editRecommendation(recommendationDao), null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, recommendationServ.editRecommendation(recommendationDao), null, null), HttpStatus.OK);
                 }
                 else
                 {

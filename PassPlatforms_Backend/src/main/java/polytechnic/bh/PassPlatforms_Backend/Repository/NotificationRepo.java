@@ -17,5 +17,5 @@ public interface NotificationRepo extends JpaRepository<Notification, Integer>
     @Transactional
     @Modifying
     @Query(value = "UPDATE pp_notification SET seen = 1 WHERE notficid = :notfcID", nativeQuery = true)
-    int setNotfcSeenByNotficid(@Param("notfcID") int notfcID);
+    void setNotfcSeenByNotficid(@Param("notfcID") int notfcID);
 }
