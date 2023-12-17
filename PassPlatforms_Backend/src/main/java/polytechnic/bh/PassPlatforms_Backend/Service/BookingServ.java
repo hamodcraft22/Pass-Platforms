@@ -5,12 +5,13 @@ import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.MetadataDao;
-import polytechnic.bh.PassPlatforms_Backend.Entity.*;
+import polytechnic.bh.PassPlatforms_Backend.Entity.Booking;
+import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
+import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
+import polytechnic.bh.PassPlatforms_Backend.Entity.Slot;
 import polytechnic.bh.PassPlatforms_Backend.Repository.*;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -139,7 +140,7 @@ public class BookingServ
         if (!unscheduled && errors.isEmpty())
         {
             // check if in exam week - convert to local dates
-            if (metadata != null && ( (bookingDate.after(metadata.getFrwstart()) && bookingDate.before(metadata.getMrwend())) || (bookingDate.after(metadata.getFrwstart()) && bookingDate.before(metadata.getFrwend())) || (bookingDate.after(metadata.getMwstart()) && bookingDate.before(metadata.getMwend())) || (bookingDate.after(metadata.getFwstart()) && bookingDate.before(metadata.getFwend())) ))
+            if (metadata != null && ((bookingDate.after(metadata.getFrwstart()) && bookingDate.before(metadata.getMrwend())) || (bookingDate.after(metadata.getFrwstart()) && bookingDate.before(metadata.getFrwend())) || (bookingDate.after(metadata.getMwstart()) && bookingDate.before(metadata.getMwend())) || (bookingDate.after(metadata.getFwstart()) && bookingDate.before(metadata.getFwend()))))
             {
                 errors.add("normal bookings are not allowed withing exam / exam break weeks");
             }
@@ -205,7 +206,7 @@ public class BookingServ
 
                 // booking check - fair distribution policy -- checked
                 LocalDate specificDate = bookingDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).atStartOfDay(ZoneId.of("Asia/Bahrain")).toLocalDate();
-                if (bookingRepo.sameLeaderBookingFind(studentID, retrivedSlot.get().getLeader().getUserid(), Date.from(specificDate.atStartOfDay(ZoneId.of("Asia/Bahrain")).toInstant()), Date.from(specificDate.plusDays(6).atStartOfDay(ZoneId.of("Asia/Bahrain")).toInstant()) ) >= 1)
+                if (bookingRepo.sameLeaderBookingFind(studentID, retrivedSlot.get().getLeader().getUserid(), Date.from(specificDate.atStartOfDay(ZoneId.of("Asia/Bahrain")).toInstant()), Date.from(specificDate.plusDays(6).atStartOfDay(ZoneId.of("Asia/Bahrain")).toInstant())) >= 1)
                 {
                     errors.add("you have already booked one session with this leader this week");
                 }
@@ -362,7 +363,7 @@ public class BookingServ
         List<String> errors = new ArrayList<>();
 
         // check if there is any other revisions at this time by this leader
-        if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndBookingType_TypeidAndStarttimeBetweenOrEndtimeBetween(leaderID, bookingDate, BKNGSTAT_ACTIVE, BKNGTYP_REVISION, startTime, endTime, startTime, endTime))
+        if (bookingRepo.sameLeaderRevisionTimeFind(leaderID, bookingDate, startTime, endTime) != 0)
         {
             errors.add("there is another session or schedule within the selected time");
         }

@@ -1,12 +1,7 @@
 package polytechnic.bh.PassPlatforms_Backend.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import polytechnic.bh.PassPlatforms_Backend.Entity.Application;
 import polytechnic.bh.PassPlatforms_Backend.Entity.ApplicationNote;
-import polytechnic.bh.PassPlatforms_Backend.Entity.User;
-
-import java.util.Date;
-import java.util.List;
 
 public interface ApplicationNoteRepo extends JpaRepository<ApplicationNote, Integer>
 {

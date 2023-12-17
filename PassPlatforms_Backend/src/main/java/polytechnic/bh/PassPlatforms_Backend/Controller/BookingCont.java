@@ -177,7 +177,7 @@ public class BookingCont
 
             if (newBooking != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null , newBooking, null), HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null, newBooking, null), HttpStatus.OK);
             }
             else
             {

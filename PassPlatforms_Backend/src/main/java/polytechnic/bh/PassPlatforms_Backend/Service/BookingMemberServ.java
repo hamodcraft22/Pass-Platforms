@@ -15,8 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingStatusConstant.*;
-import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingTypeConstant.*;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingStatusConstant.BKNGSTAT_ACTIVE;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingStatusConstant.BKNGSTAT_FINISHED;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingTypeConstant.BKNGTYP_REVISION;
 
 @Service
 public class BookingMemberServ
@@ -117,13 +118,6 @@ public class BookingMemberServ
         return null;
     }
 
-    // remove student from group / revision
-    public boolean removeStudentMember(int bookingID, String studentID)
-    {
-        bookingMemberRepo.deleteByStudent_UseridAndBooking_Bookingid(studentID, bookingID);
-        return true;
-    }
-
     // register in revision
     public BookingMemberDao revisionSignUp(int bookingID, String studentID)
     {
@@ -139,7 +133,7 @@ public class BookingMemberServ
             if (retrivedBooking.get().getBookingMembers().size() < retrivedBooking.get().getBookinglimit() && retrivedBooking.get().getBookingStatus().getStatusid() == BKNGSTAT_ACTIVE)
             {
                 // check if user has another revision session within same time
-                if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingType_TypeidAndBooking_StarttimeBetweenOrBooking_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), BKNGTYP_REVISION, retrivedBooking.get().getStarttime(), retrivedBooking.get().getEndtime(), retrivedBooking.get().getStarttime(), retrivedBooking.get().getEndtime()))
+                if (bookingMemberRepo.sameTimeMemberSessionsFind(studentID, retrivedBooking.get().getBookingdate(), retrivedBooking.get().getStarttime(), retrivedBooking.get().getEndtime()) != 0)
                 {
                     errors.add("you have another revision session booked at the same time");
                 }
@@ -186,4 +180,12 @@ public class BookingMemberServ
 
         return null;
     }
+
+    // remove student from group / revision
+    public boolean removeStudentMember(int bookingID, String studentID)
+    {
+        bookingMemberRepo.deleteByStudent_UseridAndBooking_Bookingid(studentID, bookingID);
+        return true;
+    }
+
 }

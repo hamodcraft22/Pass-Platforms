@@ -65,7 +65,7 @@ public class BookingDao
         this.course = new CourseDao(booking.getCourse());
 
         List<BookingMemberDao> bookingMembers = new ArrayList<>();
-        if (booking.getBookingMembers() != null &&  !booking.getBookingMembers().isEmpty())
+        if (booking.getBookingMembers() != null && !booking.getBookingMembers().isEmpty())
         {
             for (BookingMember member : booking.getBookingMembers())
             {

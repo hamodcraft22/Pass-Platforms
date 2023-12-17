@@ -27,6 +27,9 @@ public interface BookingRepo extends JpaRepository<Booking, Integer>
     @Query(value = "select count(*) from pp_booking b join pp_slot s on s.slotid = b.slotid where b.studentid = :studentID and b.statusid in ('A','F') and s.leaderid = :leaderID and ( trunc(b.bookingdate) <= trunc(:weekEnd) and trunc(b.bookingdate) >= trunc(:weekStart) ) ", nativeQuery = true)
     int sameLeaderBookingFind(String studentID, String leaderID, Date weekStart, Date weekEnd);
 
-    // check if leader has revision at the same time - check if or (for start and end time) TODO
-    boolean existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndBookingType_TypeidAndStarttimeBetweenOrEndtimeBetween(String leaderID, Date revisionDate, char statusID, char typeID, Timestamp startTime, Timestamp startTime1, Timestamp endTime, Timestamp endTime1);
+    // check if leader has revision at the same time
+    @Transactional
+    @Query(value = "select count(*) from pp_booking b where b.studentid = :studentID and trunc(b.bookingdate) = trunc(:bookingDate) and b.statusid = 'A' and b.typeid = 'R' and ( (to_char(b.starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:startTime, 'HH24:MI:SS') and to_char(b.endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:startTime, 'HH24:MI:SS')) or (to_char(b.starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:endTime, 'HH24:MI:SS') and to_char(b.endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:endTime, 'HH24:MI:SS')) or (to_char(b.starttime, 'HH24:MI:SS') >= to_char(:startTime, 'HH24:MI:SS') and to_char(b.endtime, 'HH24:MI:SS') <= to_char(:endTime, 'HH24:MI:SS')) )", nativeQuery = true)
+    int sameLeaderRevisionTimeFind(String leaderID, Date revisionDate, Timestamp startTime, Timestamp endTime);
+
 }

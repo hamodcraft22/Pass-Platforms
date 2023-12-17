@@ -2,7 +2,9 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import polytechnic.bh.PassPlatforms_Backend.Dao.*;
+import polytechnic.bh.PassPlatforms_Backend.Dao.DayDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.SlotDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.SlotTypeDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.LeadersSlotsDto;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Slot;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
@@ -12,7 +14,9 @@ import polytechnic.bh.PassPlatforms_Backend.Repository.SlotTypeRepo;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SlotServ
@@ -46,7 +50,7 @@ public class SlotServ
     // get slots based on a list of leaders (or a single leader)
     public List<LeadersSlotsDto> getAllLeaderSlots(List<String> userIDs)
     {
-        List<LeadersSlotsDto>  leaderSlots = new ArrayList<>();
+        List<LeadersSlotsDto> leaderSlots = new ArrayList<>();
 
         for (String userID : userIDs)
         {
