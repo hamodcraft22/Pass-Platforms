@@ -9,12 +9,5 @@ import java.util.List;
 
 public interface AuditRepo extends JpaRepository<Audit, Integer>
 {
-    List<Audit> findAuditsByChangetype(char character);
-
-    List<Audit> findAuditsByEntitynameContainsIgnoreCase(String entityName);
-
-    List<Audit> findAuditsByDatetime(Date dateTime);
-
-    List<Audit> findAuditsByUser(User user);
 
 }

@@ -43,6 +43,7 @@ public class NotificationCont
         }
     }
 
+    // tested
     @GetMapping("/{notficID}")
     public ResponseEntity<GenericDto<NotificationDao>> getNotificationDetails(
             @RequestHeader(value = "Authorization") String requestKey,

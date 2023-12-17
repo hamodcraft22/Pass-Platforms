@@ -13,7 +13,7 @@ public interface NotificationRepo extends JpaRepository<Notification, Integer>
 {
     List<Notification> findAllByUser_Userid(String userID);
 
-    // TODO - check if it works
+    // set notification as seen - when retrieved
     @Transactional
     @Modifying
     @Query(value = "UPDATE pp_notification SET seen = 1 WHERE notficid = :notfcID", nativeQuery = true)

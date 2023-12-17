@@ -115,7 +115,7 @@ public class RevisionCont
         {
             // TODO null checks
 
-            if (bookingMemberServ.addStudentMember(revisionID, requisterID) != null)
+            if (bookingMemberServ.revisionSignUp(revisionID, requisterID) != null)
             {
                 return new ResponseEntity<>(null, HttpStatus.OK);
             }

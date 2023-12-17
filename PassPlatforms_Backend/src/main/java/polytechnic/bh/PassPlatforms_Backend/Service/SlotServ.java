@@ -2,9 +2,8 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import polytechnic.bh.PassPlatforms_Backend.Dao.RoleDao;
-import polytechnic.bh.PassPlatforms_Backend.Dao.SlotDao;
-import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.*;
+import polytechnic.bh.PassPlatforms_Backend.Dto.LeadersSlotsDto;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Slot;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.DayRepo;
@@ -45,9 +44,9 @@ public class SlotServ
     }
 
     // get slots based on a list of leaders (or a single leader)
-    public Map<UserDao, List<SlotDao>> getAllLeaderSlots(List<String> userIDs)
+    public List<LeadersSlotsDto> getAllLeaderSlots(List<String> userIDs)
     {
-        Map<UserDao, List<SlotDao>> leaderSlots = new HashMap<>();
+        List<LeadersSlotsDto>  leaderSlots = new ArrayList<>();
 
         for (String userID : userIDs)
         {
@@ -58,10 +57,12 @@ public class SlotServ
 
                 for (Slot retrievedSlot : slotRepo.findSlotsByLeader(retrivedUser))
                 {
-                    slots.add(new SlotDao(retrievedSlot));
+                    slots.add(new SlotDao(retrievedSlot.getSlotid(), retrievedSlot.getStarttime().toInstant(), retrievedSlot.getEndtime().toInstant(), retrievedSlot.getNote(), new SlotTypeDao(retrievedSlot.getSlotType()), new DayDao(retrievedSlot.getDay()), null));
                 }
 
-                leaderSlots.put(new UserDao(retrivedUser.getUserid(), new RoleDao(retrivedUser.getRole()), null), slots);
+                LeadersSlotsDto leadersSlotsDto = new LeadersSlotsDto(userID, "actualname", slots);
+
+                leaderSlots.add(leadersSlotsDto);
             }
 
         }

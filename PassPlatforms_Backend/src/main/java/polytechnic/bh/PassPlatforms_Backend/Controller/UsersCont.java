@@ -20,16 +20,11 @@ public class UsersCont
     {
         try
         {
-            if (allAzureAdUsers != null && !allAzureAdUsers.isEmpty())
-            {
-                return new ResponseEntity<>(allAzureAdUsers, HttpStatus.OK);
-            }
-            else
+            if (allAzureAdUsers.isEmpty())
             {
                 refreshUsers();
-
-                return new ResponseEntity<>(allAzureAdUsers, HttpStatus.OK);
             }
+            return new ResponseEntity<>(allAzureAdUsers, HttpStatus.OK);
         }
         catch (Exception e)
         {

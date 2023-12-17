@@ -10,6 +10,8 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.DayDao;
 
 import java.util.Calendar;
 
+import static polytechnic.bh.PassPlatforms_Backend.Constant.DayConstant.*;
+
 @Data
 @Entity
 @NoArgsConstructor
@@ -32,31 +34,31 @@ public class Day
     {
         switch (this.dayid)
         {
-            case 'u' ->
+            case DAY_SUNDAY ->
             {
                 return Calendar.SUNDAY;
             }
-            case 'm' ->
+            case DAY_MONDAY ->
             {
                 return Calendar.MONDAY;
             }
-            case 't' ->
+            case DAY_TUESDAY ->
             {
                 return Calendar.TUESDAY;
             }
-            case 'w' ->
+            case DAY_WEDNESDAY ->
             {
                 return Calendar.WEDNESDAY;
             }
-            case 'r' ->
+            case DAY_THURSDAY ->
             {
                 return Calendar.THURSDAY;
             }
-            case 'f' ->
+            case DAY_FRIDAY ->
             {
                 return Calendar.FRIDAY;
             }
-            case 's' ->
+            case DAY_SATURDAY ->
             {
                 return Calendar.SATURDAY;
             }

@@ -5,4 +5,5 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.ApplicationStatus;
 
 public interface ApplicationStatusRepo extends JpaRepository<ApplicationStatus, Character>
 {
+
 }

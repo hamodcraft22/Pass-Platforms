@@ -8,7 +8,5 @@ import java.util.List;
 
 public interface LogRepo extends JpaRepository<Log, Integer>
 {
-    List<Log> findLogsByErrormsgContainsIgnoreCase(String error);
 
-    List<Log> findLogsByDatetime(Date date);
 }

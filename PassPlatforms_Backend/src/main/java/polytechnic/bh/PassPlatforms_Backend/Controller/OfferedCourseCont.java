@@ -26,7 +26,7 @@ public class OfferedCourseCont
     @Autowired
     private CourseServ courseServ;
 
-    // get all offered courses
+    // get all offered courses - tested
     @GetMapping("")
     public ResponseEntity<GenericDto<List<OfferedCourseDao>>> getAllOfferedCourses()
     {
@@ -44,7 +44,7 @@ public class OfferedCourseCont
         }
     }
 
-    // get courses offered by a leader
+    // get courses offered by a leader - tested
     @GetMapping("/leader/{leaderID}")
     public ResponseEntity<GenericDto<List<OfferedCourseDao>>> getLeaderOfferedCourses(
             @PathVariable("leaderID") String leaderID)
@@ -63,7 +63,7 @@ public class OfferedCourseCont
         }
     }
 
-    // get leaders who are teaching the course
+    // get leaders who are teaching the course - tested
     @GetMapping("/course/{courseID}")
     public ResponseEntity<GenericDto<List<OfferedCourseDao>>> getOfferedCourseLeaders(
             @PathVariable("courseID") String courseID)
@@ -82,7 +82,7 @@ public class OfferedCourseCont
         }
     }
 
-    // get offered course details
+    // get offered course details - not needed
     @GetMapping("/{offerID}")
     public ResponseEntity<GenericDto<OfferedCourseDao>> getOfferedCourseDetails(
             @PathVariable("offerID") int offerID)
@@ -101,7 +101,7 @@ public class OfferedCourseCont
         }
     }
 
-    // create offered course
+    // create offered course - tested
     @PostMapping("")
     public ResponseEntity<GenericDto<OfferedCourseDao>> createOfferedCourse(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -131,7 +131,7 @@ public class OfferedCourseCont
         }
     }
 
-    // delete offered course
+    // delete offered course - tested
     @DeleteMapping("/{offerID}")
     public ResponseEntity<GenericDto<Void>> deleteOfferedCourse(
             @RequestHeader(value = "Authorization") String requestKey,

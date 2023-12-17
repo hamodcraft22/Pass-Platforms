@@ -66,12 +66,18 @@ public class Booking
         this.datebooked = Timestamp.from(bookingDao.getDatebooked());
         this.bookingdate = new Date(bookingDao.getBookingDate().getTime());
         this.note = bookingDao.getNote();
-        this.starttime = Timestamp.from(bookingDao.getStarttime());
-        this.endtime = Timestamp.from(bookingDao.getEndtime());
+        if (bookingDao.getStarttime() != null)
+        {
+            this.starttime = Timestamp.from(bookingDao.getStarttime());
+            this.endtime = Timestamp.from(bookingDao.getEndtime());
+        }
         this.bookinglimit = bookingDao.getBookinglimit();
         this.isonline = bookingDao.isIsonline();
         this.bookingType = new BookingType(bookingDao.getBookingType());
-        this.slot = new Slot(bookingDao.getSlot());
+        if (bookingDao.getSlot() != null)
+        {
+            this.slot = new Slot(bookingDao.getSlot());
+        }
         this.bookingStatus = new BookingStatus(bookingDao.getBookingStatus());
         this.student = new User(bookingDao.getStudent());
         this.course = new Course(bookingDao.getCourse());

@@ -5,4 +5,5 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.School;
 
 public interface SchoolRepo extends JpaRepository<School, String>
 {
+
 }

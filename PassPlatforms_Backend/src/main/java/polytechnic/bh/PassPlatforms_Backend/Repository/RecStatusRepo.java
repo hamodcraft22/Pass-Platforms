@@ -5,4 +5,5 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.RecStatus;
 
 public interface RecStatusRepo extends JpaRepository<RecStatus, Character>
 {
+
 }

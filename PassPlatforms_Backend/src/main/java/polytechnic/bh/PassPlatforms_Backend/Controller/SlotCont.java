@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.SlotDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
+import polytechnic.bh.PassPlatforms_Backend.Dto.LeadersSlotsDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.SlotServ;
 
 import java.util.List;
@@ -51,13 +52,13 @@ public class SlotCont
 
     // get leader slots
     @GetMapping("/leaders")
-    public ResponseEntity<GenericDto<Map<UserDao, List<SlotDao>>>> getLeaderSlots(
+    public ResponseEntity<GenericDto<List<LeadersSlotsDto>>> getLeaderSlots(
             @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody List<String> leaderIDs)
     {
         if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
         {
-            Map<UserDao, List<SlotDao>> slots = slotServ.getAllLeaderSlots(leaderIDs);
+            List<LeadersSlotsDto> slots = slotServ.getAllLeaderSlots(leaderIDs);
 
             if (slots != null && !slots.isEmpty())
             {

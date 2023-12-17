@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface CourseRepo extends JpaRepository<Course, String>
 {
-    List<Course> findCoursesByCoursenameContainsIgnoreCase(String name);
+
 }

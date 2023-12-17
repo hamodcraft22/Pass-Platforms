@@ -4,20 +4,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
-import polytechnic.bh.PassPlatforms_Backend.Entity.Booking;
-import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
-import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
-import polytechnic.bh.PassPlatforms_Backend.Entity.Slot;
+import polytechnic.bh.PassPlatforms_Backend.Dao.MetadataDao;
+import polytechnic.bh.PassPlatforms_Backend.Entity.*;
 import polytechnic.bh.PassPlatforms_Backend.Repository.*;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingStatusConstant.BKNGSTAT_ACTIVE;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingStatusConstant.BKNGSTAT_FINISHED;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingTypeConstant.*;
-import static polytechnic.bh.PassPlatforms_Backend.Constant.SlotTypeConstant.SLTYP_UNSCHEDULED;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.SlotTypeConstant.*;
 
 @Service
 public class BookingServ
@@ -54,6 +58,12 @@ public class BookingServ
 
     @Autowired
     private NotificationRepo notificationRepo;
+
+    @Autowired
+    private MetadataServ metadataServ;
+
+    @Autowired
+    private BookingMemberServ bookingMemberServ;
 
     // get all bookings / revisions - manager
     public List<BookingDao> getAllBookings()
@@ -114,69 +124,96 @@ public class BookingServ
 
         Calendar cal = Calendar.getInstance();
 
+        MetadataDao metadata = metadataServ.getMetadata();
+
+        // check if booking is allowed
+        if (metadata != null && !metadata.isBooking())
+        {
+            errors.add("creating bookings is not allowed currently");
+        }
+
+        // get the slot is available
+        Optional<Slot> retrivedSlot = slotRepo.findById(slotID);
 
         // if session is unscheduled, skip all checks and add (by pass leader)
-        if (!unscheduled)
+        if (!unscheduled && errors.isEmpty())
         {
-            // TODO check if it is of time of mid or final sessions ADD
+            // check if in exam week - convert to local dates
+            if (metadata != null && ( (bookingDate.after(metadata.getFrwstart()) && bookingDate.before(metadata.getMrwend())) || (bookingDate.after(metadata.getFrwstart()) && bookingDate.before(metadata.getFrwend())) || (bookingDate.after(metadata.getMwstart()) && bookingDate.before(metadata.getMwend())) || (bookingDate.after(metadata.getFwstart()) && bookingDate.before(metadata.getFwend())) ))
+            {
+                errors.add("normal bookings are not allowed withing exam / exam break weeks");
+            }
 
-
-            // check if the booking is in the feature
-            if (bookingDate.before(cal.getTime()))
+            // check if the booking is in the feature -- checked
+            if (bookingDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().isBefore(LocalDate.now(ZoneId.of("Asia/Bahrain"))))
             {
                 errors.add("cannot book in the past");
             }
 
-            // check if the slot is available (validation checks)
-            Optional<Slot> retrivedSlot = slotRepo.findById(slotID);
+            // check if it is a same day booking -- checked
+            if (Objects.equals(bookingDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate(), LocalDate.now(ZoneId.of("Asia/Bahrain"))))
+            {
+                errors.add("cannot make a booking in the same day");
+            }
+
+            // check if slot is available -- checked
             if (retrivedSlot.isPresent())
             {
                 cal.setTime(bookingDate);
 
-                // check if the date is the of the same day of the slot
+                // check if user is trying to book himself
+                if (Objects.equals(studentID, retrivedSlot.get().getLeader().getUserid()))
+                {
+                    errors.add("you cannot book yourself");
+                }
+
+                // check if the date is the of the same day of the slot - checked
                 if (cal.get(Calendar.DAY_OF_WEEK) != retrivedSlot.get().getDay().getDayNum())
                 {
                     errors.add("selected date day and slot day does not match");
                 }
-                else
+
+                // check if any active bookings are under this slot in the date selected - checked
+                if (bookingRepo.existsBySlot_SlotidAndBookingdateAndBookingStatus_Statusid(slotID, bookingDate, BKNGSTAT_ACTIVE))
                 {
-                    // check if any active bookings are under this slot in the date selected
-                    if (bookingRepo.existsBySlot_SlotidAndBookingdateAndBookingStatus_Statusid(slotID, bookingDate, BKNGSTAT_ACTIVE))
-                    {
-                        errors.add("the booking slot is booked by another student");
-                    }
+                    errors.add("the booking slot is booked by another student");
                 }
 
-                // check if the leader chosen teaches the course
+                // check if the leader chosen teaches the course - checked
                 if (!offeredCourseRepo.existsByLeader_UseridAndCourse_Courseid(retrivedSlot.get().getLeader().getUserid(), courseID))
                 {
                     errors.add("selected PASS Leader does not teach the course selected");
                 }
 
-                // check if user has current bookings at this time
-                if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndBookingType_TypeidAndSlot_StarttimeBetweenOrSlot_EndtimeBetween(studentID, bookingDate, BKNGSTAT_ACTIVE, BKNGTYP_NORMAL, retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime(), retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime()))
+                // check if user has current bookings at this time - checked
+                if (bookingRepo.sameTimeSessionsFind(studentID, bookingDate, retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime()) != 0)
                 {
                     errors.add("you have another booking at the same time");
                 }
 
-                // check if user is a member of any sessions at this time
-                if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_BookingType_TypeidAndBooking_Slot_StarttimeBetweenOrBooking_Slot_EndtimeBetween(studentID, bookingDate, BKNGSTAT_ACTIVE, BKNGTYP_GROUP, retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime(), retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime()))
+                // check if user is a member of any sessions at this time -- checked
+                if (bookingMemberRepo.sameTimeMemberSessionsFind(studentID, bookingDate, retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime()) != 0)
                 {
-                    errors.add("you have another revision session you are a part of (group) at the same time");
+                    errors.add("you have another (group) session you are a part of at the same time");
                 }
 
-                // check if student has no classes - in schedule - at this time
-                if (scheduleRepo.existsByStarttimeBetweenAndUser_Userid(retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime(), studentID) || scheduleRepo.existsByEndtimeBetweenAndUser_Userid(retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime(), studentID))
+                // check if student has no classes - in schedule - at this time -- checked
+                if (scheduleRepo.sameTimeClassesFind(studentID, retrivedSlot.get().getDay().getDayid(), retrivedSlot.get().getStarttime(), retrivedSlot.get().getEndtime()) != 0)
                 {
                     errors.add("you have a class in the same time as the booking session");
+                }
+
+                // booking check - fair distribution policy -- checked
+                LocalDate specificDate = bookingDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)).atStartOfDay(ZoneId.of("Asia/Bahrain")).toLocalDate();
+                if (bookingRepo.sameLeaderBookingFind(studentID, retrivedSlot.get().getLeader().getUserid(), Date.from(specificDate.atStartOfDay(ZoneId.of("Asia/Bahrain")).toInstant()), Date.from(specificDate.plusDays(6).atStartOfDay(ZoneId.of("Asia/Bahrain")).toInstant()) ) >= 1)
+                {
+                    errors.add("you have already booked one session with this leader this week");
                 }
             }
             else
             {
                 errors.add("slot given does not exist");
             }
-
-            // TODO check if student booked x amount of sessions this week
         }
 
 
@@ -185,18 +222,40 @@ public class BookingServ
         {
             Booking newBooking = new Booking();
 
+            // setting basic info
             newBooking.setDatebooked(Timestamp.from(Instant.now()));
             newBooking.setBookingdate(new java.sql.Date(bookingDate.getTime()));
             newBooking.setNote(note);
-            newBooking.setIsonline(online);
+
+            // override booking type based on slot restriction
+            if (retrivedSlot.isPresent())
+            {
+                if (retrivedSlot.get().getSlotType().getTypeid() == SLTYP_ONLINE)
+                {
+                    newBooking.setIsonline(true);
+                }
+                else if (retrivedSlot.get().getSlotType().getTypeid() == SLTYP_PHYSICAL)
+                {
+                    newBooking.setIsonline(false);
+                }
+            }
+            else
+            {
+                newBooking.setIsonline(online);
+            }
+
+            // other booking static info
             newBooking.setStudent(userServ.getUser(studentID));
             newBooking.setCourse(courseRepo.getReferenceById(courseID));
 
+            // if the booking is unscheduled - leader did it at their own - none slot - time, add the unscheduled slot
             if (unscheduled)
             {
+                // add the real start and end time directory
                 newBooking.setStarttime(startTime);
                 newBooking.setEndtime(endTime);
 
+                // set it as complete -
                 newBooking.setBookingStatus(bookingStatusRepo.getReferenceById(BKNGSTAT_FINISHED));
 
                 // create or get unscheduled slot
@@ -221,7 +280,6 @@ public class BookingServ
                 newBooking.setSlot(slotRepo.getReferenceById(slotID));
             }
 
-
             // if it has members, make the type of booking to be grouped
             if (bookingMembers != null && !bookingMembers.isEmpty())
             {
@@ -245,24 +303,20 @@ public class BookingServ
                 newNotification.setUser(createdBooking.getSlot().getLeader());
                 newNotification.setSeen(false);
 
-                notificationRepo.save(newNotification);
+                if (!unscheduled)
+                {
+                    notificationRepo.save(newNotification);
+                }
+
+                List<String> warnings = new ArrayList<>();
 
                 // add group members
                 for (BookingMemberDao member : bookingMembers)
                 {
-                    BookingMember newBookingMember = new BookingMember();
-
-                    newBookingMember.setDatetime(Timestamp.from(Instant.now()));
-                    newBookingMember.setStudent(userServ.getUser(member.getStudent().getUserid()));
-                    newBookingMember.setBooking(bookingRepo.getReferenceById(createdBooking.getBookingid()));
-
-                    BookingMember savedMember = bookingMemberRepo.save(newBookingMember);
-
-                    // notify each student
-                    newNotification.setNotficmsg("you have been added to a booking");
-                    newNotification.setUser(savedMember.getStudent());
-
-                    notificationRepo.save(newNotification);
+                    if (bookingMemberServ.addStudentMember(createdBooking.getBookingid(), member.getStudent().getUserid()) == null)
+                    {
+                        warnings.add("Student " + member.getStudent().getUserid() + " could not be added, they have a clash with their bookings / scheduels");
+                    }
                 }
 
                 // return dto with correct things
@@ -295,12 +349,11 @@ public class BookingServ
                 // return dto with correct things
                 return new BookingDao(bookingRepo.findById(createdBooking.getBookingid()).get());
             }
-
-
         }
-
-        return null;
-
+        else
+        {
+            return null;
+        }
     }
 
     // create revision booking - by leader

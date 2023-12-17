@@ -173,11 +173,11 @@ public class BookingCont
     {
         if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
         {
-            // TODO null checks
+            BookingDao newBooking = bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), requisterID, bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), false, null, null, null);
 
-            if (bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), requisterID, bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), false, null, null, null) != null)
+            if (newBooking != null)
             {
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                return new ResponseEntity<>(new GenericDto<>(null , newBooking, null), HttpStatus.OK);
             }
             else
             {

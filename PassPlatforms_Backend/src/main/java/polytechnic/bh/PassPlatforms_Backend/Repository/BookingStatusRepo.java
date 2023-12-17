@@ -5,4 +5,5 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.BookingStatus;
 
 public interface BookingStatusRepo extends JpaRepository<BookingStatus, Character>
 {
+
 }

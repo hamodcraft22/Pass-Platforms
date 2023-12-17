@@ -20,6 +20,6 @@ public class OfferedCourseDao
     {
         this.offerid = offeredCourse.getOfferid();
         this.leader = new UserDao(offeredCourse.getLeader().getUserid(), new RoleDao(offeredCourse.getLeader().getRole()), null);
-        this.course = new CourseDao(offeredCourse.getCourse());
+        this.course = new CourseDao(offeredCourse.getCourse().getCourseid(), offeredCourse.getCourse().getCoursename(), null);
     }
 }

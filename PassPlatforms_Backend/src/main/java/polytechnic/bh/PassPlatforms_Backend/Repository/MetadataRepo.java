@@ -5,4 +5,5 @@ import polytechnic.bh.PassPlatforms_Backend.Entity.Metadata;
 
 public interface MetadataRepo extends JpaRepository<Metadata, Integer>
 {
+
 }

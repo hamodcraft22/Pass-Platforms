@@ -46,36 +46,44 @@ public class BookingMemberServ
         // check if booking exists
         if (retrivedBooking.isPresent())
         {
-            // check if it can be booked - has not been closed
-            if (retrivedBooking.get().getBookingMembers().size() < retrivedBooking.get().getBookinglimit() && retrivedBooking.get().getBookingStatus().getStatusid() == BKNGSTAT_ACTIVE)
+            // check if there is limit (if limit is not 0)
+            if (retrivedBooking.get().getBookinglimit() != 0)
             {
-                // check if user has current bookings at this time
-                if (bookingRepo.existsByStudent_UseridAndBookingdateAndBookingStatus_StatusidAndBookingType_TypeidAndSlot_StarttimeBetweenOrSlot_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), BKNGSTAT_ACTIVE, BKNGTYP_NORMAL, retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime(), retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime()))
+                // has a booking limit, check it
+                if (retrivedBooking.get().getBookingMembers().size() >= retrivedBooking.get().getBookinglimit())
                 {
-                    errors.add("you have another booking at the same time");
-                }
-
-                // check if user is a member of any sessions at this time
-                if (bookingMemberRepo.existsByStudent_UseridAndBooking_BookingdateAndBooking_BookingStatus_StatusidAndBooking_BookingType_TypeidAndBooking_Slot_StarttimeBetweenOrBooking_Slot_EndtimeBetween(studentID, retrivedBooking.get().getBookingdate(), BKNGSTAT_ACTIVE, BKNGTYP_GROUP, retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime(), retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime()))
-                {
-                    errors.add("you have another revision session you are a part of (group) at the same time");
-                }
-
-                // check if student has no classes - in schedule - at this time
-                if (scheduleRepo.existsByStarttimeBetweenAndUser_Userid(retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime(), studentID) || scheduleRepo.existsByEndtimeBetweenAndUser_Userid(retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime(), studentID))
-                {
-                    errors.add("you have a class in the same time as the booking session");
-                }
-
-                // check if user is already a part of this booking
-                if (bookingMemberRepo.existsByStudent_UseridAndBooking_Bookingid(studentID, retrivedBooking.get().getBookingid()))
-                {
-                    errors.add("you are already a part of this group");
+                    errors.add("booking is full, cant add other members");
                 }
             }
-            else
+
+            // check if booking is closed
+            if (retrivedBooking.get().getBookingStatus().getStatusid() != BKNGSTAT_ACTIVE)
             {
-                errors.add("session is full");
+                errors.add("booking is closed, cant add other members");
+            }
+
+            // check if user has current bookings at this time
+            if (bookingRepo.sameTimeSessionsFind(studentID, retrivedBooking.get().getBookingdate(), retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime()) != 0)
+            {
+                errors.add("student " + studentID + " another booking at the same time");
+            }
+
+            // check if user is a member of any sessions at this time
+            if (bookingMemberRepo.sameTimeMemberSessionsFind(studentID, retrivedBooking.get().getBookingdate(), retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime()) != 0)
+            {
+                errors.add("student " + studentID + " has another (group) session you are a part of at the same time");
+            }
+
+            // check if student has no classes - in schedule - at this time -- checked
+            if (scheduleRepo.sameTimeClassesFind(studentID, retrivedBooking.get().getSlot().getDay().getDayid(), retrivedBooking.get().getSlot().getStarttime(), retrivedBooking.get().getSlot().getEndtime()) != 0)
+            {
+                errors.add("student " + studentID + " has a class in the same time as the booking session");
+            }
+
+            // check if user is already a part of this booking
+            if (bookingMemberRepo.existsByStudent_UseridAndBooking_Bookingid(studentID, retrivedBooking.get().getBookingid()))
+            {
+                errors.add("student " + studentID + " already is a part of this group");
             }
         }
         else
@@ -93,25 +101,18 @@ public class BookingMemberServ
 
             BookingMember addedMember = bookingMemberRepo.save(newRevMember);
 
-            // notify leader
+            // notify student added
             Notification newNotification = new Notification();
             newNotification.setEntity("Booking");
             newNotification.setItemid(String.valueOf(addedMember.getBooking().getBookingid()));
-            newNotification.setNotficmsg("new student added to booking");
-            newNotification.setUser(addedMember.getBooking().getSlot().getLeader());
-            newNotification.setSeen(false);
-
-            notificationRepo.save(newNotification);
-
-            // notify student added
             newNotification.setNotficmsg("you have been added to a booking");
             newNotification.setUser(addedMember.getStudent());
+            newNotification.setSeen(false);
 
             notificationRepo.save(newNotification);
 
             return new BookingMemberDao();
         }
-
 
         return null;
     }

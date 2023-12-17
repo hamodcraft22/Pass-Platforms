@@ -38,22 +38,34 @@ public class BookingDao
     public BookingDao(Booking booking)
     {
         this.bookingid = booking.getBookingid();
-        this.datebooked = booking.getDatebooked().toInstant();
+        if (booking.getDatebooked() != null)
+        {
+            this.datebooked = booking.getDatebooked().toInstant();
+        }
         this.bookingDate = booking.getBookingdate();
         this.note = booking.getNote();
-        this.starttime = booking.getStarttime().toInstant();
-        this.endtime = booking.getEndtime().toInstant();
+        if (booking.getStarttime() != null)
+        {
+            this.starttime = booking.getStarttime().toInstant();
+        }
+        if (booking.getEndtime() != null)
+        {
+            this.endtime = booking.getEndtime().toInstant();
+        }
         this.bookinglimit = booking.getBookinglimit();
         this.isonline = booking.isIsonline();
 
         this.bookingType = new BookingTypeDao(booking.getBookingType());
-        this.slot = new SlotDao(booking.getSlot());
+        if (booking.getSlot() != null)
+        {
+            this.slot = new SlotDao(booking.getSlot());
+        }
         this.bookingStatus = new BookingStatusDao(booking.getBookingStatus());
         this.student = new UserDao(booking.getStudent().getUserid(), new RoleDao(booking.getStudent().getRole()), null);
         this.course = new CourseDao(booking.getCourse());
 
         List<BookingMemberDao> bookingMembers = new ArrayList<>();
-        if (!booking.getBookingMembers().isEmpty())
+        if (booking.getBookingMembers() != null &&  !booking.getBookingMembers().isEmpty())
         {
             for (BookingMember member : booking.getBookingMembers())
             {
@@ -65,7 +77,7 @@ public class BookingDao
         }
 
         List<BookingNoteDao> bookingNotes = new ArrayList<>();
-        if (!booking.getBookingNotes().isEmpty())
+        if (booking.getBookingNotes() != null && !booking.getBookingNotes().isEmpty())
         {
             for (BookingNote note : booking.getBookingNotes())
             {

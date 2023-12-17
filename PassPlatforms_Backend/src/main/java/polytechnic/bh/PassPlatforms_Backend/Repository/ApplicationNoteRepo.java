@@ -10,11 +10,5 @@ import java.util.List;
 
 public interface ApplicationNoteRepo extends JpaRepository<ApplicationNote, Integer>
 {
-    List<ApplicationNote> findApplicationNotesByDatetime(Date datetime);
 
-    List<ApplicationNote> findApplicationNoteByNotebodyContainingIgnoreCase(String noteBody);
-
-    List<ApplicationNote> findApplicationNoteByApplication(Application application);
-
-    List<ApplicationNote> findApplicationNoteByUser(User user);
 }

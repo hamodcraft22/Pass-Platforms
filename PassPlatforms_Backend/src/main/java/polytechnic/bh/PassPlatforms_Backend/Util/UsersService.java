@@ -86,8 +86,7 @@ public class UsersService
             RestTemplate template = new RestTemplate();
             ResponseEntity<String> response = template.postForEntity(url, entity, String.class);
             JSONObject myjson = new JSONObject(response.getBody());
-            String data = (String) myjson.get("access_token");
-            return data;
+            return (String) myjson.get("access_token");
         }
         catch (Exception ex)
         {
