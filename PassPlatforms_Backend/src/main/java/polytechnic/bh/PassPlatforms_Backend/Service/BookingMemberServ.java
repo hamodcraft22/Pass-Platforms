@@ -3,6 +3,7 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
+import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Booking;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
@@ -16,8 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingStatusConstant.BKNGSTAT_ACTIVE;
-import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingStatusConstant.BKNGSTAT_FINISHED;
-import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingTypeConstant.BKNGTYP_REVISION;
 
 @Service
 public class BookingMemberServ
@@ -38,7 +37,7 @@ public class BookingMemberServ
     private NotificationRepo notificationRepo;
 
     // add student to group
-    public BookingMemberDao addStudentMember(int bookingID, String studentID)
+    public GenericDto<BookingMemberDao> addStudentMember(int bookingID, String studentID)
     {
         List<String> errors = new ArrayList<>();
 
@@ -112,14 +111,14 @@ public class BookingMemberServ
 
             notificationRepo.save(newNotification);
 
-            return new BookingMemberDao();
+            return new GenericDto<>(null, new BookingMemberDao(addedMember), null, null);
         }
 
-        return null;
+        return new GenericDto<>(null, null, errors, null);
     }
 
     // register in revision
-    public BookingMemberDao revisionSignUp(int bookingID, String studentID)
+    public GenericDto<BookingMemberDao> revisionSignUp(int bookingID, String studentID)
     {
         List<String> errors = new ArrayList<>();
 
@@ -174,11 +173,10 @@ public class BookingMemberServ
 
             notificationRepo.save(newNotification);
 
-            return new BookingMemberDao();
+            return new GenericDto<>(null, new BookingMemberDao(addedMember), null, null);
         }
 
-
-        return null;
+        return new GenericDto<>(null, null, errors, null);
     }
 
     // remove student from group / revision

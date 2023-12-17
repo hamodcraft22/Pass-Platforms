@@ -173,11 +173,18 @@ public class BookingCont
     {
         if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
         {
-            BookingDao newBooking = bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), requisterID, bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), false, null, null, null);
+            GenericDto<BookingDao> newBooking = bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), requisterID, bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), false, null, null, null);
 
             if (newBooking != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, newBooking, null, null), HttpStatus.OK);
+                if (newBooking.getTransObject() != null && newBooking.getError() == null)
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, newBooking.getTransObject(), null, newBooking.getWarnings()), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, null, newBooking.getError(), null), HttpStatus.BAD_REQUEST);
+                }
             }
             else
             {
@@ -201,15 +208,23 @@ public class BookingCont
     {
         if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
         {
-            if (bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), bookingDao.getStudent().getUserid(), bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), true, Timestamp.from(bookingDao.getStarttime()), Timestamp.from(bookingDao.getEndtime()), "LEADERID") != null)
+            GenericDto<BookingDao> newBooking = bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), bookingDao.getStudent().getUserid(), bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), true, Timestamp.from(bookingDao.getStarttime()), Timestamp.from(bookingDao.getEndtime()), "LEADERID");
+
+            if (newBooking != null)
             {
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                if (newBooking.getTransObject() != null && newBooking.getError() == null)
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, newBooking.getTransObject(), null, newBooking.getWarnings()), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, null, newBooking.getError(), null), HttpStatus.BAD_REQUEST);
+                }
             }
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-
         }
         else
         {
@@ -220,7 +235,7 @@ public class BookingCont
 
     // add booking member
     @PostMapping("/{bookingID}/member")
-    public ResponseEntity<GenericDto<BookingDao>> addNewMember(
+    public ResponseEntity<GenericDto<BookingMemberDao>> addNewMember(
             @RequestHeader(value = "Authorization") String requestKey,
             @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("bookingID") int bookingID,
@@ -231,9 +246,18 @@ public class BookingCont
             // if the user is the one who booked the session
             if (Objects.equals(bookingServ.getBookingDetails(bookingID).getStudent().getUserid(), requisterID))
             {
-                if (bookingMemberServ.addStudentMember(bookingID, studentID) != null)
+                GenericDto<BookingMemberDao> newMember = bookingMemberServ.addStudentMember(bookingID, studentID);
+
+                if (newMember != null)
                 {
-                    return new ResponseEntity<>(null, HttpStatus.OK);
+                    if (newMember.getTransObject() != null && newMember.getError() == null)
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, newMember.getTransObject(), null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, null, newMember.getError(), null), HttpStatus.BAD_REQUEST);
+                    }
                 }
                 else
                 {

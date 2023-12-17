@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.MetadataDao;
+import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Booking;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
@@ -119,7 +120,7 @@ public class BookingServ
     }
 
     // create booking / group booking
-    public BookingDao createNewBooking(Date bookingDate, String note, boolean online, int slotID, String studentID, String courseID, List<BookingMemberDao> bookingMembers, boolean unscheduled, Timestamp startTime, Timestamp endTime, String leaderID)
+    public GenericDto<BookingDao> createNewBooking(Date bookingDate, String note, boolean online, int slotID, String studentID, String courseID, List<BookingMemberDao> bookingMembers, boolean unscheduled, Timestamp startTime, Timestamp endTime, String leaderID)
     {
         List<String> errors = new ArrayList<>();
 
@@ -314,14 +315,15 @@ public class BookingServ
                 // add group members
                 for (BookingMemberDao member : bookingMembers)
                 {
-                    if (bookingMemberServ.addStudentMember(createdBooking.getBookingid(), member.getStudent().getUserid()) == null)
+                    GenericDto<BookingMemberDao> newMember = bookingMemberServ.addStudentMember(createdBooking.getBookingid(), member.getStudent().getUserid());
+                    if (newMember.getError() != null)
                     {
                         warnings.add("Student " + member.getStudent().getUserid() + " could not be added, they have a clash with their bookings / scheduels");
                     }
                 }
 
                 // return dto with correct things
-                return new BookingDao(bookingRepo.findById(createdBooking.getBookingid()).get());
+                return new GenericDto<>(null, new BookingDao(bookingRepo.findById(createdBooking.getBookingid()).get()), null, warnings);
             }
             else
             {
@@ -348,17 +350,17 @@ public class BookingServ
                 notificationRepo.save(newNotification);
 
                 // return dto with correct things
-                return new BookingDao(bookingRepo.findById(createdBooking.getBookingid()).get());
+                return new GenericDto<>(null, new BookingDao(bookingRepo.findById(createdBooking.getBookingid()).get()), null, null);
             }
         }
         else
         {
-            return null;
+            return new GenericDto<>(null, null, errors, null);
         }
     }
 
     // create revision booking - by leader
-    public BookingDao createNewRevision(Date bookingDate, String note, Timestamp startTime, Timestamp endTime, int bookingLimit, boolean online, String courseID, String leaderID)
+    public GenericDto<BookingDao> createNewRevision(Date bookingDate, String note, Timestamp startTime, Timestamp endTime, int bookingLimit, boolean online, String courseID, String leaderID)
     {
         List<String> errors = new ArrayList<>();
 
@@ -391,10 +393,12 @@ public class BookingServ
 
             Booking savedRevision = bookingRepo.save(newRevision);
 
-            return new BookingDao(savedRevision);
+            return new GenericDto<>(null, new BookingDao(savedRevision), null, null);
         }
-
-        return null;
+        else
+        {
+            return new GenericDto<>(null, null, errors, null);
+        }
     }
 
     // edit booking / revision -- can set to canceled or change time etc

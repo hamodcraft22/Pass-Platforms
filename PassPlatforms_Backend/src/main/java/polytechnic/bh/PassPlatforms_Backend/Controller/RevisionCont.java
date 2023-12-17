@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.BookingMemberServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.BookingServ;
@@ -85,9 +86,18 @@ public class RevisionCont
     {
         if (Objects.equals(requestKey, LEADER_KEY))
         {
-            if (bookingServ.createNewRevision(bookingDao.getBookingDate(), bookingDao.getNote(), Timestamp.from(bookingDao.getStarttime()), Timestamp.from(bookingDao.getEndtime()), bookingDao.getBookinglimit(), bookingDao.isIsonline(), bookingDao.getCourse().getCourseid(), requisterID) != null)
+            GenericDto<BookingDao> newRevision = bookingServ.createNewRevision(bookingDao.getBookingDate(), bookingDao.getNote(), Timestamp.from(bookingDao.getStarttime()), Timestamp.from(bookingDao.getEndtime()), bookingDao.getBookinglimit(), bookingDao.isIsonline(), bookingDao.getCourse().getCourseid(), requisterID);
+
+            if (newRevision != null)
             {
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                if (newRevision.getTransObject() != null && newRevision.getError() == null)
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, newRevision.getTransObject(), null, newRevision.getWarnings()), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, null, newRevision.getError(), null), HttpStatus.BAD_REQUEST);
+                }
             }
             else
             {
@@ -104,16 +114,25 @@ public class RevisionCont
 
     // register in revision
     @PostMapping("/{revisionID}/member")
-    public ResponseEntity<GenericDto<BookingDao>> registerMember(
+    public ResponseEntity<GenericDto<BookingMemberDao>> registerMember(
             @RequestHeader(value = "Authorization") String requestKey,
             @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("revisionID") int revisionID)
     {
         if (Objects.equals(requestKey, STUDENT_KEY))
         {
-            if (bookingMemberServ.revisionSignUp(revisionID, requisterID) != null)
+            GenericDto<BookingMemberDao> newMember = bookingMemberServ.revisionSignUp(revisionID, requisterID);
+
+            if (newMember != null)
             {
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                if (newMember.getTransObject() != null && newMember.getError() == null)
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, newMember.getTransObject(), null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, null, newMember.getError(), null), HttpStatus.BAD_REQUEST);
+                }
             }
             else
             {

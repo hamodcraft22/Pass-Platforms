@@ -16,6 +16,6 @@ public class GenericDto<T>
 {
     UserDao userDao;
     T transObject;
-    String error;
+    List<String> error;
     List<String> warnings;
 }

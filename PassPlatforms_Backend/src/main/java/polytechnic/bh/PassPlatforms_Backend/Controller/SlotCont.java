@@ -124,7 +124,7 @@ public class SlotCont
             }
             else
             {
-                return new ResponseEntity<>(new GenericDto<>(null, null, "Slot clashes with another slot time", null), HttpStatus.CREATED);
+                return new ResponseEntity<>(new GenericDto<>(null, null, List.of("Slot clashes with another slot time"), null), HttpStatus.CREATED);
             }
 
         }
