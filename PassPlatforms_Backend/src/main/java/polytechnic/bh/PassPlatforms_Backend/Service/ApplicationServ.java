@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.ApplicationStatusConstant.APLC_CREATED;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.ManagerConst.MANGER_ID;
 
 @Service
 public class ApplicationServ
@@ -96,7 +97,7 @@ public class ApplicationServ
         newNotification.setEntity("Application");
         newNotification.setItemid(String.valueOf(createdApplication.getApplicationid()));
         newNotification.setNotficmsg("new application by student");
-        newNotification.setUser(new User(userServ.getUser("MANAGERID")));
+        newNotification.setUser(new User(userServ.getUser(MANGER_ID)));
         newNotification.setSeen(false);
 
         notificationRepo.save(newNotification);
@@ -119,7 +120,7 @@ public class ApplicationServ
                 newNotification.setEntity("Application");
                 newNotification.setItemid(String.valueOf(applicationToUpdate.get().getApplicationid()));
                 newNotification.setNotficmsg("application updated by student");
-                newNotification.setUser(new User(userServ.getUser("MANAGERID")));
+                newNotification.setUser(new User(userServ.getUser(MANGER_ID)));
                 newNotification.setSeen(false);
 
                 notificationRepo.save(newNotification);

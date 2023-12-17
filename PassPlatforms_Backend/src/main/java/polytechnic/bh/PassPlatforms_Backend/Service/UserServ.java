@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static polytechnic.bh.PassPlatforms_Backend.Constant.ManagerConst.MANGER_ID;
 import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
 
 // first time sign in / members adding
@@ -59,6 +60,16 @@ public class UserServ
                 User savedStudent = userRepo.save(newStudent);
 
                 return new UserDao(savedStudent.getUserid(), new RoleDao(newStudent.getRole()), getAzureAdName(savedStudent.getUserid()), null);
+            }
+            else if (userID.equals(MANGER_ID))
+            {
+                User manager = new User();
+                manager.setUserid(userID);
+                manager.setRole(roleRepo.getReferenceById(4));
+
+                User savedStudent = userRepo.save(manager);
+
+                return new UserDao(savedStudent.getUserid(), new RoleDao(manager.getRole()), getAzureAdName(savedStudent.getUserid()), null);
             }
             else
             {

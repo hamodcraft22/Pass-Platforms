@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static polytechnic.bh.PassPlatforms_Backend.Constant.ManagerConst.MANGER_ID;
 import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
 
 @Service
@@ -113,7 +114,7 @@ public class ApplicationNoteServ
         newNotification.setEntity("Application");
         newNotification.setItemid(String.valueOf(applicationID));
         newNotification.setNotficmsg("new note added to application");
-        if (Objects.equals(userID, "MANAGERID"))
+        if (Objects.equals(userID, MANGER_ID))
         {
             // send to student
             newNotification.setUser(new User(userServ.getUser(applicationRepo.getReferenceById(applicationID).getUser().getUserid())));
@@ -121,7 +122,7 @@ public class ApplicationNoteServ
         else
         {
             // send to manager
-            newNotification.setUser(new User(userServ.getUser("MANAGERID")));
+            newNotification.setUser(new User(userServ.getUser(MANGER_ID)));
         }
         newNotification.setSeen(false);
         notificationRepo.save(newNotification);
