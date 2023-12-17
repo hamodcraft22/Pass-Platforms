@@ -14,7 +14,9 @@ public interface BookingMemberRepo extends JpaRepository<BookingMember, Integer>
     boolean existsByStudent_UseridAndBooking_Bookingid(String studentID, int bookingID);
 
     // check if student has a revision within the same course (active or has passed)
-    boolean existsByStudent_UseridAndBooking_Course_CourseidAndBooking_BookingStatus_StatusidAndBooking_BookingType_Typeid(String studentID, String courseID, char statusID, char typeID);
+    @Transactional
+    @Query(value = "select count(*) from pp_bookingmember m join pp_booking b on m.bookingid = b.bookingid where m.studentid = :studentID and b.courseid = :courseID and b.statusid in ('A','F') and b.typeid = 'R'", nativeQuery = true)
+    int sameCourseRevisionFind(String studentID, String courseID);
 
     // check if user is a part of any active booking / revision at a given time allocation
     @Transactional

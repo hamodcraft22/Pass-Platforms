@@ -139,7 +139,7 @@ public class BookingMemberServ
                 }
 
                 // check if they have an active or complete revisions in the same course
-                if (bookingMemberRepo.existsByStudent_UseridAndBooking_Course_CourseidAndBooking_BookingStatus_StatusidAndBooking_BookingType_Typeid(studentID, retrivedBooking.get().getCourse().getCourseid(), BKNGSTAT_ACTIVE, BKNGTYP_REVISION) || bookingMemberRepo.existsByStudent_UseridAndBooking_Course_CourseidAndBooking_BookingStatus_StatusidAndBooking_BookingType_Typeid(studentID, retrivedBooking.get().getCourse().getCourseid(), BKNGSTAT_FINISHED, BKNGTYP_REVISION))
+                if (bookingMemberRepo.sameCourseRevisionFind(studentID, retrivedBooking.get().getCourse().getCourseid()) != 0)
                 {
                     errors.add("you have already booked in this course");
                 }
