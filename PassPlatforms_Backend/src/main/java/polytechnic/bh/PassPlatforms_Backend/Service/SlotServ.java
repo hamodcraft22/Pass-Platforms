@@ -87,14 +87,21 @@ public class SlotServ
     {
         Slot newSlot = new Slot();
 
-        newSlot.setStarttime(Timestamp.from(startTime));
-        newSlot.setEndtime(Timestamp.from(endTime));
-        newSlot.setNote(note);
-        newSlot.setSlotType(slotTypeRepo.getReferenceById(typeID));
-        newSlot.setDay(dayRepo.getReferenceById(dayID));
-        newSlot.setLeader(userServ.getUser(leaderID));
+        if (slotRepo.sameSlotTimeFind(leaderID, dayID, Timestamp.from(startTime), Timestamp.from(endTime)) != 0)
+        {
+            return null;
+        }
+        else
+        {
+            newSlot.setStarttime(Timestamp.from(startTime));
+            newSlot.setEndtime(Timestamp.from(endTime));
+            newSlot.setNote(note);
+            newSlot.setSlotType(slotTypeRepo.getReferenceById(typeID));
+            newSlot.setDay(dayRepo.getReferenceById(dayID));
+            newSlot.setLeader(userServ.getUser(leaderID));
 
-        return new SlotDao(slotRepo.save(newSlot));
+            return new SlotDao(slotRepo.save(newSlot));
+        }
     }
 
     // edit slot - available before starting services

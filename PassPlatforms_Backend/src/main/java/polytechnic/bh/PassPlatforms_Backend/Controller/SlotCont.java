@@ -118,7 +118,15 @@ public class SlotCont
                     slotDao.getLeader().getUserid()
             );
 
-            return new ResponseEntity<>(new GenericDto<>(null, createdSlot, null, null), HttpStatus.CREATED);
+            if (createdSlot != null)
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, createdSlot, null, null), HttpStatus.CREATED);
+            }
+            else
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, null, "Slot clashes with another slot time", null), HttpStatus.CREATED);
+            }
+
         }
         else
         {
