@@ -113,6 +113,11 @@ const navConfig = [
         icon: icon('ic_user'),
     },
     {
+        title: 'Unscheduled Booking',
+        path: '/unscheduledBooking',
+        icon: icon('ic_user'),
+    },
+    {
         title: 'about',
         path: '/404',
         icon: icon('ic_disabled'),
