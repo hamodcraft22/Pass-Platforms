@@ -272,6 +272,7 @@ export default function NewRegistrationPage() {
                                 minHeight: 96,
                                 marginBottom: '10px',
                                 display: 'flex',
+                                flexDirection: 'column',
                                 justifyContent: 'space-between',
                                 p: (theme) => theme.spacing(0, 1, 0, 3)
                             }}
@@ -286,6 +287,17 @@ export default function NewRegistrationPage() {
                                 }}
                             />
 
+                            <Box sx={{ mt: 1, width: '100%', display: 'flex', justifyContent: 'space-between'}}>
+                                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:arrow-ios-back-fill"/>}
+                                        onClick={prevSection}>
+                                    Prev Week
+                                </Button>
+
+                                <Button variant="contained" color="inherit" endIcon={<Iconify icon="eva:arrow-ios-forward-fill"/>}
+                                        onClick={nextSection}>
+                                    Next Week
+                                </Button>
+                            </Box>
 
                         </Toolbar>
 
@@ -388,7 +400,7 @@ export default function NewRegistrationPage() {
                                 ) : (<></>)
 
                         }
-                        
+
 
                     </div>
                 </Card>

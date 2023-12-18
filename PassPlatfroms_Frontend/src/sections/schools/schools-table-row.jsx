@@ -20,22 +20,12 @@ import DialogActions from "@mui/material/DialogActions";
 
 // ----------------------------------------------------------------------
 
-export default function SchoolsTableRow({schoolID, schoolName, schoolDesc}) {
-    const [showViewDialog, setShowViewDialog] = useState(false);
-    const handleViewClickOpen = () => {
-        setShowViewDialog(true);
-    };
-    const handleViewClose = () => {
-        setShowViewDialog(false);
-    };
-
+export default function SchoolsTableRow({schoolID, schoolName}) {
 
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [editSchoolName, setEditSchoolName] = useState(null);
-    const [editSchoolDesc, setEditSchoolDesc] = useState(null);
     const handleEditClickOpen = () => {
         setEditSchoolName(schoolName);
-        setEditSchoolDesc(schoolDesc);
 
         setShowEditDialog(true);
     };
@@ -43,7 +33,6 @@ export default function SchoolsTableRow({schoolID, schoolName, schoolDesc}) {
         setShowEditDialog(false);
 
         setEditSchoolName(null);
-        setEditSchoolDesc(null);
     };
     const handleEditSave = () => {
         // add validation TODO
@@ -76,7 +65,7 @@ export default function SchoolsTableRow({schoolID, schoolName, schoolDesc}) {
                 {
                     method: "PUT",
                     headers: {'Content-Type': 'application/json', 'Authorization': '27afc256-2734-4a04-8c8e-49997bb0f638'},
-                    body: JSON.stringify({"schoolid": schoolID, "schoolname": editSchoolName, "schooldesc": editSchoolDesc})
+                    body: JSON.stringify({"schoolid": schoolID, "schoolname": editSchoolName})
                 };
 
             await fetch(`http://localhost:8080/api/school`, requestOptions)
@@ -92,7 +81,6 @@ export default function SchoolsTableRow({schoolID, schoolName, schoolDesc}) {
             setShowEditDialog(false);
 
             setEditSchoolName(null);
-            setEditSchoolDesc(null);
         }
     }
 
@@ -107,8 +95,6 @@ export default function SchoolsTableRow({schoolID, schoolName, schoolDesc}) {
                 <TableCell>{schoolName}</TableCell>
 
                 <TableCell align={"right"}>
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon
-                        fontSize={"small"}/></Button>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"}
                             onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} color={"success"}
@@ -119,20 +105,6 @@ export default function SchoolsTableRow({schoolID, schoolName, schoolDesc}) {
 
             </TableRow>
 
-            {/* view dialog */}
-            <Dialog
-                open={showViewDialog}
-                onClose={handleViewClose}
-            >
-                <DialogTitle>
-                    {schoolName}
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        {schoolDesc}
-                    </DialogContentText>
-                </DialogContent>
-            </Dialog>
 
             {/* Edit dialog */}
             <Dialog
@@ -145,9 +117,6 @@ export default function SchoolsTableRow({schoolID, schoolName, schoolDesc}) {
                 <DialogContent>
                     <TextField sx={{width: '100%', mt: 1}} label="School Name" variant="outlined" value={editSchoolName}
                                onChange={(newValue) => setEditSchoolName(newValue.target.value)}/>
-                    <TextField sx={{width: '100%', mt: 1}} label="School Description" variant="outlined" multiline
-                               rows={2} value={editSchoolDesc}
-                               onChange={(newValue) => setEditSchoolDesc(newValue.target.value)}/>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleEditClose}>Cancel</Button>

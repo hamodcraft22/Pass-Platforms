@@ -33,7 +33,8 @@
     "react-step-progress": "^1.0.3",
     "react-week-calendar": "^0.1.3",
     "simplebar-react": "^3.2.4",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "start": "react-scripts start",

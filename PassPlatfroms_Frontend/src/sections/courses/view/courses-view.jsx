@@ -68,9 +68,7 @@ export default function CoursesPage() {
     const [showAddDialog, setShowAddDialog] = useState(false);
     const [addCourseID, setAddCourseID] = useState(null);
     const [addCourseName, setAddCourseName] = useState(null);
-    const [addCourseDesc, setAddCourseDesc] = useState(null);
-    const [addCourseSem, setAddCourseSem] = useState(null);
-    const [addCourseAvalb, setAddCourseAvalb] = useState(false);
+
 
     const handleAddClickOpen = () => {
         setShowAddDialog(true);
@@ -80,9 +78,7 @@ export default function CoursesPage() {
 
         setAddCourseID(null);
         setAddCourseName(null);
-        setAddCourseDesc(null);
-        setAddCourseSem(null);
-        setAddCourseAvalb(null);
+
     };
     const handleAddSave = () => {
         setShowAddDialog(false);
@@ -174,8 +170,6 @@ export default function CoursesPage() {
                                 headLabel={[
                                     {id: '', label: ''},
                                     {id: 'name', label: 'Name'},
-                                    {id: 'semester', label: 'Semester', align: 'center'},
-                                    {id: 'available', label: 'Available', align: 'center'},
                                     {id: '', label: ''}
                                 ]}
                             />
@@ -186,9 +180,6 @@ export default function CoursesPage() {
                                         <CoursesTableRow
                                             courseID={row.courseid}
                                             courseName={row.coursename}
-                                            courseDesc={row.coursedesc}
-                                            sem={row.semaster}
-                                            avlb={row.available}
                                         />
                                     ))}
 
@@ -230,36 +221,6 @@ export default function CoursesPage() {
                                    value={addCourseName}
                                    onChange={(newValue) => setAddCourseName(newValue.target.value)}/>
 
-                        <TextField sx={{width: '100%', mt: 1}} label="Course Description" variant="outlined" multiline
-                                   rows={2} value={addCourseDesc}
-                                   onChange={(newValue) => setAddCourseDesc(newValue.target.value)}/>
-
-                        <TextField
-                            select
-                            label="Semester"
-                            sx={{width: '100%', mt: 1}}
-                            value={addCourseSem}
-                            onChange={(event, newValue) => {
-                                setAddCourseSem(newValue.props.value)
-                            }}
-                        >
-                            <MenuItem value={'A'}>A</MenuItem>
-                            <MenuItem value={'B'}>B</MenuItem>
-                            <MenuItem value={'S'}>Summer</MenuItem>
-                        </TextField>
-
-                        <FormHelperText sx={{ml: 2}}>Available</FormHelperText>
-                        <ToggleButton
-                            value={addCourseAvalb}
-                            selected={addCourseAvalb}
-                            sx={{width: '100%'}}
-                            color={"primary"}
-                            onChange={() => {
-                                setAddCourseAvalb(!addCourseAvalb)
-                            }}
-                        >
-                            <CheckBoxIcon/>
-                        </ToggleButton>
 
                     </DialogContent>
                     <DialogActions>

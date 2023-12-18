@@ -50,7 +50,6 @@ export default function NewSchoolPage() {
 
     const [schoolID, setSchoolID] = useState("");
     const [schoolName, setSchoolName] = useState("");
-    const [schoolDesc, setScoolDesc] = useState("");
 
     const [courses, setCourses] = useState([]);
 
@@ -58,9 +57,7 @@ export default function NewSchoolPage() {
     const [showAddDialog, setShowAddDialog] = useState(false);
     const [addCourseID, setAddCourseID] = useState(null);
     const [addCourseName, setAddCourseName] = useState(null);
-    const [addCourseDesc, setAddCourseDesc] = useState(null);
-    const [addCourseSem, setAddCourseSem] = useState(null);
-    const [addCourseAvalb, setAddCourseAvalb] = useState(false);
+
     const handleAddClickOpen = () => {
         setShowAddDialog(true);
     };
@@ -69,20 +66,14 @@ export default function NewSchoolPage() {
     };
 
     function handleAddSave() {
-        if (addCourseID !== null && addCourseName !== null && addCourseDesc !== null && addCourseSem !== null && addCourseAvalb !== null) {
+        if (addCourseID !== null && addCourseName !== null) {
             courses.push({
                 "courseid": addCourseID,
-                "coursename": addCourseName,
-                "coursedesc": addCourseDesc,
-                "coursesem": addCourseSem,
-                "courseavlb": addCourseAvalb
+                "coursename": addCourseName
             });
 
             setAddCourseID(null);
             setAddCourseName(null);
-            setAddCourseDesc(null);
-            setAddCourseSem(null);
-            setAddCourseAvalb(false);
 
             // close dialog etc
             setShowAddDialog(false);
@@ -92,36 +83,11 @@ export default function NewSchoolPage() {
         }
     }
 
-    const [viewCourseID, setViewCourseID] = useState(null);
-    const [viewCourseName, setViewCourseName] = useState(null);
-    const [viewCoursedesc, setViewCoursedesc] = useState(null);
-    const [viewCoursesem, setViewCoursesem] = useState(null);
-    const [viewCourseavlb, setViewCourseavlb] = useState(null);
-
-    const [showViewDialog, setShowViewDialog] = useState(false);
-    const handleViewClickOpen = (course) => {
-        setShowViewDialog(true);
-
-        setViewCourseID(course.courseid);
-        setViewCourseName(course.coursename);
-        setViewCoursedesc(course.coursedesc);
-        setViewCoursesem(course.coursesem);
-        setViewCourseavlb(course.courseavlb);
-    };
-    const handleViewClose = () => {
-        setShowViewDialog(false);
-
-        setViewCourseID(null);
-        setViewCourseName(null);
-        setViewCoursedesc(null);
-        setViewCoursesem(null);
-        setViewCourseavlb(null);
-    };
 
 
     function nextSection() {
         if (shownSection === 1) {
-            if (schoolID !== null && schoolName !== null && schoolDesc !== null && schoolID !== undefined && schoolName !== undefined && schoolDesc !== undefined && Object.keys(schoolID).length !== 0 && Object.keys(schoolName).length !== 0 && Object.keys(schoolDesc).length !== 0) {
+            if (schoolID !== null && schoolName !== null && schoolID !== undefined && schoolName !== undefined && Object.keys(schoolID).length !== 0 && Object.keys(schoolName).length !== 0 ) {
                 setShownSection((shownSection) + 1);
             } else {
                 setErrorMsg("Add all school Information Please");
@@ -201,12 +167,6 @@ export default function NewSchoolPage() {
                             setSchoolName(newValue.target.value)
                         }} label={"School Name"}> </TextField>
                         <FormHelperText>School Name (Web Media, Information Com Technology, etc.).</FormHelperText>
-
-                        <Typography variant="h6" sx={{mt: 3}}>School Description:</Typography>
-                        <TextField fullWidth value={schoolDesc} onChange={(newValue) => {
-                            setScoolDesc(newValue.target.value)
-                        }} label={"School Description"}> </TextField>
-                        <FormHelperText>Optional.</FormHelperText>
                     </div>
                 </Card>
             }
@@ -231,9 +191,7 @@ export default function NewSchoolPage() {
                                     <TableHead>
                                         <TableRow>
                                             <TableCell>Course Name</TableCell>
-                                            <TableCell align="right">ID</TableCell>
-                                            <TableCell align="right">Semester</TableCell>
-                                            <TableCell align="right">Available</TableCell>
+                                            <TableCell align="right">Course Code</TableCell>
                                             <TableCell align="right"></TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -245,18 +203,7 @@ export default function NewSchoolPage() {
                                             >
                                                 <TableCell component="th" scope="row">{course.coursename}</TableCell>
                                                 <TableCell align="right">{course.courseid}</TableCell>
-                                                <TableCell align="right">{course.coursesem}</TableCell>
-                                                <TableCell align="right">{course.courseavlb ? (<CheckBoxIcon/>) : (
-                                                    <DisabledByDefaultRoundedIcon/>)}</TableCell>
-                                                <TableCell align="right">
-                                                    <Button variant="contained" sx={{ml: 1}} size={"small"}
-                                                            onClick={() => handleViewClickOpen(course)}><InfoIcon
-                                                        fontSize={"small"}/></Button>
-                                                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
-                                                            onClick={() => {
-                                                                setCourses([...courses.slice(0, index), ...courses.slice(index + 1)])
-                                                            }}><DeleteIcon fontSize={"small"}/></Button>
-                                                </TableCell>
+                                                <TableCell align="right"> <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"} onClick={() => {setCourses([...courses.slice(0, index), ...courses.slice(index + 1)])}}><DeleteIcon fontSize={"small"}/></Button> </TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -278,8 +225,6 @@ export default function NewSchoolPage() {
                                    InputProps={{readOnly: true}} defaultValue={schoolID}/>
                         <TextField label="School Name" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
                                    InputProps={{readOnly: true}} defaultValue={schoolName}/>
-                        <TextField label="School Description" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
-                                   InputProps={{readOnly: true}} defaultValue={schoolDesc} multiline maxRows={4}/>
 
                         {
                             Object.keys(courses).length !== 0 &&
@@ -290,9 +235,7 @@ export default function NewSchoolPage() {
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell>Course Name</TableCell>
-                                                <TableCell align="right">ID</TableCell>
-                                                <TableCell align="right">Semester</TableCell>
-                                                <TableCell align="right">Available</TableCell>
+                                                <TableCell align="right">Course Code</TableCell>
                                                 <TableCell align="right"></TableCell>
                                             </TableRow>
                                         </TableHead>
@@ -304,14 +247,6 @@ export default function NewSchoolPage() {
                                                 >
                                                     <TableCell component="th" scope="row">{course.coursename}</TableCell>
                                                     <TableCell align="right">{course.courseid}</TableCell>
-                                                    <TableCell align="right">{course.coursesem}</TableCell>
-                                                    <TableCell align="right">{course.courseavlb ? (<CheckBoxIcon/>) : (
-                                                        <DisabledByDefaultRoundedIcon/>)}</TableCell>
-                                                    <TableCell align="right">
-                                                        <Button variant="contained" sx={{ml: 1}} size={"small"}
-                                                                onClick={() => handleViewClickOpen(course)}><InfoIcon
-                                                            fontSize={"small"}/></Button>
-                                                    </TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
@@ -339,37 +274,6 @@ export default function NewSchoolPage() {
                     <TextField sx={{width: '100%', mt: 1}} label="Course Name" variant="outlined" value={addCourseName}
                                onChange={(newValue) => setAddCourseName(newValue.target.value)}/>
 
-                    <TextField sx={{width: '100%', mt: 1}} label="Course Description" variant="outlined" multiline
-                               rows={2} value={addCourseDesc}
-                               onChange={(newValue) => setAddCourseDesc(newValue.target.value)}/>
-
-                    <TextField
-                        select
-                        label="Semester"
-                        sx={{width: '100%', mt: 1}}
-                        value={addCourseSem}
-                        onChange={(event, newValue) => {
-                            setAddCourseSem(newValue.props.value)
-                        }}
-                    >
-                        <MenuItem value={'A'}>A</MenuItem>
-                        <MenuItem value={'B'}>B</MenuItem>
-                        <MenuItem value={'S'}>Summer</MenuItem>
-                    </TextField>
-
-                    <FormHelperText sx={{ml: 2}}>Available</FormHelperText>
-                    <ToggleButton
-                        value={addCourseAvalb}
-                        selected={addCourseAvalb}
-                        sx={{width: '100%'}}
-                        color={"primary"}
-                        onChange={() => {
-                            setAddCourseAvalb(!addCourseAvalb)
-                        }}
-                    >
-                        <CheckBoxIcon/>
-                    </ToggleButton>
-
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleAddClose}>Cancel</Button>
@@ -379,27 +283,6 @@ export default function NewSchoolPage() {
                 </DialogActions>
             </Dialog>
 
-            {/* view dialog */}
-            <Dialog
-                open={showViewDialog}
-                onClose={handleViewClose}
-            >
-                <DialogTitle>
-                    {viewCourseID}
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        <TextField label="Name" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
-                                   InputProps={{readOnly: true}} defaultValue={viewCourseName}/>
-                        <TextField label="Course Description" variant="standard" fullWidth sx={{mb: 1}}
-                                   InputProps={{readOnly: true}} defaultValue={viewCoursedesc} multiline maxRows={4}/>
-                        <TextField label="Semaster" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
-                                   InputProps={{readOnly: true}} defaultValue={viewCoursesem}/>
-                        <TextField label="Avaliable" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
-                                   InputProps={{readOnly: true}} defaultValue={viewCourseavlb}/>
-                    </DialogContentText>
-                </DialogContent>
-            </Dialog>
         </Container>
     );
 }

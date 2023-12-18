@@ -11,7 +11,7 @@ import MultiSelect from "../MultiSelect";
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {Alert, Autocomplete, CircularProgress, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField} from "@mui/material";
+import {Alert, Autocomplete, CircularProgress, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField, ToggleButton} from "@mui/material";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -24,6 +24,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import {AccountCircle} from "@mui/icons-material";
 import List from "@mui/material/List";
 import ListItemText from "@mui/material/ListItemText";
+import PublicIcon from '@mui/icons-material/Public';
 
 
 // ----------------------------------------------------------------------
@@ -132,6 +133,8 @@ export default function NewBookingPage() {
 
     // group & information setup elements
     const [groupMembers, setGroupMembers] = useState([]);
+
+    const [bookingOnline, setBookingOnline] = useState(false);
 
     const [helpInText, setHelpInText] = useState("");
 
@@ -281,6 +284,7 @@ export default function NewBookingPage() {
                                 minHeight: 96,
                                 marginBottom: '10px',
                                 display: 'flex',
+                                flexDirection: 'column',
                                 justifyContent: 'space-between',
                                 p: (theme) => theme.spacing(0, 1, 0, 3)
                             }}
@@ -295,6 +299,17 @@ export default function NewBookingPage() {
                                 }}
                             />
 
+                            <Box sx={{ mt: 1, width: '100%', display: 'flex', justifyContent: 'space-between'}}>
+                                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:arrow-ios-back-fill"/>}
+                                        onClick={prevSection}>
+                                    Prev Week
+                                </Button>
+
+                                <Button variant="contained" color="inherit" endIcon={<Iconify icon="eva:arrow-ios-forward-fill"/>}
+                                        onClick={nextSection}>
+                                    Next Week
+                                </Button>
+                            </Box>
 
                         </Toolbar>
 
@@ -368,9 +383,23 @@ export default function NewBookingPage() {
                             }}
                             renderInput={(params) => <TextField {...params} label="Student ID/s - Optional"/>}
                         />
-
                         <FormHelperText>Please note that if other students did not upload their schedules before hand, they
-                            might have clashes within your selected session. Add Student ID and press enter</FormHelperText>
+                            might have clashes within your selected session.</FormHelperText>
+
+
+                        <Typography variant="h6" sx={{mt: 3}}>Online Session? Toggle:</Typography>
+                        <FormHelperText sx={{ml: 2}}>Online</FormHelperText>
+                        <ToggleButton
+                            value={bookingOnline}
+                            selected={bookingOnline}
+                            sx={{width: '100%'}}
+                            color={"primary"}
+                            onChange={() => {
+                                setBookingOnline(!bookingOnline)
+                            }}
+                        >
+                            <PublicIcon/>
+                        </ToggleButton>
 
                         <Typography variant="h6" sx={{mt: 3}}>Help Area:</Typography>
                         <TextField sx={{width: '100%', mt: 1}} label="I want the Pass Leader to Help Me In:"

@@ -21,26 +21,15 @@ import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultR
 
 // ----------------------------------------------------------------------
 
-export default function CoursesTableRow({courseID, courseName, courseDesc, sem, avlb}) {
-    const [showViewDialog, setShowViewDialog] = useState(false);
-    const handleViewClickOpen = () => {
-        setShowViewDialog(true);
-    };
-    const handleViewClose = () => {
-        setShowViewDialog(false);
-    };
+export default function CoursesTableRow({courseID, courseName}) {
 
 
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [editCourseName, setEditCourseName] = useState(null);
-    const [editCourseDesc, setEditCourseDesc] = useState(null);
-    const [editCourseSem, setEditCourseSem] = useState(null);
-    const [editCourseAvalb, setEditCourseAvalb] = useState(true);
+
     const handleEditClickOpen = () => {
         setEditCourseName(courseName);
-        setEditCourseDesc(courseDesc);
-        setEditCourseSem(sem);
-        setEditCourseAvalb(avlb);
+
 
         setShowEditDialog(true);
     };
@@ -48,9 +37,7 @@ export default function CoursesTableRow({courseID, courseName, courseDesc, sem, 
         setShowEditDialog(false);
 
         setEditCourseName(null);
-        setEditCourseDesc(null);
-        setEditCourseSem(null);
-        setEditCourseAvalb(null);
+
     };
     const handleEditSave = () => {
         setShowEditDialog(false);
@@ -77,13 +64,7 @@ export default function CoursesTableRow({courseID, courseName, courseDesc, sem, 
 
                 <TableCell>{courseID} {courseName}</TableCell>
 
-                <TableCell align={"center"}>{sem}</TableCell>
-
-                <TableCell align={"center"}>{avlb ? (<CheckBoxIcon/>) : (<DisabledByDefaultRoundedIcon/>)}</TableCell>
-
                 <TableCell align={"right"}>
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon
-                        fontSize={"small"}/></Button>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"}
                             onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
@@ -92,25 +73,6 @@ export default function CoursesTableRow({courseID, courseName, courseDesc, sem, 
 
             </TableRow>
 
-            {/* view dialog */}
-            <Dialog
-                open={showViewDialog}
-                onClose={handleViewClose}
-            >
-                <DialogTitle>
-                    {courseName}
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        <TextField label="Course Description" variant="standard" fullWidth sx={{mb: 1}}
-                                   InputProps={{readOnly: true}} defaultValue={courseDesc} multiline maxRows={4}/>
-                        <TextField label="Semaster" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
-                                   InputProps={{readOnly: true}} defaultValue={sem}/>
-                        <TextField label="Avaliable" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
-                                   InputProps={{readOnly: true}} defaultValue={avlb}/>
-                    </DialogContentText>
-                </DialogContent>
-            </Dialog>
 
             {/* Edit dialog */}
             <Dialog
@@ -123,36 +85,6 @@ export default function CoursesTableRow({courseID, courseName, courseDesc, sem, 
                 <DialogContent>
                     <TextField sx={{width: '100%', mt: 1}} label="Course Name" variant="outlined" value={editCourseName}
                                onChange={(newValue) => setEditCourseName(newValue.target.value)}/>
-                    <TextField sx={{width: '100%', mt: 1}} label="Course Description" variant="outlined" multiline
-                               rows={2} value={editCourseDesc}
-                               onChange={(newValue) => setEditCourseDesc(newValue.target.value)}/>
-
-                    <TextField
-                        select
-                        label="Semester"
-                        sx={{width: '100%', mt: 1}}
-                        value={editCourseSem}
-                        onChange={(event, newValue) => {
-                            setEditCourseSem(newValue.props.value)
-                        }}
-                    >
-                        <MenuItem value={'A'}>A</MenuItem>
-                        <MenuItem value={'B'}>B</MenuItem>
-                        <MenuItem value={'S'}>Summer</MenuItem>
-                    </TextField>
-
-                    <FormHelperText sx={{ml: 2}}>Available</FormHelperText>
-                    <ToggleButton
-                        value={editCourseAvalb}
-                        selected={editCourseAvalb}
-                        sx={{width: '100%'}}
-                        color={"primary"}
-                        onChange={() => {
-                            setEditCourseAvalb(!editCourseAvalb)
-                        }}
-                    >
-                        <CheckBoxIcon/>
-                    </ToggleButton>
 
                 </DialogContent>
                 <DialogActions>
