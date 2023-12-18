@@ -23,6 +23,7 @@ export const ViewBookingPage = lazy(() => import('../pages/viewBooking'));
 export const RevisionsPage = lazy(() => import('../pages/revisions'));
 export const ViewRevisionPage = lazy(() => import('../pages/viewRevision'));
 export const RevisionRegistrationPage = lazy(() => import('../pages/revisionRegistration'));
+export const ManagementPage = lazy(() => import('../pages/management'));
 
 // ----------------------------------------------------------------------
 
@@ -56,6 +57,7 @@ export default function Router() {
                 {path: 'revisions', element: <RevisionsPage/>},
                 {path: 'viewRevision', element: <ViewRevisionPage/>},
                 {path: 'revisionRegistration', element: <RevisionRegistrationPage/>},
+                {path: 'management', element: <ManagementPage/>},
             ],
         },
         {

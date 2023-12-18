@@ -174,8 +174,6 @@ export default function SchoolsPage() {
         setSchoolsUpload(sheetsData);
     };
 
-    useEffect(() => {console.log(schoolsUpload)}, [schoolsUpload])
-
     const readFile = (file) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
