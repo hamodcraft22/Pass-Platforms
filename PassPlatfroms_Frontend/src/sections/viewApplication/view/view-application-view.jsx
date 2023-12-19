@@ -95,7 +95,34 @@ export default function ViewApplicationPage() {
                 const courseRegex = /([A-Z]{2})\s+(\d+)\s+([A-Z0-9]+)\s+([A-Za-z0-9\s\-]+?)\s+(\S+)\s+(\d+\.\d+)\s+(\d+\.\d+)/gm;
 
                 const extractedCourses = extractCoursesFromText(pdfText, courseRegex);
-                setCourses(extractedCourses);
+
+                let correctedCourses = [];
+
+                extractedCourses.forEach((course) => {
+
+                    let courseCode = course.code + course.number;
+                    let courseName = course.title
+
+                    let courseGrade = '';
+
+                    if(course.grade.toLowerCase() === "comp")
+                    {
+                        courseGrade = 'A';
+                    }
+                    else if (['a','b','c','d','f'].includes(course.grade.toLowerCase().charAt(0)))
+                    {
+                        courseGrade = course.grade.charAt(0);
+                    }
+                    else
+                    {
+                        courseGrade = 'E';
+                    }
+
+                    correctedCourses.push({"code":courseCode, "title":courseName, "grade":courseGrade});
+                });
+
+                setCourses(correctedCourses);
+
             } catch (error) {
                 console.error(error.message);
             }
@@ -259,6 +286,10 @@ export default function ViewApplicationPage() {
                                     <VisuallyHiddenInput type="file" onChange={handleFileChange} accept=".pdf"/>
                                 </Button>
 
+                                <FormHelperText>Grades will be saved without any status (+, -)</FormHelperText>
+                                <FormHelperText>COMP coursees are marked as A</FormHelperText>
+                                <FormHelperText>EXMP courses will not be accounted</FormHelperText>
+
                                 {
                                     Object.keys(courses).length !== 0 &&
                                     <TableContainer component={CustomPaper} sx={{mt: 3}}>
@@ -276,7 +307,7 @@ export default function ViewApplicationPage() {
                                                         sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                                     >
                                                         <TableCell component="th" scope="row">
-                                                            {course.code}{course.number} {course.title}
+                                                            {course.code} {course.title}
                                                         </TableCell>
                                                         <TableCell align="center">{course.grade}</TableCell>
                                                     </TableRow>

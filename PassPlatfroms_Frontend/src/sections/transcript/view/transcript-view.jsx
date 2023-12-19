@@ -35,6 +35,7 @@ import TableHead from "@mui/material/TableHead";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import {FormHelperText} from "@mui/material";
 
 
 // ----------------------------------------------------------------------
@@ -139,7 +140,33 @@ export default function TranscriptPage() {
                 const courseRegex = /([A-Z]{2})\s+(\d+)\s+([A-Z0-9]+)\s+([A-Za-z0-9\s\-]+?)\s+(\S+)\s+(\d+\.\d+)\s+(\d+\.\d+)/gm;
 
                 const extractedCourses = extractCoursesFromText(pdfText, courseRegex);
-                setCourses(extractedCourses);
+
+                let correctedCourses = [];
+
+                extractedCourses.forEach((course) => {
+
+                    let courseCode = course.code + course.number;
+                    let courseName = course.title
+
+                    let courseGrade = '';
+
+                    if(course.grade.toLowerCase() === "comp")
+                    {
+                        courseGrade = 'A';
+                    }
+                    else if (['a','b','c','d','f'].includes(course.grade.toLowerCase().charAt(0)))
+                    {
+                        courseGrade = course.grade.charAt(0);
+                    }
+                    else
+                    {
+                        courseGrade = 'E';
+                    }
+
+                    correctedCourses.push({"code":courseCode, "title":courseName, "grade":courseGrade});
+                });
+
+                setCourses(correctedCourses);
             } catch (error) {
                 console.error(error.message);
             }
@@ -165,7 +192,7 @@ export default function TranscriptPage() {
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4">Courses</Typography>
+                <Typography variant="h4">Student - Transcript</Typography>
 
                 <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
                         onClick={handleAddClickOpen}>
@@ -244,6 +271,10 @@ export default function TranscriptPage() {
                             <VisuallyHiddenInput type="file" onChange={handleFileChange} accept=".pdf"/>
                         </Button>
 
+                                <FormHelperText>Grades will be saved without any status (+, -)</FormHelperText>
+                                <FormHelperText>COMP coursees are marked as A</FormHelperText>
+                                <FormHelperText>EXMP courses will not be accounted</FormHelperText>
+
                         {
                             Object.keys(courses).length !== 0 &&
                             <TableContainer component={CustomPaper} sx={{mt: 3}}>
@@ -261,7 +292,7 @@ export default function TranscriptPage() {
                                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                             >
                                                 <TableCell component="th" scope="row">
-                                                    {course.code}{course.number} {course.title}
+                                                    {course.code} {course.title}
                                                 </TableCell>
                                                 <TableCell align="center">{course.grade}</TableCell>
                                             </TableRow>
