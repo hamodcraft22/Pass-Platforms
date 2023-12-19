@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx';
 import Button from "@mui/material/Button";
 import SimCardDownloadRoundedIcon from '@mui/icons-material/SimCardDownloadRounded';
 
-function ExportToExcel({ data, filename }) {
+function ExportToExcel({data, filename}) {
     const exportToExcel = () => {
         const worksheet = XLSX.utils.json_to_sheet(data);
         const workbook = XLSX.utils.book_new();
@@ -12,7 +12,7 @@ function ExportToExcel({ data, filename }) {
     };
 
     return (
-        <Button onClick={exportToExcel} variant={"contained"} color={"success"} sx={{m:1}} startIcon={<SimCardDownloadRoundedIcon/>}>
+        <Button onClick={exportToExcel} variant={"contained"} color={"success"} sx={{m: 1}} startIcon={<SimCardDownloadRoundedIcon/>}>
             Export to Excel
         </Button>
     );

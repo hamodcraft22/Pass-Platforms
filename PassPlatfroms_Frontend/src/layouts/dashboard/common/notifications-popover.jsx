@@ -21,6 +21,7 @@ import {fToNow} from '../../../utils/format-time';
 
 import Iconify from '../../../components/iconify';
 import Scrollbar from '../../../components/scrollbar';
+import ReplayCircleFilledRoundedIcon from '@mui/icons-material/ReplayCircleFilledRounded';
 
 // ----------------------------------------------------------------------
 
@@ -87,14 +88,6 @@ export default function NotificationsPopover() {
         setOpen(null);
     };
 
-    const handleMarkAllAsRead = () => {
-        setNotifications(
-            notifications.map((notification) => ({
-                ...notification,
-                isUnRead: false,
-            }))
-        );
-    };
 
     return (
         <>
@@ -126,13 +119,12 @@ export default function NotificationsPopover() {
                         </Typography>
                     </Box>
 
-                    {totalUnRead > 0 && (
-                        <Tooltip title=" Mark all as read">
-                            <IconButton color="primary" onClick={handleMarkAllAsRead}>
-                                <Iconify icon="eva:done-all-fill"/>
-                            </IconButton>
-                        </Tooltip>
-                    )}
+                    <Tooltip title=" Refresh">
+                        <IconButton color="primary" onClick={() => {alert("call api")}}>
+                            <ReplayCircleFilledRoundedIcon/>
+                        </IconButton>
+                    </Tooltip>
+
                 </Box>
 
                 <Divider sx={{borderStyle: 'dashed'}}/>
@@ -167,11 +159,11 @@ export default function NotificationsPopover() {
 
                 <Divider sx={{borderStyle: 'dashed'}}/>
 
-                <Box sx={{p: 1}}>
-                    <Button fullWidth disableRipple>
-                        View All
-                    </Button>
-                </Box>
+                {/*<Box sx={{p: 1}}>*/}
+                {/*    <Button fullWidth disableRipple>*/}
+                {/*        View All*/}
+                {/*    </Button>*/}
+                {/*</Box>*/}
             </Popover>
         </>
     );
@@ -186,13 +178,12 @@ NotificationItem.propTypes = {
         isUnRead: PropTypes.bool,
         title: PropTypes.string,
         description: PropTypes.string,
-        type: PropTypes.string,
-        avatar: PropTypes.any,
+        type: PropTypes.string
     }),
 };
 
 function NotificationItem({notification}) {
-    const {avatar, title} = renderContent(notification);
+    const {title} = renderContent(notification);
 
     return (
         <ListItemButton
@@ -205,9 +196,6 @@ function NotificationItem({notification}) {
                 }),
             }}
         >
-            <ListItemAvatar>
-                <Avatar sx={{bgcolor: 'background.neutral'}}>{avatar}</Avatar>
-            </ListItemAvatar>
             <ListItemText
                 primary={title}
                 secondary={
@@ -241,32 +229,7 @@ function renderContent(notification) {
         </Typography>
     );
 
-    if (notification.type === 'order_placed') {
-        return {
-            avatar: <img alt={notification.title} src="/assets/icons/ic_notification_package.svg"/>,
-            title,
-        };
-    }
-    if (notification.type === 'order_shipped') {
-        return {
-            avatar: <img alt={notification.title} src="/assets/icons/ic_notification_shipping.svg"/>,
-            title,
-        };
-    }
-    if (notification.type === 'mail') {
-        return {
-            avatar: <img alt={notification.title} src="/assets/icons/ic_notification_mail.svg"/>,
-            title,
-        };
-    }
-    if (notification.type === 'chat_message') {
-        return {
-            avatar: <img alt={notification.title} src="/assets/icons/ic_notification_chat.svg"/>,
-            title,
-        };
-    }
     return {
-        avatar: notification.avatar ? <img alt={notification.title} src={notification.avatar}/> : null,
         title,
     };
 }

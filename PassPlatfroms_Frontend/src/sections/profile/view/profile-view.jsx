@@ -2,12 +2,9 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import Card from "@mui/material/Card";
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import {FormHelperText, TextField} from "@mui/material";
 import React, {useState} from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import Iconify from "../../../components/iconify";
 import GradingRoundedIcon from '@mui/icons-material/GradingRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import PendingActionsRoundedIcon from '@mui/icons-material/PendingActionsRounded';
@@ -40,7 +37,6 @@ export default function ProfileView() {
     return (
 
         <Container maxWidth="xl">
-
 
 
             {/* top bar */}
@@ -76,7 +72,7 @@ export default function ProfileView() {
                 <Grid xs={12} md={6} lg={4}>
                     <Card>
                         <div style={{padding: "15px"}}>
-                            <img src="/assets/icons/profile-pic.png" />
+                            <img src="/assets/icons/profile-pic.png"/>
 
                             <Typography variant="h4" sx={{mt: 2}} textAlign={"center"}>
                                 {userName}
@@ -97,7 +93,7 @@ export default function ProfileView() {
                 <Grid xs={12} md={6} lg={8}>
                     <Card>
                         <div style={{padding: "15px"}}>
-                            <Typography variant="h6" sx={{mb: 2}} >
+                            <Typography variant="h6" sx={{mb: 2}}>
                                 Offered Courses:
                             </Typography>
 
@@ -131,14 +127,13 @@ export default function ProfileView() {
                             }
 
                             {
-                                userRole !== "Leader" && <Typography variant="h6" sx={{mb: 2}} >
+                                userRole !== "Leader" && <Typography variant="h6" sx={{mb: 2}}>
                                     Student is not a pass leader and they do not offer any courses</Typography>
                             }
 
                         </div>
                     </Card>
                 </Grid>
-
 
 
             </Grid>

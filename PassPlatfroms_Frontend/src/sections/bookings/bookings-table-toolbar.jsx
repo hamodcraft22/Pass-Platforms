@@ -1,11 +1,6 @@
 import PropTypes from 'prop-types';
 
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-
-import Iconify from '../../components/iconify';
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {DatePicker} from "@mui/x-date-pickers";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
@@ -27,16 +22,20 @@ export default function BookingsTableToolbar({startDate, onDateStart, endDate, o
 
             <div>
                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                    <DatePicker label="From Date" value={startDate} onChange={(newValue) => {onDateStart(newValue)}}/>
+                    <DatePicker label="From Date" value={startDate} onChange={(newValue) => {
+                        onDateStart(newValue)
+                    }}/>
                 </LocalizationProvider>
 
-                <LocalizationProvider dateAdapter={AdapterMoment} >
-                    <DatePicker sx={{ml:2}} label="To Date" minDate={startDate} value={endDate} onChange={(newValue) => {onDateEnd(newValue)}}/>
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                    <DatePicker sx={{ml: 2}} label="To Date" minDate={startDate} value={endDate} onChange={(newValue) => {
+                        onDateEnd(newValue)
+                    }}/>
                 </LocalizationProvider>
             </div>
 
 
-            <Button variant={"contained"} onClick={onClearButton} disabled={(startDate === null && endDate === null)||(startDate === undefined && endDate === undefined)} >Clear</Button>
+            <Button variant={"contained"} onClick={onClearButton} disabled={(startDate === null && endDate === null) || (startDate === undefined && endDate === undefined)}>Clear</Button>
 
         </Toolbar>
     );

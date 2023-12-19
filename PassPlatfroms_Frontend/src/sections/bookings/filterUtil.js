@@ -1,9 +1,7 @@
-export function applyFilter({inputData, comparator, startDate, endDate})
-{
+export function applyFilter({inputData, comparator, startDate, endDate}) {
     const stabilizedThis = inputData.map((el, index) => [el, index]);
 
-    stabilizedThis.sort((a, b) =>
-    {
+    stabilizedThis.sort((a, b) => {
         const order = comparator(a[0], b[0]);
         if (order !== 0) return order;
         return a[1] - b[1];
@@ -11,14 +9,16 @@ export function applyFilter({inputData, comparator, startDate, endDate})
 
     inputData = stabilizedThis.map((el) => el[0]);
 
-    if (startDate)
-    {
-        inputData = inputData.filter((booking) => {return (new Date(booking.date).getTime() >= new Date(startDate).getTime())});
+    if (startDate) {
+        inputData = inputData.filter((booking) => {
+            return (new Date(booking.date).getTime() >= new Date(startDate).getTime())
+        });
     }
 
-    if (endDate)
-    {
-        inputData = inputData.filter((booking) => {return (new Date(booking.date).getTime() <= new Date(endDate).getTime())});
+    if (endDate) {
+        inputData = inputData.filter((booking) => {
+            return (new Date(booking.date).getTime() <= new Date(endDate).getTime())
+        });
     }
 
     return inputData;

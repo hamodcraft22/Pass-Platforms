@@ -5,15 +5,13 @@ import Typography from '@mui/material/Typography';
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {Alert, FormHelperText, Snackbar, TextField, ToggleButton} from "@mui/material";
+import {Alert, FormHelperText, Snackbar, TextField} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import LinearProgress from '@mui/material/LinearProgress';
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import MenuItem from "@mui/material/MenuItem";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import DialogActions from "@mui/material/DialogActions";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -21,10 +19,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
-import InfoIcon from "@mui/icons-material/Info";
 import DeleteIcon from "@mui/icons-material/Delete";
-import DialogContentText from "@mui/material/DialogContentText";
 
 
 // ----------------------------------------------------------------------
@@ -84,10 +79,9 @@ export default function NewSchoolPage() {
     }
 
 
-
     function nextSection() {
         if (shownSection === 1) {
-            if (schoolID !== null && schoolName !== null && schoolID !== undefined && schoolName !== undefined && Object.keys(schoolID).length !== 0 && Object.keys(schoolName).length !== 0 ) {
+            if (schoolID !== null && schoolName !== null && schoolID !== undefined && schoolName !== undefined && Object.keys(schoolID).length !== 0 && Object.keys(schoolName).length !== 0) {
                 setShownSection((shownSection) + 1);
             } else {
                 setErrorMsg("Add all school Information Please");
@@ -203,7 +197,9 @@ export default function NewSchoolPage() {
                                             >
                                                 <TableCell component="th" scope="row">{course.coursename}</TableCell>
                                                 <TableCell align="right">{course.courseid}</TableCell>
-                                                <TableCell align="right"> <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"} onClick={() => {setCourses([...courses.slice(0, index), ...courses.slice(index + 1)])}}><DeleteIcon fontSize={"small"}/></Button> </TableCell>
+                                                <TableCell align="right"> <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"} onClick={() => {
+                                                    setCourses([...courses.slice(0, index), ...courses.slice(index + 1)])
+                                                }}><DeleteIcon fontSize={"small"}/></Button> </TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>

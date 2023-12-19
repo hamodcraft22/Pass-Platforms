@@ -2,23 +2,13 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-
-import WeekCalendar from 'react-week-calendar';
-import moment from "moment";
-import Toolbar from "@mui/material/Toolbar";
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {Alert, Autocomplete, CircularProgress, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField, ToggleButton} from "@mui/material";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import {Alert, Autocomplete, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField, ToggleButton} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import LinearProgress from '@mui/material/LinearProgress';
-import InputAdornment from "@mui/material/InputAdornment";
 import {AccountCircle} from "@mui/icons-material";
 import List from "@mui/material/List";
 import ListItemText from "@mui/material/ListItemText";
@@ -87,7 +77,7 @@ export default function UnscheduledBookingPage() {
         }
 
         if (shownSection === 2) {
-            if (selectedSchool !== null && selectedCourse !== null && sessionDate !== null && startTime !== null && endTime !== null && selectedSchool !== undefined && selectedCourse !== undefined && sessionDate !== undefined && startTime !== undefined && endTime !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(sessionDate).length !== 0 && Object.keys(startTime).length !== 0 && Object.keys(endTime).length !== 0 ) {
+            if (selectedSchool !== null && selectedCourse !== null && sessionDate !== null && startTime !== null && endTime !== null && selectedSchool !== undefined && selectedCourse !== undefined && sessionDate !== undefined && startTime !== undefined && endTime !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(sessionDate).length !== 0 && Object.keys(startTime).length !== 0 && Object.keys(endTime).length !== 0) {
                 setShownSection((shownSection) + 1);
             } else {
                 setErrorMsg("Please add in the session time details");
@@ -218,16 +208,22 @@ export default function UnscheduledBookingPage() {
                         <Typography variant="h6" sx={{mb: 1}}>Select Session Time:</Typography>
 
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <DatePicker sx={{width: "100%", mt: 1}} label="Session Date" value={sessionDate} onChange={(value) => {setSessionDate(value)}}/>
+                            <DatePicker sx={{width: "100%", mt: 1}} label="Session Date" value={sessionDate} onChange={(value) => {
+                                setSessionDate(value)
+                            }}/>
                         </LocalizationProvider>
                         <FormHelperText>What day was the session?</FormHelperText>
 
                         <Typography variant="h6" sx={{mt: 3}}>Select Time:</Typography>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <TimePicker sx={{mt: 1, width: "100%"}} label="Start Time" value={startTime} onChange={(value) => {setStartTime(value)}}/>
+                            <TimePicker sx={{mt: 1, width: "100%"}} label="Start Time" value={startTime} onChange={(value) => {
+                                setStartTime(value)
+                            }}/>
                         </LocalizationProvider>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <TimePicker sx={{mt: 1, width: "100%"}} label="End Time" value={endTime} onChange={(value) => {setEndTime(value)}}/>
+                            <TimePicker sx={{mt: 1, width: "100%"}} label="End Time" value={endTime} onChange={(value) => {
+                                setEndTime(value)
+                            }}/>
                         </LocalizationProvider>
                         <FormHelperText>Select start and end time for the unscheduled session.</FormHelperText>
 

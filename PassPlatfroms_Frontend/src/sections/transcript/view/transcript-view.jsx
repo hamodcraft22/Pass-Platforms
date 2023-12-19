@@ -150,20 +150,15 @@ export default function TranscriptPage() {
 
                     let courseGrade = '';
 
-                    if(course.grade.toLowerCase() === "comp")
-                    {
+                    if (course.grade.toLowerCase() === "comp") {
                         courseGrade = 'A';
-                    }
-                    else if (['a','b','c','d','f'].includes(course.grade.toLowerCase().charAt(0)))
-                    {
+                    } else if (['a', 'b', 'c', 'd', 'f'].includes(course.grade.toLowerCase().charAt(0))) {
                         courseGrade = course.grade.charAt(0);
-                    }
-                    else
-                    {
+                    } else {
                         courseGrade = 'E';
                     }
 
-                    correctedCourses.push({"code":courseCode, "title":courseName, "grade":courseGrade});
+                    correctedCourses.push({"code": courseCode, "title": courseName, "grade": courseGrade});
                 });
 
                 setCourses(correctedCourses);
@@ -271,9 +266,9 @@ export default function TranscriptPage() {
                             <VisuallyHiddenInput type="file" onChange={handleFileChange} accept=".pdf"/>
                         </Button>
 
-                                <FormHelperText>Grades will be saved without any status (+, -)</FormHelperText>
-                                <FormHelperText>COMP coursees are marked as A</FormHelperText>
-                                <FormHelperText>EXMP courses will not be accounted</FormHelperText>
+                        <FormHelperText>Grades will be saved without any status (+, -)</FormHelperText>
+                        <FormHelperText>COMP coursees are marked as A</FormHelperText>
+                        <FormHelperText>EXMP courses will not be accounted</FormHelperText>
 
                         {
                             Object.keys(courses).length !== 0 &&

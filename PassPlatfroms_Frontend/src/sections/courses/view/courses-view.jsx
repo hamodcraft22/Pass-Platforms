@@ -27,9 +27,7 @@ import Iconify from "../../../components/iconify";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import {FormHelperText, TextField, ToggleButton} from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import {TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 
 // ----------------------------------------------------------------------

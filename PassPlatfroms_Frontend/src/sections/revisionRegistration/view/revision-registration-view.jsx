@@ -287,7 +287,7 @@ export default function NewRegistrationPage() {
                                 }}
                             />
 
-                            <Box sx={{ mt: 1, width: '100%', display: 'flex', justifyContent: 'space-between'}}>
+                            <Box sx={{mt: 1, width: '100%', display: 'flex', justifyContent: 'space-between'}}>
                                 <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:arrow-ios-back-fill"/>}
                                         onClick={prevSection}>
                                     Prev Week

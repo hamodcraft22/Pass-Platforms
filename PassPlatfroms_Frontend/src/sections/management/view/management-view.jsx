@@ -2,27 +2,17 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-
-import WeekCalendar from 'react-week-calendar';
 import moment from "moment";
-import Toolbar from "@mui/material/Toolbar";
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {Alert, Autocomplete, CardContent, CircularProgress, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField, ToggleButton} from "@mui/material";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import {Alert, CardContent, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import LinearProgress from '@mui/material/LinearProgress';
-import InputAdornment from "@mui/material/InputAdornment";
 import {AccountCircle} from "@mui/icons-material";
 import List from "@mui/material/List";
 import ListItemText from "@mui/material/ListItemText";
-import PublicIcon from '@mui/icons-material/Public';
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {DatePicker} from "@mui/x-date-pickers";
@@ -35,11 +25,8 @@ import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import {styled} from "@mui/material/styles";
 import {read, utils} from 'xlsx';
-import AppCurrentVisits from "../../overview/app-current-visits";
 import Grid from "@mui/material/Unstable_Grid2";
 import ApexChart from 'react-apexcharts';
-
-
 
 
 // ----------------------------------------------------------------------
@@ -62,43 +49,33 @@ export default function ManagementPage() {
         setErrorShow(false);
     };
 
-    function nextSection()
-    {
-        if (shownSection === 1)
-        {
+    function nextSection() {
+        if (shownSection === 1) {
             if (midRevWeekStart !== null && midRevWeekEnd !== null && midWeekStart !== null && midWeekEnd !== null &&
                 midRevWeekStart !== undefined && midRevWeekEnd !== undefined && midWeekStart !== undefined && midWeekEnd !== undefined &&
-                Object.keys(midRevWeekStart).length !== 0 && Object.keys(midRevWeekEnd).length !== 0 && Object.keys(midWeekStart).length !== 0 && Object.keys(midWeekEnd).length !== 0)
-            {
+                Object.keys(midRevWeekStart).length !== 0 && Object.keys(midRevWeekEnd).length !== 0 && Object.keys(midWeekStart).length !== 0 && Object.keys(midWeekEnd).length !== 0) {
                 setShownSection((shownSection) + 1);
-            }
-            else
-            {
+            } else {
                 setErrorMsg("Please fill all date details");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 2)
-        {
+        if (shownSection === 2) {
             if (midRevWeekStart !== null && midRevWeekEnd !== null && midWeekStart !== null && midWeekEnd !== null &&
                 midRevWeekStart !== undefined && midRevWeekEnd !== undefined && midWeekStart !== undefined && midWeekEnd !== undefined &&
                 Object.keys(midRevWeekStart).length !== 0 && Object.keys(midRevWeekEnd).length !== 0 && Object.keys(midWeekStart).length !== 0 && Object.keys(midWeekEnd).length !== 0 &&
                 finRevWeekStart !== null && finRevWeekEnd !== null && finWeekStart !== null && finWeekEnd !== null &&
                 finRevWeekStart !== undefined && finRevWeekEnd !== undefined && finWeekStart !== undefined && finWeekEnd !== undefined &&
-                Object.keys(finRevWeekStart).length !== 0 && Object.keys(finRevWeekEnd).length !== 0 && Object.keys(finWeekStart).length !== 0 && Object.keys(finWeekEnd).length !== 0)
-            {
+                Object.keys(finRevWeekStart).length !== 0 && Object.keys(finRevWeekEnd).length !== 0 && Object.keys(finWeekStart).length !== 0 && Object.keys(finWeekEnd).length !== 0) {
                 setShownSection((shownSection) + 1);
-            }
-            else
-            {
+            } else {
                 setErrorMsg("Please fill all date details");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 3)
-        {
+        if (shownSection === 3) {
             if (midRevWeekStart !== null && midRevWeekEnd !== null && midWeekStart !== null && midWeekEnd !== null &&
                 midRevWeekStart !== undefined && midRevWeekEnd !== undefined && midWeekStart !== undefined && midWeekEnd !== undefined &&
                 Object.keys(midRevWeekStart).length !== 0 && Object.keys(midRevWeekEnd).length !== 0 && Object.keys(midWeekStart).length !== 0 && Object.keys(midWeekEnd).length !== 0 &&
@@ -106,19 +83,15 @@ export default function ManagementPage() {
                 finRevWeekStart !== undefined && finRevWeekEnd !== undefined && finWeekStart !== undefined && finWeekEnd !== undefined &&
                 Object.keys(finRevWeekStart).length !== 0 && Object.keys(finRevWeekEnd).length !== 0 && Object.keys(finWeekStart).length !== 0 && Object.keys(finWeekEnd).length !== 0 &&
                 schoolsUpload !== null && schoolsUpload !== undefined && Object.keys(schoolsUpload).length !== 0
-            )
-            {
+            ) {
                 setShownSection((shownSection) + 1);
-            }
-            else
-            {
+            } else {
                 setErrorMsg("Please upload course info");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 4)
-        {
+        if (shownSection === 4) {
             if (midRevWeekStart !== null && midRevWeekEnd !== null && midWeekStart !== null && midWeekEnd !== null &&
                 midRevWeekStart !== undefined && midRevWeekEnd !== undefined && midWeekStart !== undefined && midWeekEnd !== undefined &&
                 Object.keys(midRevWeekStart).length !== 0 && Object.keys(midRevWeekEnd).length !== 0 && Object.keys(midWeekStart).length !== 0 && Object.keys(midWeekEnd).length !== 0 &&
@@ -127,19 +100,15 @@ export default function ManagementPage() {
                 Object.keys(finRevWeekStart).length !== 0 && Object.keys(finRevWeekEnd).length !== 0 && Object.keys(finWeekStart).length !== 0 && Object.keys(finWeekEnd).length !== 0 &&
                 schoolsUpload !== null && schoolsUpload !== undefined && Object.keys(schoolsUpload).length !== 0 &&
                 leadersUpload !== null && leadersUpload !== undefined && Object.keys(leadersUpload).length !== 0
-            )
-            {
+            ) {
                 setShownSection((shownSection) + 1);
-            }
-            else
-            {
+            } else {
                 setErrorMsg("Please upload leaders info");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 5)
-        {
+        if (shownSection === 5) {
             alert("call api and show results based on api return");
             setProgPercent(100);
             // change color of progress to red if it is error etc
@@ -202,14 +171,16 @@ export default function ManagementPage() {
 
         sheetNames.forEach((sheetName) => {
             const sheet = workbook.Sheets[sheetName];
-            const data = utils.sheet_to_json(sheet, { header: 1 });
+            const data = utils.sheet_to_json(sheet, {header: 1});
             const courses = data.slice(1);
 
             let formattedCourses = [];
 
-            courses.forEach((course) => {formattedCourses.push({"courseCode":sheetName+course[0],"courseName":course[1]})});
+            courses.forEach((course) => {
+                formattedCourses.push({"courseCode": sheetName + course[0], "courseName": course[1]})
+            });
 
-            sheetsData.push({"schoolCode":sheetName, "schoolName":data[0][0] , "courses":formattedCourses});
+            sheetsData.push({"schoolCode": sheetName, "schoolName": data[0][0], "courses": formattedCourses});
         });
 
         setSchoolsUpload(sheetsData);
@@ -226,9 +197,11 @@ export default function ManagementPage() {
 
         sheetNames.forEach((sheetName) => {
             const sheet = workbook.Sheets[sheetName];
-            const data = utils.sheet_to_json(sheet, { header: 1 });
+            const data = utils.sheet_to_json(sheet, {header: 1});
 
-            data.forEach((leader) => {sheetsData.push(leader[0])});
+            data.forEach((leader) => {
+                sheetsData.push(leader[0])
+            });
         });
 
         setLeadersUpload(sheetsData);
@@ -240,7 +213,7 @@ export default function ManagementPage() {
 
             reader.onload = (e) => {
                 const data = new Uint8Array(e.target.result);
-                const workbook = read(data, { type: 'array' });
+                const workbook = read(data, {type: 'array'});
                 resolve(workbook);
             };
 
@@ -254,7 +227,14 @@ export default function ManagementPage() {
 
     const [getWidth, setGetWidth] = useState("xl");
 
-    useEffect(() => {if (setupMode){setGetWidth("lg")}  if (viewEditMode){setGetWidth("xl")}}, [setupMode, viewEditMode])
+    useEffect(() => {
+        if (setupMode) {
+            setGetWidth("lg")
+        }
+        if (viewEditMode) {
+            setGetWidth("xl")
+        }
+    }, [setupMode, viewEditMode])
 
     const VisuallyHiddenInput = styled('input')({
         clip: 'rect(0 0 0 0)',
@@ -281,19 +261,19 @@ export default function ManagementPage() {
             },
             stroke: {
                 width: 3,
-                    curve: 'smooth',
-                    lineCap: 'round',
-                    colors: [color] // Add your custom color here
+                curve: 'smooth',
+                lineCap: 'round',
+                colors: [color] // Add your custom color here
             },
             fill: {
                 colors: [color],
-                    opacity: 1,
-                    gradient: {
+                opacity: 1,
+                gradient: {
                     type: 'vertical',
-                        shadeIntensity: 0.5,
-                        opacityFrom: 0.7,
-                        opacityTo: 0,
-                        stops: [0, 100],
+                    shadeIntensity: 0.5,
+                    opacityFrom: 0.7,
+                    opacityTo: 0,
+                    stops: [0, 100],
                 }
             },
             tooltip: {
@@ -333,8 +313,6 @@ export default function ManagementPage() {
     ];
 
 
-
-
     const CustomPaper = (props) => {
         return <Paper elevation={8} {...props} />;
     };
@@ -342,7 +320,7 @@ export default function ManagementPage() {
     return (
 
 
-        <Container maxWidth={getWidth} >
+        <Container maxWidth={getWidth}>
 
             {/* alerts */}
             <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
@@ -351,7 +329,6 @@ export default function ManagementPage() {
                     {errorMsg}
                 </Alert>
             </Snackbar>
-
 
 
             {/* setup elements */}
@@ -390,27 +367,35 @@ export default function ManagementPage() {
                         <Card>
                             <div style={{padding: "15px"}}>
                                 <Typography variant="h6">Midterm Exams Information:</Typography>
-                                <FormHelperText sx={{mb:3}}>Dates for midterm break & exam week, students will not be allowed to book session during this time.</FormHelperText>
+                                <FormHelperText sx={{mb: 3}}>Dates for midterm break & exam week, students will not be allowed to book session during this time.</FormHelperText>
 
-                                <Typography variant="button" >Revision Week:</Typography>
+                                <Typography variant="button">Revision Week:</Typography>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Midterm Revision Week Start" value={midRevWeekStart} onChange={(newValue) => {setMidRevWeekStart(newValue)}}/>
+                                    <DatePicker sx={{width: "100%", mt: 1}} label="Midterm Revision Week Start" value={midRevWeekStart} onChange={(newValue) => {
+                                        setMidRevWeekStart(newValue)
+                                    }}/>
                                 </LocalizationProvider>
                                 <FormHelperText>When does the midterm revision Week Starts.</FormHelperText>
 
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Midterm Revision Week End" minDate={midRevWeekStart} value={midRevWeekEnd} onChange={(newValue) => {setMidRevWeekEnd(newValue)}}/>
+                                    <DatePicker sx={{width: "100%", mt: 1}} label="Midterm Revision Week End" minDate={midRevWeekStart} value={midRevWeekEnd} onChange={(newValue) => {
+                                        setMidRevWeekEnd(newValue)
+                                    }}/>
                                 </LocalizationProvider>
-                                <FormHelperText sx={{mb:3}}>When does the midterm revision Week Ends.</FormHelperText>
+                                <FormHelperText sx={{mb: 3}}>When does the midterm revision Week Ends.</FormHelperText>
 
-                                <Typography variant="button" >Exam Week:</Typography>
+                                <Typography variant="button">Exam Week:</Typography>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Midterm Week Start" minDate={midRevWeekEnd} value={midWeekStart} onChange={(newValue) => {setMidWeekStart(newValue)}}/>
+                                    <DatePicker sx={{width: "100%", mt: 1}} label="Midterm Week Start" minDate={midRevWeekEnd} value={midWeekStart} onChange={(newValue) => {
+                                        setMidWeekStart(newValue)
+                                    }}/>
                                 </LocalizationProvider>
                                 <FormHelperText>When does the midterm exam Week Start.</FormHelperText>
 
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Midterm Week End" minDate={midWeekStart} value={midWeekEnd} onChange={(newValue) => {setMidWeekEnd(newValue)}}/>
+                                    <DatePicker sx={{width: "100%", mt: 1}} label="Midterm Week End" minDate={midWeekStart} value={midWeekEnd} onChange={(newValue) => {
+                                        setMidWeekEnd(newValue)
+                                    }}/>
                                 </LocalizationProvider>
                                 <FormHelperText>When does the midterm exam Week End.</FormHelperText>
                             </div>
@@ -423,27 +408,36 @@ export default function ManagementPage() {
                         <Card>
                             <div style={{padding: "15px"}}>
                                 <Typography variant="h6">Final Exams Information:</Typography>
-                                <FormHelperText sx={{mb:3}}>Dates for final break & exam week, students will not be allowed to book session during this time. break time should be configured for at least a week before exam week if no break is present</FormHelperText>
+                                <FormHelperText sx={{mb: 3}}>Dates for final break & exam week, students will not be allowed to book session during this time. break time should be configured for at least a week before exam week if no break is
+                                    present</FormHelperText>
 
-                                <Typography variant="button" >Revision / Break Week:</Typography>
+                                <Typography variant="button">Revision / Break Week:</Typography>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Final Break Week Start" minDate={midWeekEnd} value={finRevWeekStart} onChange={(newValue) => {setFinRevWeekStart(newValue)}}/>
+                                    <DatePicker sx={{width: "100%", mt: 1}} label="Final Break Week Start" minDate={midWeekEnd} value={finRevWeekStart} onChange={(newValue) => {
+                                        setFinRevWeekStart(newValue)
+                                    }}/>
                                 </LocalizationProvider>
                                 <FormHelperText>When does the final revision / break Week Starts.</FormHelperText>
 
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Final Break Week End" minDate={finRevWeekStart} value={finRevWeekEnd} onChange={(newValue) => {setFinRevWeekEnd(newValue)}}/>
+                                    <DatePicker sx={{width: "100%", mt: 1}} label="Final Break Week End" minDate={finRevWeekStart} value={finRevWeekEnd} onChange={(newValue) => {
+                                        setFinRevWeekEnd(newValue)
+                                    }}/>
                                 </LocalizationProvider>
-                                <FormHelperText sx={{mb:3}}>When does the final revision / break Week Ends.</FormHelperText>
+                                <FormHelperText sx={{mb: 3}}>When does the final revision / break Week Ends.</FormHelperText>
 
-                                <Typography variant="button" >Exam Week:</Typography>
+                                <Typography variant="button">Exam Week:</Typography>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Final Week Start" minDate={finRevWeekEnd} value={finWeekStart} onChange={(newValue) => {setFinWeekStart(newValue)}}/>
+                                    <DatePicker sx={{width: "100%", mt: 1}} label="Final Week Start" minDate={finRevWeekEnd} value={finWeekStart} onChange={(newValue) => {
+                                        setFinWeekStart(newValue)
+                                    }}/>
                                 </LocalizationProvider>
                                 <FormHelperText>When does the midterm exam Week Start.</FormHelperText>
 
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Final Week End" minDate={finWeekStart} value={finWeekEnd} onChange={(newValue) => {setFinWeekEnd(newValue)}}/>
+                                    <DatePicker sx={{width: "100%", mt: 1}} label="Final Week End" minDate={finWeekStart} value={finWeekEnd} onChange={(newValue) => {
+                                        setFinWeekEnd(newValue)
+                                    }}/>
                                 </LocalizationProvider>
                                 <FormHelperText>When does the midterm exam Week End.</FormHelperText>
                             </div>
@@ -456,7 +450,7 @@ export default function ManagementPage() {
                         <Card>
                             <div style={{padding: "15px"}}>
                                 <Typography variant="h6">Upload Schools File:</Typography>
-                                <FormHelperText sx={{mb:3}}>Use template to upload schools and courses information, overview will be shown below.</FormHelperText>
+                                <FormHelperText sx={{mb: 3}}>Use template to upload schools and courses information, overview will be shown below.</FormHelperText>
 
                                 <Button component="label" variant="contained" startIcon={<CloudUploadIcon/>} fullWidth>
                                     Upload file
@@ -471,7 +465,7 @@ export default function ManagementPage() {
                                                 <Table aria-label="simple table" sx={{minWidth: "200px"}}>
                                                     <TableHead>
                                                         <TableRow>
-                                                            <TableCell colspan="2" style={{ "text-align": "center" }}><b>{school.schoolName}</b></TableCell>
+                                                            <TableCell colspan="2" style={{"text-align": "center"}}><b>{school.schoolName}</b></TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell align="center">Course Code</TableCell>
@@ -509,7 +503,7 @@ export default function ManagementPage() {
                         <Card>
                             <div style={{padding: "15px"}}>
                                 <Typography variant="h6">Upload Leaders File:</Typography>
-                                <FormHelperText sx={{mb:3}}>Use template to upload students to be made into leaders, overview will be shown below.</FormHelperText>
+                                <FormHelperText sx={{mb: 3}}>Use template to upload students to be made into leaders, overview will be shown below.</FormHelperText>
 
                                 <Button component="label" variant="contained" startIcon={<CloudUploadIcon/>} fullWidth>
                                     Upload file
@@ -519,7 +513,7 @@ export default function ManagementPage() {
                                 {
                                     leadersUpload.length > 0 ? (
                                         <>
-                                            <FormHelperText sx={{mt:2}}>Leaders</FormHelperText>
+                                            <FormHelperText sx={{mt: 2}}>Leaders</FormHelperText>
                                             <List dense>
                                                 {
                                                     leadersUpload && leadersUpload.map((studentID) => (
@@ -531,7 +525,7 @@ export default function ManagementPage() {
                                                 }
                                             </List>
                                         </>
-                                    ):(<></>)
+                                    ) : (<></>)
                                 }
 
                             </div>
@@ -562,13 +556,13 @@ export default function ManagementPage() {
                                 {
                                     Object.keys(schoolsUpload).length !== 0 &&
                                     <>
-                                        <FormHelperText sx={{mt:2}}>Schools & Courses</FormHelperText>
+                                        <FormHelperText sx={{mt: 2}}>Schools & Courses</FormHelperText>
                                         {schoolsUpload.map((school) => (
                                             <TableContainer component={CustomPaper} sx={{mb: 3}}>
                                                 <Table aria-label="simple table" sx={{minWidth: "200px"}}>
                                                     <TableHead>
                                                         <TableRow>
-                                                            <TableCell colspan="2" style={{ "text-align": "center" }}><b>{school.schoolName}</b></TableCell>
+                                                            <TableCell colspan="2" style={{"text-align": "center"}}><b>{school.schoolName}</b></TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell align="center">Course Code</TableCell>
@@ -599,7 +593,7 @@ export default function ManagementPage() {
                                 {
                                     leadersUpload.length > 0 ? (
                                         <>
-                                            <FormHelperText sx={{mt:2}}>Leaders</FormHelperText>
+                                            <FormHelperText sx={{mt: 2}}>Leaders</FormHelperText>
                                             <List dense>
                                                 {
                                                     leadersUpload && leadersUpload.map((studentID) => (
@@ -611,7 +605,7 @@ export default function ManagementPage() {
                                                 }
                                             </List>
                                         </>
-                                    ):(<></>)
+                                    ) : (<></>)
                                 }
 
                             </div>
@@ -634,7 +628,7 @@ export default function ManagementPage() {
 
                         {/* top stats */}
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{ borderRadius: 2, position: 'relative' }}>
+                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
                                 <ApexChart
                                     options={getChartOptions("#c03e3e")}
                                     series={chartSeries}
@@ -670,7 +664,7 @@ export default function ManagementPage() {
                         </Grid>
 
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{ borderRadius: 2, position: 'relative' }}>
+                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
                                 <ApexChart
                                     options={getChartOptions("#c03e3e")}
                                     series={chartSeries}
@@ -705,7 +699,7 @@ export default function ManagementPage() {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{ borderRadius: 2, position: 'relative' }}>
+                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
                                 <ApexChart
                                     options={getChartOptions("#c03e3e")}
                                     series={chartSeries}
@@ -740,7 +734,7 @@ export default function ManagementPage() {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{ borderRadius: 2, position: 'relative' }}>
+                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
                                 <ApexChart
                                     options={getChartOptions("#c03e3e")}
                                     series={chartSeries}
@@ -775,7 +769,7 @@ export default function ManagementPage() {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{ borderRadius: 2, position: 'relative' }}>
+                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
                                 <ApexChart
                                     options={getChartOptions("#c03e3e")}
                                     series={chartSeries}
@@ -810,7 +804,7 @@ export default function ManagementPage() {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{ borderRadius: 2, position: 'relative' }}>
+                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
                                 <ApexChart
                                     options={getChartOptions("#c03e3e")}
                                     series={chartSeries}
@@ -845,7 +839,7 @@ export default function ManagementPage() {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{ borderRadius: 2, position: 'relative' }}>
+                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
                                 <ApexChart
                                     options={getChartOptions("#c03e3e")}
                                     series={chartSeries}
@@ -880,7 +874,7 @@ export default function ManagementPage() {
                             </Card>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{ borderRadius: 2, position: 'relative' }}>
+                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
                                 <ApexChart
                                     options={getChartOptions("#c03e3e")}
                                     series={chartSeries}
@@ -929,25 +923,34 @@ export default function ManagementPage() {
                                         Midterm Dates:
                                     </Typography>
 
-                                    <Typography variant="button" >Revision Week:</Typography>
+                                    <Typography variant="button">Revision Week:</Typography>
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} label="Midterm Revision Week Start" value={midRevWeekStartEdit} onChange={(newValue) => {setMidRevWeekStartEdit(newValue)}}/>
+                                        <DatePicker sx={{width: "100%", mt: 2}} label="Midterm Revision Week Start" value={midRevWeekStartEdit} onChange={(newValue) => {
+                                            setMidRevWeekStartEdit(newValue)
+                                        }}/>
                                     </LocalizationProvider>
 
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2, mb: 3}} label="Midterm Revision Week End" minDate={midRevWeekStartEdit} value={midRevWeekEndEdit} onChange={(newValue) => {setMidRevWeekEndEdit(newValue)}}/>
+                                        <DatePicker sx={{width: "100%", mt: 2, mb: 3}} label="Midterm Revision Week End" minDate={midRevWeekStartEdit} value={midRevWeekEndEdit} onChange={(newValue) => {
+                                            setMidRevWeekEndEdit(newValue)
+                                        }}/>
                                     </LocalizationProvider>
 
-                                    <Typography variant="button" >Exam Week:</Typography>
+                                    <Typography variant="button">Exam Week:</Typography>
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} label="Midterm Week Start" minDate={midRevWeekEndEdit} value={midWeekStartEdit} onChange={(newValue) => {setMidWeekStartEdit(newValue)}}/>
+                                        <DatePicker sx={{width: "100%", mt: 2}} label="Midterm Week Start" minDate={midRevWeekEndEdit} value={midWeekStartEdit} onChange={(newValue) => {
+                                            setMidWeekStartEdit(newValue)
+                                        }}/>
                                     </LocalizationProvider>
 
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} label="Midterm Week End" minDate={midWeekStartEdit} value={midWeekEndEdit} onChange={(newValue) => {setMidWeekEndEdit(newValue)}}/>
+                                        <DatePicker sx={{width: "100%", mt: 2}} label="Midterm Week End" minDate={midWeekStartEdit} value={midWeekEndEdit} onChange={(newValue) => {
+                                            setMidWeekEndEdit(newValue)
+                                        }}/>
                                     </LocalizationProvider>
 
-                                    <Button sx={{mt: 2}} variant={"contained"} disabled={midRevWeekStartEdit === midRevWeekStart && midRevWeekEndEdit === midRevWeekEnd && midWeekStart === midWeekStartEdit && midWeekEnd === midWeekEndEdit}>Update</Button>
+                                    <Button sx={{mt: 2}} variant={"contained"}
+                                            disabled={midRevWeekStartEdit === midRevWeekStart && midRevWeekEndEdit === midRevWeekEnd && midWeekStart === midWeekStartEdit && midWeekEnd === midWeekEndEdit}>Update</Button>
                                 </CardContent>
 
                             </Card>
@@ -968,25 +971,34 @@ export default function ManagementPage() {
                                         Finals Dates:
                                     </Typography>
 
-                                    <Typography variant="button" >Break Week:</Typography>
+                                    <Typography variant="button">Break Week:</Typography>
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} label="Final Break Week Start" value={finRevWeekStartEdit} onChange={(newValue) => {setFinRevWeekStartEdit(newValue)}}/>
+                                        <DatePicker sx={{width: "100%", mt: 2}} label="Final Break Week Start" value={finRevWeekStartEdit} onChange={(newValue) => {
+                                            setFinRevWeekStartEdit(newValue)
+                                        }}/>
                                     </LocalizationProvider>
 
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2, mb: 3}} label="Final Break  Week End" minDate={finRevWeekStartEdit} value={finRevWeekEndEdit} onChange={(newValue) => {setFinRevWeekEndEdit(newValue)}}/>
+                                        <DatePicker sx={{width: "100%", mt: 2, mb: 3}} label="Final Break  Week End" minDate={finRevWeekStartEdit} value={finRevWeekEndEdit} onChange={(newValue) => {
+                                            setFinRevWeekEndEdit(newValue)
+                                        }}/>
                                     </LocalizationProvider>
 
-                                    <Typography variant="button" >Exam Week:</Typography>
+                                    <Typography variant="button">Exam Week:</Typography>
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} label="Final Week Start" minDate={finRevWeekEndEdit} value={finWeekStartEdit} onChange={(newValue) => {setFinWeekStartEdit(newValue)}}/>
+                                        <DatePicker sx={{width: "100%", mt: 2}} label="Final Week Start" minDate={finRevWeekEndEdit} value={finWeekStartEdit} onChange={(newValue) => {
+                                            setFinWeekStartEdit(newValue)
+                                        }}/>
                                     </LocalizationProvider>
 
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} label="Final Week End" minDate={finWeekStartEdit} value={finWeekEndEdit} onChange={(newValue) => {setFinWeekEndEdit(newValue)}}/>
+                                        <DatePicker sx={{width: "100%", mt: 2}} label="Final Week End" minDate={finWeekStartEdit} value={finWeekEndEdit} onChange={(newValue) => {
+                                            setFinWeekEndEdit(newValue)
+                                        }}/>
                                     </LocalizationProvider>
 
-                                    <Button sx={{mt: 2}} variant={"contained"} disabled={finRevWeekStartEdit === finRevWeekStart && finRevWeekEndEdit === finRevWeekEnd && finWeekStart === finWeekStartEdit && finWeekEnd === finWeekEndEdit}>Update</Button>
+                                    <Button sx={{mt: 2}} variant={"contained"}
+                                            disabled={finRevWeekStartEdit === finRevWeekStart && finRevWeekEndEdit === finRevWeekEnd && finWeekStart === finWeekStartEdit && finWeekEnd === finWeekEndEdit}>Update</Button>
                                 </CardContent>
 
                             </Card>

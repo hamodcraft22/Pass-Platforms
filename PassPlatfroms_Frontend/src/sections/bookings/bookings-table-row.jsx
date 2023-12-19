@@ -15,7 +15,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import {Autocomplete, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
-import { DateTime } from 'luxon';
+import {DateTime} from 'luxon';
 
 
 // ----------------------------------------------------------------------
@@ -57,7 +57,7 @@ export default function BookingsTableRow({key, subject, date, startTime, endTime
                     </Typography>
                 </TableCell>
 
-                <TableCell>{DateTime.fromISO(date, { zone: 'Asia/Bahrain' }).toFormat('dd/MM/yyyy')}</TableCell>
+                <TableCell>{DateTime.fromISO(date, {zone: 'Asia/Bahrain'}).toFormat('dd/MM/yyyy')}</TableCell>
                 <TableCell>{startTime}</TableCell>
                 <TableCell>{endTime}</TableCell>
 

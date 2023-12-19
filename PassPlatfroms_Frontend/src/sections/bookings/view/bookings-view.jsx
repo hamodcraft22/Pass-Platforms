@@ -10,8 +10,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
 import Scrollbar from '../../../components/scrollbar';
-
-import TableNoData from '../../../components/table/table-no-data';
 import TableMainHead from '../../../components/table/table-head';
 import TableEmptyRows from '../../../components/table/table-empty-rows';
 
@@ -123,7 +121,6 @@ export default function RecommendationsPage() {
     ];
 
 
-
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
 
@@ -176,7 +173,7 @@ export default function RecommendationsPage() {
                         New Booking
                     </Button>
 
-                    <ExportToExcel data={dataFiltered} filename="Studnet Bookings - DATE TO DATE" />
+                    <ExportToExcel data={dataFiltered} filename="Studnet Bookings - DATE TO DATE"/>
                 </div>
 
             </Stack>
@@ -199,7 +196,10 @@ export default function RecommendationsPage() {
                     onDateStart={handleStartDate}
                     endDate={endDate}
                     onDateEnd={handleEndDate}
-                    onClearButton={() => {handleStartDate(null); handleEndDate(null);}}
+                    onClearButton={() => {
+                        handleStartDate(null);
+                        handleEndDate(null);
+                    }}
                 />
 
                 <Scrollbar>
@@ -243,7 +243,6 @@ export default function RecommendationsPage() {
                             </TableBody>
                         </Table>
                     </TableContainer>
-
 
 
                 </Scrollbar>

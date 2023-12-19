@@ -161,14 +161,16 @@ export default function SchoolsPage() {
 
         sheetNames.forEach((sheetName) => {
             const sheet = workbook.Sheets[sheetName];
-            const data = utils.sheet_to_json(sheet, { header: 1 });
+            const data = utils.sheet_to_json(sheet, {header: 1});
             const courses = data.slice(1);
 
             let formattedCourses = [];
 
-            courses.forEach((course) => {formattedCourses.push({"courseCode":sheetName+course[0],"courseName":course[1]})});
+            courses.forEach((course) => {
+                formattedCourses.push({"courseCode": sheetName + course[0], "courseName": course[1]})
+            });
 
-            sheetsData.push({"schoolCode":sheetName, "schoolName":data[0][0] , "courses":formattedCourses});
+            sheetsData.push({"schoolCode": sheetName, "schoolName": data[0][0], "courses": formattedCourses});
         });
 
         setSchoolsUpload(sheetsData);
@@ -180,7 +182,7 @@ export default function SchoolsPage() {
 
             reader.onload = (e) => {
                 const data = new Uint8Array(e.target.result);
-                const workbook = read(data, { type: 'array' });
+                const workbook = read(data, {type: 'array'});
                 resolve(workbook);
             };
 
@@ -304,7 +306,7 @@ export default function SchoolsPage() {
                                     <Table aria-label="simple table" sx={{minWidth: "200px"}}>
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell colspan="2" style={{ "text-align": "center" }}><b>{school.schoolName}</b></TableCell>
+                                                <TableCell colspan="2" style={{"text-align": "center"}}><b>{school.schoolName}</b></TableCell>
                                             </TableRow>
                                             <TableRow>
                                                 <TableCell>Course Code</TableCell>
