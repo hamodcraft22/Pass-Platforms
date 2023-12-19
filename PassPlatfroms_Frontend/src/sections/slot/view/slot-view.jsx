@@ -34,6 +34,7 @@ import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {TimePicker} from "@mui/x-date-pickers";
 import moment from "moment/moment";
+import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
 
 // ----------------------------------------------------------------------
 
@@ -112,9 +113,8 @@ export default function SlotPage() {
 
     const [addSlotDay, setAddSlotDay] = useState(null);
     const [addSlotOnline, setAddSlotOnline] = useState(false);
+    const [addSlotPhysical, setAddSlotPhysical] = useState(false);
 
-    const [slotStartTime, setSlotStartTime] = useState(moment({h: 8, m: 0}));
-    const [slotEndTime, setSlotEndTime] = useState(moment({h: 22, m: 0}));
 
     const [addSlotNote, setAddSlotNote] = useState(null);
 
@@ -235,13 +235,12 @@ export default function SlotPage() {
                         <FormHelperText>Day of which you will offer a slot.</FormHelperText>
 
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <TimePicker sx={{mt: 2, mr: 1}} label="Start Time" minTime={slotStartTime}
-                                        maxTime={slotEndTime} value={slotSelectedStartTime} onChange={(newValue) => {
+                            <TimePicker sx={{mt: 2, mr: 1}} label="Start Time" value={slotSelectedStartTime} onChange={(newValue) => {
                                 setSlotSelectedStartTime(newValue)
                             }}/>
                         </LocalizationProvider>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <TimePicker sx={{mt: 2}} label="End Time" minTime={slotStartTime} maxTime={slotEndTime}
+                            <TimePicker sx={{mt: 2}} label="End Time" minTime={slotSelectedStartTime}
                                         value={slotSelectedEndTime} onChange={(newValue) => {
                                 setSlotSelectedEndTime(newValue)
                             }}/>
@@ -263,6 +262,19 @@ export default function SlotPage() {
                             }}
                         >
                             <PublicIcon/>
+                        </ToggleButton>
+
+                        <FormHelperText sx={{ml: 2}}>Physical</FormHelperText>
+                        <ToggleButton
+                            value={addSlotPhysical}
+                            selected={addSlotPhysical}
+                            sx={{width: '100%'}}
+                            color={"primary"}
+                            onChange={() => {
+                                setAddSlotPhysical(!addSlotPhysical)
+                            }}
+                        >
+                            <DeskRoundedIcon/>
                         </ToggleButton>
 
                     </DialogContent>

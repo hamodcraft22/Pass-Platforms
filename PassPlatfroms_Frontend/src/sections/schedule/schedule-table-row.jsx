@@ -58,9 +58,6 @@ export default function ScheduleTableRow({slotID, day, startTime, endTime, note,
 
     const [editSlotDay, setEditSlotDay] = useState(null);
 
-    const [slotStartTime, setSlotStartTime] = useState(moment({h: 8, m: 0}));
-    const [slotEndTime, setSlotEndTime] = useState(moment({h: 22, m: 0}));
-
 
     const [slotSelectedStartTime, setSlotSelectedStartTime] = useState();
     const [slotSelectedEndTime, setSlotSelectedEndTime] = useState();
@@ -160,13 +157,12 @@ export default function ScheduleTableRow({slotID, day, startTime, endTime, note,
                     <FormHelperText>Which day is your session.</FormHelperText>
 
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker sx={{mt: 2, mr: 1}} label="Start Time" minTime={slotStartTime}
-                                    maxTime={slotEndTime} value={slotSelectedStartTime} onChange={(newValue) => {
+                        <TimePicker sx={{mt: 2, mr: 1}} label="Start Time" value={slotSelectedStartTime} onChange={(newValue) => {
                             setSlotSelectedStartTime(newValue)
                         }}/>
                     </LocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker sx={{mt: 2}} label="End Time" minTime={slotStartTime} maxTime={slotEndTime} value={slotSelectedEndTime} onChange={(newValue) => {
+                        <TimePicker sx={{mt: 2}} label="End Time" minTime={slotSelectedStartTime} value={slotSelectedEndTime} onChange={(newValue) => {
                             setSlotSelectedEndTime(newValue)
                         }}/>
                     </LocalizationProvider>

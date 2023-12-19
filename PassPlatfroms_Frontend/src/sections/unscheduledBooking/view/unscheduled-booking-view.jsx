@@ -208,7 +208,7 @@ export default function UnscheduledBookingPage() {
                         <Typography variant="h6" sx={{mb: 1}}>Select Session Time:</Typography>
 
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <DatePicker sx={{width: "100%", mt: 1}} label="Session Date" value={sessionDate} onChange={(value) => {
+                            <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Session Date" value={sessionDate} onChange={(value) => {
                                 setSessionDate(value)
                             }}/>
                         </LocalizationProvider>

@@ -52,11 +52,6 @@ export default function NewRevisionPage() {
     const [courses, setCourses] = useState(mockCourses);
     const [selectedCourse, setSelectedCourse] = useState();
 
-    // date and time elements
-    const [revWeekStartDate, setRevWeekStartDate] = useState();
-    const [revWeekEndDate, setRevWeekEndDate] = useState();
-    const [revWeekStartTime, setRevWeekStartTime] = useState(moment({h: 8, m: 0}));
-    const [revWeekEndTime, setRevWeekEndTime] = useState(moment({h: 22, m: 0}));
 
     const [revWeekSelectedDate, setRevWeekSelectedDate] = useState();
     const [revWeekSelectedStartTime, setRevWeekSelectedStartTime] = useState();
@@ -240,8 +235,8 @@ export default function NewRevisionPage() {
                     <div style={{padding: "15px"}}>
                         <Typography variant="h6">Select Date:</Typography>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <DatePicker sx={{width: "100%", mt: 1}} label="Revision Date" minDate={revWeekStartDate}
-                                        maxDate={revWeekEndDate} value={revWeekSelectedDate} onChange={(newValue) => {
+                            <DatePicker sx={{width: "100%", mt: 1}} label="Revision Date" format={"DD/MM/YYYY"}
+                                        value={revWeekSelectedDate} onChange={(newValue) => {
                                 setRevWeekSelectedDate(newValue)
                             }}/>
                         </LocalizationProvider>
@@ -249,13 +244,12 @@ export default function NewRevisionPage() {
 
                         <Typography variant="h6" sx={{mt: 3}}>Select Time:</Typography>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <TimePicker sx={{mt: 1, mr: 1}} label="Start Time" minTime={revWeekStartTime}
-                                        maxTime={revWeekEndTime} value={revWeekSelectedStartTime} onChange={(newValue) => {
+                            <TimePicker sx={{mt: 1, mr: 1}} label="Start Time" value={revWeekSelectedStartTime} onChange={(newValue) => {
                                 setRevWeekSelectedStartTime(newValue)
                             }}/>
                         </LocalizationProvider>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <TimePicker sx={{mt: 1,}} label="End Time" minTime={revWeekStartTime} maxTime={revWeekEndTime}
+                            <TimePicker sx={{mt: 1,}} label="End Time" minTime={revWeekSelectedStartTime}
                                         value={revWeekSelectedEndTime} onChange={(newValue) => {
                                 setRevWeekSelectedEndTime(newValue)
                             }}/>

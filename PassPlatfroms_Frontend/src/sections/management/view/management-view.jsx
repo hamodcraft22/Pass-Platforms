@@ -371,14 +371,14 @@ export default function ManagementPage() {
 
                                 <Typography variant="button">Revision Week:</Typography>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Midterm Revision Week Start" value={midRevWeekStart} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Midterm Revision Week Start" value={midRevWeekStart} onChange={(newValue) => {
                                         setMidRevWeekStart(newValue)
                                     }}/>
                                 </LocalizationProvider>
                                 <FormHelperText>When does the midterm revision Week Starts.</FormHelperText>
 
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Midterm Revision Week End" minDate={midRevWeekStart} value={midRevWeekEnd} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Midterm Revision Week End" minDate={midRevWeekStart} value={midRevWeekEnd} onChange={(newValue) => {
                                         setMidRevWeekEnd(newValue)
                                     }}/>
                                 </LocalizationProvider>
@@ -386,14 +386,14 @@ export default function ManagementPage() {
 
                                 <Typography variant="button">Exam Week:</Typography>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Midterm Week Start" minDate={midRevWeekEnd} value={midWeekStart} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Midterm Week Start" minDate={midRevWeekEnd} value={midWeekStart} onChange={(newValue) => {
                                         setMidWeekStart(newValue)
                                     }}/>
                                 </LocalizationProvider>
                                 <FormHelperText>When does the midterm exam Week Start.</FormHelperText>
 
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Midterm Week End" minDate={midWeekStart} value={midWeekEnd} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Midterm Week End" minDate={midWeekStart} value={midWeekEnd} onChange={(newValue) => {
                                         setMidWeekEnd(newValue)
                                     }}/>
                                 </LocalizationProvider>
@@ -413,14 +413,14 @@ export default function ManagementPage() {
 
                                 <Typography variant="button">Revision / Break Week:</Typography>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Final Break Week Start" minDate={midWeekEnd} value={finRevWeekStart} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Final Break Week Start" minDate={midWeekEnd} value={finRevWeekStart} onChange={(newValue) => {
                                         setFinRevWeekStart(newValue)
                                     }}/>
                                 </LocalizationProvider>
                                 <FormHelperText>When does the final revision / break Week Starts.</FormHelperText>
 
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Final Break Week End" minDate={finRevWeekStart} value={finRevWeekEnd} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Final Break Week End" minDate={finRevWeekStart} value={finRevWeekEnd} onChange={(newValue) => {
                                         setFinRevWeekEnd(newValue)
                                     }}/>
                                 </LocalizationProvider>
@@ -428,14 +428,14 @@ export default function ManagementPage() {
 
                                 <Typography variant="button">Exam Week:</Typography>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Final Week Start" minDate={finRevWeekEnd} value={finWeekStart} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Final Week Start" minDate={finRevWeekEnd} value={finWeekStart} onChange={(newValue) => {
                                         setFinWeekStart(newValue)
                                     }}/>
                                 </LocalizationProvider>
                                 <FormHelperText>When does the midterm exam Week Start.</FormHelperText>
 
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} label="Final Week End" minDate={finWeekStart} value={finWeekEnd} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Final Week End" minDate={finWeekStart} value={finWeekEnd} onChange={(newValue) => {
                                         setFinWeekEnd(newValue)
                                     }}/>
                                 </LocalizationProvider>
@@ -925,26 +925,26 @@ export default function ManagementPage() {
 
                                     <Typography variant="button">Revision Week:</Typography>
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} label="Midterm Revision Week Start" value={midRevWeekStartEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Midterm Revision Week Start" value={midRevWeekStartEdit} onChange={(newValue) => {
                                             setMidRevWeekStartEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>
 
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2, mb: 3}} label="Midterm Revision Week End" minDate={midRevWeekStartEdit} value={midRevWeekEndEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2, mb: 3}} format={"DD/MM/YYYY"} label="Midterm Revision Week End" minDate={midRevWeekStartEdit} value={midRevWeekEndEdit} onChange={(newValue) => {
                                             setMidRevWeekEndEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>
 
                                     <Typography variant="button">Exam Week:</Typography>
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} label="Midterm Week Start" minDate={midRevWeekEndEdit} value={midWeekStartEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Midterm Week Start" minDate={midRevWeekEndEdit} value={midWeekStartEdit} onChange={(newValue) => {
                                             setMidWeekStartEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>
 
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} label="Midterm Week End" minDate={midWeekStartEdit} value={midWeekEndEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Midterm Week End" minDate={midWeekStartEdit} value={midWeekEndEdit} onChange={(newValue) => {
                                             setMidWeekEndEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>
@@ -973,26 +973,26 @@ export default function ManagementPage() {
 
                                     <Typography variant="button">Break Week:</Typography>
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} label="Final Break Week Start" value={finRevWeekStartEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Final Break Week Start" value={finRevWeekStartEdit} onChange={(newValue) => {
                                             setFinRevWeekStartEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>
 
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2, mb: 3}} label="Final Break  Week End" minDate={finRevWeekStartEdit} value={finRevWeekEndEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2, mb: 3}} format={"DD/MM/YYYY"} label="Final Break  Week End" minDate={finRevWeekStartEdit} value={finRevWeekEndEdit} onChange={(newValue) => {
                                             setFinRevWeekEndEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>
 
                                     <Typography variant="button">Exam Week:</Typography>
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} label="Final Week Start" minDate={finRevWeekEndEdit} value={finWeekStartEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Final Week Start" minDate={finRevWeekEndEdit} value={finWeekStartEdit} onChange={(newValue) => {
                                             setFinWeekStartEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>
 
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} label="Final Week End" minDate={finWeekStartEdit} value={finWeekEndEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Final Week End" minDate={finWeekStartEdit} value={finWeekEndEdit} onChange={(newValue) => {
                                             setFinWeekEndEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>

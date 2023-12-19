@@ -109,12 +109,7 @@ export default function SchedulePage() {
 
 
     const [addSlotDay, setAddSlotDay] = useState(null);
-    const [addSlotOnline, setAddSlotOnline] = useState(false);
 
-    const [slotStartTime, setSlotStartTime] = useState(moment({h: 8, m: 0}));
-    const [slotEndTime, setSlotEndTime] = useState(moment({h: 22, m: 0}));
-
-    const [addSlotNote, setAddSlotNote] = useState(null);
 
     const [slotSelectedStartTime, setSlotSelectedStartTime] = useState();
     const [slotSelectedEndTime, setSlotSelectedEndTime] = useState();
@@ -128,7 +123,6 @@ export default function SchedulePage() {
         setSlotSelectedStartTime(null);
         setSlotSelectedEndTime(null);
         setAddSlotDay(null);
-        setAddSlotOnline(null);
     };
     const handleAddSave = () => {
         setShowAddDialog(false);
@@ -230,13 +224,13 @@ export default function SchedulePage() {
                         <FormHelperText>Which day is your session.</FormHelperText>
 
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <TimePicker sx={{mt: 2, mr: 1}} label="Start Time" minTime={slotStartTime}
-                                        maxTime={slotEndTime} value={slotSelectedStartTime} onChange={(newValue) => {
+                            <TimePicker sx={{mt: 2, mr: 1}} label="Start Time"
+                                        value={slotSelectedStartTime} onChange={(newValue) => {
                                 setSlotSelectedStartTime(newValue)
                             }}/>
                         </LocalizationProvider>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <TimePicker sx={{mt: 2}} label="End Time" minTime={slotStartTime} maxTime={slotEndTime}
+                            <TimePicker sx={{mt: 2}} label="End Time" minTime={slotSelectedStartTime}
                                         value={slotSelectedEndTime} onChange={(newValue) => {
                                 setSlotSelectedEndTime(newValue)
                             }}/>

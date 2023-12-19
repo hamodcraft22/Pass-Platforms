@@ -21,6 +21,7 @@ import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {TimePicker} from "@mui/x-date-pickers";
 import moment from "moment";
+import DeskRoundedIcon from "@mui/icons-material/DeskRounded";
 
 
 // ----------------------------------------------------------------------
@@ -59,9 +60,8 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, isO
 
     const [editSlotDay, setEditSlotDay] = useState(null);
     const [editSlotOnline, setEditSlotOnline] = useState(false);
+    const [editSlotPhysical, setEditSlotPhysical] = useState(false);
 
-    const [slotStartTime, setSlotStartTime] = useState(moment({h: 8, m: 0}));
-    const [slotEndTime, setSlotEndTime] = useState(moment({h: 22, m: 0}));
 
     const [editSlotNote, setEditSlotNote] = useState(null);
 
@@ -168,12 +168,12 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, isO
                     <FormHelperText>Day is none-editable</FormHelperText>
 
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker readOnly sx={{mt: 2, mr: 1}} label="Start Time" minTime={slotStartTime} maxTime={slotEndTime} value={slotSelectedStartTime} onChange={(newValue) => {
+                        <TimePicker readOnly sx={{mt: 2, mr: 1}} label="Start Time"  value={slotSelectedStartTime} onChange={(newValue) => {
                             setSlotSelectedStartTime(newValue)
                         }}/>
                     </LocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker readOnly sx={{mt: 2}} label="End Time" minTime={slotStartTime} maxTime={slotEndTime} value={slotSelectedEndTime} onChange={(newValue) => {
+                        <TimePicker readOnly sx={{mt: 2}} label="End Time" minTime={slotSelectedStartTime} value={slotSelectedEndTime} onChange={(newValue) => {
                             setSlotSelectedEndTime(newValue)
                         }}/>
                     </LocalizationProvider>
@@ -192,6 +192,19 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, isO
                         }}
                     >
                         <PublicIcon/>
+                    </ToggleButton>
+
+                    <FormHelperText sx={{ml: 2}}>Physical</FormHelperText>
+                    <ToggleButton
+                        value={editSlotPhysical}
+                        selected={editSlotPhysical}
+                        sx={{width: '100%'}}
+                        color={"primary"}
+                        onChange={() => {
+                            setEditSlotPhysical(!editSlotPhysical)
+                        }}
+                    >
+                        <DeskRoundedIcon/>
                     </ToggleButton>
 
                 </DialogContent>
