@@ -15,10 +15,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import {Autocomplete, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
+import { DateTime } from 'luxon';
+
 
 // ----------------------------------------------------------------------
 
-export default function BookingsTableRow({key, student, date, status}) {
+export default function BookingsTableRow({key, subject, date, startTime, endTime, status}) {
     const [showEditDialog, setShowEditDialog] = useState(false);
 
     const handleEditClickOpen = () => {
@@ -51,13 +53,13 @@ export default function BookingsTableRow({key, student, date, status}) {
 
                 <TableCell component="th" scope="row" padding="none">
                     <Typography variant="subtitle2" noWrap>
-                        {student}
+                        {subject}
                     </Typography>
                 </TableCell>
 
-                <TableCell>{date}</TableCell>
-                <TableCell>{date}</TableCell>
-                <TableCell>{date}</TableCell>
+                <TableCell>{DateTime.fromISO(date, { zone: 'Asia/Bahrain' }).toFormat('dd/MM/yyyy')}</TableCell>
+                <TableCell>{startTime}</TableCell>
+                <TableCell>{endTime}</TableCell>
 
                 <TableCell><Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label></TableCell>
 
@@ -104,7 +106,7 @@ export default function BookingsTableRow({key, student, date, status}) {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete the Booking for <b>{student}</b>?
+                        Are you sure you want to delete the Booking for <b>ADD STUDENT</b>?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

@@ -31,23 +31,111 @@ export default function RecommendationsPage() {
 
     const [order, setOrder] = useState('asc');
 
-    const [selected, setSelected] = useState([]);
-
     const [orderBy, setOrderBy] = useState('name');
-
-    const [filterName, setFilterName] = useState('');
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
 
-    // fake users
+    // fake bookings
+    const bookings = [
+        {
+            subject: 'IT6008, Unix Computers',
+            date: '2016-08-21T00:00:00.000Z',
+            starttime: '08:30 AM',
+            endtime: '09:30 AM',
+            status: 'active',
+            online: true
+        },
+        {
+            subject: 'IT6012, Data Structures',
+            date: '2016-08-22T00:00:00.000Z',
+            starttime: '10:00 AM',
+            endtime: '11:00 AM',
+            status: 'canceled',
+            online: false
+        },
+        {
+            subject: 'IT6018, Web Development',
+            date: '2016-08-23T00:00:00.000Z',
+            starttime: '02:00 PM',
+            endtime: '03:00 PM',
+            status: 'finished',
+            online: true
+        },
+        {
+            subject: 'IT6025, Database Management',
+            date: '2016-08-24T00:00:00.000Z',
+            starttime: '09:30 AM',
+            endtime: '10:30 AM',
+            status: 'active',
+            online: false
+        },
+        {
+            subject: 'IT6031, Software Engineering',
+            date: '2016-08-25T00:00:00.000Z',
+            starttime: '11:30 AM',
+            endtime: '12:30 PM',
+            status: 'finished',
+            online: true
+        },
+        {
+            subject: 'IT6038, Artificial Intelligence',
+            date: '2016-08-26T00:00:00.000Z',
+            starttime: '03:30 PM',
+            endtime: '04:30 PM',
+            status: 'active',
+            online: true
+        },
+        {
+            subject: 'IT6045, Networking Fundamentals',
+            date: '2016-08-27T00:00:00.000Z',
+            starttime: '01:00 PM',
+            endtime: '02:00 PM',
+            status: 'canceled',
+            online: false
+        },
+        {
+            subject: 'IT6052, Mobile App Development',
+            date: '2016-08-28T00:00:00.000Z',
+            starttime: '10:30 AM',
+            endtime: '11:30 AM',
+            status: 'finished',
+            online: true
+        },
+        {
+            subject: 'IT6062, Data Analytics',
+            date: '2016-08-29T00:00:00.000Z',
+            starttime: '11:00 AM',
+            endtime: '12:00 PM',
+            status: 'active',
+            online: false
+        },
+        {
+            subject: 'IT6071, Cybersecurity',
+            date: '2016-08-30T00:00:00.000Z',
+            starttime: '09:00 AM',
+            endtime: '10:00 AM',
+            status: 'finished',
+            online: true
+        },
+        // Add more booking objects as needed
+    ];
 
-    const users = [...Array(24)].map((_, index) => ({
-        userid: 567,
-        avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
-        name: "faker.person.fullName()",
-        role: "Leader"
-    }));
+
+
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
+
+
+    const handleStartDate = (dateValue) => {
+        setPage(0);
+        setStartDate(dateValue);
+    };
+
+    const handleEndDate = (dateValue) => {
+        setPage(0);
+        setEndDate(dateValue);
+    };
 
 
     const handleSort = (event, id) => {
@@ -56,15 +144,6 @@ export default function RecommendationsPage() {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
-    };
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = users.map((n) => n.name);
-            setSelected(newSelecteds);
-            return;
-        }
-        setSelected([]);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -76,18 +155,13 @@ export default function RecommendationsPage() {
         setRowsPerPage(parseInt(event.target.value, 10));
     };
 
-    const handleFilterByName = (event) => {
-        setPage(0);
-        setFilterName(event.target.value);
-    };
 
     const dataFiltered = applyFilter({
-        inputData: users,
+        inputData: bookings,
         comparator: getComparator(order, orderBy),
-        filterName,
+        startDate,
+        endDate
     });
-
-    const notFound = !dataFiltered.length && !!filterName;
 
 
     return (
@@ -115,9 +189,11 @@ export default function RecommendationsPage() {
 
             <Card>
                 <BookingsTableToolbar
-                    numSelected={selected.length}
-                    filterName={filterName}
-                    onFilterName={handleFilterByName}
+                    startDate={startDate}
+                    onDateStart={handleStartDate}
+                    endDate={endDate}
+                    onDateEnd={handleEndDate}
+                    onClearButton={() => {handleStartDate(null); handleEndDate(null);}}
                 />
 
                 <Scrollbar>
@@ -126,10 +202,8 @@ export default function RecommendationsPage() {
                             <TableMainHead
                                 order={order}
                                 orderBy={orderBy}
-                                rowCount={users.length}
-                                numSelected={selected.length}
+                                rowCount={bookings.length}
                                 onRequestSort={handleSort}
-                                onSelectAllClick={handleSelectAllClick}
                                 headLabel={[
                                     {id: '', label: ''},
                                     {id: 'subject', label: 'Subject'},
@@ -147,19 +221,19 @@ export default function RecommendationsPage() {
                                     .map((row) => (
                                         <BookingsTableRow
                                             key={row.bookingID}
-                                            subject={row.course}
-                                            student={row.student}
+                                            subject={row.subject}
                                             date={row.date}
+                                            startTime={row.starttime}
+                                            endTime={row.endtime}
                                             status={row.status}
                                         />
                                     ))}
 
                                 <TableEmptyRows
                                     height={77}
-                                    emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                                    emptyRows={emptyRows(page, rowsPerPage, bookings.length)}
                                 />
 
-                                {notFound && <TableNoData query={filterName}/>}
                             </TableBody>
                         </Table>
                     </TableContainer>
@@ -168,7 +242,7 @@ export default function RecommendationsPage() {
                 <TablePagination
                     page={page}
                     component="div"
-                    count={users.length}
+                    count={bookings.length}
                     rowsPerPage={rowsPerPage}
                     onPageChange={handleChangePage}
                     rowsPerPageOptions={[5, 10, 25, 50]}
