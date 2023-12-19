@@ -41,6 +41,24 @@ public class SchoolCont
         }
     }
 
+    // get revision schools
+    @GetMapping("/revisions")
+    public ResponseEntity<GenericDto<List<SchoolDao>>> getRevSchools(@RequestHeader(value = "Authorization") String authToken)
+    {
+        // Any person can use these
+
+        List<SchoolDao> schools = schoolServ.getAllRevSchools();
+
+        if (schools != null && !schools.isEmpty())
+        {
+            return new ResponseEntity<>(new GenericDto<>(null, schools, null, null), HttpStatus.OK);
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+    }
+
     // get school details
     @GetMapping("/{schoolID}")
     public ResponseEntity<GenericDto<SchoolDao>> getSchoolDetails(

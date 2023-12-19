@@ -58,6 +58,23 @@ public class CourseCont
         }
     }
 
+    @GetMapping("/leader/{leaderID}")
+    public ResponseEntity<GenericDto<List<CourseDao>>> getLeaderCourseDetails(@PathVariable("leaderID") String leaderID)
+    {
+        // maybe validate against leader?
+
+        List<CourseDao> course = courseServ.getLeaderPossibleCourses(leaderID);
+
+        if (course != null)
+        {
+            return new ResponseEntity<>(new GenericDto<>(null, course, null, null), HttpStatus.OK);
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+    }
+
     // create course
     @PostMapping("")
     public ResponseEntity<GenericDto<CourseDao>> createCourse(

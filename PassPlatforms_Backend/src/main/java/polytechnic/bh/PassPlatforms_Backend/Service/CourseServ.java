@@ -3,7 +3,9 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.CourseDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.TranscriptDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Course;
+import polytechnic.bh.PassPlatforms_Backend.Entity.Transcript;
 import polytechnic.bh.PassPlatforms_Backend.Repository.CourseRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.SchoolRepo;
 
@@ -21,6 +23,9 @@ public class CourseServ
     @Autowired
     private SchoolRepo schoolRepo;
 
+    @Autowired
+    private TranscriptServ transcriptServ;
+
     public List<CourseDao> getAllCourses()
     {
         List<CourseDao> courses = new ArrayList<>();
@@ -31,6 +36,46 @@ public class CourseServ
         }
 
         return courses;
+    }
+
+    public List<CourseDao> getRevCourses()
+    {
+        List<CourseDao> courses = new ArrayList<>();
+
+        for (Course retrievedCourse : courseRepo.findRevCourses())
+        {
+            courses.add(new CourseDao(retrievedCourse));
+        }
+
+        return courses;
+    }
+
+    public List<CourseDao> getLeaderPossibleCourses(String leaderID)
+    {
+        List<String> Grades = List.of("A+","A","A-","B+");
+
+        List<CourseDao> leaderCourses = new ArrayList<>();
+
+        // get all user trans courses
+        List<TranscriptDao> leaderTrans = transcriptServ.getLeaderTranscripts(leaderID);
+
+        List<String> courseIDs = new ArrayList<>();
+
+        for (TranscriptDao transcript : leaderTrans)
+        {
+            if (Grades.contains(transcript.getGrade()))
+            {
+                courseIDs.add(transcript.getCourse().getCourseid());
+            }
+        }
+
+        // get all courses where course code in trans courses
+        for (Course course : courseRepo.findLeaderPosbCourses(courseIDs))
+        {
+            leaderCourses.add(new CourseDao(course.getCourseid(), course.getCoursename(), null));
+        }
+
+        return leaderCourses;
     }
 
     public CourseDao getCourseDetails(String courseID)

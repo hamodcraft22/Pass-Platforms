@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.CourseDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.SchoolDao;
+import polytechnic.bh.PassPlatforms_Backend.Entity.Course;
 import polytechnic.bh.PassPlatforms_Backend.Entity.School;
 import polytechnic.bh.PassPlatforms_Backend.Repository.SchoolRepo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -27,7 +29,49 @@ public class SchoolServ
 
         for (School retrievedSchool : schoolRepo.findAll())
         {
-            schools.add(new SchoolDao(retrievedSchool.getSchoolid(), retrievedSchool.getSchoolname(), null));
+            schools.add(new SchoolDao(retrievedSchool));
+        }
+
+        return schools;
+    }
+
+    public List<SchoolDao> getAllRevSchools()
+    {
+        List<SchoolDao> schools = new ArrayList<>();
+
+        List<CourseDao> revCourses = courseServ.getRevCourses();
+
+        for (School revSchool : schoolRepo.findRevSchools())
+        {
+            SchoolDao newRevSchool = new SchoolDao();
+
+            newRevSchool.setSchoolid(revSchool.getSchoolid());
+            newRevSchool.setSchoolname(revSchool.getSchoolname());
+
+            List<CourseDao> schoolRevCourses = new ArrayList<>();
+
+            List<CourseDao> leftRevCourses = new ArrayList<>();
+
+            // loop to school courses
+            for (CourseDao course : revCourses)
+            {
+                if (Objects.equals(course.getSchool().getSchoolid(), revSchool.getSchoolid()))
+                {
+                    schoolRevCourses.add(new CourseDao(course.getCourseid(), course.getCoursename(), null));
+                }
+                else
+                {
+                    leftRevCourses.add(course);
+                }
+            }
+
+            // assigning the left courses
+            revCourses = leftRevCourses;
+
+            // saving to the list
+            newRevSchool.setCourses(schoolRevCourses);
+
+            schools.add(newRevSchool);
         }
 
         return schools;
