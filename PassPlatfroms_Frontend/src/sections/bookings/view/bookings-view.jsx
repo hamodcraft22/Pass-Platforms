@@ -22,6 +22,7 @@ import {emptyRows, getComparator} from '../../../components/table/utils';
 import {applyFilter} from '../filterUtil';
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
+import ExportToExcel from "../../../utils/exportExcel";
 
 
 // ----------------------------------------------------------------------
@@ -170,9 +171,14 @@ export default function RecommendationsPage() {
                 <Typography variant="h4"> Student Name - Bookings</Typography>
 
                 {/* only show if a student */}
-                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}>
-                    New Booking
-                </Button>
+                <div>
+                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}>
+                        New Booking
+                    </Button>
+
+                    <ExportToExcel data={dataFiltered} filename="Studnet Bookings - DATE TO DATE" />
+                </div>
+
             </Stack>
 
             {/* leader selection bar - only show if a leader - switch between my bookings & leader bookings / */}
@@ -237,6 +243,9 @@ export default function RecommendationsPage() {
                             </TableBody>
                         </Table>
                     </TableContainer>
+
+
+
                 </Scrollbar>
 
                 <TablePagination
