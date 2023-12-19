@@ -84,6 +84,34 @@ public class UserServ
         }
     }
 
+    // get school leaders
+    public List<UserDao> schoolLeaders(String schoolID)
+    {
+        List<UserDao> leaders = new ArrayList<>();
+        for (User user : userRepo.getSchoolLeaders(schoolID))
+        {
+            UserDao leaderDao = getUser(user.getUserid());
+            leaderDao.setNotifications(null);
+
+            leaders.add(leaderDao);
+        }
+        return leaders;
+    }
+
+    // get course leaders
+    public List<UserDao> courseLeaders(String courseID)
+    {
+        List<UserDao> leaders = new ArrayList<>();
+        for (User user : userRepo.getCourseLeaders(courseID))
+        {
+            UserDao leaderDao = getUser(user.getUserid());
+            leaderDao.setNotifications(null);
+
+            leaders.add(leaderDao);
+        }
+        return leaders;
+    }
+
     public List<UserDao> makeLeaders(List<String> users)
     {
         List<UserDao> newLeaders = new ArrayList<>();

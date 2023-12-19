@@ -111,6 +111,38 @@ public class UserCont
         }
     }
 
+    @GetMapping("/school/{schoolID}")
+    public ResponseEntity<GenericDto<List<UserDao>>> schoolUsers(@RequestHeader(value = "Authorization") String barerKey,
+                                                                 @PathVariable(value = "schoolID") String schoolID)
+    {
+        String userID = isValidToken(barerKey);
+
+        if (userID != null)
+        {
+            return new ResponseEntity<>(new GenericDto<>(null, userServ.schoolLeaders(schoolID), null, null), HttpStatus.OK);
+        }
+        else
+        {
+            return new ResponseEntity<>(new GenericDto<>(null, null, null, null), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @GetMapping("/course/{courseID}")
+    public ResponseEntity<GenericDto<List<UserDao>>> courseUsers(@RequestHeader(value = "Authorization") String barerKey,
+                                                                 @PathVariable(value = "courseID") String courseID)
+    {
+        String userID = isValidToken(barerKey);
+
+        if (userID != null)
+        {
+            return new ResponseEntity<>(new GenericDto<>(null, userServ.courseLeaders(courseID), null, null), HttpStatus.OK);
+        }
+        else
+        {
+            return new ResponseEntity<>(new GenericDto<>(null, null, null, null), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
     // make user into leader
     @PostMapping("/leaderify")
     public ResponseEntity<GenericDto<List<UserDao>>> makeLeaders(@RequestHeader(value = "Authorization") String barerKey, @RequestBody List<String> studentIDs)
