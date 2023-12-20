@@ -144,7 +144,7 @@ const UserProfile = (function UserProfile() {
         if (userID !== "" && userName !== "" && userRole !== "" && expTime !== "" && authToken !== "")
         {
             const data = {"userID":userID, "userName":userName, "userRole":userRole, "authToken":authToken};
-            await Cookies.set("ID_INF",CryptoJS.AES.encrypt(JSON.stringify(data), key).toString());
+            await Cookies.set("ID_INF",CryptoJS.AES.encrypt(JSON.stringify(data), key).toString(), { expires: expTime});
         }
     }
 
