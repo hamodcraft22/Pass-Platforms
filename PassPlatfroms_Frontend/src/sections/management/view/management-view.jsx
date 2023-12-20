@@ -126,33 +126,33 @@ export default function ManagementPage() {
 
 
     // dates
-    const [midRevWeekStart, setMidRevWeekStart] = useState();
-    const [midRevWeekEnd, setMidRevWeekEnd] = useState();
+    const [midRevWeekStart, setMidRevWeekStart] = useState(null);
+    const [midRevWeekEnd, setMidRevWeekEnd] = useState(null);
 
-    const [midWeekStart, setMidWeekStart] = useState();
-    const [midWeekEnd, setMidWeekEnd] = useState();
+    const [midWeekStart, setMidWeekStart] = useState(null);
+    const [midWeekEnd, setMidWeekEnd] = useState(null);
 
     // mid edits - in view mode
-    const [midRevWeekStartEdit, setMidRevWeekStartEdit] = useState();
-    const [midRevWeekEndEdit, setMidRevWeekEndEdit] = useState();
+    const [midRevWeekStartEdit, setMidRevWeekStartEdit] = useState(null);
+    const [midRevWeekEndEdit, setMidRevWeekEndEdit] = useState(null);
 
-    const [midWeekStartEdit, setMidWeekStartEdit] = useState();
-    const [midWeekEndEdit, setMidWeekEndEdit] = useState();
+    const [midWeekStartEdit, setMidWeekStartEdit] = useState(null);
+    const [midWeekEndEdit, setMidWeekEndEdit] = useState(null);
 
 
-    const [finRevWeekStart, setFinRevWeekStart] = useState();
-    const [finRevWeekEnd, setFinRevWeekEnd] = useState();
+    const [finRevWeekStart, setFinRevWeekStart] = useState(null);
+    const [finRevWeekEnd, setFinRevWeekEnd] = useState(null);
 
-    const [finWeekStart, setFinWeekStart] = useState();
-    const [finWeekEnd, setFinWeekEnd] = useState();
+    const [finWeekStart, setFinWeekStart] = useState(null);
+    const [finWeekEnd, setFinWeekEnd] = useState(null);
 
     // final dates - in edit modes
 
-    const [finRevWeekStartEdit, setFinRevWeekStartEdit] = useState();
-    const [finRevWeekEndEdit, setFinRevWeekEndEdit] = useState();
+    const [finRevWeekStartEdit, setFinRevWeekStartEdit] = useState(null);
+    const [finRevWeekEndEdit, setFinRevWeekEndEdit] = useState(null);
 
-    const [finWeekStartEdit, setFinWeekStartEdit] = useState();
-    const [finWeekEndEdit, setFinWeekEndEdit] = useState();
+    const [finWeekStartEdit, setFinWeekStartEdit] = useState(null);
+    const [finWeekEndEdit, setFinWeekEndEdit] = useState(null);
 
 
     const [systemEnable, setSystemEnable] = useState(false);
@@ -951,6 +951,10 @@ export default function ManagementPage() {
 
                                     <Button sx={{mt: 2}} variant={"contained"}
                                             disabled={midRevWeekStartEdit === midRevWeekStart && midRevWeekEndEdit === midRevWeekEnd && midWeekStart === midWeekStartEdit && midWeekEnd === midWeekEndEdit}>Update</Button>
+
+                                    <Button sx={{mt: 2, ml:1}} variant={"contained"} color={"warning"}
+                                            disabled={midRevWeekStartEdit === midRevWeekStart && midRevWeekEndEdit === midRevWeekEnd && midWeekStart === midWeekStartEdit && midWeekEnd === midWeekEndEdit}
+                                            onClick={() => {setMidRevWeekStartEdit(midRevWeekStart); setMidRevWeekEndEdit(midRevWeekEnd); setMidWeekStartEdit(midWeekStart); setMidWeekEndEdit(midWeekEnd)}}>Rest</Button>
                                 </CardContent>
 
                             </Card>
@@ -999,6 +1003,11 @@ export default function ManagementPage() {
 
                                     <Button sx={{mt: 2}} variant={"contained"}
                                             disabled={finRevWeekStartEdit === finRevWeekStart && finRevWeekEndEdit === finRevWeekEnd && finWeekStart === finWeekStartEdit && finWeekEnd === finWeekEndEdit}>Update</Button>
+
+                                    <Button sx={{mt: 2, ml:1}} variant={"contained"} color={"warning"}
+                                            disabled={finRevWeekStartEdit === finRevWeekStart && finRevWeekEndEdit === finRevWeekEnd && finWeekStart === finWeekStartEdit && finWeekEnd === finWeekEndEdit}
+                                            onClick={() => {setFinRevWeekStartEdit(finRevWeekStart); setFinRevWeekEndEdit(finRevWeekEnd); setFinWeekStartEdit(finWeekStart); setFinWeekEndEdit(finWeekEnd)}}>Rest</Button>
+
                                 </CardContent>
 
                             </Card>
