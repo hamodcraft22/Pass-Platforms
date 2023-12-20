@@ -66,7 +66,7 @@ public class TranscriptServ
 
         newTranscript.setGrade(grade);
         newTranscript.setStudent(new User(userServ.getUser(leaderID)));
-        newTranscript.setCourse(courseRepo.getReferenceById(courseID));
+        newTranscript.setCourseid(courseID);
 
         return new TranscriptDao(transcriptRepo.save(newTranscript));
     }

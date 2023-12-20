@@ -9,6 +9,7 @@ import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Dto.LeadersSlotsDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.SlotServ;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -73,6 +74,37 @@ public class SlotCont
         }
 
     }
+
+
+    // get open leader slots for a course
+    @GetMapping("/course/{courseID}")
+    public ResponseEntity<GenericDto<List<LeadersSlotsDto>>> getCourseSlots(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @PathVariable(value = "courseID") String courseID,
+            @RequestAttribute Date weekStart)
+    {
+        // auth and validation
+
+        if (true)
+        {
+            List<LeadersSlotsDto> slots = slotServ.getCourseSlots(courseID, weekStart);
+
+            if (slots != null && !slots.isEmpty())
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, slots, null, null), HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+    }
+
 
     // get slot details - not needed
     @GetMapping("/{slotID}")

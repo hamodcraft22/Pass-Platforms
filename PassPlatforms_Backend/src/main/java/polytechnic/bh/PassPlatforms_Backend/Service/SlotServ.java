@@ -141,6 +141,25 @@ public class SlotServ
         return correctedLeaderSlots;
     }
 
+    // get course slots
+    public List<LeadersSlotsDto> getCourseSlots(String courseID, Date weekStartDate)
+    {
+        // find all users that teach the course
+        List<UserDao> courseLeaders = userServ.courseLeaders(courseID);
+
+        List<String> leaderIDs = new ArrayList<>();
+        for (UserDao leader : courseLeaders)
+        {
+            leaderIDs.add(leader.getUserid());
+        }
+
+        // get all of their slots
+        List<LeadersSlotsDto> allLeadersSlots = getAllLeaderSlots(leaderIDs);
+
+        // filter slots and return
+        return getAvailableLeaderSlots(allLeadersSlots, weekStartDate);
+    }
+
     // get a single slot and its details - also not needed
     public SlotDao getSlotDetails(int slotID)
     {

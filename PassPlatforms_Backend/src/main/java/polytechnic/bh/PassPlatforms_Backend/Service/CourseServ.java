@@ -65,7 +65,7 @@ public class CourseServ
         {
             if (Grades.contains(transcript.getGrade()))
             {
-                courseIDs.add(transcript.getCourse().getCourseid());
+                courseIDs.add(transcript.getCourseid());
             }
         }
 

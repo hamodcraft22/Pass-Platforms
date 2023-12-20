@@ -24,15 +24,13 @@ public class Transcript
     @JoinColumn(name = "STUDENTID", referencedColumnName = "USERID")
     private User student;
 
-    @ManyToOne
-    @JoinColumn(name = "COURSEID", referencedColumnName = "COURSEID")
-    private Course course;
+    private String courseid;
 
     public Transcript(TranscriptDao transcriptDao)
     {
         this.transid = transcriptDao.getTransid();
         this.grade = transcriptDao.getGrade();
         this.student = new User(transcriptDao.getStudent());
-        this.course = new Course(transcriptDao.getCourse());
+        this.courseid = transcriptDao.getCourseid();
     }
 }

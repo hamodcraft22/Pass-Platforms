@@ -87,7 +87,7 @@ public class LeaderDao
         List<TranscriptDao> transcripts = new ArrayList<>();
         for (Transcript transcript : user.getTranscripts())
         {
-            transcripts.add(new TranscriptDao(transcript.getTransid(), transcript.getGrade(), null, new CourseDao(transcript.getCourse())));
+            transcripts.add(new TranscriptDao(transcript.getTransid(), transcript.getGrade(), null, transcript.getCourseid()));
         }
         this.transcripts = transcripts;
 

@@ -155,7 +155,7 @@ public class TranscriptCont
             TranscriptDao createdTranscript = transcriptServ.createTranscript(
                     transcriptDao.getGrade(),
                     transcriptDao.getStudent().getUserid(),
-                    transcriptDao.getCourse().getCourseid()
+                    transcriptDao.getCourseid()
             );
 
             return new ResponseEntity<>(new GenericDto<>(null, createdTranscript, null, null), HttpStatus.CREATED);

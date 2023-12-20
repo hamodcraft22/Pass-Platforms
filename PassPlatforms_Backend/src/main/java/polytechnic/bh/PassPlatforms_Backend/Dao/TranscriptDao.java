@@ -17,13 +17,14 @@ public class TranscriptDao
     private int transid;
     private String grade;
     private UserDao student;
-    private CourseDao course;
+
+    private String courseid;
 
     public TranscriptDao(Transcript transcript)
     {
         this.transid = transcript.getTransid();
         this.grade = transcript.getGrade();
         this.student = new UserDao(transcript.getStudent().getUserid(), new RoleDao(transcript.getStudent().getRole()), getAzureAdName(transcript.getStudent().getUserid()), null);
-        this.course = new CourseDao(transcript.getCourse());
+        this.courseid = transcript.getCourseid();
     }
 }
