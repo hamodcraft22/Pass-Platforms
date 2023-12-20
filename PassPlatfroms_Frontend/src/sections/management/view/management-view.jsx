@@ -6,7 +6,7 @@ import moment from "moment";
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {Alert, CardContent, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField} from "@mui/material";
+import {Alert, Autocomplete, CardContent, CircularProgress, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import LinearProgress from '@mui/material/LinearProgress';
@@ -27,6 +27,11 @@ import {styled} from "@mui/material/styles";
 import {read, utils} from 'xlsx';
 import Grid from "@mui/material/Unstable_Grid2";
 import ApexChart from 'react-apexcharts';
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Dialog from "@mui/material/Dialog";
+import DialogContentText from "@mui/material/DialogContentText";
 
 
 // ----------------------------------------------------------------------
@@ -204,7 +209,16 @@ export default function ManagementPage() {
             });
         });
 
-        setLeadersUpload(sheetsData);
+        if (setupMode === true)
+        {
+            setLeadersUpload(sheetsData);
+        }
+
+        if (viewEditMode === true)
+        {
+            console.log(sheetsData);
+            setLeaderIDsToAdd([leaderIDsToAdd, ...sheetsData]);
+        }
     };
 
     const readFile = (file) => {
@@ -235,6 +249,78 @@ export default function ManagementPage() {
             setGetWidth("xl")
         }
     }, [setupMode, viewEditMode])
+
+
+
+    // update dates dialog
+    const [updateDateShow, setUpdateDateShow] = useState(false);
+
+    function handleUpdateDateConfirm()
+    {
+        alert("call api");
+
+        setUpdateDateShow(false);
+        // show errors etc based on return
+    }
+
+
+    const [leaderIDsToAdd, setLeaderIDsToAdd] = useState([]);
+
+    const [assignLeadersShow, setAssignLeadersShow] = useState(false);
+
+    function handleAssignLeadersConfirm()
+    {
+        alert("call api");
+
+        setAssignLeadersShow(false);
+        // show errors etc based on return
+    }
+
+    const [enableSysShow, setEnableSysShow] = useState(false);
+
+    function handleEnableSysConfirm()
+    {
+        alert("call api");
+
+        setEnableSysShow(false);
+    }
+
+    const [disableSysShow, setDisableSysShow] = useState(false);
+
+    function handleDisableSysConfirm()
+    {
+        alert("call api");
+
+        setDisableSysShow(false);
+    }
+
+    const [enableBookingShow, setEnableBookingShow] = useState(false);
+
+    function handleEnableBookingConfirm()
+    {
+        alert("call api");
+
+        setEnableBookingShow(false);
+    }
+
+    const [disableBookingShow, setDisableBookingShow] = useState(false);
+
+    function handleDisableBookingConfirm()
+    {
+        alert("call api");
+
+        setDisableBookingShow(false);
+    }
+
+    const [resetSysShow, setResetSysShow] = useState(false);
+
+    function handleResetSysConfirm()
+    {
+        alert("call api");
+
+        setResetSysShow(false);
+    }
+
 
     const VisuallyHiddenInput = styled('input')({
         clip: 'rect(0 0 0 0)',
@@ -950,7 +1036,7 @@ export default function ManagementPage() {
                                     </LocalizationProvider>
 
                                     <Button sx={{mt: 2}} variant={"contained"}
-                                            disabled={midRevWeekStartEdit === midRevWeekStart && midRevWeekEndEdit === midRevWeekEnd && midWeekStart === midWeekStartEdit && midWeekEnd === midWeekEndEdit}>Update</Button>
+                                            disabled={midRevWeekStartEdit === midRevWeekStart && midRevWeekEndEdit === midRevWeekEnd && midWeekStart === midWeekStartEdit && midWeekEnd === midWeekEndEdit} onClick={() => {setUpdateDateShow(true)}}>Update</Button>
 
                                     <Button sx={{mt: 2, ml:1}} variant={"contained"} color={"warning"}
                                             disabled={midRevWeekStartEdit === midRevWeekStart && midRevWeekEndEdit === midRevWeekEnd && midWeekStart === midWeekStartEdit && midWeekEnd === midWeekEndEdit}
@@ -959,7 +1045,6 @@ export default function ManagementPage() {
 
                             </Card>
                         </Grid>
-
 
                         {/* final dates card */}
                         <Grid xs={12} md={6} lg={4}>
@@ -1002,7 +1087,7 @@ export default function ManagementPage() {
                                     </LocalizationProvider>
 
                                     <Button sx={{mt: 2}} variant={"contained"}
-                                            disabled={finRevWeekStartEdit === finRevWeekStart && finRevWeekEndEdit === finRevWeekEnd && finWeekStart === finWeekStartEdit && finWeekEnd === finWeekEndEdit}>Update</Button>
+                                            disabled={finRevWeekStartEdit === finRevWeekStart && finRevWeekEndEdit === finRevWeekEnd && finWeekStart === finWeekStartEdit && finWeekEnd === finWeekEndEdit} onClick={() => {setUpdateDateShow(true)}}>Update</Button>
 
                                     <Button sx={{mt: 2, ml:1}} variant={"contained"} color={"warning"}
                                             disabled={finRevWeekStartEdit === finRevWeekStart && finRevWeekEndEdit === finRevWeekEnd && finWeekStart === finWeekStartEdit && finWeekEnd === finWeekEndEdit}
@@ -1013,6 +1098,7 @@ export default function ManagementPage() {
                             </Card>
                         </Grid>
 
+                        {/* buttons card */}
                         <Grid xs={12} md={6} lg={4}>
                             <Card
                                 component={Stack}
@@ -1026,23 +1112,23 @@ export default function ManagementPage() {
                                         System Settings:
                                     </Typography>
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"success"}>Assign Leader/s</Button>
+                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"success"} onClick={() => {setAssignLeadersShow(true)}}>Assign Leader/s</Button>
                                     <FormHelperText>Assign student id's as pass leaders.</FormHelperText>
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth>Enable System</Button>
+                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth onClick={() => {setEnableSysShow(true)}}>Enable System</Button>
                                     <FormHelperText>Make the system enabled for leaders and tutors.</FormHelperText>
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"}>Disable System</Button>
+                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"} onClick={() => {setDisableSysShow(true)}}>Disable System</Button>
                                     <FormHelperText>Disable all users (other than you).</FormHelperText>
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth>Enable Booking</Button>
+                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth onClick={() => {setEnableBookingShow(true)}}>Enable Booking</Button>
                                     <FormHelperText>Allow Bookings for students.</FormHelperText>
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"}>Disable Booking</Button>
+                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"} onClick={() => {setDisableBookingShow(true)}}>Disable Booking</Button>
                                     <FormHelperText>Stop new Bookings.</FormHelperText>
 
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"error"}>Reset System</Button>
+                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"error"} onClick={() => {setResetSysShow(true)}}>Reset System</Button>
                                     <FormHelperText>Clear all information and data (start new semester).</FormHelperText>
                                 </CardContent>
 
@@ -1052,6 +1138,181 @@ export default function ManagementPage() {
                     </Grid>
                 </>
             }
+
+            {/* confirm dialog - dates */}
+            <Dialog
+                open={updateDateShow}
+                onClose={() => {setUpdateDateShow(false)}}
+            >
+                <DialogTitle>
+                    Update Dates
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to update the dates?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => {setUpdateDateShow(false)}}>Cancel</Button>
+                    <Button onClick={handleUpdateDateConfirm} autoFocus color={"error"}>
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+
+            {/* add dialog - leaders */}
+            <Dialog
+                open={assignLeadersShow}
+                onClose={() => {setAssignLeadersShow(false)}}
+            >
+                <DialogTitle>
+                    Assign Leaders
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Add student IDs to make leader accounts for them
+                    </DialogContentText>
+
+                    <Autocomplete
+                        PaperComponent={CustomPaper}
+                        multiple
+                        freeSolo
+                        sx={{width: '100%', mt: 3}}
+                        options={[]}
+                        value={leaderIDsToAdd}
+                        onChange={(event, newValue) => {setLeaderIDsToAdd(newValue)}}
+                        renderInput={(params) => <TextField {...params} label="Student ID/s"/>}
+                        />
+                    <FormHelperText sx={{ mb: 2 }}>Type student ID and press enter.</FormHelperText>
+
+                    <DialogContentText>
+                        Or upload leaders sheet:
+                    </DialogContentText>
+
+                    <Button component="label" variant="contained" startIcon={<CloudUploadIcon/>} fullWidth sx={{ mt:2 }}>
+                        Upload file
+                        <VisuallyHiddenInput type="file" onChange={handleLeadersFileChange} accept=".xlsx"/>
+                    </Button>
+
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => {setAssignLeadersShow(false)}}>Cancel</Button>
+                    <Button onClick={handleAssignLeadersConfirm} autoFocus color={"error"}>
+                        Save
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+
+            {/* confirm dialog - enable system */}
+            <Dialog
+                open={enableSysShow}
+                onClose={() => {setEnableSysShow(false)}}
+            >
+                <DialogTitle>
+                    Enable System
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        This will allow Tutors, and leaders to setup and use the system, are you sure you want to continue?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => {setEnableSysShow(false)}}>Cancel</Button>
+                    <Button onClick={handleEnableSysConfirm} autoFocus color={"error"}>
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* confirm dialog - disable system */}
+            <Dialog
+                open={disableSysShow}
+                onClose={() => {setDisableSysShow(false)}}
+            >
+                <DialogTitle>
+                    Disable System
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        This will stop all users from being able to modify any aspect of the system, sure to continue?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => {setDisableSysShow(false)}}>Cancel</Button>
+                    <Button onClick={handleDisableSysConfirm} autoFocus color={"error"}>
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+
+            {/* confirm dialog - enable booking */}
+            <Dialog
+                open={enableBookingShow}
+                onClose={() => {setEnableBookingShow(false)}}
+            >
+                <DialogTitle>
+                    Enable Booking
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        This will allow student to access and book sessions, sure to confirm?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => {setEnableBookingShow(false)}}>Cancel</Button>
+                    <Button onClick={handleEnableBookingConfirm} autoFocus color={"error"}>
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* confirm dialog - disable booking */}
+            <Dialog
+                open={disableBookingShow}
+                onClose={() => {setDisableBookingShow(false)}}
+            >
+                <DialogTitle>
+                    disable Booking
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        This will stop all users from being able to create new bookings, sure to continue?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => {setDisableBookingShow(false)}}>Cancel</Button>
+                    <Button onClick={handleDisableBookingConfirm} autoFocus color={"error"}>
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+
+            {/* confirm dialog - reset system */}
+            <Dialog
+                open={resetSysShow}
+                onClose={() => {setResetSysShow(false)}}
+            >
+                <DialogTitle>
+                    Reset System
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        This will delete all records, including bookings, leaders, revisions, statistics, and courses.
+                        after this step you would be required to setup the new courses, leaders, and information for the system before enabling it.
+                    </DialogContentText>
+                    <FormHelperText>** this process may take some time **</FormHelperText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => {setResetSysShow(false)}}>Cancel</Button>
+                    <Button onClick={handleResetSysConfirm} autoFocus color={"error"}>
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
         </Container>
     );

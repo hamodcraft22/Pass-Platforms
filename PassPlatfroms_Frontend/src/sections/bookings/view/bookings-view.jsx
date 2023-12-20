@@ -181,6 +181,7 @@ export default function RecommendationsPage() {
             {/* leader selection bar - only show if a leader - switch between my bookings & leader bookings / */}
             <Card sx={{mb: 2, p: 2, display: 'flex', justifyContent: 'space-around'}}>
                 <Button variant="contained" color="inherit">My Bookings</Button>
+                <Button variant="contained">Member Bookings</Button>
                 <Button variant="contained">Student Bookings</Button>
             </Card>
 

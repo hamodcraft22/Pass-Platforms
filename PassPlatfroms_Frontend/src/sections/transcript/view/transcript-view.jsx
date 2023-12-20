@@ -152,9 +152,13 @@ export default function TranscriptPage() {
 
                     if (course.grade.toLowerCase() === "comp") {
                         courseGrade = 'A';
-                    } else if (['a', 'b', 'c', 'd', 'f'].includes(course.grade.toLowerCase().charAt(0))) {
-                        courseGrade = course.grade.charAt(0);
-                    } else {
+                    }
+                    else if (['a', 'b', 'c', 'd', 'f'].includes(course.grade.toLowerCase().charAt(0)))
+                    {
+                        courseGrade = course.grade;
+                    }
+                    else
+                    {
                         courseGrade = 'E';
                     }
 
@@ -266,7 +270,6 @@ export default function TranscriptPage() {
                             <VisuallyHiddenInput type="file" onChange={handleFileChange} accept=".pdf"/>
                         </Button>
 
-                        <FormHelperText>Grades will be saved without any status (+, -)</FormHelperText>
                         <FormHelperText>COMP coursees are marked as A</FormHelperText>
                         <FormHelperText>EXMP courses will not be accounted</FormHelperText>
 
