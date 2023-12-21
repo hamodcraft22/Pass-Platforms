@@ -27,7 +27,6 @@ const MainContent = () => {
 
     const { instance } = useMsal();
     const activeAccount = instance.getActiveAccount();
-    const [authToken, setAuthToken] = useState("");
 
     const [allowLoad, setAllowLoad] = useState(false)
 
@@ -39,30 +38,22 @@ const MainContent = () => {
 
         if (activeAccount)
         {
-            await instance.initialize();
-            const accessTokenResponse = await instance.acquireTokenSilent(accessTokenRequest);
-            return `Bearer ${accessTokenResponse.accessToken}`;
+            await instance.initialize()
+                .then(() => {return instance.acquireTokenSilent(accessTokenRequest)})
+                .then((token) => {return `Bearer ${token.accessToken}`})
+                .then((barerToken) => {
+                    UserProfile.setUserID(activeAccount.idTokenClaims.emails);
+                    UserProfile.setUserName(activeAccount.idTokenClaims.name);
+                    UserProfile.setUserRole("student");
+                    UserProfile.setAuthToken(barerToken);
+                    UserProfile.setExpTime(activeAccount.idTokenClaims.exp);
+                })
+                .then(() => {setAllowLoad(true)});
         }
     }
 
-    async function cacheInfo()
-    {
-        if (activeAccount)
-        {
-            await instance.initialize();
+    useEffect(() => {getToken()}, [activeAccount])
 
-            await UserProfile.setUserID(activeAccount.idTokenClaims.emails);
-            await UserProfile.setUserName(activeAccount.idTokenClaims.name);
-            await UserProfile.setUserRole("student");
-            await UserProfile.setAuthToken(authToken);
-            await UserProfile.setExpTime(activeAccount.idTokenClaims.exp);
-        }
-
-    }
-
-    useEffect(() => {getToken().then(async (token) => setAuthToken(token))}, [activeAccount])
-
-    useEffect(() => {if(authToken!==null && authToken !== "" && activeAccount){cacheInfo().then(setAllowLoad(true))}}, [authToken])
 
     const handleLoginRedirect = () => {
         instance.loginRedirect(loginRequest).catch((error) => console.log(error));

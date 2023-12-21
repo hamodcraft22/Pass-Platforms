@@ -18,7 +18,7 @@ export default function AppView() {
 
     async function getUserName()
     {
-        UserProfile.getUserName().then((data) => {
+        await UserProfile.getUserName().then((data) => {
             const words = data.trim().split(/\s+/);
             const firstName = words[0];
             const lastName = words[words.length - 1];

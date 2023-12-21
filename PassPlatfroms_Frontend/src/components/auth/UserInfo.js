@@ -33,7 +33,7 @@ const UserProfile = (function UserProfile() {
 
         if (userName === "")
         {
-            getInfo().then(() => {return userName});
+            await getInfo().then(() => {return userName});
         }
         else
         {
