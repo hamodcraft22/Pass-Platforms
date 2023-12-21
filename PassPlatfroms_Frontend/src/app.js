@@ -13,16 +13,18 @@ import { loginRequest } from './components/auth/authConfig';
 import Button from "@mui/material/Button";
 import UserProfile from "./components/auth/UserInfo";
 import {Backdrop, CircularProgress} from "@mui/material";
+import Box from "@mui/material/Box";
+import LoginIcon from '@mui/icons-material/Login';
+import Paper from "@mui/material/Paper";
 
 
 // ----------------------------------------------------------------------
 
 
 const MainContent = () => {
-    /**
-     * useMsal is a hook that returns the PublicClientApplication instance.
-     * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-react/docs/hooks.md
-     */
+
+
+
     const { instance } = useMsal();
     const activeAccount = instance.getActiveAccount();
     const [authToken, setAuthToken] = useState("");
@@ -68,20 +70,45 @@ const MainContent = () => {
 
     useScrollToTop();
 
-
-    /**
-     * Most applications will need to conditionally render certain components based on whether a user is signed in or not.
-     * msal-react provides 2 easy ways to do this. AuthenticatedTemplate and UnauthenticatedTemplate components will
-     * only render their children if a user is authenticated or unauthenticated, respectively. For more, visit:
-     * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-react/docs/getting-started.md
-     */
     return (
         <>
             <AuthenticatedTemplate>
                 {allowLoad ? (<Router/>) : <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}><CircularProgress color="inherit" /></Backdrop>}
             </AuthenticatedTemplate>
             <UnauthenticatedTemplate>
-                <Button onClick={handleLoginRedirect} >Login</Button>
+                <Box sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "100vh",
+                        "&::before":
+                            {
+                                content: '""',
+                                position: "fixed",
+                                top: 0,
+                                left: 0,
+                                bottom: 0,
+                                right: 0,
+                                backgroundImage: "url('/assets/login_backdrop.png')",
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                backgroundRepeat: "no-repeat",
+                                filter: "blur(5px)",
+                                margin: "-10px"
+                            }
+                    }}>
+
+                    <Paper elevation={24} sx={{p:2, zIndex:5, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column"}}>
+
+                        <h1>Pass Platforms</h1>
+                        <p>Please login using your university account 👇🏼</p>
+
+                        <Button onClick={handleLoginRedirect} size="large" variant={"contained"} endIcon={<LoginIcon/>}>Login</Button>
+
+                    </Paper>
+
+
+                </Box>
             </UnauthenticatedTemplate>
         </>
     );
