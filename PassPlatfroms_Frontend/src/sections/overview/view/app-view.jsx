@@ -5,17 +5,34 @@ import AppCurrentVisits from '../app-current-visits';
 import AppWebsiteVisits from '../app-website-visits';
 import AppWidgetSummary from '../app-widget-summary';
 
+import UserProfile from "../../../components/auth/UserInfo";
+import {useEffect, useState} from "react";
+
 
 // ----------------------------------------------------------------------
 
 
 export default function AppView() {
 
+    const [userName, setUserName] = useState("");
+
+    async function getUserName()
+    {
+        UserProfile.getUserName().then((data) => {
+            const words = data.trim().split(/\s+/);
+            const firstName = words[0];
+            const lastName = words[words.length - 1];
+            setUserName(firstName + " " + lastName);
+        })
+    }
+
+    useEffect(() => {getUserName()}, [])
+
     return (
 
         <Container maxWidth="xl">
             <Typography variant="h4" sx={{mb: 5}}>
-                Hi, Welcome Back 👋🏼
+                Hi, Welcome Back {userName} 👋🏼
             </Typography>
 
 

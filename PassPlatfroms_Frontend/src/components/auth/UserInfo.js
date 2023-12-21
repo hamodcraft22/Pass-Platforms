@@ -25,15 +25,15 @@ const UserProfile = (function UserProfile() {
     };
 
     const setUserID = async function setUserID(r_userID) {
-        userID = r_userID;
-        setInfo();
+        userID = await r_userID;
+        await setInfo();
     };
 
     const getUserName = async function getUserName() {
 
         if (userName === "")
         {
-            await getInfo().then(() => {return userName});
+            getInfo().then(() => {return userName});
         }
         else
         {
@@ -42,7 +42,7 @@ const UserProfile = (function UserProfile() {
     };
 
     const setUserName = async function setUserName(r_userName) {
-        userName = r_userName;
+        userName = await r_userName;
         await setInfo();
     };
 
@@ -59,7 +59,7 @@ const UserProfile = (function UserProfile() {
     };
 
     const setUserRole = async function setUserName(r_userRole) {
-        userRole = r_userRole;
+        userRole = await r_userRole;
         await setInfo();
     };
 
@@ -76,7 +76,7 @@ const UserProfile = (function UserProfile() {
     };
 
     const setExpTime = async function setExpTime(r_ExpTime) {
-        expTime = r_ExpTime;
+        expTime = await r_ExpTime;
         await setInfo();
     };
 
@@ -93,7 +93,7 @@ const UserProfile = (function UserProfile() {
     };
 
     const setAuthToken = async function setExpTime(r_authToken) {
-        authToken = r_authToken;
+        authToken = await r_authToken;
         await setInfo();
     };
 
@@ -105,12 +105,12 @@ const UserProfile = (function UserProfile() {
         // check if it is there / not expired
         if (encData != null)
         {
-            const decData = CryptoJS.AES.decrypt(encData, key);
-            const parsedData = JSON.parse(decData.toString(CryptoJS.enc.Utf8));
+            const decData = await CryptoJS.AES.decrypt(encData, key);
+            const parsedData = await JSON.parse(decData.toString(CryptoJS.enc.Utf8));
 
             if (parsedData !== null)
             {
-                expTime = parsedData.expires;
+                expTime = await parsedData.expires;
 
                 // check date, if expired
                 if (Date.now() >= parsedData.expTime)
