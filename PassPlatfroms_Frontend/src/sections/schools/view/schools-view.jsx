@@ -44,17 +44,16 @@ export default function SchoolsPage() {
 
     // get schools api
     async function getSchools() {
-        try {
+        try
+        {
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json'}};
 
             await fetch(`http://localhost:8080/api/school`, requestOptions)
-                .then(response => {
-                    return response.json()
-                })
-                .then((data) => {
-                    setSchools(data.transObject)
-                })
-        } catch (error) {
+                .then(response => {return response.json()})
+                .then((data) => {setSchools(data.transObject)})
+
+        } catch (error)
+        {
             console.log(error)
         }
     }

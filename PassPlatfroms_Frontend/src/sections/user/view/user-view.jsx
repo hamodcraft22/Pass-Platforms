@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -35,16 +35,29 @@ export default function UserPage() {
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
+    // users list
+    const [users, setUsers] = useState([]);
 
-    // fake users
+    // get users api
+    async function getAllUsers() {
+        try
+        {
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json'}};
 
-    const users = [...Array(24)].map((_, index) => ({
-        userid: 567,
-        avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
-        name: "faker.person.fullName()",
-        role: "Leader"
-    }));
+            await fetch(`http://localhost:8080/api/user`, requestOptions)
+                .then(response => {return response.json()})
+                .then((data) => {setUsers(data.transObject)})
 
+        } catch (error)
+        {
+            console.log(error)
+        }
+    }
+
+    // get all schools on load
+    useEffect(() => {
+        getAllUsers()
+    }, [])
 
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
@@ -144,9 +157,9 @@ export default function UserPage() {
                                     .map((row) => (
                                         <UserTableRow
                                             key={row.userid}
-                                            name={row.name}
+                                            name={row.userName}
                                             userid={row.userid}
-                                            role={row.role}
+                                            role={row.role.rolename}
                                             avatarUrl={row.avatarUrl}
                                             selected={selected.indexOf(row.name) !== -1}
                                             handleClick={(event) => handleClick(event, row.name)}

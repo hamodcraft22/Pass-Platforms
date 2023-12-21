@@ -30,7 +30,7 @@ public class UsersService
         }
         catch (Exception ex)
         {
-            return null;
+            return "";
         }
     }
 

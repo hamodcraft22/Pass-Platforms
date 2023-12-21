@@ -20,6 +20,7 @@ import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.MANAG
 import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/user")
 public class UserCont
@@ -35,7 +36,9 @@ public class UserCont
     @GetMapping("")
     public ResponseEntity<GenericDto<List<UserDao>>> getAllUsers(@RequestHeader(value = "Authorization", required = false) String requestKey)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
+        // if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
+
+        if (true)
         {
             List<UserDao> users = new ArrayList<>();
 

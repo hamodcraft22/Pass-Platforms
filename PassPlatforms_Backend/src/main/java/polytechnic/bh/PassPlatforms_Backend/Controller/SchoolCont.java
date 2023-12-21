@@ -25,10 +25,8 @@ public class SchoolCont
 
     // get all schools
     @GetMapping("")
-    public ResponseEntity<GenericDto<List<SchoolDao>>> getAllSchools(@RequestHeader(value = "Authorization") String authToken)
+    public ResponseEntity<GenericDto<List<SchoolDao>>> getAllSchools()
     {
-        // Any person can use these
-
         List<SchoolDao> schools = schoolServ.getAllSchools();
 
         if (schools != null && !schools.isEmpty())
@@ -43,10 +41,8 @@ public class SchoolCont
 
     // get revision schools
     @GetMapping("/revisions")
-    public ResponseEntity<GenericDto<List<SchoolDao>>> getRevSchools(@RequestHeader(value = "Authorization") String authToken)
+    public ResponseEntity<GenericDto<List<SchoolDao>>> getRevSchools()
     {
-        // Any person can use these
-
         List<SchoolDao> schools = schoolServ.getAllRevSchools();
 
         if (schools != null && !schools.isEmpty())
@@ -64,8 +60,6 @@ public class SchoolCont
     public ResponseEntity<GenericDto<SchoolDao>> getSchoolDetails(
             @PathVariable("schoolID") String schoolID)
     {
-        // Any person can use these
-
         SchoolDao school = schoolServ.getSchoolDetails(schoolID);
 
         if (school != null)
