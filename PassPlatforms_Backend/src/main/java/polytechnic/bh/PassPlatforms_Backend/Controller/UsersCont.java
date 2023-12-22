@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.allAzureAdUsers;
 import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.refreshUsers;
 
@@ -16,32 +17,52 @@ public class UsersCont
     @GetMapping("")
     public ResponseEntity<?> getAllADUsers(@RequestHeader(value = "Authorization", required = false) String requestKey)
     {
-        try
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
         {
-            if (allAzureAdUsers.isEmpty())
+            try
             {
-                refreshUsers();
+                if (allAzureAdUsers.isEmpty())
+                {
+                    refreshUsers();
+                }
+                return new ResponseEntity<>(allAzureAdUsers, HttpStatus.OK);
             }
-            return new ResponseEntity<>(allAzureAdUsers, HttpStatus.OK);
+            catch (Exception e)
+            {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
         }
-        catch (Exception e)
+        else
         {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<?> refreshCachedUsers()
+    public ResponseEntity<?> refreshCachedUsers(@RequestHeader(value = "Authorization", required = false) String requestKey)
     {
-        try
-        {
-            refreshUsers();
+        String userID = isValidToken(requestKey);
 
-            return new ResponseEntity<>(null, HttpStatus.OK);
-        }
-        catch (Exception ex)
+        if (userID != null)
         {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            try
+            {
+                refreshUsers();
+
+                return new ResponseEntity<>(null, HttpStatus.OK);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
         }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
     }
 }

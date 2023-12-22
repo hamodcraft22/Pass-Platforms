@@ -6,16 +6,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.BookingMemberServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.BookingServ;
+import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
-import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.*;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.*;
+import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -28,23 +31,37 @@ public class BookingCont
     @Autowired
     private BookingMemberServ bookingMemberServ;
 
+    @Autowired
+    private UserServ userServ;
 
     // get all bookings - only managers
     @GetMapping("")
     public ResponseEntity<GenericDto<List<BookingDao>>> getAllBookings(
             @RequestHeader(value = "Authorization") String requestKey)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
-        {
-            List<BookingDao> bookings = bookingServ.getAllBookings();
+        String userID = isValidToken(requestKey);
 
-            if (bookings != null && !bookings.isEmpty())
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, bookings, null, null), HttpStatus.OK);
+                List<BookingDao> bookings = bookingServ.getAllBookings();
+
+                if (bookings != null && !bookings.isEmpty())
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, bookings, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
@@ -59,17 +76,29 @@ public class BookingCont
             @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("schoolID") String schoolID)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY) || Objects.equals(requestKey, TUTOR_KEY))
-        {
-            List<BookingDao> bookings = bookingServ.getSchoolSessions(schoolID);
+        String userID = isValidToken(requestKey);
 
-            if (bookings != null && !bookings.isEmpty())
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER || user.getRole().getRoleid() == ROLE_TUTOR)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, bookings, null, null), HttpStatus.OK);
+                List<BookingDao> bookings = bookingServ.getSchoolSessions(schoolID);
+
+                if (bookings != null && !bookings.isEmpty())
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, bookings, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
@@ -82,48 +111,76 @@ public class BookingCont
     @GetMapping("/{bookingID}")
     public ResponseEntity<GenericDto<BookingDao>> getBookingDetails(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("bookingID") int bookingID)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
-        {
-            BookingDao booking = bookingServ.getBookingDetails(bookingID);
+        String userID = isValidToken(requestKey);
 
-            if (booking != null)
-            {
-                return new ResponseEntity<>(new GenericDto<>(null, booking, null, null), HttpStatus.OK);
-            }
-            else
-            {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-            }
-        }
-        else if (Objects.equals(requestKey, STUDENT_KEY))
+        if (userID != null)
         {
-            // check if student booked, or is a member of the booking
-            BookingDao retrivedBooking = bookingServ.getBookingDetails(bookingID);
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
 
-            if (retrivedBooking != null)
+            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
             {
-                if (Objects.equals(retrivedBooking.getStudent().getUserid(), requisterID))
+                BookingDao booking = bookingServ.getBookingDetails(bookingID);
+
+                if (booking != null)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, retrivedBooking, null, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, booking, null, null), HttpStatus.OK);
                 }
                 else
                 {
-                    // loop to see if member of
-                    boolean hasAcss = false;
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
+            }
+            else if (user.getRole().getRoleid() == ROLE_STUDENT)
+            {
+                // check if student booked, or is a member of the booking
+                BookingDao retrivedBooking = bookingServ.getBookingDetails(bookingID);
 
-                    for (BookingMemberDao bookingMember : retrivedBooking.getBookingMembers())
+                if (retrivedBooking != null)
+                {
+                    if (Objects.equals(retrivedBooking.getStudent().getUserid(), userID))
                     {
-                        if (Objects.equals(bookingMember.getStudent().getUserid(), requisterID))
-                        {
-                            hasAcss = true;
-                            break;
-                        }
+                        return new ResponseEntity<>(new GenericDto<>(null, retrivedBooking, null, null), HttpStatus.OK);
                     }
+                    else
+                    {
+                        // loop to see if member of
+                        boolean hasAcss = false;
 
-                    if (hasAcss)
+                        for (BookingMemberDao bookingMember : retrivedBooking.getBookingMembers())
+                        {
+                            if (Objects.equals(bookingMember.getStudent().getUserid(), userID))
+                            {
+                                hasAcss = true;
+                                break;
+                            }
+                        }
+
+                        if (hasAcss)
+                        {
+                            return new ResponseEntity<>(new GenericDto<>(null, retrivedBooking, null, null), HttpStatus.OK);
+                        }
+                        else
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        }
+
+                    }
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
+            }
+            else if (user.getRole().getRoleid() == ROLE_LEADER)
+            {
+                BookingDao retrivedBooking = bookingServ.getBookingDetails(bookingID);
+
+                if (retrivedBooking != null)
+                {
+                    if (Objects.equals(retrivedBooking.getSlot().getLeader().getUserid(), userID))
                     {
                         return new ResponseEntity<>(new GenericDto<>(null, retrivedBooking, null, null), HttpStatus.OK);
                     }
@@ -131,32 +188,15 @@ public class BookingCont
                     {
                         return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                     }
-
-                }
-            }
-            else
-            {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-            }
-        }
-        else if (Objects.equals(requestKey, LEADER_KEY))
-        {
-            BookingDao retrivedBooking = bookingServ.getBookingDetails(bookingID);
-
-            if (retrivedBooking != null)
-            {
-                if (Objects.equals(retrivedBooking.getSlot().getLeader().getUserid(), requisterID))
-                {
-                    return new ResponseEntity<>(new GenericDto<>(null, retrivedBooking, null, null), HttpStatus.OK);
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
                 }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
@@ -172,65 +212,88 @@ public class BookingCont
             @RequestHeader(value = "Requester") String requisterID,
             @RequestBody BookingDao bookingDao)
     {
-        if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
-        {
-            GenericDto<BookingDao> newBooking = bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), requisterID, bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), false, null, null, null);
+        String userID = isValidToken(requestKey);
 
-            if (newBooking != null)
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
             {
-                if (newBooking.getTransObject() != null && newBooking.getError() == null)
+                GenericDto<BookingDao> newBooking = bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), requisterID, bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), false, null, null, null);
+
+                if (newBooking != null)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, newBooking.getTransObject(), null, newBooking.getWarnings()), HttpStatus.OK);
+                    if (newBooking.getTransObject() != null && newBooking.getError() == null)
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, newBooking.getTransObject(), null, newBooking.getWarnings()), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, null, newBooking.getError(), null), HttpStatus.BAD_REQUEST);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, null, newBooking.getError(), null), HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
+
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
-
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-
     }
 
     // post an unscheduled booking (as a leader for a student)
     @PostMapping("/unscheduled")
     public ResponseEntity<GenericDto<BookingDao>> createUnscheduledBooking(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @RequestBody BookingDao bookingDao)
     {
-        if (Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
-        {
-            GenericDto<BookingDao> newBooking = bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), bookingDao.getStudent().getUserid(), bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), true, Timestamp.from(bookingDao.getStarttime()), Timestamp.from(bookingDao.getEndtime()), "LEADERID");
+        String userID = isValidToken(requestKey);
 
-            if (newBooking != null)
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
             {
-                if (newBooking.getTransObject() != null && newBooking.getError() == null)
+                GenericDto<BookingDao> newBooking = bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), bookingDao.getStudent().getUserid(), bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), true, Timestamp.from(bookingDao.getStarttime()), Timestamp.from(bookingDao.getEndtime()), "LEADERID");
+
+                if (newBooking != null)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, newBooking.getTransObject(), null, newBooking.getWarnings()), HttpStatus.OK);
+                    if (newBooking.getTransObject() != null && newBooking.getError() == null)
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, newBooking.getTransObject(), null, newBooking.getWarnings()), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, null, newBooking.getError(), null), HttpStatus.BAD_REQUEST);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, null, newBooking.getError(), null), HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
 
     }
 
@@ -238,31 +301,42 @@ public class BookingCont
     @PostMapping("/{bookingID}/member")
     public ResponseEntity<GenericDto<BookingMemberDao>> addNewMember(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("bookingID") int bookingID,
             @RequestAttribute(value = "studentID") String studentID)
     {
-        if (Objects.equals(requestKey, STUDENT_KEY))
-        {
-            // if the user is the one who booked the session
-            if (Objects.equals(bookingServ.getBookingDetails(bookingID).getStudent().getUserid(), requisterID))
-            {
-                GenericDto<BookingMemberDao> newMember = bookingMemberServ.addStudentMember(bookingID, studentID);
+        String userID = isValidToken(requestKey);
 
-                if (newMember != null)
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_STUDENT)
+            {
+                // if the user is the one who booked the session
+                if (Objects.equals(bookingServ.getBookingDetails(bookingID).getStudent().getUserid(), userID))
                 {
-                    if (newMember.getTransObject() != null && newMember.getError() == null)
+                    GenericDto<BookingMemberDao> newMember = bookingMemberServ.addStudentMember(bookingID, studentID);
+
+                    if (newMember != null)
                     {
-                        return new ResponseEntity<>(new GenericDto<>(null, newMember.getTransObject(), null, null), HttpStatus.OK);
+                        if (newMember.getTransObject() != null && newMember.getError() == null)
+                        {
+                            return new ResponseEntity<>(new GenericDto<>(null, newMember.getTransObject(), null, null), HttpStatus.OK);
+                        }
+                        else
+                        {
+                            return new ResponseEntity<>(new GenericDto<>(null, null, newMember.getError(), null), HttpStatus.BAD_REQUEST);
+                        }
                     }
                     else
                     {
-                        return new ResponseEntity<>(new GenericDto<>(null, null, newMember.getError(), null), HttpStatus.BAD_REQUEST);
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                     }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -274,6 +348,7 @@ public class BookingCont
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
 
     }
 
@@ -281,22 +356,33 @@ public class BookingCont
     @DeleteMapping("/{bookingID}/member")
     public ResponseEntity<GenericDto<BookingDao>> removeMember(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("bookingID") int bookingID,
             @RequestAttribute(value = "studentID") String studentID)
     {
-        if (Objects.equals(requestKey, STUDENT_KEY))
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
         {
-            // if the user is the one who booked the session
-            if (Objects.equals(bookingServ.getBookingDetails(bookingID).getStudent().getUserid(), requisterID))
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_STUDENT)
             {
-                if (bookingMemberServ.removeStudentMember(bookingID, studentID))
+                // if the user is the one who booked the session
+                if (Objects.equals(bookingServ.getBookingDetails(bookingID).getStudent().getUserid(), userID))
                 {
-                    return new ResponseEntity<>(null, HttpStatus.OK);
+                    if (bookingMemberServ.removeStudentMember(bookingID, studentID))
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -309,34 +395,26 @@ public class BookingCont
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
 
+
     }
 
     // update booking - only status / times for leader
     @PutMapping("/{bookingID}")
     public ResponseEntity<GenericDto<BookingDao>> updateBooking(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("bookingID") int bookingID,
             @RequestAttribute(value = "statusID") char statusID,
             @RequestAttribute(value = "startTime", required = false) Instant startTime,
             @RequestAttribute(value = "endTime", required = false) Instant endTime)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
-        {
-            if (bookingServ.updateBooking(bookingID, statusID, false, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
-            {
-                return new ResponseEntity<>(null, HttpStatus.OK);
-            }
-            else
-            {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-        }
-        else if (Objects.equals(requestKey, LEADER_KEY))
-        {
-            // does the leader own this booking?
+        String userID = isValidToken(requestKey);
 
-            if (Objects.equals(bookingServ.getBookingDetails(bookingID).getSlot().getLeader().getUserid(), requisterID))
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
             {
                 if (bookingServ.updateBooking(bookingID, statusID, false, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
                 {
@@ -347,18 +425,77 @@ public class BookingCont
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
             }
+            else if (user.getRole().getRoleid() == ROLE_LEADER)
+            {
+                // does the leader own this booking?
+
+                if (Objects.equals(bookingServ.getBookingDetails(bookingID).getSlot().getLeader().getUserid(), userID))
+                {
+                    if (bookingServ.updateBooking(bookingID, statusID, false, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
+            }
+            else if (user.getRole().getRoleid() == ROLE_STUDENT)
+            {
+                // is the student the one who booked the session?
+
+                if (Objects.equals(bookingServ.getBookingDetails(bookingID).getStudent().getUserid(), userID))
+                {
+                    if (bookingServ.updateBooking(bookingID, statusID, true, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
+            }
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else if (Objects.equals(requestKey, STUDENT_KEY))
+        else
         {
-            // is the student the one who booked the session?
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
 
-            if (Objects.equals(bookingServ.getBookingDetails(bookingID).getStudent().getUserid(), requisterID))
+    }
+
+
+    // actually delete booking - managers only
+    @DeleteMapping("/{bookingID}")
+    public ResponseEntity<GenericDto<BookingDao>> deleteBooking(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @PathVariable("bookingID") int bookingID
+    )
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            // only managers and admin are able to fully delete from the db
+            if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
             {
-                if (bookingServ.updateBooking(bookingID, statusID, true, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
+                if (bookingServ.deleteBooking(bookingID))
                 {
                     return new ResponseEntity<>(null, HttpStatus.OK);
                 }
@@ -376,31 +513,6 @@ public class BookingCont
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-    }
 
-
-    // actually delete booking - managers only
-    @DeleteMapping("/{bookingID}")
-    public ResponseEntity<GenericDto<BookingDao>> deleteBooking(
-            @RequestHeader(value = "Authorization") String requestKey,
-            @PathVariable("bookingID") int bookingID
-    )
-    {
-        // only managers and admin are able to fully delete from the db
-        if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
-        {
-            if (bookingServ.deleteBooking(bookingID))
-            {
-                return new ResponseEntity<>(null, HttpStatus.OK);
-            }
-            else
-            {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-        }
-        else
-        {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
     }
 }

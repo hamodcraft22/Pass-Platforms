@@ -1,20 +1,22 @@
 package polytechnic.bh.PassPlatforms_Backend.Controller;
 
-import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.SlotDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Dto.LeadersSlotsDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.SlotServ;
+import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.*;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.ROLE_LEADER;
+import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -25,13 +27,19 @@ public class SlotCont
     @Autowired
     private SlotServ slotServ;
 
+    @Autowired
+    private UserServ userServ;
+
     // get all slots - not needed
     @GetMapping("")
     public ResponseEntity<GenericDto<List<SlotDao>>> getAllSlots(
             @RequestHeader(value = "Authorization") String requestKey)
     {
-        if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
         {
+
             List<SlotDao> slots = slotServ.getAllSlots();
 
             if (slots != null && !slots.isEmpty())
@@ -42,11 +50,13 @@ public class SlotCont
             {
                 return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
             }
+
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
 
     }
 
@@ -57,8 +67,11 @@ public class SlotCont
             @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody List<String> leaderIDs)
     {
-        if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
         {
+
             List<LeadersSlotsDto> slots = slotServ.getAllLeaderSlots(leaderIDs);
 
             if (slots != null && !slots.isEmpty())
@@ -69,11 +82,13 @@ public class SlotCont
             {
                 return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
             }
+
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
 
     }
 
@@ -85,10 +100,11 @@ public class SlotCont
             @PathVariable(value = "courseID") String courseID,
             @RequestParam(value = "weekStart") Date weekStart)
     {
-        // auth and validation
+        String userID = isValidToken(requestKey);
 
-        if (true)
+        if (userID != null)
         {
+
             List<LeadersSlotsDto> slots = slotServ.getCourseSlots(courseID, weekStart);
 
             if (slots != null && !slots.isEmpty())
@@ -99,11 +115,13 @@ public class SlotCont
             {
                 return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
             }
+
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
 
     }
 
@@ -114,8 +132,11 @@ public class SlotCont
             @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("slotID") int slotID)
     {
-        if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, STUDENT_KEY) || Objects.equals(requestKey, LEADER_KEY))
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
         {
+
             SlotDao slot = slotServ.getSlotDetails(slotID);
 
             if (slot != null)
@@ -126,6 +147,7 @@ public class SlotCont
             {
                 return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
             }
+
         }
         else
         {
@@ -141,99 +163,137 @@ public class SlotCont
             @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody SlotDao slotDao)
     {
-        if (Objects.equals(requestKey, LEADER_KEY))
-        {
-            SlotDao createdSlot = slotServ.createSlot(
-                    slotDao.getStarttime(),
-                    slotDao.getEndtime(),
-                    slotDao.getNote(),
-                    slotDao.getSlotType().getTypeid(),
-                    slotDao.getDay().getDayid(),
-                    slotDao.getLeader().getUserid()
-            );
+        String userID = isValidToken(requestKey);
 
-            if (createdSlot != null)
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_LEADER)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, createdSlot, null, null), HttpStatus.CREATED);
+                SlotDao createdSlot = slotServ.createSlot(
+                        slotDao.getStarttime(),
+                        slotDao.getEndtime(),
+                        slotDao.getNote(),
+                        slotDao.getSlotType().getTypeid(),
+                        slotDao.getDay().getDayid(),
+                        slotDao.getLeader().getUserid()
+                );
+
+                if (createdSlot != null)
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, createdSlot, null, null), HttpStatus.CREATED);
+                }
+                else
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, null, List.of("Slot clashes with another slot time"), null), HttpStatus.CREATED);
+                }
+
             }
             else
             {
-                return new ResponseEntity<>(new GenericDto<>(null, null, List.of("Slot clashes with another slot time"), null), HttpStatus.CREATED);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
-
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
+
     }
 
     // edit slot
     @PutMapping("")
     public ResponseEntity<GenericDto<SlotDao>> editSlot(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @RequestBody SlotDao slotDao)
     {
-        if (Objects.equals(requestKey, LEADER_KEY))
-        {
-            SlotDao editedSlots = slotServ.getSlotDetails(slotDao.getSlotid());
+        String userID = isValidToken(requestKey);
 
-            if (editedSlots != null)
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_LEADER)
             {
-                if (Objects.equals(editedSlots.getLeader().getUserid(), requisterID))
+                SlotDao editedSlots = slotServ.getSlotDetails(slotDao.getSlotid());
+
+                if (editedSlots != null)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, slotServ.editSlot(slotDao), null, null), HttpStatus.OK);
+                    if (Objects.equals(editedSlots.getLeader().getUserid(), userID))
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, slotServ.editSlot(slotDao), null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
+
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
-
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
     }
 
     // delete slot
     @DeleteMapping("/{slotID}")
     public ResponseEntity<GenericDto<Boolean>> deleteSlot(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("slotID") int slotID)
     {
-        if (Objects.equals(requestKey, LEADER_KEY))
-        {
-            SlotDao toDeleteSlots = slotServ.getSlotDetails(slotID);
+        String userID = isValidToken(requestKey);
 
-            if (toDeleteSlots != null)
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_LEADER)
             {
-                if (Objects.equals(toDeleteSlots.getLeader().getUserid(), requisterID))
+                SlotDao toDeleteSlots = slotServ.getSlotDetails(slotID);
+
+                if (toDeleteSlots != null)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, slotServ.deleteSlot(slotID), null, null), HttpStatus.OK);
+                    if (Objects.equals(toDeleteSlots.getLeader().getUserid(), userID))
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, slotServ.deleteSlot(slotID), null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
+
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
-
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
     }
 }
 

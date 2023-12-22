@@ -109,6 +109,9 @@ export default function NewBookingPage() {
 
     useEffect(() => {if(shownSection === 2){getAvlbSlots()}}, [shownSection]);
 
+    // get upoan date change
+    useEffect(() => {if(shownSection === 2){getAvlbSlots()}}, [bookingStartDate]);
+
     // parsing slots
     function parseSlots()
     {
@@ -182,8 +185,11 @@ export default function NewBookingPage() {
                 const startTime = moment(bookingStartDate.clone().add(daysToAdd, 'day').format('YYYY-MM-DD') + 'T' + moment(slot.starttime).format('HH:mm:ss'));
                 const endTime = moment(bookingStartDate.clone().add(daysToAdd, 'day').format('YYYY-MM-DD') + 'T' + moment(slot.endtime).format('HH:mm:ss'));
 
-                // create new slot object with color
-                leaderSlos.push({"uid":slotid,"start":startTime, "end":endTime, "slotType":slotType, "color":leaderColor});
+                if (startTime > moment().startOf('day').add(1, 'day'))
+                {
+                    // create new slot object with color
+                    leaderSlos.push({"uid":slotid,"start":startTime, "end":endTime, "slotType":slotType, "color":leaderColor, "leaderName":leaderName});
+                }
             })
 
 
@@ -218,38 +224,6 @@ export default function NewBookingPage() {
 
     // slots to be shown
     const [selectedIntervals, setSelectedIntervals] = useState([]);
-
-    const selectedzIntervals = [
-        {
-            uid: 1,
-            day: 'mockDay',
-            leader: 'Mock Leader',
-            start: moment({h: 10, m: 0}),
-            end: moment({h: 11, m: 0}),
-            color: "#94E387FF"
-        },
-        {
-            uid: 2,
-            day: 'mockDay',
-            leader: 'Mock Leader',
-            start: moment({h: 12, m: 0}).add(2, 'd'),
-            end: moment({h: 13, m: 0}).add(2, 'd'),
-            online: true,
-            color: "#E494EEFF"
-        },
-        {
-            uid: 3,
-            day: 'mockDay',
-            leader: 'Mock Leader',
-            start: moment({h: 10, m: 0}).add(-1, 'd').add(-1, 'h'),
-            end: moment({h: 11, m: 0}).add(-1, 'd').add(-1, 'h'),
-            online: true,
-            color: "#94E387FF"
-        }
-
-    ]
-
-
 
     useEffect(() => {if (Object.keys(recivedSlotsDto).length !== 0) {parseSlots()}}, [recivedSlotsDto])
 
@@ -449,12 +423,12 @@ export default function NewBookingPage() {
 
                             <Box sx={{mt: 1, width: '100%', display: 'flex', justifyContent: 'space-between'}}>
                                 <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:arrow-ios-back-fill"/>}
-                                        onClick={prevSection}>
+                                        onClick={() => {setBookingStartDate(bookingStartDate.clone().add(-7,'day'))}}>
                                     Prev Week
                                 </Button>
 
                                 <Button variant="contained" color="inherit" endIcon={<Iconify icon="eva:arrow-ios-forward-fill"/>}
-                                        onClick={nextSection}>
+                                        onClick={() => {setBookingStartDate(bookingStartDate.clone().add(7,'day'))}}>
                                     Next Week
                                 </Button>
                             </Box>
@@ -498,9 +472,22 @@ export default function NewBookingPage() {
                                     (<>Your Session will be
                                         on <b>{moment(slotToConfirm.start).format("DD/MM/YYYY")}</b> - <b>{moment(slotToConfirm.start).format("dddd")}</b>,
                                         and will be conducted
-                                        by <b>{slotToConfirm.leader}</b> from <b>{moment(slotToConfirm.start).format("hh:mma")}</b> till <b>{moment(slotToConfirm.end).format("hh:mma")}</b>, {slotToConfirm.online ? (
-                                            <b>Online</b>) : (<b>Physically</b>)}</>) : (
-                                        <CircularProgress color="inherit"/>)
+                                        by <b>{slotToConfirm.leaderName}</b> from <b>{moment(slotToConfirm.start).format("hh:mma")}</b> till <b>{moment(slotToConfirm.end).format("hh:mma")}</b>,
+
+                                        {
+                                            slotToConfirm.slotType === 'online' && <b> Online</b>
+                                        }
+
+                                        {
+                                            slotToConfirm.slotType === 'physical' && <b> Physical</b>
+                                        }
+
+                                        {
+                                            slotToConfirm.slotType === 'both' && <FormHelperText>** this session is flexible and you will have the choice to select online or physical in the next section</FormHelperText>
+                                        }
+                                    </>)
+                                    :
+                                    (<CircularProgress color="inherit"/>)
                             }
                         </DialogContentText>
                     </DialogContent>
@@ -535,19 +522,25 @@ export default function NewBookingPage() {
                             might have clashes within your selected session.</FormHelperText>
 
 
-                        <Typography variant="h6" sx={{mt: 3}}>Online Session? Toggle:</Typography>
-                        <FormHelperText sx={{ml: 2}}>Online</FormHelperText>
-                        <ToggleButton
-                            value={bookingOnline}
-                            selected={bookingOnline}
-                            sx={{width: '100%'}}
-                            color={"primary"}
-                            onChange={() => {
-                                setBookingOnline(!bookingOnline)
-                            }}
-                        >
-                            <PublicIcon/>
-                        </ToggleButton>
+                        {
+                            selctedSlot.slotType === 'both' &&
+                            <>
+                                <Typography variant="h6" sx={{mt: 3}}>Online Session? Toggle:</Typography>
+                                <FormHelperText sx={{ml: 2}}>Online</FormHelperText>
+                                <ToggleButton
+                                    value={bookingOnline}
+                                    selected={bookingOnline}
+                                    sx={{width: '100%'}}
+                                    color={"primary"}
+                                    onChange={() => {
+                                        setBookingOnline(!bookingOnline)
+                                    }}
+                                >
+                                    <PublicIcon/>
+                                </ToggleButton>
+                                <FormHelperText>By default the session will be physical.</FormHelperText>
+                            </>
+                        }
 
                         <Typography variant="h6" sx={{mt: 3}}>Help Area:</Typography>
                         <TextField sx={{width: '100%', mt: 1}} label="I want the Pass Leader to Help Me In:"
@@ -567,9 +560,9 @@ export default function NewBookingPage() {
                         <FormHelperText>Please validate your booking before submitting.</FormHelperText>
 
                         <TextField label="School" variant="standard" fullWidth sx={{mb: 1, mt: 3}}
-                                   InputProps={{readOnly: true}} defaultValue={selectedSchool.schoolName}/>
+                                   InputProps={{readOnly: true}} defaultValue={selectedSchool.schoolname}/>
                         <TextField label="Course" variant="standard" fullWidth sx={{mb: 1, mt: 1}}
-                                   InputProps={{readOnly: true}} defaultValue={selectedCourse.courseName}/>
+                                   InputProps={{readOnly: true}} defaultValue={selectedCourse.courseid + " " + selectedCourse.coursename}/>
 
                         <TextField label="Date" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
                                    InputProps={{readOnly: true}}
@@ -583,7 +576,7 @@ export default function NewBookingPage() {
                         <TextField label="Leader" variant="standard" fullWidth sx={{mb: 2, mt: 2}} InputProps={{
                             startAdornment: (<InputAdornment position="start"><AccountCircle/></InputAdornment>),
                             readOnly: true
-                        }} defaultValue={selctedSlot.leader}/>
+                        }} defaultValue={selctedSlot.leaderName}/>
 
                         {/* loop of members - if added - maybe add name get? */}
                         {

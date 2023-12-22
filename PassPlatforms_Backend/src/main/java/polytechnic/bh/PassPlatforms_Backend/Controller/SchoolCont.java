@@ -5,14 +5,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.SchoolDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.SchoolServ;
+import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
 import java.util.List;
-import java.util.Objects;
 
-import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN_KEY;
-import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.MANAGER_KEY;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.ROLE_ADMIN;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.ROLE_MANAGER;
+import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
+
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -23,69 +26,119 @@ public class SchoolCont
     @Autowired
     private SchoolServ schoolServ;
 
+    @Autowired
+    private UserServ userServ;
+
     // get all schools
     @GetMapping("")
-    public ResponseEntity<GenericDto<List<SchoolDao>>> getAllSchools()
+    public ResponseEntity<GenericDto<List<SchoolDao>>> getAllSchools(
+            @RequestHeader(value = "Authorization") String requestKey
+    )
     {
-        List<SchoolDao> schools = schoolServ.getAllSchools();
+        String userID = isValidToken(requestKey);
 
-        if (schools != null && !schools.isEmpty())
+        if (userID != null)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, schools, null, null), HttpStatus.OK);
+            List<SchoolDao> schools = schoolServ.getAllSchools();
+
+            if (schools != null && !schools.isEmpty())
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, schools, null, null), HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            }
         }
         else
         {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
     }
 
     // get revision schools
     @GetMapping("/revisions")
-    public ResponseEntity<GenericDto<List<SchoolDao>>> getRevSchools()
+    public ResponseEntity<GenericDto<List<SchoolDao>>> getRevSchools(
+            @RequestHeader(value = "Authorization") String requestKey
+    )
     {
-        List<SchoolDao> schools = schoolServ.getAllRevSchools();
+        String userID = isValidToken(requestKey);
 
-        if (schools != null && !schools.isEmpty())
+        if (userID != null)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, schools, null, null), HttpStatus.OK);
+            List<SchoolDao> schools = schoolServ.getAllRevSchools();
+
+            if (schools != null && !schools.isEmpty())
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, schools, null, null), HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            }
         }
         else
         {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
     }
 
     // get revision schools
     @GetMapping("/schools")
-    public ResponseEntity<GenericDto<List<SchoolDao>>> getAvlbSchools()
+    public ResponseEntity<GenericDto<List<SchoolDao>>> getAvlbSchools(
+            @RequestHeader(value = "Authorization") String requestKey
+    )
     {
-        List<SchoolDao> schools = schoolServ.getAllAvlbSchools();
+        String userID = isValidToken(requestKey);
 
-        if (schools != null && !schools.isEmpty())
+        if (userID != null)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, schools, null, null), HttpStatus.OK);
+            List<SchoolDao> schools = schoolServ.getAllAvlbSchools();
+
+            if (schools != null && !schools.isEmpty())
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, schools, null, null), HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            }
         }
         else
         {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
     }
 
     // get school details
     @GetMapping("/{schoolID}")
     public ResponseEntity<GenericDto<SchoolDao>> getSchoolDetails(
+            @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("schoolID") String schoolID)
     {
-        SchoolDao school = schoolServ.getSchoolDetails(schoolID);
+        String userID = isValidToken(requestKey);
 
-        if (school != null)
+        if (userID != null)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, school, null, null), HttpStatus.OK);
+            SchoolDao school = schoolServ.getSchoolDetails(schoolID);
+
+            if (school != null)
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, school, null, null), HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            }
         }
         else
         {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
     }
 
     // create school
@@ -94,16 +147,29 @@ public class SchoolCont
             @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody SchoolDao schoolDao)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
-        {
-            SchoolDao createdSchool = schoolServ.createSchool(schoolDao.getSchoolid(), schoolDao.getSchoolname(), schoolDao.getCourses());
+        String userID = isValidToken(requestKey);
 
-            return new ResponseEntity<>(new GenericDto<>(null, createdSchool, null, null), HttpStatus.CREATED);
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            {
+                SchoolDao createdSchool = schoolServ.createSchool(schoolDao.getSchoolid(), schoolDao.getSchoolname(), schoolDao.getCourses());
+
+                return new ResponseEntity<>(new GenericDto<>(null, createdSchool, null, null), HttpStatus.CREATED);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
     }
 
     // edit school
@@ -112,24 +178,37 @@ public class SchoolCont
             @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody SchoolDao schoolDao)
     {
+        String userID = isValidToken(requestKey);
 
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
+        if (userID != null)
         {
-            SchoolDao editedSchool = schoolServ.editSchool(schoolDao);
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
 
-            if (editedSchool != null)
+            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, editedSchool, null, null), HttpStatus.OK);
+                SchoolDao editedSchool = schoolServ.editSchool(schoolDao);
+
+                if (editedSchool != null)
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, editedSchool, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
+
     }
 
     // delete school
@@ -138,21 +217,34 @@ public class SchoolCont
             @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("schoolID") String schoolID)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
         {
-            if (schoolServ.deleteSchool(schoolID))
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
             {
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                if (schoolServ.deleteSchool(schoolID))
+                {
+                    return new ResponseEntity<>(null, HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
     }
 }
 

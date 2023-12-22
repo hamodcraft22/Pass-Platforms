@@ -5,13 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.NotificationDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.NotificationServ;
+import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
 import java.util.List;
-import java.util.Objects;
 
-import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN_KEY;
+import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -21,13 +22,22 @@ public class NotificationCont
     @Autowired
     private NotificationServ notificationServ;
 
+    @Autowired
+    private UserServ userServ;
+
     @GetMapping("")
     public ResponseEntity<GenericDto<List<NotificationDao>>> getUserNotifications(
             @RequestHeader(value = "Authorization") String requestKey)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY))
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
         {
-            List<NotificationDao> notifications = notificationServ.getUserNotfs("FROMAZURE");
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+
+            List<NotificationDao> notifications = notificationServ.getUserNotfs(user.getUserid());
 
             if (notifications != null && !notifications.isEmpty())
             {
@@ -37,11 +47,13 @@ public class NotificationCont
             {
                 return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
             }
+
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
     }
 
     // tested
@@ -50,7 +62,9 @@ public class NotificationCont
             @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("notficID") int notficID)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY))
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
         {
             NotificationDao notification = notificationServ.getNotifc(notficID);
 
@@ -62,10 +76,12 @@ public class NotificationCont
             {
                 return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
             }
+
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
     }
 }

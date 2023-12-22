@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import polytechnic.bh.PassPlatforms_Backend.Dao.*;
+import polytechnic.bh.PassPlatforms_Backend.Dao.RoleDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
@@ -12,11 +13,10 @@ import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
-import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN_KEY;
-import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.MANAGER_KEY;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.ROLE_ADMIN;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.ROLE_MANAGER;
 import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
 
@@ -36,9 +36,9 @@ public class UserCont
     @GetMapping("")
     public ResponseEntity<GenericDto<List<UserDao>>> getAllUsers(@RequestHeader(value = "Authorization", required = false) String requestKey)
     {
-        // if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
+        String userID = isValidToken(requestKey);
 
-        if (true)
+        if (userID != null)
         {
             List<UserDao> users = new ArrayList<>();
 
@@ -60,36 +60,29 @@ public class UserCont
     public ResponseEntity<GenericDto<?>> getInfo(@RequestHeader(value = "Authorization", required = false) String requestKey,
                                                  @PathVariable(value = "userID") String userID)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
-        {
-            Optional<User> user = userRepo.findById(userID);
+        String thisUserID = isValidToken(requestKey);
 
-            if (user.isPresent())
+        if (thisUserID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
             {
-                if (user.get().getRole().getRoleid() == 1)
+                Optional<User> gottenUser = userRepo.findById(userID);
+
+                if (gottenUser.isPresent())
                 {
-                    // student
-                    return new ResponseEntity<>(new GenericDto<>(null, new StudentDao(user.get()), null, null), HttpStatus.OK);
-                }
-                else if (user.get().getRole().getRoleid() == 2)
-                {
-                    // leader
-                    return new ResponseEntity<>(new GenericDto<>(null, new LeaderDao(user.get()), null, null), HttpStatus.OK);
-                }
-                else if (user.get().getRole().getRoleid() == 3)
-                {
-                    // Tutor
-                    return new ResponseEntity<>(new GenericDto<>(null, new TutorDao(user.get()), null, null), HttpStatus.OK);
+                    return new ResponseEntity<>(new GenericDto<>(null, new UserDao(gottenUser.get()), null, null), HttpStatus.OK);
                 }
                 else
                 {
-                    // Admin | Manager
-                    return new ResponseEntity<>(new GenericDto<>(null, new UserDao(user.get()), null, null), HttpStatus.OK);
+                    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
                 }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else

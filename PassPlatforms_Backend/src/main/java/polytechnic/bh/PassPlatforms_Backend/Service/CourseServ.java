@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.CourseDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.TranscriptDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Course;
-import polytechnic.bh.PassPlatforms_Backend.Entity.Transcript;
 import polytechnic.bh.PassPlatforms_Backend.Repository.CourseRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.SchoolRepo;
 
@@ -64,7 +63,7 @@ public class CourseServ
 
     public List<CourseDao> getLeaderPossibleCourses(String leaderID)
     {
-        List<String> Grades = List.of("A+","A","A-","B+");
+        List<String> Grades = List.of("A+", "A", "A-", "B+");
 
         List<CourseDao> leaderCourses = new ArrayList<>();
 

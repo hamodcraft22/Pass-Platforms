@@ -7,15 +7,14 @@ import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
-import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Service.ApplicationServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
 import java.util.List;
 import java.util.Objects;
 
-import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.*;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.ApplicationStatusConstant.*;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.*;
 import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 
 @CrossOrigin(origins = "*")
@@ -71,50 +70,61 @@ public class ApplicationCont
     @GetMapping("/{applicationID}")
     public ResponseEntity<GenericDto<ApplicationDao>> getApplication(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("applicationID") int applicationID)
     {
-        // if it is an admin or manager, return anyway
-        if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
-        {
-            ApplicationDao applicationDao = applicationServ.getApplicationDetailsByID(applicationID);
+        String userID = isValidToken(requestKey);
 
-            if (applicationDao != null)
-            {
-                return new ResponseEntity<>(new GenericDto<>(null, applicationDao, null, null), HttpStatus.OK);
-            }
-            else
-            {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-            }
-        }
-        //if it is a student, check if it is their application
-        else if (Objects.equals(requestKey, STUDENT_KEY))
+        if (userID != null)
         {
-            ApplicationDao applicationDao = applicationServ.getApplicationDetailsByID(applicationID);
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
 
-            if (applicationDao != null)
+            // if it is an admin or manager, return anyway
+            if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
             {
-                if (Objects.equals(applicationDao.getUser().getUserid(), requisterID))
+                ApplicationDao applicationDao = applicationServ.getApplicationDetailsByID(applicationID);
+
+                if (applicationDao != null)
                 {
                     return new ResponseEntity<>(new GenericDto<>(null, applicationDao, null, null), HttpStatus.OK);
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
                 }
+            }
+            //if it is a student, check if it is their application
+            else if (user.getRole().getRoleid() == ROLE_STUDENT)
+            {
+                ApplicationDao applicationDao = applicationServ.getApplicationDetailsByID(applicationID);
+
+                if (applicationDao != null)
+                {
+                    if (Objects.equals(applicationDao.getUser().getUserid(), userID))
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, applicationDao, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    }
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
+
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
-
         }
-        // if any other type, do not return anything
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
 
     }
 
@@ -122,33 +132,44 @@ public class ApplicationCont
     @PostMapping("")
     public ResponseEntity<GenericDto<ApplicationDao>> createApplication(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @RequestBody String applicationNote)
     {
-        if (Objects.equals(requestKey, STUDENT_KEY))
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
         {
-            // check if user has an application first
-            ApplicationDao retrivedApplicationDao = applicationServ.getApplicationDetailsByUser(requisterID);
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
 
-            if (retrivedApplicationDao == null)
+            if (user.getRole().getRoleid() == ROLE_STUDENT)
             {
-                // user has no application, can create a new one
+                // check if user has an application first
+                ApplicationDao retrivedApplicationDao = applicationServ.getApplicationDetailsByUser(userID);
 
-                //** should check if transcript is present **//
-
-                if (applicationServ.createApplication(requisterID, applicationNote) != null)
+                if (retrivedApplicationDao == null)
                 {
-                    return new ResponseEntity<>(null, HttpStatus.OK);
+                    // user has no application, can create a new one
+
+                    //** should check if transcript is present **//
+
+                    if (applicationServ.createApplication(userID, applicationNote) != null)
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    // user already has application
+                    return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
                 }
             }
             else
             {
-                // user already has application
-                return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
@@ -161,25 +182,69 @@ public class ApplicationCont
     @PutMapping("")
     public ResponseEntity<GenericDto<ApplicationDao>> updateApplication(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @RequestBody ApplicationDao applicationGotten)
     {
-        // if it is a student requesting an update, update y student id, if it is a manager update by passed in application id
-        if (Objects.equals(requestKey, STUDENT_KEY))
-        {
-            ApplicationDao retrivedApplicationDao = applicationServ.getApplicationDetailsByUser(requisterID);
+        String userID = isValidToken(requestKey);
 
-            if (retrivedApplicationDao != null)
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            // if it is a student requesting an update, update y student id, if it is a manager update by passed in application id
+            if (user.getRole().getRoleid() == ROLE_STUDENT)
             {
-                // check if it is the student application (extra verification) - did the student pass in his own application
-                if (applicationGotten.getUser().getUserid().equals(requisterID))
+                ApplicationDao retrivedApplicationDao = applicationServ.getApplicationDetailsByUser(userID);
+
+                if (retrivedApplicationDao != null)
                 {
-                    // update application (status only to canceled or reopened by student)
+                    // check if it is the student application (extra verification) - did the student pass in his own application
+                    if (applicationGotten.getUser().getUserid().equals(userID))
+                    {
+                        // update application (status only to canceled or reopened by student)
+                        char applicationStatus = applicationGotten.getApplicationStatus().getStatusid();
+
+                        if ((retrivedApplicationDao.getApplicationStatus().getStatusid() == APLC_CANCLED && applicationGotten.getApplicationStatus().getStatusid() == APLC_REOPENED) || ((retrivedApplicationDao.getApplicationStatus().getStatusid() != APLC_ACCEPTED && retrivedApplicationDao.getApplicationStatus().getStatusid() != APLC_REJECTED && retrivedApplicationDao.getApplicationStatus().getStatusid() != APLC_CANCLED) && (applicationGotten.getApplicationStatus().getStatusid() == APLC_CANCLED)))
+                        {
+                            ApplicationDao responseAplDao = applicationServ.updateApplication(retrivedApplicationDao.getApplicationid(), applicationStatus, true);
+
+                            if (responseAplDao != null)
+                            {
+                                return new ResponseEntity<>(new GenericDto<>(null, responseAplDao, null, null), HttpStatus.OK);
+                            }
+                            else
+                            {
+                                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                            }
+                        }
+                        else
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        }
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    }
+                }
+                else
+                {
+                    // no application found to update
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
+            }
+            else if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
+            {
+                // get application based on the passed in application info
+                ApplicationDao retrivedApplicationDao = applicationServ.getApplicationDetailsByID(applicationGotten.getApplicationid());
+
+                if (retrivedApplicationDao != null)
+                {
                     char applicationStatus = applicationGotten.getApplicationStatus().getStatusid();
 
-                    if ((retrivedApplicationDao.getApplicationStatus().getStatusid() == APLC_CANCLED && applicationGotten.getApplicationStatus().getStatusid() == APLC_REOPENED) || ((retrivedApplicationDao.getApplicationStatus().getStatusid() != APLC_ACCEPTED && retrivedApplicationDao.getApplicationStatus().getStatusid() != APLC_REJECTED && retrivedApplicationDao.getApplicationStatus().getStatusid() != APLC_CANCLED) && (applicationGotten.getApplicationStatus().getStatusid() == APLC_CANCLED)))
+                    if (applicationStatus != APLC_CREATED && applicationStatus != APLC_CANCLED && applicationStatus != APLC_REOPENED)
                     {
-                        ApplicationDao responseAplDao = applicationServ.updateApplication(retrivedApplicationDao.getApplicationid(), applicationStatus, true);
+                        ApplicationDao responseAplDao = applicationServ.updateApplication(retrivedApplicationDao.getApplicationid(), applicationStatus, false);
 
                         if (responseAplDao != null)
                         {
@@ -197,46 +262,13 @@ public class ApplicationCont
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    // no application found to update
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
                 }
             }
             else
             {
-                // no application found to update
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-            }
-        }
-        else if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
-        {
-            // get application based on the passed in application info
-            ApplicationDao retrivedApplicationDao = applicationServ.getApplicationDetailsByID(applicationGotten.getApplicationid());
-
-            if (retrivedApplicationDao != null)
-            {
-                char applicationStatus = applicationGotten.getApplicationStatus().getStatusid();
-
-                if (applicationStatus != APLC_CREATED && applicationStatus != APLC_CANCLED && applicationStatus != APLC_REOPENED)
-                {
-                    ApplicationDao responseAplDao = applicationServ.updateApplication(retrivedApplicationDao.getApplicationid(), applicationStatus, false);
-
-                    if (responseAplDao != null)
-                    {
-                        return new ResponseEntity<>(new GenericDto<>(null, responseAplDao, null, null), HttpStatus.OK);
-                    }
-                    else
-                    {
-                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-                    }
-                }
-                else
-                {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-                }
-            }
-            else
-            {
-                // no application found to update
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
@@ -251,21 +283,34 @@ public class ApplicationCont
             @PathVariable("applicationID") int applicationID
     )
     {
-        // only managers and admin are able to fully delete from the db
-        if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
         {
-            if (applicationServ.deleteApplication(applicationID))
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            // only managers and admin are able to fully delete from the db
+            if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
             {
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                if (applicationServ.deleteApplication(applicationID))
+                {
+                    return new ResponseEntity<>(null, HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
     }
 }

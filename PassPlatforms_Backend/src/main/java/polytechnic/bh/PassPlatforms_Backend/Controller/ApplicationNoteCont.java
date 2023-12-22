@@ -6,14 +6,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationNoteDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.ApplicationNoteServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.ApplicationServ;
+import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
 import java.util.List;
 import java.util.Objects;
 
-import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.*;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.*;
+import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -27,77 +30,102 @@ public class ApplicationNoteCont
     @Autowired
     ApplicationServ applicationServ;
 
+    @Autowired
+    private UserServ userServ;
+
     // get all notes - note used - by admin or manager
     @GetMapping("")
     public ResponseEntity<GenericDto<List<ApplicationNoteDao>>> getAllNotes(
             @RequestHeader(value = "Authorization") String requestKey)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY) || Objects.equals(requestKey, MANAGER_KEY))
-        {
-            List<ApplicationNoteDao> retrivedNotes = applicationNoteServ.getAllAplicationNotes(false);
+        String userID = isValidToken(requestKey);
 
-            if (retrivedNotes != null && !retrivedNotes.isEmpty())
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, retrivedNotes, null, null), HttpStatus.OK);
+                List<ApplicationNoteDao> retrivedNotes = applicationNoteServ.getAllAplicationNotes(false);
+
+                if (retrivedNotes != null && !retrivedNotes.isEmpty())
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, retrivedNotes, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-
     }
 
     // get all notes for an application - not needed (returned from main application with details)
     @GetMapping("/{applicationID}")
     public ResponseEntity<GenericDto<List<ApplicationNoteDao>>> getApplicationNotes(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("applicationID") int applicationID)
     {
-        // if it is an admin or manager, return anyway
-        if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
-        {
-            List<ApplicationNoteDao> retrivedNotes = applicationNoteServ.getAplicationNotes(applicationID);
+        String userID = isValidToken(requestKey);
 
-            if (retrivedNotes != null && !retrivedNotes.isEmpty())
-            {
-                return new ResponseEntity<>(new GenericDto<>(null, retrivedNotes, null, null), HttpStatus.OK);
-            }
-            else
-            {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-            }
-        }
-        //if it is a student, check if it is their application
-        else if (Objects.equals(requestKey, STUDENT_KEY))
+        if (userID != null)
         {
-            // retrieve application
-            List<ApplicationNoteDao> retrivedNotes = applicationNoteServ.getAplicationNotes(applicationID);
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
 
-            // check if empty
-            if (retrivedNotes != null && !retrivedNotes.isEmpty())
+            // if it is an admin or manager, return anyway
+            if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
             {
-                // check if application is of student
-                if (Objects.equals(retrivedNotes.get(0).getApplication().getUser().getUserid(), requisterID))
+                List<ApplicationNoteDao> retrivedNotes = applicationNoteServ.getAplicationNotes(applicationID);
+
+                if (retrivedNotes != null && !retrivedNotes.isEmpty())
                 {
                     return new ResponseEntity<>(new GenericDto<>(null, retrivedNotes, null, null), HttpStatus.OK);
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
                 }
             }
+            //if it is a student, check if it is their application
+            else if (user.getRole().getRoleid() == ROLE_STUDENT)
+            {
+                // retrieve application
+                List<ApplicationNoteDao> retrivedNotes = applicationNoteServ.getAplicationNotes(applicationID);
+
+                // check if empty
+                if (retrivedNotes != null && !retrivedNotes.isEmpty())
+                {
+                    // check if application is of student
+                    if (Objects.equals(retrivedNotes.get(0).getApplication().getUser().getUserid(), userID))
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, retrivedNotes, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    }
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
+            }
+            // if any other type, do not return anything
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        // if any other type, do not return anything
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
@@ -108,48 +136,59 @@ public class ApplicationNoteCont
     @GetMapping("/{noteID}")
     public ResponseEntity<GenericDto<ApplicationNoteDao>> getNoteDetails(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("noteID") int noteID)
     {
-        // if it is an admin or manager, return anyway
-        if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
-        {
-            ApplicationNoteDao retrivedNote = applicationNoteServ.getNoteDetials(noteID);
+        String userID = isValidToken(requestKey);
 
-            if (retrivedNote != null)
-            {
-                return new ResponseEntity<>(new GenericDto<>(null, retrivedNote, null, null), HttpStatus.OK);
-            }
-            else
-            {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-            }
-        }
-        //if it is a student, check if it is their application
-        else if (Objects.equals(requestKey, STUDENT_KEY))
+        if (userID != null)
         {
-            // retrieve note
-            ApplicationNoteDao retrivedNote = applicationNoteServ.getNoteDetials(noteID);
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
 
-            // check if empty
-            if (retrivedNote != null)
+            // if it is an admin or manager, return anyway
+            if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
             {
-                // check if application is of student
-                if (Objects.equals(retrivedNote.getApplication().getUser().getUserid(), requisterID))
+                ApplicationNoteDao retrivedNote = applicationNoteServ.getNoteDetials(noteID);
+
+                if (retrivedNote != null)
                 {
                     return new ResponseEntity<>(new GenericDto<>(null, retrivedNote, null, null), HttpStatus.OK);
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
                 }
             }
+            //if it is a student, check if it is their application
+            else if (user.getRole().getRoleid() == ROLE_STUDENT)
+            {
+                // retrieve note
+                ApplicationNoteDao retrivedNote = applicationNoteServ.getNoteDetials(noteID);
+
+                // check if empty
+                if (retrivedNote != null)
+                {
+                    // check if application is of student
+                    if (Objects.equals(retrivedNote.getApplication().getUser().getUserid(), userID))
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, retrivedNote, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    }
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
+            }
+            // if any other type, do not return anything
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        // if any other type, do not return anything
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
@@ -160,40 +199,23 @@ public class ApplicationNoteCont
     @PostMapping("/{applicationID}")
     public ResponseEntity<GenericDto<ApplicationNoteDao>> createApplicationNote(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("applicationID") int applicationID,
             @RequestBody String noteBody)
     {
-        if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
-        {
-            // get application - verify it exists
-            if (applicationServ.checkApplication(applicationID))
-            {
-                // add a note
-                if (applicationNoteServ.creatApplicationNote(applicationID, noteBody, requisterID) != null)
-                {
-                    return new ResponseEntity<>(null, HttpStatus.OK);
-                }
-                else
-                {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-                }
-            }
-            else
-            {
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            }
-        }
-        else if (Objects.equals(requestKey, STUDENT_KEY))
-        {
-            ApplicationDao retrivedApplication = applicationServ.getApplicationDetailsByID(applicationID);
+        String userID = isValidToken(requestKey);
 
-            if (retrivedApplication != null)
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
             {
-                if (retrivedApplication.getUser().getUserid().equals(requisterID))
+                // get application - verify it exists
+                if (applicationServ.checkApplication(applicationID))
                 {
                     // add a note
-                    if (applicationNoteServ.creatApplicationNote(applicationID, noteBody, requisterID) != null)
+                    if (applicationNoteServ.creatApplicationNote(applicationID, noteBody, userID) != null)
                     {
                         return new ResponseEntity<>(null, HttpStatus.OK);
                     }
@@ -204,12 +226,40 @@ public class ApplicationNoteCont
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                }
+            }
+            else if (user.getRole().getRoleid() == ROLE_STUDENT)
+            {
+                ApplicationDao retrivedApplication = applicationServ.getApplicationDetailsByID(applicationID);
+
+                if (retrivedApplication != null)
+                {
+                    if (retrivedApplication.getUser().getUserid().equals(userID))
+                    {
+                        // add a note
+                        if (applicationNoteServ.creatApplicationNote(applicationID, noteBody, userID) != null)
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.OK);
+                        }
+                        else
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                        }
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    }
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
                 }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
@@ -222,55 +272,68 @@ public class ApplicationNoteCont
     @DeleteMapping("/{noteID}")
     public ResponseEntity<GenericDto<ApplicationNoteDao>> deleteNote(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @PathVariable("noteID") int noteID
     )
     {
-        // only managers and admin are able to fully delete from the db
-        if (Objects.equals(requestKey, MANAGER_KEY) || Objects.equals(requestKey, ADMIN_KEY))
-        {
-            if (applicationNoteServ.deleteNote(noteID))
-            {
-                return new ResponseEntity<>(null, HttpStatus.OK);
-            }
-            else
-            {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-        }
-        else if (Objects.equals(requestKey, STUDENT_KEY))
-        {
-            // retrieve note
-            ApplicationNoteDao retrivedNote = applicationNoteServ.getNoteDetials(noteID);
+        String userID = isValidToken(requestKey);
 
-            // check if empty
-            if (retrivedNote != null)
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            // only managers and admin are able to fully delete from the db
+            if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
             {
-                // check if application is of student
-                if (Objects.equals(retrivedNote.getApplication().getUser().getUserid(), requisterID))
+                if (applicationNoteServ.deleteNote(noteID))
                 {
-                    if (applicationNoteServ.deleteNote(noteID))
+                    return new ResponseEntity<>(null, HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+            }
+            else if (user.getRole().getRoleid() == ROLE_STUDENT)
+            {
+                // retrieve note
+                ApplicationNoteDao retrivedNote = applicationNoteServ.getNoteDetials(noteID);
+
+                // check if empty
+                if (retrivedNote != null)
+                {
+                    // check if application is of student
+                    if (Objects.equals(retrivedNote.getApplication().getUser().getUserid(), userID))
                     {
-                        return new ResponseEntity<>(null, HttpStatus.OK);
+                        if (applicationNoteServ.deleteNote(noteID))
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.OK);
+                        }
+                        else
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                        }
                     }
                     else
                     {
-                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                     }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
                 }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
+
     }
 }

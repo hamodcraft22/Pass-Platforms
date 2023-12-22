@@ -124,7 +124,7 @@ public class SlotServ
                 // check db against date, if there is any active booking where date = gotten date and slot = gotten slot and status active
                 if (slotDateToWeek != null)
                 {
-                    if (!bookingRepo.existsBySlot_SlotidAndBookingdateAndBookingStatus_Statusid(slotDao.getSlotid(),Date.from(slotDateToWeek.atStartOfDay(ZoneId.of("Asia/Bahrain")).toInstant()),BKNGSTAT_ACTIVE))
+                    if (!bookingRepo.existsBySlot_SlotidAndBookingdateAndBookingStatus_Statusid(slotDao.getSlotid(), Date.from(slotDateToWeek.atStartOfDay(ZoneId.of("Asia/Bahrain")).toInstant()), BKNGSTAT_ACTIVE))
                     {
                         slotsToInclude.add(slotDao);
                     }

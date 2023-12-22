@@ -5,7 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.MetadataDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Service.MetadataServ;
+import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
+
+import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.ROLE_MANAGER;
+import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -16,24 +21,62 @@ public class MetadataController
     @Autowired
     private MetadataServ metadataServ;
 
+    @Autowired
+    private UserServ userServ;
+
     // Get metadata info
     @GetMapping("")
-    public ResponseEntity<MetadataDao> getMetadata()
+    public ResponseEntity<MetadataDao> getMetadata(
+            @RequestHeader(value = "Authorization") String requestKey
+    )
     {
-        MetadataDao metadata = metadataServ.getMetadata();
-        return (metadata != null) ?
-                new ResponseEntity<>(metadata, HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            MetadataDao metadata = metadataServ.getMetadata();
+            return (metadata != null) ?
+                    new ResponseEntity<>(metadata, HttpStatus.OK) :
+                    new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+
     }
 
     // Update metadata
     @PutMapping("")
-    public ResponseEntity<MetadataDao> updateMetadata(@RequestBody MetadataDao metadataDao)
+    public ResponseEntity<MetadataDao> updateMetadata(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestBody MetadataDao metadataDao)
     {
-        MetadataDao updatedMetadata = metadataServ.updateMetadata(metadataDao);
-        return (updatedMetadata != null) ?
-                new ResponseEntity<>(updatedMetadata, HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_MANAGER)
+            {
+                MetadataDao updatedMetadata = metadataServ.updateMetadata(metadataDao);
+                return (updatedMetadata != null) ?
+                        new ResponseEntity<>(updatedMetadata, HttpStatus.OK) :
+                        new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
     }
 }
 

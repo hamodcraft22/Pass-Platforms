@@ -5,13 +5,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.AuditDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.AuditServ;
+import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
 import java.util.List;
-import java.util.Objects;
 
-import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN_KEY;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.ROLE_ADMIN;
+import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -21,22 +23,37 @@ public class AuditCont
     @Autowired
     AuditServ auditServ;
 
+    @Autowired
+    private UserServ userServ;
+
     // get all audits
     @GetMapping("")
     public ResponseEntity<GenericDto<List<AuditDao>>> getAllAudits(
             @RequestHeader(value = "Authorization") String requestKey)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY))
-        {
-            List<AuditDao> audits = auditServ.getAllAudits();
+        String userID = isValidToken(requestKey);
 
-            if (audits != null && !audits.isEmpty())
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_ADMIN)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, audits, null, null), HttpStatus.OK);
+                List<AuditDao> audits = auditServ.getAllAudits();
+
+                if (audits != null && !audits.isEmpty())
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, audits, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
@@ -51,17 +68,29 @@ public class AuditCont
             @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("auditID") int auditID)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY))
-        {
-            AuditDao audit = auditServ.getAuditDetails(auditID);
+        String userID = isValidToken(requestKey);
 
-            if (audit != null)
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_ADMIN)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, audit, null, null), HttpStatus.OK);
+                AuditDao audit = auditServ.getAuditDetails(auditID);
+
+                if (audit != null)
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, audit, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
@@ -76,16 +105,29 @@ public class AuditCont
             @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("auditID") int auditID)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY))
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
         {
-            if (auditServ.deleteAudit(auditID))
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_ADMIN)
             {
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                if (auditServ.deleteAudit(auditID))
+                {
+                    return new ResponseEntity<>(null, HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
+
         }
         else
         {

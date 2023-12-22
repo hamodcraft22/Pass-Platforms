@@ -5,13 +5,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.LogDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.LogServ;
+import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
 import java.util.List;
-import java.util.Objects;
 
-import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN_KEY;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.ROLE_ADMIN;
+import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -21,27 +23,43 @@ public class LogCont
     @Autowired
     LogServ logServ;
 
+    @Autowired
+    private UserServ userServ;
+
     @GetMapping("")
     public ResponseEntity<GenericDto<List<LogDao>>> getAllLogs(
             @RequestHeader(value = "Authorization") String requestKey)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY))
-        {
-            List<LogDao> logs = logServ.getAllLogs();
+        String userID = isValidToken(requestKey);
 
-            if (logs != null && !logs.isEmpty())
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_ADMIN)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, logs, null, null), HttpStatus.OK);
+                List<LogDao> logs = logServ.getAllLogs();
+
+                if (logs != null && !logs.isEmpty())
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, logs, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
     }
 
     @GetMapping("/{logID}")
@@ -49,23 +67,36 @@ public class LogCont
             @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("logID") int logID)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY))
-        {
-            LogDao log = logServ.getLogDetails(logID);
+        String userID = isValidToken(requestKey);
 
-            if (log != null)
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_ADMIN)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, log, null, null), HttpStatus.OK);
+                LogDao log = logServ.getLogDetails(logID);
+
+                if (log != null)
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, log, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
     }
 
     @DeleteMapping("/{logID}")
@@ -73,20 +104,33 @@ public class LogCont
             @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("logID") int logID)
     {
-        if (Objects.equals(requestKey, ADMIN_KEY))
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
         {
-            if (logServ.deleteLog(logID))
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_ADMIN)
             {
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                if (logServ.deleteLog(logID))
+                {
+                    return new ResponseEntity<>(null, HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
         else
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
     }
 }
