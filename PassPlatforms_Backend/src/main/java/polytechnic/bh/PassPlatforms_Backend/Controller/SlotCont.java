@@ -1,5 +1,6 @@
 package polytechnic.bh.PassPlatforms_Backend.Controller;
 
+import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.Objects;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.*;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/slot")
 public class SlotCont
@@ -81,7 +83,7 @@ public class SlotCont
     public ResponseEntity<GenericDto<List<LeadersSlotsDto>>> getCourseSlots(
             @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable(value = "courseID") String courseID,
-            @RequestAttribute Date weekStart)
+            @RequestParam(value = "weekStart") Date weekStart)
     {
         // auth and validation
 

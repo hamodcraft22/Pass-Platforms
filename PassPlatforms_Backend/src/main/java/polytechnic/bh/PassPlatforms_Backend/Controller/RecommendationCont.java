@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.*;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/recommendation")
 public class RecommendationCont

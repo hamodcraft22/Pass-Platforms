@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.MetadataDao;
 import polytechnic.bh.PassPlatforms_Backend.Service.MetadataServ;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/metadata")
 public class MetadataController

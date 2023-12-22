@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.ADMIN_KEY;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/notification")
 public class NotificationCont

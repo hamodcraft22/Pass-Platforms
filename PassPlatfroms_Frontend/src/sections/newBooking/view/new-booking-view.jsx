@@ -47,25 +47,179 @@ export default function NewBookingPage() {
         setErrorShow(false);
     };
 
-    // school and courses elements
-    const mockSchools = [{"schoolID": "zift1", "schoolName": "ziftSchool1"}, {
-        "schoolID": "zift2",
-        "schoolName": "ziftSchool2"
-    }];
-    const mockCourses = [{"courseID": "zift1", "courseName": "ziftcourse1"}, {
-        "courseID": "zift2",
-        "courseName": "asdsd"
-    }];
 
-    const [schools, setSchools] = useState(mockSchools);
+
+    const [schools, setSchools] = useState();
     const [selectedSchool, setSelectedSchool] = useState();
-    const [courses, setCourses] = useState(mockCourses);
+    const [courses, setCourses] = useState();
     const [selectedCourse, setSelectedCourse] = useState();
 
+
+    // get schools and courses
+    async function getAvlbSchools()
+    {
+        try
+        {
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json'}};
+
+            await fetch(`http://localhost:8080/api/school/schools`, requestOptions)
+                .then(response => {return response.json()})
+                .then((data) => {setSchools(data.transObject)})
+        }
+        catch (error)
+        {
+            console.log(error)
+        }
+    }
+
+    function handleSelectedSchool(school)
+    {
+        setSelectedSchool(school);
+        setCourses(school.courses);
+    }
+
+    useEffect(() => {getAvlbSchools()}, [])
+
+
+
+
     // time slots elements
-    const [courseLeaders, setCourseLeaders] = useState([]);
-    const [leaderSlots, setLeadersSlot] = useState([]);
-    const selectedIntervals = [
+
+    const [bookingStartDate, setBookingStartDate] = useState(moment().weekday(0));
+
+    const [recivedSlotsDto, setRecivedSlotsDto] = useState([]);
+
+    // getting slots api
+    async function getAvlbSlots()
+    {
+        try
+        {
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": "sda"}};
+
+            await fetch(`http://localhost:8080/api/slot/course/IT6008?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
+                .then(response => {return response.json()})
+                .then((data) => {setRecivedSlotsDto(data.transObject)})
+
+        }
+        catch (error)
+        {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {if(shownSection === 2){getAvlbSlots()}}, [shownSection]);
+
+    // parsing slots
+    function parseSlots()
+    {
+        const pastelColors = [
+            '#ff9496',
+            '#f494ff',
+            '#9496ff',
+            '#94d6ff',
+            '#94ffcf',
+            '#94ff96',
+            '#f8ff94',
+            '#ffb994',
+            '#793131',
+            '#794731',
+            '#797531',
+            '#317932',
+            '#317960',
+            '#315b79',
+            '#333179',
+            '#793173',
+            '#180a0a',
+            '#0a180b',
+            '#0d2820',
+            '#3f0a27',
+        ];
+
+        let parsedLeaders = [];
+
+        recivedSlotsDto.forEach((leader, index) =>
+        {
+            const leaderColor = pastelColors[index];
+
+            const leaderID = leader.leaderID;
+            const leaderName = leader.leaderName;
+
+            let leaderSlos = [];
+
+            // loop throght leader slots and assign them the color
+            leader.slots.forEach((slot) => {
+                const slotid = slot.slotid;
+
+                const slotType = slot.slotType.typename;
+
+                let daysToAdd = 0;
+
+                if (slot.day.dayid === 'M')
+                {
+                    daysToAdd = 1;
+                }
+                else if (slot.day.dayid === 'T')
+                {
+                    daysToAdd = 2;
+                }
+                else if (slot.day.dayid === 'W')
+                {
+                    daysToAdd = 3;
+                }
+                else if (slot.day.dayid === 'R')
+                {
+                    daysToAdd = 4;
+                }
+                else if (slot.day.dayid === 'F')
+                {
+                    daysToAdd = 5;
+                }
+                else if (slot.day.dayid === 'S')
+                {
+                    daysToAdd = 6;
+                }
+
+                const startTime = moment(bookingStartDate.clone().add(daysToAdd, 'day').format('YYYY-MM-DD') + 'T' + moment(slot.starttime).format('HH:mm:ss'));
+                const endTime = moment(bookingStartDate.clone().add(daysToAdd, 'day').format('YYYY-MM-DD') + 'T' + moment(slot.endtime).format('HH:mm:ss'));
+
+                // create new slot object with color
+                leaderSlos.push({"uid":slotid,"start":startTime, "end":endTime, "slotType":slotType, "color":leaderColor});
+            })
+
+
+            // add parsed leaders
+            parsedLeaders.push({"leaderID":leaderID, "leaderName":leaderName, "slots":leaderSlos, "color":leaderColor});
+        });
+
+        setLeaders(parsedLeaders);
+    }
+
+    // leaders + their slots
+    const [leaders, setLeaders] = useState([]);
+
+    // selcted leaders + their slots
+    const [selectedLeaders, setSelectedLeaders] = useState([]);
+
+    // add selcted leader slots to intrivals
+    function handleSlots()
+    {
+        let allSlots = [];
+
+        selectedLeaders.forEach((leader) => {
+            leader.slots.forEach((slot) => {
+                allSlots.push(slot);
+            })
+        })
+
+        setSelectedIntervals(allSlots);
+    }
+
+    useEffect(() => {if (selectedLeaders.length !== 0){handleSlots()}}, [selectedLeaders]);
+
+    // slots to be shown
+    const [selectedIntervals, setSelectedIntervals] = useState([]);
+
+    const selectedzIntervals = [
         {
             uid: 1,
             day: 'mockDay',
@@ -95,13 +249,9 @@ export default function NewBookingPage() {
 
     ]
 
-    const leaders = [
-        {id: 202002789, name: "Mohamed Hasan", color: "#94E387FF"},
-        {id: 202001478, name: "Sara Alshamari", color: "#E494EEFF"},
-    ];
 
-    let selectedLeaders = [];
 
+    useEffect(() => {if (Object.keys(recivedSlotsDto).length !== 0) {parseSlots()}}, [recivedSlotsDto])
 
     // slot confirmation elemnts
     const [selctedSlot, setSelctedSlot] = useState([]);
@@ -234,15 +384,15 @@ export default function NewBookingPage() {
                             options={schools}
                             value={selectedSchool}
                             onChange={(event, newValue) => {
-                                setSelectedSchool(newValue)
+                                handleSelectedSchool(newValue)
                             }}
                             sx={{width: '100%', mt: 1}}
                             renderInput={(params) => <TextField {...params} label="School"/>}
-                            getOptionLabel={(option) => option.schoolName}
+                            getOptionLabel={(option) => option.schoolname}
                             renderOption={(props, option) => {
                                 return (
                                     <li {...props}>
-                                        {option.schoolName}
+                                        {option.schoolname}
                                     </li>
                                 );
                             }}
@@ -260,11 +410,11 @@ export default function NewBookingPage() {
                             }}
                             sx={{width: '100%', mt: 1}}
                             renderInput={(params) => <TextField {...params} label="Course"/>}
-                            getOptionLabel={(option) => option.courseName}
+                            getOptionLabel={(option) => option.courseid + " " + option.coursename}
                             renderOption={(props, option) => {
                                 return (
                                     <li {...props}>
-                                        {option.courseName}
+                                        {option.courseid + " " + option.coursename}
                                     </li>
                                 );
                             }}
@@ -294,9 +444,7 @@ export default function NewBookingPage() {
                                 items={leaders}
                                 label="Leaders"
                                 selectAllLabel="All"
-                                leaders={(items) => {
-                                    selectedLeaders = items;
-                                }}
+                                leaders={(items) => {setSelectedLeaders(items)}}
                             />
 
                             <Box sx={{mt: 1, width: '100%', display: 'flex', justifyContent: 'space-between'}}>
@@ -315,7 +463,7 @@ export default function NewBookingPage() {
 
                         <WeekCalendar
                             dayFormat={"dd DD/MM"}
-                            firstDay={moment().weekday(0)}
+                            firstDay={bookingStartDate}
                             numberOfDays={7}
                             startTime={moment({h: 8, m: 0})}
                             endTime={moment({h: 22, m: 0})}

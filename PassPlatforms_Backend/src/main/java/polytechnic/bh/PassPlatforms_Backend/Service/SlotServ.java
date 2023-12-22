@@ -135,6 +135,7 @@ public class SlotServ
             if (!slotsToInclude.isEmpty())
             {
                 LeadersSlotsDto correctedleadersSlotsDto = new LeadersSlotsDto(leadersSlotsDto.getLeaderID(), leadersSlotsDto.getLeaderName(), slotsToInclude);
+                correctedLeaderSlots.add(correctedleadersSlotsDto);
             }
         }
 

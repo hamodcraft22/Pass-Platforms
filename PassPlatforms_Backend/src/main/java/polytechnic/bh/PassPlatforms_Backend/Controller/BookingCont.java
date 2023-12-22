@@ -17,6 +17,7 @@ import java.util.Objects;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.*;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/booking")
 public class BookingCont

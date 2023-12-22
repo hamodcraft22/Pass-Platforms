@@ -18,6 +18,7 @@ import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.*;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.ApplicationStatusConstant.*;
 import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/application")
 public class ApplicationCont

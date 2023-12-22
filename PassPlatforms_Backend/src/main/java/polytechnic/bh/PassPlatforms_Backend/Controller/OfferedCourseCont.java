@@ -15,6 +15,7 @@ import java.util.Objects;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.APIkeyConstant.LEADER_KEY;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/offeredcourse")
 public class OfferedCourseCont
