@@ -25,6 +25,7 @@ import {AccountCircle} from "@mui/icons-material";
 import List from "@mui/material/List";
 import ListItemText from "@mui/material/ListItemText";
 import PublicIcon from '@mui/icons-material/Public';
+import UserProfile from "../../../components/auth/UserInfo";
 
 
 // ----------------------------------------------------------------------
@@ -60,7 +61,9 @@ export default function NewBookingPage() {
     {
         try
         {
-            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json'}};
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization':token}};
 
             await fetch(`http://localhost:8080/api/school/schools`, requestOptions)
                 .then(response => {return response.json()})
@@ -81,8 +84,6 @@ export default function NewBookingPage() {
     useEffect(() => {getAvlbSchools()}, [])
 
 
-
-
     // time slots elements
 
     const [bookingStartDate, setBookingStartDate] = useState(moment().weekday(0));
@@ -94,7 +95,9 @@ export default function NewBookingPage() {
     {
         try
         {
-            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": "sda"}};
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
             await fetch(`http://localhost:8080/api/slot/course/IT6008?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
                 .then(response => {return response.json()})
@@ -256,12 +259,120 @@ export default function NewBookingPage() {
 
 
     // group & information setup elements
+
+    // all users to be added to group
+    const [allUsers, setAllUsers] = useState([]);
+
+    // get all users api
+    async function getAllUsers()
+    {
+        try
+        {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
+
+            await fetch(`http://localhost:8080/api/users/students`, requestOptions)
+                .then(response => {return response.json()})
+                .then((data) => {setAllUsers(data)})
+
+        }
+        catch (error)
+        {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {if(shownSection === 3){getAllUsers()}}, [shownSection]);
+
     const [groupMembers, setGroupMembers] = useState([]);
 
     const [bookingOnline, setBookingOnline] = useState(false);
 
     const [helpInText, setHelpInText] = useState("");
 
+
+    // submit function
+    async function createSubmit()
+    {
+        // booking elements
+
+        const bookingDate = moment(selctedSlot.start).toDate();
+        const bookingNote = helpInText;
+        let isOnline = false;
+
+        // check if slot is online
+        if (selctedSlot.slotType === 'online')
+        {
+            isOnline = true;
+        }
+        else if (selctedSlot.slotType === 'both')
+        {
+            isOnline = bookingOnline;
+        }
+        else
+        {
+            isOnline = false;
+        }
+
+        const slotID = selctedSlot.uid;
+        const courseID = selectedCourse.courseid;
+
+        let members = [];
+
+        // do members loop
+        groupMembers.forEach((member) => {
+            members.push({"student":{"userid":member.userID}});
+        });
+
+        // do booking dto
+        const bookingDto = {"bookingDate":bookingDate, "note":bookingNote, "isonline":isOnline, "slot":{"slotid":slotID}, "course":{"courseid":courseID}, "bookingMembers":members};
+        console.log(bookingDto);
+
+        await submitBooking(bookingDto);
+    }
+
+    async function submitBooking(bookingDto)
+    {
+        let isok = false;
+
+        try
+        {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(bookingDto)};
+
+            await fetch(`http://localhost:8080/api/booking`, requestOptions)
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        isok = true;
+                        setProgPercent(100);
+                        return response.json();
+                    }
+                    else if (response.status === 400)
+                    {
+                        alert("big error")
+                        return response.json();
+                    }
+                    else if (response.status === 404)
+                    {
+                        alert("not found");
+                    }
+                    else
+                    {
+                        alert("unknown error");
+                    }
+                })
+                .then((data) => {if(isok){console.log(data)}else{alert("show errors"); console.log(data)}})
+
+        }
+        catch (error)
+        {
+            console.log(error)
+        }
+    }
 
     function nextSection() {
         if (shownSection === 1) {
@@ -292,8 +403,7 @@ export default function NewBookingPage() {
         }
 
         if (shownSection === 4) {
-            alert("call api and show results based on api return");
-            setProgPercent(100);
+            createSubmit();
             // change color of progress to red if it is error etc
         }
 
@@ -509,10 +619,10 @@ export default function NewBookingPage() {
                         <Autocomplete
                             PaperComponent={CustomPaper}
                             multiple
-                            freeSolo
                             sx={{width: '100%', mt: 1}}
-                            options={[]}
+                            options={allUsers}
                             value={groupMembers}
+                            getOptionLabel={(option) => option.userID + " | " + option.userName}
                             onChange={(event, newValue) => {
                                 setGroupMembers(newValue)
                             }}
@@ -586,10 +696,10 @@ export default function NewBookingPage() {
                                         <FormHelperText>Members</FormHelperText>
                                         <List dense>
                                             {
-                                                groupMembers && groupMembers.map((studentID) => (
+                                                groupMembers && groupMembers.map((student) => (
                                                     <ListItem>
                                                         <ListItemIcon><AccountCircle/></ListItemIcon>
-                                                        <ListItemText primary={studentID}/>
+                                                        <ListItemText primary={student.userID + " | " + student.userName}/>
                                                     </ListItem>
                                                 ))
                                             }

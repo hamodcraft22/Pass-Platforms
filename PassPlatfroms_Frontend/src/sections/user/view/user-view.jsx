@@ -19,6 +19,7 @@ import {applyFilter} from '../filterUtil';
 
 import UserTableRow from '../user-table-row';
 import UserTableToolbar from '../user-table-toolbar';
+import UserProfile from "../../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
@@ -43,7 +44,9 @@ export default function UserPage() {
     {
         try
         {
-            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json'}};
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization':token}};
 
             await fetch(`http://localhost:8080/api/user`, requestOptions)
                 .then(response => {return response.json()})

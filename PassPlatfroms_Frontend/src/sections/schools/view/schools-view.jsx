@@ -32,6 +32,7 @@ import {read, utils} from 'xlsx';
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
+import UserProfile from "../../../components/auth/UserInfo";
 
 
 // ----------------------------------------------------------------------
@@ -46,7 +47,9 @@ export default function SchoolsPage() {
     async function getSchools() {
         try
         {
-            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json'}};
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization':token}};
 
             await fetch(`http://localhost:8080/api/school`, requestOptions)
                 .then(response => {return response.json()})

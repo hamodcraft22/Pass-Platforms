@@ -31,7 +31,7 @@ public class BookingMemberDao
         this.student = new UserDao(bookingMember.getStudent().getUserid(), new RoleDao(bookingMember.getStudent().getRole()), getAzureAdName(bookingMember.getStudent().getUserid()), null);
 
         List<BookingNoteDao> bookingNotes = new ArrayList<>();
-        if (!bookingMember.getBooking().getBookingNotes().isEmpty())
+        if (bookingMember.getBooking().getBookingNotes()!= null &&  !bookingMember.getBooking().getBookingNotes().isEmpty())
         {
             for (BookingNote note : bookingMember.getBooking().getBookingNotes())
             {
@@ -47,16 +47,16 @@ public class BookingMemberDao
                 bookingMember.getBooking().getDatebooked().toInstant(),
                 bookingMember.getBooking().getBookingdate(),
                 bookingMember.getBooking().getNote(),
-                bookingMember.getBooking().getStarttime().toInstant(),
-                bookingMember.getBooking().getEndtime().toInstant(),
+                bookingMember.getBooking().getStarttime() != null ? (bookingMember.getBooking().getStarttime().toInstant()):(null),
+                bookingMember.getBooking().getEndtime() != null ? (bookingMember.getBooking().getEndtime().toInstant()):(null),
                 bookingMember.getBooking().getBookinglimit(),
                 bookingMember.getBooking().isIsonline(),
                 new BookingTypeDao(bookingMember.getBooking().getBookingType()),
-                new SlotDao(bookingMember.getBooking().getSlot()),
+                bookingMember.getBooking().getSlot() != null ? (new SlotDao(bookingMember.getBooking().getSlot())):(null),
                 new BookingStatusDao(bookingMember.getBooking().getBookingStatus()),
                 new UserDao(bookingMember.getBooking().getStudent().getUserid(), new RoleDao(bookingMember.getBooking().getStudent().getRole()), getAzureAdName(bookingMember.getBooking().getStudent().getUserid()), null),
                 new CourseDao(bookingMember.getBooking().getCourse()),
                 null,
-                bookingNotes);
+                null);
     }
 }

@@ -93,38 +93,30 @@ public class SlotServ
 
         for (LeadersSlotsDto leadersSlotsDto : leaderSlots)
         {
-
             // slots to include
             List<SlotDao> slotsToInclude = new ArrayList<>();
 
             // inner lop for slots
             for (SlotDao slotDao : leadersSlotsDto.getSlots())
             {
-                LocalDate slotDateToWeek = null;
-
-                // get the date (respective to the start / end date)
-                switch (slotDao.getDay().getDayid())
+                Date slotDateToWeek = switch (slotDao.getDay().getDayid())
                 {
-                    case 'U':
-                        slotDateToWeek = weekStartDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate();
-                    case 'M':
-                        slotDateToWeek = weekStartDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().plusDays(1);
-                    case 'T':
-                        slotDateToWeek = weekStartDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().plusDays(2);
-                    case 'W':
-                        slotDateToWeek = weekStartDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().plusDays(3);
-                    case 'R':
-                        slotDateToWeek = weekStartDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().plusDays(4);
-                    case 'F':
-                        slotDateToWeek = weekStartDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().plusDays(5);
-                    case 'S':
-                        slotDateToWeek = weekStartDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().plusDays(6);
-                }
+                    // get the date (respective to the start / end date)
+
+                    case 'U' -> weekStartDate;
+                    case 'M' -> Date.from(weekStartDate.toInstant().plusSeconds(86400));
+                    case 'T' -> Date.from(weekStartDate.toInstant().plusSeconds(172800));
+                    case 'W' -> Date.from(weekStartDate.toInstant().plusSeconds(259200));
+                    case 'R' -> Date.from(weekStartDate.toInstant().plusSeconds(345600));
+                    case 'F' -> Date.from(weekStartDate.toInstant().plusSeconds(432000));
+                    case 'S' -> Date.from(weekStartDate.toInstant().plusSeconds(518400));
+                    default -> null;
+                };
 
                 // check db against date, if there is any active booking where date = gotten date and slot = gotten slot and status active
                 if (slotDateToWeek != null)
                 {
-                    if (!bookingRepo.existsBySlot_SlotidAndBookingdateAndBookingStatus_Statusid(slotDao.getSlotid(), Date.from(slotDateToWeek.atStartOfDay(ZoneId.of("Asia/Bahrain")).toInstant()), BKNGSTAT_ACTIVE))
+                    if (bookingRepo.activeUnderSlot(slotDao.getSlotid(), slotDateToWeek) == 0)
                     {
                         slotsToInclude.add(slotDao);
                     }

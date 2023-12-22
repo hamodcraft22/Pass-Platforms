@@ -8,7 +8,9 @@ import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import polytechnic.bh.PassPlatforms_Backend.Dto.UserInfoDto;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,8 @@ import java.util.Map;
 public class UsersService
 {
     public static Map<String, String> allAzureAdUsers = new HashMap<>();
+
+    public static List<UserInfoDto> allAzureStudents = new ArrayList<>();
 
     public static String getAzureAdName(String userID)
     {
@@ -76,6 +80,8 @@ public class UsersService
                 // Create a Map to store the key-value pairs
                 Map<String, String> resultMap = new HashMap<>();
 
+                allAzureStudents.clear();
+
                 // Iterate over the user list and extract the desired fields
                 for (Map<String, Object> user : userList)
                 {
@@ -83,6 +89,13 @@ public class UsersService
                     String displayName = (String) user.get("displayName");
 
                     resultMap.put(userID, displayName);
+
+
+
+                    if (userID.charAt(0) == '2')
+                    {
+                        allAzureStudents.add(new UserInfoDto(userID,displayName));
+                    }
                 }
 
                 allAzureAdUsers = resultMap;

@@ -13,6 +13,8 @@ import polytechnic.bh.PassPlatforms_Backend.Repository.BookingRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.NotificationRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.ScheduleRepo;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -98,6 +100,7 @@ public class BookingMemberServ
             BookingMember newRevMember = new BookingMember();
 
             newRevMember.setBooking(bookingRepo.getReferenceById(retrivedBooking.get().getBookingid()));
+            newRevMember.setDatetime(Timestamp.from(Instant.now()));
             newRevMember.setStudent(new User(userServ.getUser(studentID)));
 
             BookingMember addedMember = bookingMemberRepo.save(newRevMember);

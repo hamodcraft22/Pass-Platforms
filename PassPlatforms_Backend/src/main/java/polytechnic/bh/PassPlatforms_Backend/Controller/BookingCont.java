@@ -209,7 +209,6 @@ public class BookingCont
     @PostMapping("")
     public ResponseEntity<GenericDto<BookingDao>> createNewBooking(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestHeader(value = "Requester") String requisterID,
             @RequestBody BookingDao bookingDao)
     {
         String userID = isValidToken(requestKey);
@@ -221,7 +220,7 @@ public class BookingCont
 
             if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
             {
-                GenericDto<BookingDao> newBooking = bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), requisterID, bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), false, null, null, null);
+                GenericDto<BookingDao> newBooking = bookingServ.createNewBooking(bookingDao.getBookingDate(), bookingDao.getNote(), bookingDao.isIsonline(), bookingDao.getSlot().getSlotid(), userID, bookingDao.getCourse().getCourseid(), bookingDao.getBookingMembers(), false, null, null, null);
 
                 if (newBooking != null)
                 {

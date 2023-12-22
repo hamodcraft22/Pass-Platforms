@@ -177,7 +177,7 @@ public class BookingServ
                 }
 
                 // check if any active bookings are under this slot in the date selected - checked
-                if (bookingRepo.existsBySlot_SlotidAndBookingdateAndBookingStatus_Statusid(slotID, bookingDate, BKNGSTAT_ACTIVE))
+                if (bookingRepo.activeUnderSlot(slotID, bookingDate) != 0)
                 {
                     errors.add("the booking slot is booked by another student");
                 }

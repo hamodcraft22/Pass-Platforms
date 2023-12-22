@@ -14,8 +14,12 @@ public interface BookingRepo extends JpaRepository<Booking, Integer>
     // find all bookings (or revisions) within a school
     List<Booking> findBookingsByCourse_School_SchoolidAndBookingType_Typeid(String SchoolID, char typeID);
 
-    // check if slot is used by another active booking
-    boolean existsBySlot_SlotidAndBookingdateAndBookingStatus_Statusid(int slotID, Date date, char statusID);
+//    // check if slot is used by another active booking
+//    boolean existsBySlot_SlotidAndBookingdateAndBookingStatus_Statusid(int slotID, Date date, char statusID);
+
+    @Transactional
+    @Query(value = "select count(*) from pp_booking where slotid = :slotID and statusid = 'A' and trunc(bookingdate) = trunc(:bookingdate)", nativeQuery = true)
+    int activeUnderSlot(int slotID, Date bookingdate);
 
     // check if student has any active bookings at this time slot
     @Transactional
