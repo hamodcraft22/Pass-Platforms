@@ -50,6 +50,18 @@ public class CourseServ
         return courses;
     }
 
+    public List<CourseDao> getAvlbCourses()
+    {
+        List<CourseDao> courses = new ArrayList<>();
+
+        for (Course retrievedCourse : courseRepo.findAvlbCourses())
+        {
+            courses.add(new CourseDao(retrievedCourse));
+        }
+
+        return courses;
+    }
+
     public List<CourseDao> getLeaderPossibleCourses(String leaderID)
     {
         List<String> Grades = List.of("A+","A","A-","B+");

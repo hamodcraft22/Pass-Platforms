@@ -77,6 +77,48 @@ public class SchoolServ
         return schools;
     }
 
+    public List<SchoolDao> getAllAvlbSchools()
+    {
+        List<SchoolDao> schools = new ArrayList<>();
+
+        List<CourseDao> avlbCourses = courseServ.getAvlbCourses();
+
+        for (School revSchool : schoolRepo.findAvlbSchools())
+        {
+            SchoolDao newAvlbSchool = new SchoolDao();
+
+            newAvlbSchool.setSchoolid(revSchool.getSchoolid());
+            newAvlbSchool.setSchoolname(revSchool.getSchoolname());
+
+            List<CourseDao> schoolAvlbCourses = new ArrayList<>();
+
+            List<CourseDao> leftRevCourses = new ArrayList<>();
+
+            // loop to school courses
+            for (CourseDao course : avlbCourses)
+            {
+                if (Objects.equals(course.getSchool().getSchoolid(), revSchool.getSchoolid()))
+                {
+                    schoolAvlbCourses.add(new CourseDao(course.getCourseid(), course.getCoursename(), null));
+                }
+                else
+                {
+                    leftRevCourses.add(course);
+                }
+            }
+
+            // assigning the left courses
+            avlbCourses = leftRevCourses;
+
+            // saving to the list
+            newAvlbSchool.setCourses(schoolAvlbCourses);
+
+            schools.add(newAvlbSchool);
+        }
+
+        return schools;
+    }
+
     public SchoolDao getSchoolDetails(String schoolID)
     {
         Optional<School> retrievedSchool = schoolRepo.findById(schoolID);

@@ -55,6 +55,22 @@ public class SchoolCont
         }
     }
 
+    // get revision schools
+    @GetMapping("/schools")
+    public ResponseEntity<GenericDto<List<SchoolDao>>> getAvlbSchools()
+    {
+        List<SchoolDao> schools = schoolServ.getAllAvlbSchools();
+
+        if (schools != null && !schools.isEmpty())
+        {
+            return new ResponseEntity<>(new GenericDto<>(null, schools, null, null), HttpStatus.OK);
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+    }
+
     // get school details
     @GetMapping("/{schoolID}")
     public ResponseEntity<GenericDto<SchoolDao>> getSchoolDetails(

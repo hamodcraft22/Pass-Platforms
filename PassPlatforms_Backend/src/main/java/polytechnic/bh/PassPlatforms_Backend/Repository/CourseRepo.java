@@ -10,6 +10,11 @@ import java.util.List;
 
 public interface CourseRepo extends JpaRepository<Course, String>
 {
+    // select all available courses
+    @Transactional
+    @Query(value = "select * from pp_course where courseid in (select UNIQUE(courseid) from pp_offeredcourse)", nativeQuery = true)
+    List<Course> findAvlbCourses();
+
     // select all revision courses
     @Transactional
     @Query(value = "select * from pp_course where courseid in (select UNIQUE(courseid) from pp_booking where typeid = 'R')", nativeQuery = true)
