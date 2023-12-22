@@ -15,14 +15,8 @@ import Iconify from '../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableRow({
-                                         selected,
-                                         name,
-                                         avatarUrl,
-                                         role,
-                                         userid,
-                                         handleClick,
-                                     }) {
+export default function UserTableRow({name, role, userid,})
+{
     const [open, setOpen] = useState(null);
 
     const handleOpenMenu = (event) => {
@@ -35,7 +29,7 @@ export default function UserTableRow({
 
     return (
         <>
-            <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
+            <TableRow hover tabIndex={-1} role="checkbox">
 
                 <TableCell>
 
@@ -43,7 +37,7 @@ export default function UserTableRow({
 
                 <TableCell component="th" scope="row" padding="none">
                     <Stack direction="row" alignItems="center" spacing={2}>
-                        <Avatar alt={name} src={avatarUrl}/>
+                        <Avatar alt={name}/>
                         <Typography variant="subtitle2" noWrap>
                             {name}
                         </Typography>
@@ -72,13 +66,14 @@ export default function UserTableRow({
                     sx: {width: 140},
                 }}
             >
+                {/* change into normal buttons */}
                 <MenuItem onClick={handleCloseMenu}>
                     <Iconify icon="eva:edit-fill" sx={{mr: 2}}/>
                     View
                 </MenuItem>
 
                 {
-                    role === "Student" &&
+                    role === "student" &&
                     <MenuItem onClick={handleCloseMenu} sx={{color: 'info.main'}}>
                         <Iconify icon="eva:trash-2-outline" sx={{mr: 2}}/>
                         Leader-ify
@@ -90,9 +85,7 @@ export default function UserTableRow({
 }
 
 UserTableRow.propTypes = {
-    avatarUrl: PropTypes.any,
-    handleClick: PropTypes.func,
     name: PropTypes.any,
     role: PropTypes.any,
-    selected: PropTypes.any,
+    userid: PropTypes.any,
 };

@@ -27,8 +27,9 @@ import Iconify from "../../../components/iconify";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import {TextField} from "@mui/material";
+import {CardActions, CardContent, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
+import Box from "@mui/material/Box";
 
 // ----------------------------------------------------------------------
 
@@ -139,96 +140,131 @@ export default function CoursesPage() {
 
     return (
         <Container>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4">{school.schoolname} Courses</Typography>
 
-                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
-                        onClick={handleAddClickOpen}>
-                    New Course
-                </Button>
-            </Stack>
+            {/* if there is a school id */}
+            {
+                schoolIDParm !== null &&
+                <>
+                    <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+                        <Typography variant="h4">{school.schoolname} Courses</Typography>
 
-            <Card>
-                <CoursesTableToolbar
-                    numSelected={selected.length}
-                    filterName={filterName}
-                    onFilterName={handleFilterByName}
-                />
-
-                <Scrollbar>
-                    <TableContainer sx={{overflow: 'unset'}}>
-                        <Table sx={{minWidth: 800}}>
-                            <TableMainHead
-                                order={order}
-                                orderBy={orderBy}
-                                rowCount={courses.length}
-                                numSelected={selected.length}
-                                onRequestSort={handleSort}
-                                onSelectAllClick={handleSelectAllClick}
-                                headLabel={[
-                                    {id: '', label: ''},
-                                    {id: 'name', label: 'Name'},
-                                    {id: '', label: ''}
-                                ]}
-                            />
-                            <TableBody>
-                                {dataFiltered
-                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((row) => (
-                                        <CoursesTableRow
-                                            courseID={row.courseid}
-                                            courseName={row.coursename}
-                                        />
-                                    ))}
-
-                                <TableEmptyRows
-                                    height={77}
-                                    emptyRows={emptyRows(page, rowsPerPage, courses.length)}
-                                />
-
-                                {notFound && <TableNoData query={filterName}/>}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Scrollbar>
-
-                <TablePagination
-                    page={page}
-                    component="div"
-                    count={courses.length}
-                    rowsPerPage={rowsPerPage}
-                    onPageChange={handleChangePage}
-                    rowsPerPageOptions={[5, 10, 25, 50]}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-
-
-                {/* Add dialog */}
-                <Dialog
-                    open={showAddDialog}
-                    onClose={handleAddClose}
-                >
-                    <DialogTitle>
-                        Add New Course
-                    </DialogTitle>
-                    <DialogContent>
-                        <TextField sx={{width: '100%', mt: 1}} label="Course Code" variant="outlined"
-                                   value={addCourseID} onChange={(newValue) => setAddCourseID(newValue.target.value)}/>
-
-                        <TextField sx={{width: '100%', mt: 1}} label="Course Name" variant="outlined"
-                                   value={addCourseName}
-                                   onChange={(newValue) => setAddCourseName(newValue.target.value)}/>
-
-
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleAddClose}>Cancel</Button>
-                        <Button onClick={handleAddSave} autoFocus>
-                            Save
+                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
+                                onClick={handleAddClickOpen}>
+                            New Course
                         </Button>
-                    </DialogActions>
-                </Dialog>
-            </Card>
+                    </Stack>
+
+                    <Card>
+                        <CoursesTableToolbar
+                            numSelected={selected.length}
+                            filterName={filterName}
+                            onFilterName={handleFilterByName}
+                        />
+
+                        <Scrollbar>
+                            <TableContainer sx={{overflow: 'unset'}}>
+                                <Table sx={{minWidth: 800}}>
+                                    <TableMainHead
+                                        order={order}
+                                        orderBy={orderBy}
+                                        rowCount={courses.length}
+                                        numSelected={selected.length}
+                                        onRequestSort={handleSort}
+                                        onSelectAllClick={handleSelectAllClick}
+                                        headLabel={[
+                                            {id: '', label: ''},
+                                            {id: 'name', label: 'Name'},
+                                            {id: '', label: ''}
+                                        ]}
+                                    />
+                                    <TableBody>
+                                        {dataFiltered
+                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                            .map((row) => (
+                                                <CoursesTableRow
+                                                    courseID={row.courseid}
+                                                    courseName={row.coursename}
+                                                />
+                                            ))}
+
+                                        <TableEmptyRows
+                                            height={77}
+                                            emptyRows={emptyRows(page, rowsPerPage, courses.length)}
+                                        />
+
+                                        {notFound && <TableNoData query={filterName}/>}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Scrollbar>
+
+                        <TablePagination
+                            page={page}
+                            component="div"
+                            count={courses.length}
+                            rowsPerPage={rowsPerPage}
+                            onPageChange={handleChangePage}
+                            rowsPerPageOptions={[5, 10, 25, 50]}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+
+
+                        {/* Add dialog */}
+                        <Dialog
+                            open={showAddDialog}
+                            onClose={handleAddClose}
+                        >
+                            <DialogTitle>
+                                Add New Course
+                            </DialogTitle>
+                            <DialogContent>
+                                <TextField sx={{width: '100%', mt: 1}} label="Course Code" variant="outlined"
+                                           value={addCourseID} onChange={(newValue) => setAddCourseID(newValue.target.value)}/>
+
+                                <TextField sx={{width: '100%', mt: 1}} label="Course Name" variant="outlined"
+                                           value={addCourseName}
+                                           onChange={(newValue) => setAddCourseName(newValue.target.value)}/>
+
+
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleAddClose}>Cancel</Button>
+                                <Button onClick={handleAddSave} autoFocus>
+                                    Save
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </Card>
+                </>
+            }
+
+            {/* if there is no course id */}
+            {
+                schoolIDParm === null &&
+                <Box width={"100%"} height={"100%"} display="flex" justifyContent="center" alignItems="center">
+                    <Card sx={{ maxWidth: 345 }}>
+                        {/*<CardMedia*/}
+                        {/*    component="img"*/}
+                        {/*    alt="green iguana"*/}
+                        {/*    height="140"*/}
+                        {/*    image="/static/images/cards/contemplative-reptile.jpg"*/}
+                        {/*/>*/}
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="div">
+                                Uh oh!
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                it seems like you have gotten here somehow with selecting a school! please select one from the schools list
+                            </Typography>
+                        </CardContent>
+                        <CardActions>
+                            <Button size="small">Home</Button>
+                            <Button size="small">Schools</Button>
+                        </CardActions>
+                    </Card>
+                </Box>
+            }
+
         </Container>
     );
 }

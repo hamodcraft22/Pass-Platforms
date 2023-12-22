@@ -25,11 +25,9 @@ import UserTableToolbar from '../user-table-toolbar';
 export default function UserPage() {
     const [page, setPage] = useState(0);
 
-    const [order, setOrder] = useState('asc');
+    const [order, setOrder] = useState('desc');
 
-    const [selected, setSelected] = useState([]);
-
-    const [orderBy, setOrderBy] = useState('name');
+    const [orderBy, setOrderBy] = useState('userName');
 
     const [filterName, setFilterName] = useState('');
 
@@ -38,8 +36,11 @@ export default function UserPage() {
     // users list
     const [users, setUsers] = useState([]);
 
+    const [parsedUsers, setParsedUsers] = useState([]);
+
     // get users api
-    async function getAllUsers() {
+    async function getAllUsers()
+    {
         try
         {
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json'}};
@@ -48,16 +49,27 @@ export default function UserPage() {
                 .then(response => {return response.json()})
                 .then((data) => {setUsers(data.transObject)})
 
-        } catch (error)
+        }
+        catch (error)
         {
             console.log(error)
         }
     }
 
+    function parseUsers()
+    {
+        let parsedUsers = [];
+
+        users.forEach((user) => {parsedUsers.push({"userid":user.userid,"userName":user.userName,"roleName":user.role.rolename})});
+
+        setParsedUsers(parsedUsers);
+    }
+
     // get all schools on load
-    useEffect(() => {
-        getAllUsers()
-    }, [])
+    useEffect(() => {getAllUsers()}, []);
+
+    // parse users
+    useEffect(() => {if (Object.keys(users).length !== 0){parseUsers()}}, [users]);
 
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
@@ -65,33 +77,6 @@ export default function UserPage() {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
-    };
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = users.map((n) => n.name);
-            setSelected(newSelecteds);
-            return;
-        }
-        setSelected([]);
-    };
-
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected = [];
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1)
-            );
-        }
-        setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -103,13 +88,13 @@ export default function UserPage() {
         setRowsPerPage(parseInt(event.target.value, 10));
     };
 
-    const handleFilterByName = (event) => {
+    const handleFilter = (event) => {
         setPage(0);
         setFilterName(event.target.value);
     };
 
     const dataFiltered = applyFilter({
-        inputData: users,
+        inputData: parsedUsers,
         comparator: getComparator(order, orderBy),
         filterName,
     });
@@ -120,17 +105,12 @@ export default function UserPage() {
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Users</Typography>
-
-                {/*<Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}>*/}
-                {/*    New User*/}
-                {/*</Button>*/}
             </Stack>
 
             <Card>
                 <UserTableToolbar
-                    numSelected={selected.length}
                     filterName={filterName}
-                    onFilterName={handleFilterByName}
+                    onFilterName={handleFilter}
                 />
 
                 <Scrollbar>
@@ -139,36 +119,31 @@ export default function UserPage() {
                             <TableMainHead
                                 order={order}
                                 orderBy={orderBy}
-                                rowCount={users.length}
-                                numSelected={selected.length}
+                                rowCount={parsedUsers.length}
                                 onRequestSort={handleSort}
-                                onSelectAllClick={handleSelectAllClick}
                                 headLabel={[
-                                    {id: '', label: ''},
-                                    {id: 'name', label: 'Name'},
-                                    {id: 'User ID', label: 'User ID'},
-                                    {id: 'role', label: 'Role'},
-                                    {id: '', label: ''}
+                                    {id: 'leftm', label: ''},
+                                    {id: 'userName', label: 'Name'},
+                                    {id: 'userid', label: 'User ID'},
+                                    {id: 'roleName', label: 'Role'},
+                                    {id: 'rightm', label: ''}
                                 ]}
                             />
                             <TableBody>
                                 {dataFiltered
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((row) => (
+                                    .map((row, idx) => (
                                         <UserTableRow
-                                            key={row.userid}
+                                            key={idx}
                                             name={row.userName}
                                             userid={row.userid}
-                                            role={row.role.rolename}
-                                            avatarUrl={row.avatarUrl}
-                                            selected={selected.indexOf(row.name) !== -1}
-                                            handleClick={(event) => handleClick(event, row.name)}
+                                            role={row.roleName}
                                         />
                                     ))}
 
                                 <TableEmptyRows
                                     height={77}
-                                    emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                                    emptyRows={emptyRows(page, rowsPerPage, parsedUsers.length)}
                                 />
 
                                 {notFound && <TableNoData query={filterName}/>}
@@ -180,7 +155,7 @@ export default function UserPage() {
                 <TablePagination
                     page={page}
                     component="div"
-                    count={users.length}
+                    count={parsedUsers.length}
                     rowsPerPage={rowsPerPage}
                     onPageChange={handleChangePage}
                     rowsPerPageOptions={[5, 10, 25, 50]}

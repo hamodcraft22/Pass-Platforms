@@ -17,6 +17,7 @@ import Scrollbar from '../../components/scrollbar';
 
 import {NAV} from './config-layout';
 import navConfig from './config-navigation';
+import studentNav from './student-navs';
 import {Divider} from '@mui/material';
 
 // ----------------------------------------------------------------------
@@ -43,6 +44,15 @@ export default function Nav({openNav, onCloseNav}) {
     );
 
 
+    // student menu
+    const studentMenu = (
+        <Stack component="nav" spacing={0.5} sx={{px: 2}}>
+            {studentNav.map((item) => (
+                <NavItem key={item.title} item={item}/>
+            ))}
+        </Stack>
+    );
+
     const renderContent = (
         <Scrollbar
             sx={{
@@ -61,6 +71,8 @@ export default function Nav({openNav, onCloseNav}) {
             <Divider sx={{mt: 2, mb: 2}}/>
 
             {/* add logged in user elements here  */}
+
+            {/*{studentMenu}*/}
 
             <Box sx={{flexGrow: 1}}/>
 
@@ -112,7 +124,17 @@ Nav.propTypes = {
 function NavItem({item}) {
     const pathname = usePathname();
 
-    const active = item.path === pathname;
+    let active;
+
+    // custom paths and active sessions
+    if (item.path === "/schools" && pathname === "/courses")
+    {
+        active = true;
+    }
+    else
+    {
+        active = item.path === pathname;
+    }
 
     return (
         <ListItemButton

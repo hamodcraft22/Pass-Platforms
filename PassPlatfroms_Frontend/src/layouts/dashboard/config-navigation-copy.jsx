@@ -7,16 +7,6 @@ const icon = (name) => (
 );
 
 const navConfig = [
-    // {
-    //     title: 'home',
-    //     path: '/',
-    //     icon: icon('ic_analytics'),
-    // },
-    // {
-    //     title: 'users',
-    //     path: '/user',
-    //     icon: icon('ic_user'),
-    // }
     {
         title: 'home',
         path: '/',

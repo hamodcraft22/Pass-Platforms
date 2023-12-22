@@ -9,15 +9,17 @@ export function applyFilter({inputData, comparator, filterName}) {
 
     inputData = stabilizedThis.map((el) => el[0]);
 
-    if (filterName) {
-        inputData = inputData.filter(
-            (user) => user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-        );
-
-        // to filter by diff items TODO
-        // inputData = inputData.filter(
-        //     (user) => user.userid.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-        // );
+    if (filterName)
+    {
+        // if it starts with number
+        if (/^\d+$/.test(filterName))
+        {
+            inputData = inputData.filter((user) => user.userid.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
+        }
+        else
+        {
+            inputData = inputData.filter((user) => user.userName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
+        }
     }
 
     return inputData;

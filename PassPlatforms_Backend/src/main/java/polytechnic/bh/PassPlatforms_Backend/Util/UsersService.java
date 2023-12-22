@@ -26,11 +26,21 @@ public class UsersService
                 refreshUsers();
             }
 
-            return allAzureAdUsers.get(userID);
+            String userName = allAzureAdUsers.get(userID);
+
+            if (userName != null && userName.length() > 0)
+            {
+                return userName;
+            }
+            else
+            {
+                return " ";
+            }
+
         }
         catch (Exception ex)
         {
-            return "";
+            return " ";
         }
     }
 

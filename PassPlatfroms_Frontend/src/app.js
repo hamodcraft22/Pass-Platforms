@@ -38,17 +38,37 @@ const MainContent = () => {
 
         if (activeAccount)
         {
-            await instance.initialize()
+            let token = await instance.initialize()
                 .then(() => {return instance.acquireTokenSilent(accessTokenRequest)})
                 .then((token) => {return `Bearer ${token.accessToken}`})
                 .then((barerToken) => {
                     UserProfile.setUserID(activeAccount.idTokenClaims.emails);
                     UserProfile.setUserName(activeAccount.idTokenClaims.name);
-                    UserProfile.setUserRole("student");
                     UserProfile.setAuthToken(barerToken);
                     UserProfile.setExpTime(activeAccount.idTokenClaims.exp);
-                })
-                .then(() => {setAllowLoad(true)});
+                    return barerToken;
+                });
+
+            await logUser(token)
+                .then((role) => {UserProfile.setUserRole(role).then(setAllowLoad(true))});
+        }
+    }
+
+    async function logUser(barerToken)
+    {
+        try
+        {
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization':barerToken}};
+
+            let role = await fetch(`http://localhost:8080/api/user/userlog`, requestOptions)
+                .then(response => {return response.json()})
+                .then((data) => {return data.transObject.role.rolename});
+
+            return role;
+
+        } catch (error)
+        {
+            console.log(error)
         }
     }
 
