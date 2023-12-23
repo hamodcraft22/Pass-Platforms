@@ -33,7 +33,6 @@ import PublicIcon from '@mui/icons-material/Public';
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {TimePicker} from "@mui/x-date-pickers";
-import moment from "moment/moment";
 import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
 
 // ----------------------------------------------------------------------

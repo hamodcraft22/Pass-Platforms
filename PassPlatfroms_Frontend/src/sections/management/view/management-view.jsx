@@ -6,7 +6,7 @@ import moment from "moment";
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {Alert, Autocomplete, CardContent, CircularProgress, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField} from "@mui/material";
+import {Alert, Autocomplete, CardContent, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import LinearProgress from '@mui/material/LinearProgress';
@@ -209,13 +209,11 @@ export default function ManagementPage() {
             });
         });
 
-        if (setupMode === true)
-        {
+        if (setupMode === true) {
             setLeadersUpload(sheetsData);
         }
 
-        if (viewEditMode === true)
-        {
+        if (viewEditMode === true) {
             console.log(sheetsData);
             setLeaderIDsToAdd([leaderIDsToAdd, ...sheetsData]);
         }
@@ -251,12 +249,10 @@ export default function ManagementPage() {
     }, [setupMode, viewEditMode])
 
 
-
     // update dates dialog
     const [updateDateShow, setUpdateDateShow] = useState(false);
 
-    function handleUpdateDateConfirm()
-    {
+    function handleUpdateDateConfirm() {
         alert("call api");
 
         setUpdateDateShow(false);
@@ -268,8 +264,7 @@ export default function ManagementPage() {
 
     const [assignLeadersShow, setAssignLeadersShow] = useState(false);
 
-    function handleAssignLeadersConfirm()
-    {
+    function handleAssignLeadersConfirm() {
         alert("call api");
 
         setAssignLeadersShow(false);
@@ -278,8 +273,7 @@ export default function ManagementPage() {
 
     const [enableSysShow, setEnableSysShow] = useState(false);
 
-    function handleEnableSysConfirm()
-    {
+    function handleEnableSysConfirm() {
         alert("call api");
 
         setEnableSysShow(false);
@@ -287,8 +281,7 @@ export default function ManagementPage() {
 
     const [disableSysShow, setDisableSysShow] = useState(false);
 
-    function handleDisableSysConfirm()
-    {
+    function handleDisableSysConfirm() {
         alert("call api");
 
         setDisableSysShow(false);
@@ -296,8 +289,7 @@ export default function ManagementPage() {
 
     const [enableBookingShow, setEnableBookingShow] = useState(false);
 
-    function handleEnableBookingConfirm()
-    {
+    function handleEnableBookingConfirm() {
         alert("call api");
 
         setEnableBookingShow(false);
@@ -305,8 +297,7 @@ export default function ManagementPage() {
 
     const [disableBookingShow, setDisableBookingShow] = useState(false);
 
-    function handleDisableBookingConfirm()
-    {
+    function handleDisableBookingConfirm() {
         alert("call api");
 
         setDisableBookingShow(false);
@@ -314,8 +305,7 @@ export default function ManagementPage() {
 
     const [resetSysShow, setResetSysShow] = useState(false);
 
-    function handleResetSysConfirm()
-    {
+    function handleResetSysConfirm() {
         alert("call api");
 
         setResetSysShow(false);
@@ -1036,11 +1026,18 @@ export default function ManagementPage() {
                                     </LocalizationProvider>
 
                                     <Button sx={{mt: 2}} variant={"contained"}
-                                            disabled={midRevWeekStartEdit === midRevWeekStart && midRevWeekEndEdit === midRevWeekEnd && midWeekStart === midWeekStartEdit && midWeekEnd === midWeekEndEdit} onClick={() => {setUpdateDateShow(true)}}>Update</Button>
+                                            disabled={midRevWeekStartEdit === midRevWeekStart && midRevWeekEndEdit === midRevWeekEnd && midWeekStart === midWeekStartEdit && midWeekEnd === midWeekEndEdit} onClick={() => {
+                                        setUpdateDateShow(true)
+                                    }}>Update</Button>
 
-                                    <Button sx={{mt: 2, ml:1}} variant={"contained"} color={"warning"}
+                                    <Button sx={{mt: 2, ml: 1}} variant={"contained"} color={"warning"}
                                             disabled={midRevWeekStartEdit === midRevWeekStart && midRevWeekEndEdit === midRevWeekEnd && midWeekStart === midWeekStartEdit && midWeekEnd === midWeekEndEdit}
-                                            onClick={() => {setMidRevWeekStartEdit(midRevWeekStart); setMidRevWeekEndEdit(midRevWeekEnd); setMidWeekStartEdit(midWeekStart); setMidWeekEndEdit(midWeekEnd)}}>Rest</Button>
+                                            onClick={() => {
+                                                setMidRevWeekStartEdit(midRevWeekStart);
+                                                setMidRevWeekEndEdit(midRevWeekEnd);
+                                                setMidWeekStartEdit(midWeekStart);
+                                                setMidWeekEndEdit(midWeekEnd)
+                                            }}>Rest</Button>
                                 </CardContent>
 
                             </Card>
@@ -1087,11 +1084,18 @@ export default function ManagementPage() {
                                     </LocalizationProvider>
 
                                     <Button sx={{mt: 2}} variant={"contained"}
-                                            disabled={finRevWeekStartEdit === finRevWeekStart && finRevWeekEndEdit === finRevWeekEnd && finWeekStart === finWeekStartEdit && finWeekEnd === finWeekEndEdit} onClick={() => {setUpdateDateShow(true)}}>Update</Button>
+                                            disabled={finRevWeekStartEdit === finRevWeekStart && finRevWeekEndEdit === finRevWeekEnd && finWeekStart === finWeekStartEdit && finWeekEnd === finWeekEndEdit} onClick={() => {
+                                        setUpdateDateShow(true)
+                                    }}>Update</Button>
 
-                                    <Button sx={{mt: 2, ml:1}} variant={"contained"} color={"warning"}
+                                    <Button sx={{mt: 2, ml: 1}} variant={"contained"} color={"warning"}
                                             disabled={finRevWeekStartEdit === finRevWeekStart && finRevWeekEndEdit === finRevWeekEnd && finWeekStart === finWeekStartEdit && finWeekEnd === finWeekEndEdit}
-                                            onClick={() => {setFinRevWeekStartEdit(finRevWeekStart); setFinRevWeekEndEdit(finRevWeekEnd); setFinWeekStartEdit(finWeekStart); setFinWeekEndEdit(finWeekEnd)}}>Rest</Button>
+                                            onClick={() => {
+                                                setFinRevWeekStartEdit(finRevWeekStart);
+                                                setFinRevWeekEndEdit(finRevWeekEnd);
+                                                setFinWeekStartEdit(finWeekStart);
+                                                setFinWeekEndEdit(finWeekEnd)
+                                            }}>Rest</Button>
 
                                 </CardContent>
 
@@ -1112,23 +1116,35 @@ export default function ManagementPage() {
                                         System Settings:
                                     </Typography>
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"success"} onClick={() => {setAssignLeadersShow(true)}}>Assign Leader/s</Button>
+                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"success"} onClick={() => {
+                                        setAssignLeadersShow(true)
+                                    }}>Assign Leader/s</Button>
                                     <FormHelperText>Assign student id's as pass leaders.</FormHelperText>
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth onClick={() => {setEnableSysShow(true)}}>Enable System</Button>
+                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth onClick={() => {
+                                        setEnableSysShow(true)
+                                    }}>Enable System</Button>
                                     <FormHelperText>Make the system enabled for leaders and tutors.</FormHelperText>
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"} onClick={() => {setDisableSysShow(true)}}>Disable System</Button>
+                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"} onClick={() => {
+                                        setDisableSysShow(true)
+                                    }}>Disable System</Button>
                                     <FormHelperText>Disable all users (other than you).</FormHelperText>
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth onClick={() => {setEnableBookingShow(true)}}>Enable Booking</Button>
+                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth onClick={() => {
+                                        setEnableBookingShow(true)
+                                    }}>Enable Booking</Button>
                                     <FormHelperText>Allow Bookings for students.</FormHelperText>
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"} onClick={() => {setDisableBookingShow(true)}}>Disable Booking</Button>
+                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"} onClick={() => {
+                                        setDisableBookingShow(true)
+                                    }}>Disable Booking</Button>
                                     <FormHelperText>Stop new Bookings.</FormHelperText>
 
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"error"} onClick={() => {setResetSysShow(true)}}>Reset System</Button>
+                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"error"} onClick={() => {
+                                        setResetSysShow(true)
+                                    }}>Reset System</Button>
                                     <FormHelperText>Clear all information and data (start new semester).</FormHelperText>
                                 </CardContent>
 
@@ -1142,7 +1158,9 @@ export default function ManagementPage() {
             {/* confirm dialog - dates */}
             <Dialog
                 open={updateDateShow}
-                onClose={() => {setUpdateDateShow(false)}}
+                onClose={() => {
+                    setUpdateDateShow(false)
+                }}
             >
                 <DialogTitle>
                     Update Dates
@@ -1153,7 +1171,9 @@ export default function ManagementPage() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => {setUpdateDateShow(false)}}>Cancel</Button>
+                    <Button onClick={() => {
+                        setUpdateDateShow(false)
+                    }}>Cancel</Button>
                     <Button onClick={handleUpdateDateConfirm} autoFocus color={"error"}>
                         Confirm
                     </Button>
@@ -1164,7 +1184,9 @@ export default function ManagementPage() {
             {/* add dialog - leaders */}
             <Dialog
                 open={assignLeadersShow}
-                onClose={() => {setAssignLeadersShow(false)}}
+                onClose={() => {
+                    setAssignLeadersShow(false)
+                }}
             >
                 <DialogTitle>
                     Assign Leaders
@@ -1181,23 +1203,27 @@ export default function ManagementPage() {
                         sx={{width: '100%', mt: 3}}
                         options={[]}
                         value={leaderIDsToAdd}
-                        onChange={(event, newValue) => {setLeaderIDsToAdd(newValue)}}
+                        onChange={(event, newValue) => {
+                            setLeaderIDsToAdd(newValue)
+                        }}
                         renderInput={(params) => <TextField {...params} label="Student ID/s"/>}
-                        />
-                    <FormHelperText sx={{ mb: 2 }}>Type student ID and press enter.</FormHelperText>
+                    />
+                    <FormHelperText sx={{mb: 2}}>Type student ID and press enter.</FormHelperText>
 
                     <DialogContentText>
                         Or upload leaders sheet:
                     </DialogContentText>
 
-                    <Button component="label" variant="contained" startIcon={<CloudUploadIcon/>} fullWidth sx={{ mt:2 }}>
+                    <Button component="label" variant="contained" startIcon={<CloudUploadIcon/>} fullWidth sx={{mt: 2}}>
                         Upload file
                         <VisuallyHiddenInput type="file" onChange={handleLeadersFileChange} accept=".xlsx"/>
                     </Button>
 
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => {setAssignLeadersShow(false)}}>Cancel</Button>
+                    <Button onClick={() => {
+                        setAssignLeadersShow(false)
+                    }}>Cancel</Button>
                     <Button onClick={handleAssignLeadersConfirm} autoFocus color={"error"}>
                         Save
                     </Button>
@@ -1208,7 +1234,9 @@ export default function ManagementPage() {
             {/* confirm dialog - enable system */}
             <Dialog
                 open={enableSysShow}
-                onClose={() => {setEnableSysShow(false)}}
+                onClose={() => {
+                    setEnableSysShow(false)
+                }}
             >
                 <DialogTitle>
                     Enable System
@@ -1219,7 +1247,9 @@ export default function ManagementPage() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => {setEnableSysShow(false)}}>Cancel</Button>
+                    <Button onClick={() => {
+                        setEnableSysShow(false)
+                    }}>Cancel</Button>
                     <Button onClick={handleEnableSysConfirm} autoFocus color={"error"}>
                         Confirm
                     </Button>
@@ -1229,7 +1259,9 @@ export default function ManagementPage() {
             {/* confirm dialog - disable system */}
             <Dialog
                 open={disableSysShow}
-                onClose={() => {setDisableSysShow(false)}}
+                onClose={() => {
+                    setDisableSysShow(false)
+                }}
             >
                 <DialogTitle>
                     Disable System
@@ -1240,7 +1272,9 @@ export default function ManagementPage() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => {setDisableSysShow(false)}}>Cancel</Button>
+                    <Button onClick={() => {
+                        setDisableSysShow(false)
+                    }}>Cancel</Button>
                     <Button onClick={handleDisableSysConfirm} autoFocus color={"error"}>
                         Confirm
                     </Button>
@@ -1251,7 +1285,9 @@ export default function ManagementPage() {
             {/* confirm dialog - enable booking */}
             <Dialog
                 open={enableBookingShow}
-                onClose={() => {setEnableBookingShow(false)}}
+                onClose={() => {
+                    setEnableBookingShow(false)
+                }}
             >
                 <DialogTitle>
                     Enable Booking
@@ -1262,7 +1298,9 @@ export default function ManagementPage() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => {setEnableBookingShow(false)}}>Cancel</Button>
+                    <Button onClick={() => {
+                        setEnableBookingShow(false)
+                    }}>Cancel</Button>
                     <Button onClick={handleEnableBookingConfirm} autoFocus color={"error"}>
                         Confirm
                     </Button>
@@ -1272,7 +1310,9 @@ export default function ManagementPage() {
             {/* confirm dialog - disable booking */}
             <Dialog
                 open={disableBookingShow}
-                onClose={() => {setDisableBookingShow(false)}}
+                onClose={() => {
+                    setDisableBookingShow(false)
+                }}
             >
                 <DialogTitle>
                     disable Booking
@@ -1283,7 +1323,9 @@ export default function ManagementPage() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => {setDisableBookingShow(false)}}>Cancel</Button>
+                    <Button onClick={() => {
+                        setDisableBookingShow(false)
+                    }}>Cancel</Button>
                     <Button onClick={handleDisableBookingConfirm} autoFocus color={"error"}>
                         Confirm
                     </Button>
@@ -1294,7 +1336,9 @@ export default function ManagementPage() {
             {/* confirm dialog - reset system */}
             <Dialog
                 open={resetSysShow}
-                onClose={() => {setResetSysShow(false)}}
+                onClose={() => {
+                    setResetSysShow(false)
+                }}
             >
                 <DialogTitle>
                     Reset System
@@ -1307,7 +1351,9 @@ export default function ManagementPage() {
                     <FormHelperText>** this process may take some time **</FormHelperText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => {setResetSysShow(false)}}>Cancel</Button>
+                    <Button onClick={() => {
+                        setResetSysShow(false)
+                    }}>Cancel</Button>
                     <Button onClick={handleResetSysConfirm} autoFocus color={"error"}>
                         Confirm
                     </Button>

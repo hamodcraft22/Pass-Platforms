@@ -9,15 +9,11 @@ export function applyFilter({inputData, comparator, filterName}) {
 
     inputData = stabilizedThis.map((el) => el[0]);
 
-    if (filterName)
-    {
+    if (filterName) {
         // if it starts with number
-        if (/^\d+$/.test(filterName))
-        {
+        if (/^\d+$/.test(filterName)) {
             inputData = inputData.filter((user) => user.userid.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
-        }
-        else
-        {
+        } else {
             inputData = inputData.filter((user) => user.userName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
         }
     }

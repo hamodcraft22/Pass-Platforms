@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from 'react-router-dom';
 import {HelmetProvider} from 'react-helmet-async';
 
-import { PublicClientApplication, EventType } from '@azure/msal-browser';
+import {EventType, PublicClientApplication} from '@azure/msal-browser';
 
-import { msalConfig } from './components/auth/authConfig';
+import {msalConfig} from './components/auth/authConfig';
 
 
 import App from './app';

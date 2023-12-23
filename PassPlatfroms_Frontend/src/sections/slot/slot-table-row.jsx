@@ -20,7 +20,6 @@ import PublicIcon from '@mui/icons-material/Public';
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {TimePicker} from "@mui/x-date-pickers";
-import moment from "moment";
 import DeskRoundedIcon from "@mui/icons-material/DeskRounded";
 
 
@@ -168,7 +167,7 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, isO
                     <FormHelperText>Day is none-editable</FormHelperText>
 
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker readOnly sx={{mt: 2, mr: 1}} label="Start Time"  value={slotSelectedStartTime} onChange={(newValue) => {
+                        <TimePicker readOnly sx={{mt: 2, mr: 1}} label="Start Time" value={slotSelectedStartTime} onChange={(newValue) => {
                             setSlotSelectedStartTime(newValue)
                         }}/>
                     </LocalizationProvider>

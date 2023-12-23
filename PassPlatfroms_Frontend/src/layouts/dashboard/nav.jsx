@@ -127,12 +127,9 @@ function NavItem({item}) {
     let active;
 
     // custom paths and active sessions
-    if (item.path === "/schools" && pathname === "/courses")
-    {
+    if (item.path === "/schools" && pathname === "/courses") {
         active = true;
-    }
-    else
-    {
+    } else {
         active = item.path === pathname;
     }
 

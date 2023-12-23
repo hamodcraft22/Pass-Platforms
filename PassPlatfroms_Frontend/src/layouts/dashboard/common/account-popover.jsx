@@ -9,7 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
-import { useMsal } from '@azure/msal-react';
+import {useMsal} from '@azure/msal-react';
 
 
 // ----------------------------------------------------------------------
@@ -32,7 +32,7 @@ const MENU_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
-    const { instance } = useMsal();
+    const {instance} = useMsal();
 
     let activeAccount;
 
@@ -52,7 +52,7 @@ export default function AccountPopover() {
     };
 
     const handleLogoutRedirect = () => {
-        instance.logoutRedirect({ account: activeAccount}).catch((error) => console.log(error));
+        instance.logoutRedirect({account: activeAccount}).catch((error) => console.log(error));
     };
 
     return (

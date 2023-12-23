@@ -19,19 +19,19 @@ export default function UserTableToolbar({filterName, onFilterName}) {
             }}
         >
 
-                <OutlinedInput
-                    value={filterName}
-                    onChange={onFilterName}
-                    placeholder="Search user..."
-                    startAdornment={
-                        <InputAdornment position="start">
-                            <Iconify
-                                icon="eva:search-fill"
-                                sx={{color: 'text.disabled', width: 20, height: 20}}
-                            />
-                        </InputAdornment>
-                    }
-                />
+            <OutlinedInput
+                value={filterName}
+                onChange={onFilterName}
+                placeholder="Search user..."
+                startAdornment={
+                    <InputAdornment position="start">
+                        <Iconify
+                            icon="eva:search-fill"
+                            sx={{color: 'text.disabled', width: 20, height: 20}}
+                        />
+                    </InputAdornment>
+                }
+            />
 
 
         </Toolbar>

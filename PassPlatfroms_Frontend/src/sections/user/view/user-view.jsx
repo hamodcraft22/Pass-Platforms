@@ -40,39 +40,46 @@ export default function UserPage() {
     const [parsedUsers, setParsedUsers] = useState([]);
 
     // get users api
-    async function getAllUsers()
-    {
-        try
-        {
+    async function getAllUsers() {
+        try {
             let token = await UserProfile.getAuthToken();
 
-            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization':token}};
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
             await fetch(`http://localhost:8080/api/user`, requestOptions)
-                .then(response => {return response.json()})
-                .then((data) => {setUsers(data.transObject)})
+                .then(response => {
+                    return response.json()
+                })
+                .then((data) => {
+                    setUsers(data.transObject)
+                })
 
-        }
-        catch (error)
-        {
+        } catch (error) {
             console.log(error)
         }
     }
 
-    function parseUsers()
-    {
+    function parseUsers() {
         let parsedUsers = [];
 
-        users.forEach((user) => {parsedUsers.push({"userid":user.userid,"userName":user.userName,"roleName":user.role.rolename})});
+        users.forEach((user) => {
+            parsedUsers.push({"userid": user.userid, "userName": user.userName, "roleName": user.role.rolename})
+        });
 
         setParsedUsers(parsedUsers);
     }
 
     // get all schools on load
-    useEffect(() => {getAllUsers()}, []);
+    useEffect(() => {
+        getAllUsers()
+    }, []);
 
     // parse users
-    useEffect(() => {if (Object.keys(users).length !== 0){parseUsers()}}, [users]);
+    useEffect(() => {
+        if (Object.keys(users).length !== 0) {
+            parseUsers()
+        }
+    }, [users]);
 
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';

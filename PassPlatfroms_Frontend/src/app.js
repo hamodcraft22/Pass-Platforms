@@ -1,6 +1,6 @@
 import './global.css';
 
-import { MsalProvider, AuthenticatedTemplate, useMsal, UnauthenticatedTemplate } from '@azure/msal-react';
+import {AuthenticatedTemplate, MsalProvider, UnauthenticatedTemplate, useMsal} from '@azure/msal-react';
 
 import {useEffect, useState} from "react";
 
@@ -9,7 +9,7 @@ import {useScrollToTop} from './hooks/use-scroll-to-top';
 
 import Router from './routes/sections';
 import ThemeProvider from './theme';
-import { loginRequest } from './components/auth/authConfig';
+import {loginRequest} from './components/auth/authConfig';
 import Button from "@mui/material/Button";
 import UserProfile from "./components/auth/UserInfo";
 import {Backdrop, CircularProgress} from "@mui/material";
@@ -24,8 +24,7 @@ import Paper from "@mui/material/Paper";
 const MainContent = () => {
 
 
-
-    const { instance } = useMsal();
+    const {instance} = useMsal();
     const activeAccount = instance.getActiveAccount();
 
     const [allowLoad, setAllowLoad] = useState(false)
@@ -36,11 +35,14 @@ const MainContent = () => {
             account: activeAccount,
         };
 
-        if (activeAccount)
-        {
+        if (activeAccount) {
             let token = await instance.initialize()
-                .then(() => {return instance.acquireTokenSilent(accessTokenRequest)})
-                .then((token) => {return `Bearer ${token.accessToken}`})
+                .then(() => {
+                    return instance.acquireTokenSilent(accessTokenRequest)
+                })
+                .then((token) => {
+                    return `Bearer ${token.accessToken}`
+                })
                 .then((barerToken) => {
                     UserProfile.setUserID(activeAccount.idTokenClaims.emails);
                     UserProfile.setUserName(activeAccount.idTokenClaims.name);
@@ -50,29 +52,34 @@ const MainContent = () => {
                 });
 
             await logUser(token)
-                .then((role) => {UserProfile.setUserRole(role).then(setAllowLoad(true))});
+                .then((role) => {
+                    UserProfile.setUserRole(role).then(setAllowLoad(true))
+                });
         }
     }
 
-    async function logUser(barerToken)
-    {
-        try
-        {
-            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization':barerToken}};
+    async function logUser(barerToken) {
+        try {
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': barerToken}};
 
             let role = await fetch(`http://localhost:8080/api/user/userlog`, requestOptions)
-                .then(response => {return response.json()})
-                .then((data) => {return data.transObject.role.rolename});
+                .then(response => {
+                    return response.json()
+                })
+                .then((data) => {
+                    return data.transObject.role.rolename
+                });
 
             return role;
 
-        } catch (error)
-        {
+        } catch (error) {
             console.log(error)
         }
     }
 
-    useEffect(() => {getToken()}, [activeAccount])
+    useEffect(() => {
+        getToken()
+    }, [activeAccount])
 
 
     const handleLoginRedirect = () => {
@@ -84,32 +91,32 @@ const MainContent = () => {
     return (
         <>
             <AuthenticatedTemplate>
-                {allowLoad ? (<Router/>) : <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}><CircularProgress color="inherit" /></Backdrop>}
+                {allowLoad ? (<Router/>) : <Backdrop sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}} open={true}><CircularProgress color="inherit"/></Backdrop>}
             </AuthenticatedTemplate>
             <UnauthenticatedTemplate>
                 <Box sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: "100vh",
-                        "&::before":
-                            {
-                                content: '""',
-                                position: "fixed",
-                                top: 0,
-                                left: 0,
-                                bottom: 0,
-                                right: 0,
-                                backgroundImage: "url('/assets/login_backdrop.png')",
-                                backgroundSize: "cover",
-                                backgroundPosition: "center",
-                                backgroundRepeat: "no-repeat",
-                                filter: "blur(5px)",
-                                margin: "-10px"
-                            }
-                    }}>
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100vh",
+                    "&::before":
+                        {
+                            content: '""',
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            bottom: 0,
+                            right: 0,
+                            backgroundImage: "url('/assets/login_backdrop.png')",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundRepeat: "no-repeat",
+                            filter: "blur(5px)",
+                            margin: "-10px"
+                        }
+                }}>
 
-                    <Paper elevation={24} sx={{p:2, zIndex:5, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column"}}>
+                    <Paper elevation={24} sx={{p: 2, zIndex: 5, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column"}}>
 
                         <h1>Pass Platforms</h1>
                         <p>Please login using your university account 👇🏼</p>
@@ -125,11 +132,11 @@ const MainContent = () => {
     );
 };
 
-const App = ({ instance }) => {
+const App = ({instance}) => {
     return (
         <MsalProvider instance={instance}>
             <ThemeProvider>
-                <MainContent />
+                <MainContent/>
             </ThemeProvider>
         </MsalProvider>
     );

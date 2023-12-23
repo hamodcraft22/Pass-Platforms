@@ -152,13 +152,9 @@ export default function TranscriptPage() {
 
                     if (course.grade.toLowerCase() === "comp") {
                         courseGrade = 'A';
-                    }
-                    else if (['a', 'b', 'c', 'd', 'f'].includes(course.grade.toLowerCase().charAt(0)))
-                    {
+                    } else if (['a', 'b', 'c', 'd', 'f'].includes(course.grade.toLowerCase().charAt(0))) {
                         courseGrade = course.grade;
-                    }
-                    else
-                    {
+                    } else {
                         courseGrade = 'E';
                     }
 

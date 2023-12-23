@@ -13,7 +13,11 @@ export default function MultiSelect({
     const [selectedOptions, setSelectedOptions] = useState([]);
     const allSelected = items.length === selectedOptions.length;
 
-    useEffect(() => {if (items !== null && Object.keys(items).length !== 0){setSelectedOptions(items)}}, [items]);
+    useEffect(() => {
+        if (items !== null && Object.keys(items).length !== 0) {
+            setSelectedOptions(items)
+        }
+    }, [items]);
 
     const handleToggleOption = (selectedOps) => setSelectedOptions(selectedOps);
     const handleClearOptions = () => setSelectedOptions([]);

@@ -48,20 +48,24 @@ export default function SchoolsPage() {
 
     // get schools api
     async function getSchools() {
-        try
-        {
+        try {
             setLoadingShow(true);
             let token = await UserProfile.getAuthToken();
 
-            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization':token}};
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
             await fetch(`http://localhost:8080/api/school`, requestOptions)
-                .then(response => {return response.json()})
-                .then((data) => {setSchools(data.transObject)})
-                .then(() => {setLoadingShow(false)})
+                .then(response => {
+                    return response.json()
+                })
+                .then((data) => {
+                    setSchools(data.transObject)
+                })
+                .then(() => {
+                    setLoadingShow(false)
+                })
 
-        } catch (error)
-        {
+        } catch (error) {
             setLoadingShow(false);
             console.log(error);
         }
@@ -225,10 +229,10 @@ export default function SchoolsPage() {
 
             {/* loading */}
             <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
                 open={loadingShow}
             >
-                <CircularProgress color="inherit" />
+                <CircularProgress color="inherit"/>
             </Backdrop>
 
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>

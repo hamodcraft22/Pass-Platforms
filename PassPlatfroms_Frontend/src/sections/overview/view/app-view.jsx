@@ -16,8 +16,7 @@ export default function AppView() {
 
     const [userName, setUserName] = useState("");
 
-    async function getUserName()
-    {
+    async function getUserName() {
         await UserProfile.getUserName().then((data) => {
             const words = data.trim().split(/\s+/);
             const firstName = words[0];
@@ -26,7 +25,9 @@ export default function AppView() {
         })
     }
 
-    useEffect(() => {getUserName()}, [])
+    useEffect(() => {
+        getUserName()
+    }, [])
 
     return (
 

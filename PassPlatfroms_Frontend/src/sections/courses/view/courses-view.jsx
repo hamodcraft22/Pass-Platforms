@@ -245,7 +245,7 @@ export default function CoursesPage() {
             {
                 schoolIDParm === null &&
                 <Box width={"100%"} height={"100%"} display="flex" justifyContent="center" alignItems="center">
-                    <Card sx={{ maxWidth: 345 }}>
+                    <Card sx={{maxWidth: 345}}>
                         {/*<CardMedia*/}
                         {/*    component="img"*/}
                         {/*    alt="green iguana"*/}

@@ -14,12 +14,11 @@ const UserProfile = (function UserProfile() {
 
     const getUserID = async function getUserID() {
 
-        if (userID === "")
-        {
-            await getInfo().then(() => {return userID});
-        }
-        else
-        {
+        if (userID === "") {
+            await getInfo().then(() => {
+                return userID
+            });
+        } else {
             return userID;
         }
     };
@@ -31,12 +30,11 @@ const UserProfile = (function UserProfile() {
 
     const getUserName = async function getUserName() {
 
-        if (userName === "")
-        {
-            await getInfo().then(() => {return userName});
-        }
-        else
-        {
+        if (userName === "") {
+            await getInfo().then(() => {
+                return userName
+            });
+        } else {
             return userName;
         }
     };
@@ -48,12 +46,11 @@ const UserProfile = (function UserProfile() {
 
     const getUserRole = async function getUserRole() {
 
-        if (userRole === "")
-        {
-            await getInfo().then(() => {return userRole});
-        }
-        else
-        {
+        if (userRole === "") {
+            await getInfo().then(() => {
+                return userRole
+            });
+        } else {
             return userRole;
         }
     };
@@ -65,12 +62,11 @@ const UserProfile = (function UserProfile() {
 
     const getExpTime = async function getExpTime() {
 
-        if (expTime === "")
-        {
-            await getInfo().then(() => {return expTime});
-        }
-        else
-        {
+        if (expTime === "") {
+            await getInfo().then(() => {
+                return expTime
+            });
+        } else {
             return expTime;
         }
     };
@@ -82,12 +78,11 @@ const UserProfile = (function UserProfile() {
 
     const getAuthToken = async function getAuthToken() {
 
-        if (authToken === "")
-        {
-            await getInfo().then(() => {return authToken});
-        }
-        else
-        {
+        if (authToken === "") {
+            await getInfo().then(() => {
+                return authToken
+            });
+        } else {
             return authToken;
         }
     };
@@ -97,54 +92,42 @@ const UserProfile = (function UserProfile() {
         await setInfo();
     };
 
-    async function getInfo()
-    {
+    async function getInfo() {
         // get cookie
         const encData = Cookies.get("ID_INF");
 
         // check if it is there / not expired
-        if (encData != null)
-        {
+        if (encData != null) {
             const decData = await CryptoJS.AES.decrypt(encData, key);
             const parsedData = await JSON.parse(decData.toString(CryptoJS.enc.Utf8));
 
-            if (parsedData !== null)
-            {
+            if (parsedData !== null) {
                 expTime = await parsedData.expires;
 
                 // check date, if expired
-                if (Date.now() >= parsedData.expTime)
-                {
+                if (Date.now() >= parsedData.expTime) {
                     // logout
-                }
-                else
-                {
+                } else {
                     // get the info and parse it
                     userID = parsedData.userID;
                     userName = parsedData.userName;
                     userRole = parsedData.userRole;
                     authToken = parsedData.authToken;
                 }
-            }
-            else
-            {
+            } else {
                 // logout
             }
-        }
-        else
-        {
+        } else {
             // logout
         }
 
 
     }
 
-    async function setInfo()
-    {
-        if (userID !== "" && userName !== "" && userRole !== "" && expTime !== "" && authToken !== "")
-        {
-            const data = {"userID":userID, "userName":userName, "userRole":userRole, "authToken":authToken};
-            await Cookies.set("ID_INF",CryptoJS.AES.encrypt(JSON.stringify(data), key).toString(), { expires: expTime});
+    async function setInfo() {
+        if (userID !== "" && userName !== "" && userRole !== "" && expTime !== "" && authToken !== "") {
+            const data = {"userID": userID, "userName": userName, "userRole": userRole, "authToken": authToken};
+            await Cookies.set("ID_INF", CryptoJS.AES.encrypt(JSON.stringify(data), key).toString(), {expires: expTime});
         }
     }
 

@@ -15,8 +15,7 @@ import Iconify from '../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableRow({name, role, userid,})
-{
+export default function UserTableRow({name, role, userid,}) {
     const [open, setOpen] = useState(null);
 
     const handleOpenMenu = (event) => {
