@@ -371,11 +371,11 @@ public class BookingServ
             errors.add("there is another session or schedule within the selected time");
         }
 
-        // check if the leader teaches the course
-        if (!offeredCourseRepo.existsByLeader_UseridAndCourse_Courseid(leaderID, courseID))
-        {
-            errors.add("selected PASS Leader does not teach the course selected");
-        }
+//        // check if the leader teaches the course
+//        if (!offeredCourseRepo.existsByLeader_UseridAndCourse_Courseid(leaderID, courseID))
+//        {
+//            errors.add("selected PASS Leader does not teach the course selected");
+//        }
 
         if (errors.isEmpty())
         {
@@ -391,6 +391,7 @@ public class BookingServ
             newRevision.setBookingType(bookingTypeRepo.getReferenceById(BKNGTYP_REVISION));
             newRevision.setBookingStatus(bookingStatusRepo.getReferenceById(BKNGSTAT_ACTIVE));
             newRevision.setCourse(courseRepo.getReferenceById(courseID));
+            newRevision.setStudent(new User(userServ.getUser(leaderID)));
 
             Booking savedRevision = bookingRepo.save(newRevision);
 

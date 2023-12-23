@@ -44,7 +44,7 @@ public class UsersCont
 
     }
 
-    // get all students
+    // get all students -- tested | added
     @GetMapping("/students")
     public ResponseEntity<List<UserInfoDto>> getAllADStudents(@RequestHeader(value = "Authorization", required = false) String requestKey)
     {
@@ -73,6 +73,7 @@ public class UsersCont
 
     }
 
+    // refresh all users in local cache - tested
     @GetMapping("/refresh")
     public ResponseEntity<?> refreshCachedUsers(@RequestHeader(value = "Authorization", required = false) String requestKey)
     {

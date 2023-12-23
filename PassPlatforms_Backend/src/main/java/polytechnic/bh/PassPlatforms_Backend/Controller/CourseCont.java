@@ -28,7 +28,7 @@ public class CourseCont
     @Autowired
     private UserServ userServ;
 
-    // Any person can use these
+    // get all courses - not needed
     @GetMapping("")
     public ResponseEntity<GenericDto<List<CourseDao>>> getAllCourses(
             @RequestHeader(value = "Authorization") String requestKey
@@ -57,7 +57,7 @@ public class CourseCont
 
     }
 
-    // get course details
+    // get course details - not really needed
     @GetMapping("/{courseID}")
     public ResponseEntity<GenericDto<CourseDao>> getCourseDetails(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -86,6 +86,7 @@ public class CourseCont
 
     }
 
+    // get leader (possible) courses - schools they can teach that have not been added
     @GetMapping("/leader/{leaderID}")
     public ResponseEntity<GenericDto<List<CourseDao>>> getLeaderCourseDetails(
             @RequestHeader(value = "Authorization") String requestKey,

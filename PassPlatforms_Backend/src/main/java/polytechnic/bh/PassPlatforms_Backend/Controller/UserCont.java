@@ -32,7 +32,7 @@ public class UserCont
     @Autowired
     private UserServ userServ;
 
-    // get all saved users
+    // get all saved users -- tested | added
     @GetMapping("")
     public ResponseEntity<GenericDto<List<UserDao>>> getAllUsers(@RequestHeader(value = "Authorization", required = false) String requestKey)
     {
@@ -91,7 +91,7 @@ public class UserCont
         }
     }
 
-    // get user (logged in) / create if first time login
+    // get user (logged in) / create if first time login -- tested | added
     @GetMapping("/userlog")
     public ResponseEntity<GenericDto<UserDao>> userLog(@RequestHeader(value = "Authorization") String barerKey)
     {
@@ -107,6 +107,7 @@ public class UserCont
         }
     }
 
+    // get users based on school
     @GetMapping("/school/{schoolID}")
     public ResponseEntity<GenericDto<List<UserDao>>> schoolUsers(@RequestHeader(value = "Authorization") String barerKey,
                                                                  @PathVariable(value = "schoolID") String schoolID)
@@ -123,6 +124,7 @@ public class UserCont
         }
     }
 
+    // get users based on course
     @GetMapping("/course/{courseID}")
     public ResponseEntity<GenericDto<List<UserDao>>> courseUsers(@RequestHeader(value = "Authorization") String barerKey,
                                                                  @PathVariable(value = "courseID") String courseID)

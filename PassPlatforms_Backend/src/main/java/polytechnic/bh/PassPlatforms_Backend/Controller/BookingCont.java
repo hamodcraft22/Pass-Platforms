@@ -205,7 +205,7 @@ public class BookingCont
         }
     }
 
-    // post a normal booking (as a student)
+    // post a normal booking (as a student) -- tested | added
     @PostMapping("")
     public ResponseEntity<GenericDto<BookingDao>> createNewBooking(
             @RequestHeader(value = "Authorization") String requestKey,

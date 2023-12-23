@@ -110,7 +110,7 @@ public class RevisionCont
 
     }
 
-    // post a revision - only leaders
+    // create a revision - only leaders -- tested | added
     @PostMapping("")
     public ResponseEntity<GenericDto<BookingDao>> createNewRevision(
             @RequestHeader(value = "Authorization") String requestKey,

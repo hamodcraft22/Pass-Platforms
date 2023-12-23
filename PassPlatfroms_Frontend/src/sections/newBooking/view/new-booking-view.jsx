@@ -432,6 +432,10 @@ export default function NewBookingPage() {
         if (warnings !== undefined && warnings.length !== 0) {
             setProgColor("warning");
         }
+        else
+        {
+            setProgColor("success")
+        }
 
         setProgPercent(100);
 

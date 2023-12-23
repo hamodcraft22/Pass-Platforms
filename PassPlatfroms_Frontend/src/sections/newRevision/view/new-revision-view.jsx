@@ -7,7 +7,7 @@ import moment from "moment";
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {Alert, Autocomplete, FormControl, FormHelperText, Radio, RadioGroup, Snackbar, TextField} from "@mui/material";
+import {Alert, Autocomplete, Backdrop, CircularProgress, FormControl, FormHelperText, Radio, RadioGroup, Snackbar, TextField} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import LinearProgress from '@mui/material/LinearProgress';
@@ -15,14 +15,24 @@ import {DatePicker, TimePicker} from "@mui/x-date-pickers";
 import {AdapterMoment} from '@mui/x-date-pickers/AdapterMoment';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import FormControlLabel from "@mui/material/FormControlLabel";
+import UserProfile from "../../../components/auth/UserInfo";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogActions from "@mui/material/DialogActions";
+import {useNavigate} from "react-router-dom";
 
 
 // ----------------------------------------------------------------------
 
 export default function NewRevisionPage() {
 
+    const [loadingShow, setLoadingShow] = useState(false);
+
     const [shownSection, setShownSection] = useState(1);
     const [progPercent, setProgPercent] = useState(0);
+    const [progColor, setProgColor] = useState("primary");
     useEffect(() => {
         (setProgPercent(((shownSection - 1) / 4) * 100))
     }, [shownSection]);
@@ -37,29 +47,175 @@ export default function NewRevisionPage() {
         setErrorShow(false);
     };
 
-    // school and courses elements
-    const mockSchools = [{"schoolID": "zift1", "schoolName": "ziftSchool1"}, {
-        "schoolID": "zift2",
-        "schoolName": "ziftSchool2"
-    }];
-    const mockCourses = [{"courseID": "zift1", "courseName": "ziftcourse1"}, {
-        "courseID": "zift2",
-        "courseName": "asdsd"
-    }];
 
-    const [schools, setSchools] = useState(mockSchools);
-    const [selectedSchool, setSelectedSchool] = useState();
-    const [courses, setCourses] = useState(mockCourses);
-    const [selectedCourse, setSelectedCourse] = useState();
+    const [schools, setSchools] = useState(null);
+    const [selectedSchool, setSelectedSchool] = useState(null);
+    const [courses, setCourses] = useState(null);
+    const [selectedCourse, setSelectedCourse] = useState(null);
 
 
-    const [revWeekSelectedDate, setRevWeekSelectedDate] = useState();
-    const [revWeekSelectedStartTime, setRevWeekSelectedStartTime] = useState();
-    const [revWeekSelectedEndTime, setRevWeekSelectedEndTime] = useState();
+    // get schools and courses
+    async function getAllSchools() {
+        try {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
+
+            await fetch(`http://localhost:8080/api/school`, requestOptions)
+                .then(response => {
+                    return response.json()
+                })
+                .then((data) => {
+                    setSchools(data.transObject)
+                })
+                .then(() => {
+                    setLoadingShow(false)
+                });
+        } catch (error) {
+            console.log(error);
+            setLoadingShow(false);
+        }
+    }
+
+    function handleSelectedSchool(school) {
+        setLoadingShow(true);
+        setSelectedSchool(school);
+        setCourses(school.courses);
+        setLoadingShow(false);
+    }
+
+    useEffect(() => {
+        getAllSchools()
+    }, [])
+
+
+
+    const [revWeekSelectedDate, setRevWeekSelectedDate] = useState(null);
+    const [revWeekSelectedStartTime, setRevWeekSelectedStartTime] = useState(null);
+    const [revWeekSelectedEndTime, setRevWeekSelectedEndTime] = useState(null);
 
     // revision type & notes elements
     const [revisionType, setRevisionType] = useState("physical");
     const [revisionNote, setRevisionNote] = useState("");
+
+
+    // submit function
+    async function createSubmit() {
+        // booking elements
+        const bookingDate = moment(revWeekSelectedDate).toDate();
+        const bookingNote = revisionNote;
+
+        const startTime = revWeekSelectedStartTime;
+        const endTime = revWeekSelectedEndTime;
+
+        let isOnline = false;
+        let bookingLimit = 22;
+
+        if (revisionType === "online")
+        {
+            isOnline = true;
+            bookingLimit = 60;
+        }
+
+        const courseID = selectedCourse.courseid;
+
+        // do booking dto
+        const revisionDto = {"bookingDate": bookingDate, "note": bookingNote, "starttime":startTime, "endtime":endTime, "bookinglimit": bookingLimit, "isonline": isOnline, "course": {"courseid": courseID}};
+        console.log(revisionDto);
+
+        await submitBooking(revisionDto);
+    }
+
+    async function submitBooking(revisionDto)
+    {
+        let isok = false;
+        let isBad = false;
+
+        try {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(revisionDto)};
+
+            await fetch(`http://localhost:8080/api/revision`, requestOptions)
+                .then(response => {
+                    if (response.status === 201 || response.status === 200) {
+                        isok = true;
+                        setProgPercent(100);
+                        return response.json();
+                    } else if (response.status === 400) {
+                        isBad = true;
+                        return response.json();
+                    } else if (response.status === 401) {
+                        setErrorMsg("you are not allowed to do this action");
+                        setErrorShow(true);
+                    } else if (response.status === 404) {
+                        setErrorMsg("the request was not found on the server, double check your connection");
+                        setErrorShow(true);
+                    } else {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+                .then((data) => {
+                    setLoadingShow(false);
+                    if (isok) {
+                        // it is fine, go on
+                        setMadeRevision(data.transObject);
+                        console.log(data);
+                    } else if (isBad) {
+                        // errors for booking
+                        let errorString = "";
+                        data.error.forEach((errorItem) => {
+                            if (errorString === "") {
+                                errorString = errorItem
+                            } else {
+                                errorString = errorItem + "\n" + errorString
+                            }
+                        });
+                        setErrorMsg(errorString);
+                        setErrorShow(true);
+                        console.log(data);
+                    } else {
+                        console.log(data);
+                    }
+                })
+
+        } catch (error) {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
+        }
+    }
+
+
+    // complete dialog
+    const [madeRevision, setMadeRevision] = useState(null);
+
+    const [showComplete, setShowComplete] = useState(false);
+
+    function showCompleation()
+    {
+        setProgColor("success");
+        setProgPercent(100);
+        setShowComplete(true);
+    }
+
+    useEffect(() => {
+        if (madeRevision !== null) {showCompleation()}}, [madeRevision]);
+
+
+    let navigate = useNavigate();
+    const goToRevision = () => {
+        if (madeRevision !== null) {
+            let path = `/viewRevision?revisionID=${madeRevision.bookingid}`;
+            navigate(path);
+        }
+    }
 
 
     function nextSection() {
@@ -103,29 +259,31 @@ export default function NewRevisionPage() {
                 revWeekSelectedStartTime !== null &&
                 revWeekSelectedEndTime !== null &&
                 revWeekSelectedDate !== null &&
+                revisionNote !== null &&
                 selectedSchool !== undefined &&
                 selectedCourse !== undefined &&
                 revisionType !== undefined &&
                 revWeekSelectedStartTime !== undefined &&
                 revWeekSelectedEndTime !== undefined &&
                 revWeekSelectedDate !== undefined &&
+                revisionNote !== undefined &&
                 Object.keys(selectedSchool).length !== 0 &&
                 Object.keys(selectedCourse).length !== 0 &&
                 Object.keys(revisionType).length !== 0 &&
                 Object.keys(revWeekSelectedStartTime).length !== 0 &&
                 Object.keys(revWeekSelectedEndTime).length !== 0 &&
-                Object.keys(revWeekSelectedDate).length !== 0) {
+                Object.keys(revWeekSelectedDate).length !== 0 &&
+                Object.keys(revisionNote).length !== 0
+            ) {
                 setShownSection((shownSection) + 1);
             } else {
-                setErrorMsg("Please select the session type");
+                setErrorMsg("Please select the session type and add note");
                 setErrorShow(true);
             }
         }
 
         if (shownSection === 4) {
-            alert("call api and show results based on api return");
-            setProgPercent(100);
-            // change color of progress to red if it is error etc
+            createSubmit();
         }
 
     }
@@ -144,6 +302,14 @@ export default function NewRevisionPage() {
 
         <Container>
 
+            {/* loading */}
+            <Backdrop
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={loadingShow}
+            >
+                <CircularProgress color="inherit"/>
+            </Backdrop>
+
             {/* alerts */}
             <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
                       anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
@@ -151,6 +317,25 @@ export default function NewRevisionPage() {
                     {errorMsg}
                 </Alert>
             </Snackbar>
+
+            {/* complete dialog */}
+            <Dialog
+                open={showComplete}
+            >
+                <DialogTitle>
+                    {"Success!!"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        The booking has been made!!, please click below to view it.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    {
+                        madeRevision !== null && <Button onClick={goToRevision} autoFocus> Go to Revision. </Button>
+                    }
+                </DialogActions>
+            </Dialog>
 
             {/* top bar */}
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -174,8 +359,9 @@ export default function NewRevisionPage() {
 
             </Stack>
 
+            {/* prog bar */}
             <Box sx={{width: '100%', mb: 2}}>
-                <LinearProgress variant="determinate" value={progPercent} style={{borderRadius: 5, height: 10}}/>
+                <LinearProgress variant="determinate" value={progPercent} style={{borderRadius: 5, height: 10}} color={progColor}/>
             </Box>
 
             {/* elements */}
@@ -189,15 +375,15 @@ export default function NewRevisionPage() {
                             options={schools}
                             value={selectedSchool}
                             onChange={(event, newValue) => {
-                                setSelectedSchool(newValue)
+                                handleSelectedSchool(newValue)
                             }}
                             sx={{width: '100%', mt: 1}}
                             renderInput={(params) => <TextField {...params} label="School"/>}
-                            getOptionLabel={(option) => option.schoolName}
+                            getOptionLabel={(option) => option.schoolname}
                             renderOption={(props, option) => {
                                 return (
                                     <li {...props}>
-                                        {option.schoolName}
+                                        {option.schoolname}
                                     </li>
                                 );
                             }}
@@ -215,11 +401,11 @@ export default function NewRevisionPage() {
                             }}
                             sx={{width: '100%', mt: 1}}
                             renderInput={(params) => <TextField {...params} label="Course"/>}
-                            getOptionLabel={(option) => option.courseName}
+                            getOptionLabel={(option) => option.courseid + " " + option.coursename}
                             renderOption={(props, option) => {
                                 return (
                                     <li {...props}>
-                                        {option.courseName}
+                                        {option.courseid + " " + option.coursename}
                                     </li>
                                 );
                             }}
@@ -275,11 +461,10 @@ export default function NewRevisionPage() {
                         <FormHelperText>How will the session be conducted.</FormHelperText>
 
                         <Typography variant="h6" sx={{mt: 3}}>Revision Note:</Typography>
-                        <TextField sx={{width: '100%', mt: 1}} label="Optinal - This Session will focuse on:"
+                        <TextField sx={{width: '100%', mt: 1}} label="This Session will focuse on:"
                                    variant="outlined" multiline rows={4} value={revisionNote}
                                    onChange={(newValue) => setRevisionNote(newValue.target.value)}/>
-                        <FormHelperText>Please email the Pass Leader any material that you would be discussing during the
-                            session.</FormHelperText>
+                        <FormHelperText>Mention the main aim and what will be covered.</FormHelperText>
                     </div>
                 </Card>
             }
@@ -292,9 +477,9 @@ export default function NewRevisionPage() {
                         <FormHelperText>Please validate the revision session before submitting.</FormHelperText>
 
                         <TextField label="School" variant="standard" fullWidth sx={{mb: 1, mt: 3}}
-                                   InputProps={{readOnly: true}} defaultValue={selectedSchool.schoolName}/>
+                                   InputProps={{readOnly: true}} defaultValue={selectedSchool.schoolname}/>
                         <TextField label="Course" variant="standard" fullWidth sx={{mb: 1, mt: 1}}
-                                   InputProps={{readOnly: true}} defaultValue={selectedCourse.courseName}/>
+                                   InputProps={{readOnly: true}} defaultValue={selectedCourse.courseid + " " + selectedCourse.coursename}/>
 
                         <TextField label="Date" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
                                    InputProps={{readOnly: true}}

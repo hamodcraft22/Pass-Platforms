@@ -93,7 +93,7 @@ public class SlotCont
     }
 
 
-    // get open leader slots for a course
+    // get open leader slots for a course -- tested | added
     @GetMapping("/course/{courseID}")
     public ResponseEntity<GenericDto<List<LeadersSlotsDto>>> getCourseSlots(
             @RequestHeader(value = "Authorization") String requestKey,

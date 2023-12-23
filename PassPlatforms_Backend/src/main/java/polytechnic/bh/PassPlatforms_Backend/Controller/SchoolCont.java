@@ -29,7 +29,7 @@ public class SchoolCont
     @Autowired
     private UserServ userServ;
 
-    // get all schools
+    // get all schools -- tested | added
     @GetMapping("")
     public ResponseEntity<GenericDto<List<SchoolDao>>> getAllSchools(
             @RequestHeader(value = "Authorization") String requestKey
@@ -57,7 +57,7 @@ public class SchoolCont
 
     }
 
-    // get revision schools
+    // get revision schools -- tested
     @GetMapping("/revisions")
     public ResponseEntity<GenericDto<List<SchoolDao>>> getRevSchools(
             @RequestHeader(value = "Authorization") String requestKey
@@ -85,7 +85,7 @@ public class SchoolCont
 
     }
 
-    // get revision schools
+    // get available schools -- tested | added
     @GetMapping("/schools")
     public ResponseEntity<GenericDto<List<SchoolDao>>> getAvlbSchools(
             @RequestHeader(value = "Authorization") String requestKey
@@ -113,7 +113,7 @@ public class SchoolCont
 
     }
 
-    // get school details
+    // get school details - not needed?
     @GetMapping("/{schoolID}")
     public ResponseEntity<GenericDto<SchoolDao>> getSchoolDetails(
             @RequestHeader(value = "Authorization") String requestKey,
