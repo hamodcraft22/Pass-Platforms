@@ -30,6 +30,7 @@ import DialogContent from "@mui/material/DialogContent";
 import {CardActions, CardContent, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import Box from "@mui/material/Box";
+import UserProfile from "../../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
@@ -38,13 +39,15 @@ export default function CoursesPage() {
     const queryParameters = new URLSearchParams(window.location.search)
     const schoolIDParm = queryParameters.get("schoolID")
 
-    const [school, setSchool] = useState([]);
+    const [school, setSchool] = useState(null);
     const [courses, setCourses] = useState([]);
 
     // get school and courses api
     async function getSchoolCourses() {
         try {
-            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json'}};
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
             await fetch(`http://localhost:8080/api/school/${schoolIDParm}`, requestOptions)
                 .then(response => {
@@ -146,7 +149,7 @@ export default function CoursesPage() {
                 schoolIDParm !== null &&
                 <>
                     <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                        <Typography variant="h4">{school.schoolname} Courses</Typography>
+                        <Typography variant="h4">{school !== null && school.schoolname} Courses</Typography>
 
                         <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
                                 onClick={handleAddClickOpen}>

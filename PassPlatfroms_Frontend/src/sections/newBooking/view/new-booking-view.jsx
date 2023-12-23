@@ -11,7 +11,7 @@ import MultiSelect from "../MultiSelect";
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {Alert, Autocomplete, CircularProgress, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField, ToggleButton} from "@mui/material";
+import {Alert, Autocomplete, Backdrop, CircularProgress, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField, ToggleButton} from "@mui/material";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -26,14 +26,19 @@ import List from "@mui/material/List";
 import ListItemText from "@mui/material/ListItemText";
 import PublicIcon from '@mui/icons-material/Public';
 import UserProfile from "../../../components/auth/UserInfo";
+import {Link, useNavigate} from 'react-router-dom';
+import {object} from "prop-types";
 
 
 // ----------------------------------------------------------------------
 
 export default function NewBookingPage() {
 
+    const [loadingShow, setLoadingShow] = useState(false);
+
     const [shownSection, setShownSection] = useState(1);
     const [progPercent, setProgPercent] = useState(0);
+    const [progColor, setProgColor] = useState("primary");
     useEffect(() => {
         (setProgPercent(((shownSection - 1) / 4) * 100))
     }, [shownSection]);
@@ -50,10 +55,10 @@ export default function NewBookingPage() {
 
 
 
-    const [schools, setSchools] = useState();
-    const [selectedSchool, setSelectedSchool] = useState();
-    const [courses, setCourses] = useState();
-    const [selectedCourse, setSelectedCourse] = useState();
+    const [schools, setSchools] = useState(null);
+    const [selectedSchool, setSelectedSchool] = useState(null);
+    const [courses, setCourses] = useState(null);
+    const [selectedCourse, setSelectedCourse] = useState(null);
 
 
     // get schools and courses
@@ -61,6 +66,8 @@ export default function NewBookingPage() {
     {
         try
         {
+            setLoadingShow(true);
+
             let token = await UserProfile.getAuthToken();
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization':token}};
@@ -68,17 +75,21 @@ export default function NewBookingPage() {
             await fetch(`http://localhost:8080/api/school/schools`, requestOptions)
                 .then(response => {return response.json()})
                 .then((data) => {setSchools(data.transObject)})
+                .then(() => {setLoadingShow(false)});
         }
         catch (error)
         {
-            console.log(error)
+            console.log(error);
+            setLoadingShow(false);
         }
     }
 
     function handleSelectedSchool(school)
     {
+        setLoadingShow(true);
         setSelectedSchool(school);
         setCourses(school.courses);
+        setLoadingShow(false);
     }
 
     useEffect(() => {getAvlbSchools()}, [])
@@ -95,6 +106,7 @@ export default function NewBookingPage() {
     {
         try
         {
+            setLoadingShow(true);
             let token = await UserProfile.getAuthToken();
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
@@ -102,11 +114,13 @@ export default function NewBookingPage() {
             await fetch(`http://localhost:8080/api/slot/course/IT6008?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
                 .then(response => {return response.json()})
                 .then((data) => {setRecivedSlotsDto(data.transObject)})
+                .then(() => {setLoadingShow(false);})
 
         }
         catch (error)
         {
-            console.log(error)
+            console.log(error);
+            setLoadingShow(false);
         }
     }
 
@@ -118,6 +132,7 @@ export default function NewBookingPage() {
     // parsing slots
     function parseSlots()
     {
+        setLoadingShow(true);
         const pastelColors = [
             '#ff9496',
             '#f494ff',
@@ -201,6 +216,7 @@ export default function NewBookingPage() {
         });
 
         setLeaders(parsedLeaders);
+        setLoadingShow(false);
     }
 
     // leaders + their slots
@@ -212,6 +228,7 @@ export default function NewBookingPage() {
     // add selcted leader slots to intrivals
     function handleSlots()
     {
+        setLoadingShow(true);
         let allSlots = [];
 
         selectedLeaders.forEach((leader) => {
@@ -221,6 +238,7 @@ export default function NewBookingPage() {
         })
 
         setSelectedIntervals(allSlots);
+        setLoadingShow(false);
     }
 
     useEffect(() => {if (selectedLeaders.length !== 0){handleSlots()}}, [selectedLeaders]);
@@ -268,6 +286,7 @@ export default function NewBookingPage() {
     {
         try
         {
+            setLoadingShow(true);
             let token = await UserProfile.getAuthToken();
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
@@ -275,11 +294,13 @@ export default function NewBookingPage() {
             await fetch(`http://localhost:8080/api/users/students`, requestOptions)
                 .then(response => {return response.json()})
                 .then((data) => {setAllUsers(data)})
+                .then(() => {setLoadingShow(false);})
 
         }
         catch (error)
         {
-            console.log(error)
+            console.log(error);
+            setLoadingShow(false);
         }
     }
 
@@ -296,7 +317,6 @@ export default function NewBookingPage() {
     async function createSubmit()
     {
         // booking elements
-
         const bookingDate = moment(selctedSlot.start).toDate();
         const bookingNote = helpInText;
         let isOnline = false;
@@ -335,9 +355,12 @@ export default function NewBookingPage() {
     async function submitBooking(bookingDto)
     {
         let isok = false;
+        let isBad = false;
 
         try
         {
+            setLoadingShow(true);
+
             let token = await UserProfile.getAuthToken();
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(bookingDto)};
@@ -353,26 +376,82 @@ export default function NewBookingPage() {
                     }
                     else if (response.status === 400)
                     {
-                        alert("big error")
+                        isBad = true;
                         return response.json();
+                    }
+                    else if (response.status === 401)
+                    {
+                        setErrorMsg("you are not allowed to do this action");
+                        setErrorShow(true);
                     }
                     else if (response.status === 404)
                     {
-                        alert("not found");
+                        setErrorMsg("the request was not found on the server, double check your connection");
+                        setErrorShow(true);
                     }
                     else
                     {
-                        alert("unknown error");
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
                     }
                 })
-                .then((data) => {if(isok){console.log(data)}else{alert("show errors"); console.log(data)}})
+                .then((data) =>
+                {
+                    setLoadingShow(false);
+                    if (isok)
+                    {
+                        // it is fine, go on
+                        setMadeBooking(data.transObject);
+                        setWarnings(data.warnings);
+                        console.log(data);
+                    }
+                    else if (isBad)
+                    {
+                        // errors for booking
+                        let errorString = "";
+                        data.error.forEach((errorItem) => {if (errorString === ""){errorString=errorItem}else{errorString = errorItem+"\n"+errorString}});
+                        setErrorMsg(errorString);
+                        setErrorShow(true);
+                        console.log(data);
+                    }
+                    else
+                    {
+                        console.log(data);
+                    }
+                })
 
         }
         catch (error)
         {
-            console.log(error)
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
         }
     }
+
+
+    // complete dialog
+    const [madeBooking, setMadeBooking] = useState(null);
+    const [warnings, setWarnings] = useState([]);
+
+    const [showComplete, setShowComplete] = useState(false);
+
+    function showCompleation()
+    {
+        // set percentage to 100% - if warnings make it yellow
+        if (warnings !== undefined &&  warnings.length !== 0)
+        {
+            setProgColor("warning");
+        }
+
+        setProgPercent(100);
+
+        // show dialog
+        setShowComplete(true);
+    }
+
+    useEffect(() => {if (madeBooking !== null){showCompleation()}}, [warnings]);
 
     function nextSection() {
         if (shownSection === 1) {
@@ -413,6 +492,14 @@ export default function NewBookingPage() {
         setShownSection((shownSection) - 1);
     }
 
+    let navigate = useNavigate();
+    const goToBooking = () => {
+        if (madeBooking !== null)
+        {
+            let path = `/viewBooking?bookingID=${madeBooking.bookingid}`;
+            navigate(path);
+        }
+    }
 
     const CustomPaper = (props) => {
         return <Paper elevation={8} {...props} />;
@@ -423,13 +510,44 @@ export default function NewBookingPage() {
 
         <Container>
 
+            {/* loading */}
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loadingShow}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+
             {/* alerts */}
             <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
                       anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
-                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%'}}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace:'pre-line'}}>
                     {errorMsg}
                 </Alert>
             </Snackbar>
+
+            {/* complete dialog */}
+            <Dialog
+                open={showComplete}
+            >
+                <DialogTitle>
+                    {"Success!!"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        The booking has been made!!, please click below to view it.
+
+                        {
+                            warnings !== undefined && warnings.map((warning) => (<Alert severity="warning" sx={{mb:1}}>{warning}</Alert>))
+                        }
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    {
+                        madeBooking !== null && <Button onClick={goToBooking} autoFocus> Go to booking. </Button>
+                    }
+                </DialogActions>
+            </Dialog>
 
             {/* top bar */}
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -454,7 +572,7 @@ export default function NewBookingPage() {
             </Stack>
 
             <Box sx={{width: '100%', mb: 2}}>
-                <LinearProgress variant="determinate" value={progPercent} style={{borderRadius: 5, height: 10}}/>
+                <LinearProgress variant="determinate" value={progPercent} style={{borderRadius: 5, height: 10}} color={progColor} />
             </Box>
 
             {/* elements */}
