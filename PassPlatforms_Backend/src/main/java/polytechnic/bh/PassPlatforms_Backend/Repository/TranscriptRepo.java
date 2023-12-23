@@ -8,4 +8,6 @@ import java.util.List;
 public interface TranscriptRepo extends JpaRepository<Transcript, Integer>
 {
     List<Transcript> findTranscriptsByStudent_Userid(String userID);
+
+    boolean existsByStudent_UseridAndAndCourseid(String userID, String courseID);
 }

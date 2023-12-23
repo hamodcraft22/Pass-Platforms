@@ -29,7 +29,7 @@ export default function MultiSelect({
 
     const handleChange = (event, selectedOps, reason) => {
         if (reason === "selectOption" || reason === "removeOption") {
-            if (selectedOps.find((option) => option.name === "All")) {
+            if (selectedOps.find((option) => option.coursename === "All")) {
                 handleToggleSelectAll();
             } else {
                 handleToggleOption && handleToggleOption(selectedOps);
@@ -58,19 +58,19 @@ export default function MultiSelect({
             options={items}
             value={selectedOptions}
             onChange={handleChange}
-            getOptionLabel={(option) => option.courseID + " " + option.name}
+            getOptionLabel={(option) => option.courseid + " " + option.coursename}
             filterOptions={(options, params) => {
                 const filtered = filter(options, params);
-                return [{id: 0, courseID: "", name: selectAllLabel}, ...filtered];
+                return [{id: 0, courseid: "", coursename: selectAllLabel}, ...filtered];
             }}
             renderOption={(props, option, {selected}) => {
                 // To control the state of 'select-all' checkbox
                 const selectAllProps =
-                    option.name === "All" ? {checked: allSelected} : {};
+                    option.coursename === "All" ? {checked: allSelected} : {};
                 return (
                     <li {...props}>
                         <Checkbox checked={selected} {...selectAllProps} />
-                        {option.courseID + " " + option.name}
+                        {option.courseid + " " + option.coursename}
                     </li>
                 );
             }}

@@ -271,10 +271,10 @@ export default function CoursesPage() {
                                         rowCount={courses.length}
                                         onRequestSort={handleSort}
                                         headLabel={[
-                                            {id: '', label: ''},
+                                            {id: 'zift1', label: ''},
                                             {id: 'courseid', label: 'Code'},
                                             {id: 'coursename', label: 'Name'},
-                                            {id: '', label: ''}
+                                            {id: 'zift2', label: ''}
                                         ]}
                                     />
                                     <TableBody>

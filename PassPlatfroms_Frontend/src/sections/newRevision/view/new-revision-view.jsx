@@ -48,9 +48,9 @@ export default function NewRevisionPage() {
     };
 
 
-    const [schools, setSchools] = useState(null);
+    const [schools, setSchools] = useState([]);
     const [selectedSchool, setSelectedSchool] = useState(null);
-    const [courses, setCourses] = useState(null);
+    const [courses, setCourses] = useState([]);
     const [selectedCourse, setSelectedCourse] = useState(null);
 
 

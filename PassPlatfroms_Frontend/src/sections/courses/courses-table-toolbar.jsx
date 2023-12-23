@@ -23,7 +23,7 @@ export default function CoursesTableToolbar({filterName, onFilterName}) {
                 <OutlinedInput
                     value={filterName}
                     onChange={onFilterName}
-                    placeholder="Search Schoools..."
+                    placeholder="Search Courses..."
                     startAdornment={
                         <InputAdornment position="start">
                             <Iconify

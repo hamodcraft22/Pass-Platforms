@@ -10,11 +10,22 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from "@mui/material/DialogActions";
+import {Alert, Snackbar} from "@mui/material";
+import UserProfile from "../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
-export default function TranscriptTableRow({courseID, name, grade, desc, sem, avlb}) {
+export default function TranscriptTableRow({transID, courseID, grade}) {
 
+    // alerts elements
+    const [errorShow, setErrorShow] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setErrorShow(false);
+    };
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const handleDeleteClickOpen = () => {
@@ -24,17 +35,50 @@ export default function TranscriptTableRow({courseID, name, grade, desc, sem, av
         setShowDeleteDialog(false);
     };
     const handleDeleteSave = () => {
-        setShowDeleteDialog(false);
+        deleteTranscript();
     };
+
+    // delete api - add
+    async function deleteTranscript() {
+        try {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions =
+                {
+                    method: "DELETE",
+                    headers: {'Content-Type': 'application/json', 'Authorization': token}
+                };
+
+            await fetch(`http://localhost:8080/api/transcript/${transID}`, requestOptions)
+                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
+        } catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error)
+        }
+        finally
+        {
+            setShowDeleteDialog(false);
+        }
+    }
 
 
     return (
         <>
+            {/* alerts */}
+            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                    {errorMsg}
+                </Alert>
+            </Snackbar>
+
             <TableRow hover tabIndex={-1}>
 
                 <TableCell></TableCell>
 
-                <TableCell>{courseID + " " + name}</TableCell>
+                <TableCell>{courseID}</TableCell>
 
                 <TableCell align={"center"}>{grade}</TableCell>
 
@@ -51,11 +95,11 @@ export default function TranscriptTableRow({courseID, name, grade, desc, sem, av
                 onClose={handleDeleteClose}
             >
                 <DialogTitle>
-                    {name}
+                    {courseID}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete <b>{name}</b>?
+                        Are you sure you want to delete <b>{courseID}</b>?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -72,5 +116,4 @@ TranscriptTableRow.propTypes = {
     handleClick: PropTypes.func,
     name: PropTypes.any,
     role: PropTypes.any,
-    selected: PropTypes.any,
 };

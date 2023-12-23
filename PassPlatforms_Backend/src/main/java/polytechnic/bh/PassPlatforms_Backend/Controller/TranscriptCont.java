@@ -93,7 +93,7 @@ public class TranscriptCont
                 }
             }
             //if it is a student, check if it is their application
-            else if (user.getRole().getRoleid() == ROLE_STUDENT)
+            else if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
             {
                 List<TranscriptDao> transcripts = transcriptServ.getLeaderTranscripts(leaderID);
 
@@ -224,6 +224,35 @@ public class TranscriptCont
 
     }
 
+    // create transcript multi -- added | tested
+    @PostMapping("/multi")
+    public ResponseEntity<GenericDto<List<TranscriptDao>>> createMultiTranscript(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestBody List<TranscriptDao> transcriptDao)
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_LEADER)
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, transcriptServ.createMultiTranscript(transcriptDao), null, null), HttpStatus.CREATED);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+    }
+
     // edit transcript - not allowed for students
     @PutMapping("")
     public ResponseEntity<GenericDto<TranscriptDao>> editTranscript(
@@ -262,7 +291,7 @@ public class TranscriptCont
 
     }
 
-    // delete transcript
+    // delete transcript -- added | tested
     @DeleteMapping("/{transID}")
     public ResponseEntity<GenericDto<Void>> deleteTranscript(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -288,7 +317,7 @@ public class TranscriptCont
                 }
             }
             //if it is a student, check if it is their application
-            else if (user.getRole().getRoleid() == ROLE_STUDENT)
+            else if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
             {
                 TranscriptDao transcript = transcriptServ.getTranscriptDetails(transID);
 
@@ -313,7 +342,7 @@ public class TranscriptCont
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
                 }
 
             }

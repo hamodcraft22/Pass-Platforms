@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -35,21 +35,38 @@ import TableHead from "@mui/material/TableHead";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import {FormHelperText} from "@mui/material";
+import {Alert, Backdrop, CircularProgress, FormHelperText, Snackbar} from "@mui/material";
+import UserProfile from "../../../components/auth/UserInfo";
 
 
 // ----------------------------------------------------------------------
 
 export default function TranscriptPage() {
 
-    const [schoolParm, setSchoolParm] = useSearchParams();
-    schoolParm.get("schoolID")
+    const [loadingShow, setLoadingShow] = useState(false);
+
+    // alerts elements
+    const [errorShow, setErrorShow] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setErrorShow(false);
+    };
+
+    const [successShow, setSuccessShow] = useState(false);
+    const [successMsg, setSuccessMsg] = useState("");
+    const handleSuccessAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSuccessShow(false);
+    };
 
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState('asc');
-
-    const [selected, setSelected] = useState([]);
 
     const [orderBy, setOrderBy] = useState('name');
 
@@ -58,14 +75,62 @@ export default function TranscriptPage() {
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
 
-    // fake users
+    // trascripts
+    const [transcripts, setTranscripts] = useState([]);
 
-    const users = [...Array(24)].map((_, index) => ({
-        userid: 567,
-        avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
-        name: "faker.person.fullName()",
-        role: "Leader"
-    }));
+    // get transcripts api
+    async function getTranscripts(leaderID)
+    {
+        let isok = false;
+
+        try
+        {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
+
+            await fetch(`http://localhost:8080/api/transcript/leader/${leaderID}`, requestOptions)
+                .then((response) => {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        isok = true;
+                        return response.json();
+                    }
+                    else if (response.status === 401)
+                    {
+                        setErrorMsg("you are not allowed to do this action");
+                        setErrorShow(true);
+                    }
+                    else if (response.status === 404)
+                    {
+                        setErrorMsg("the request was not found on the server, double check your connection");
+                        setErrorShow(true);
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+                .then((data) => {
+                    setLoadingShow(false);
+                    if (isok)
+                    {
+                        setTranscripts(data.transObject);
+                    }
+                });
+
+        }
+        catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
+        }
+    }
 
 
     const handleSort = (event, id) => {
@@ -74,15 +139,6 @@ export default function TranscriptPage() {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
-    };
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = users.map((n) => n.name);
-            setSelected(newSelecteds);
-            return;
-        }
-        setSelected([]);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -100,7 +156,7 @@ export default function TranscriptPage() {
     };
 
     const dataFiltered = applyFilter({
-        inputData: users,
+        inputData: transcripts,
         comparator: getComparator(order, orderBy),
         filterName,
     });
@@ -118,23 +174,64 @@ export default function TranscriptPage() {
         setShowAddDialog(false);
 
         setCourses([]);
-        setText("");
     };
     const handleAddSave = () => {
         setShowAddDialog(false);
+        submitTranscript();
     };
 
-    const [text, setText] = useState('');
+
+    const queryParameters = new URLSearchParams(window.location.search)
+    const leaderIDParm = queryParameters.get("leaderID");
+
+    const [userID, setUserID] = useState("");
+    const [userRole, setUserRole] = useState("");
+
+
+    // get user info (get the transcript of the logged in user)
+    async function getUserInfo()
+    {
+        let userID = await UserProfile.getUserID();
+        let userRole = await UserProfile.getUserRole();
+
+        setUserID(userID);
+        setUserRole(userRole);
+
+        getTranscripts(userID);
+    }
+
+    // get the transcript of another user - only manager / admin
+    async function getUserTranscript()
+    {
+        let userRole = await UserProfile.getUserRole();
+
+        if (userRole === 'manager' || userRole === 'admin')
+        {
+            getTranscripts(leaderIDParm);
+        }
+        else
+        {
+            setErrorMsg("you are not allowed to view other user's Transcripts");
+            setErrorShow(true);
+        }
+    }
+
+    // get school and courses on load - if not leader and there is param
+    useEffect(() => {if (leaderIDParm !== null && leaderIDParm !== undefined && Object.keys(leaderIDParm).length !== 0) {getUserTranscript()} else {getUserInfo()}}, [])
+
+
+
+
+
     const [courses, setCourses] = useState([]);
 
-
+    // transcript extract
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
 
         if (file) {
             try {
                 const pdfText = await extractTextFromPdf(file);
-                setText(pdfText);
 
                 // Define your regular expression for course extraction
                 const courseRegex = /([A-Z]{2})\s+(\d+)\s+([A-Z0-9]+)\s+([A-Za-z0-9\s\-]+?)\s+(\S+)\s+(\d+\.\d+)\s+(\d+\.\d+)/gm;
@@ -158,7 +255,7 @@ export default function TranscriptPage() {
                         courseGrade = 'E';
                     }
 
-                    correctedCourses.push({"code": courseCode, "title": courseName, "grade": courseGrade});
+                    correctedCourses.push({"courseid": courseCode, "title": courseName, "grade": courseGrade, "student":{"userid":userID}});
                 });
 
                 setCourses(correctedCourses);
@@ -167,6 +264,62 @@ export default function TranscriptPage() {
             }
         }
     };
+
+    async function submitTranscript()
+    {
+        let isok = false;
+
+        try
+        {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(courses)};
+
+            await fetch(`http://localhost:8080/api/transcript/multi`, requestOptions)
+                .then((response) => {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        isok = true;
+                        return response.json();
+                    }
+                    else if (response.status === 401)
+                    {
+                        setErrorMsg("you are not allowed to do this action");
+                        setErrorShow(true);
+                    }
+                    else if (response.status === 404)
+                    {
+                        setErrorMsg("the request was not found on the server, double check your connection");
+                        setErrorShow(true);
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+                .then((data) => {
+                    setLoadingShow(false);
+                    if (isok)
+                    {
+                        // refresh transcript
+                        setSuccessMsg("Courses added, duplicates (if any) ignored");
+                        setSuccessShow(true);
+                        getTranscripts(userID);
+                    }
+                });
+
+        }
+        catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
+        }
+    }
 
     const VisuallyHiddenInput = styled('input')({
         clip: 'rect(0 0 0 0)',
@@ -186,18 +339,43 @@ export default function TranscriptPage() {
 
     return (
         <Container>
+            {/* loading */}
+            <Backdrop
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={loadingShow}
+            >
+                <CircularProgress color="inherit"/>
+            </Backdrop>
+
+            {/* alerts */}
+            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%'}}>
+                    {errorMsg}
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={successShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleSuccessAlertClose} severity="success" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                    {successMsg}
+                </Alert>
+            </Snackbar>
+
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Student - Transcript</Typography>
 
-                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
-                        onClick={handleAddClickOpen}>
-                    Upload Transcript
-                </Button>
+                {
+                    leaderIDParm === null && userRole === "leader" &&
+                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
+                            onClick={handleAddClickOpen}>
+                        Upload Transcript
+                    </Button>
+                }
             </Stack>
 
             <Card>
                 <TranscriptTableToolbar
-                    numSelected={selected.length}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
                 />
@@ -208,15 +386,12 @@ export default function TranscriptPage() {
                             <TableMainHead
                                 order={order}
                                 orderBy={orderBy}
-                                rowCount={users.length}
-                                numSelected={selected.length}
                                 onRequestSort={handleSort}
-                                onSelectAllClick={handleSelectAllClick}
                                 headLabel={[
-                                    {id: '', label: ''},
-                                    {id: 'course', label: 'Course'},
+                                    {id: 'zift1', label: ''},
+                                    {id: 'courseid', label: 'Code'},
                                     {id: 'grade', label: 'Grade', align: 'center'},
-                                    {id: '', label: ''}
+                                    {id: 'zift2', label: ''}
                                 ]}
                             />
                             <TableBody>
@@ -224,15 +399,15 @@ export default function TranscriptPage() {
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
                                         <TranscriptTableRow
-                                            courseID={row.userid}
-                                            name={row.name}
+                                            transID={row.transid}
+                                            courseID={row.courseid}
                                             grade={row.grade}
                                         />
                                     ))}
 
                                 <TableEmptyRows
                                     height={77}
-                                    emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                                    emptyRows={emptyRows(page, rowsPerPage, transcripts.length)}
                                 />
 
                                 {notFound && <TableNoData query={filterName}/>}
@@ -244,7 +419,7 @@ export default function TranscriptPage() {
                 <TablePagination
                     page={page}
                     component="div"
-                    count={users.length}
+                    count={transcripts.length}
                     rowsPerPage={rowsPerPage}
                     onPageChange={handleChangePage}
                     rowsPerPageOptions={[5, 10, 25, 50]}
@@ -286,7 +461,7 @@ export default function TranscriptPage() {
                                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                             >
                                                 <TableCell component="th" scope="row">
-                                                    {course.code} {course.title}
+                                                    {course.courseid} {course.title}
                                                 </TableCell>
                                                 <TableCell align="center">{course.grade}</TableCell>
                                             </TableRow>

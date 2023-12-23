@@ -53,9 +53,9 @@ export default function NewBookingPage() {
     };
 
 
-    const [schools, setSchools] = useState(null);
+    const [schools, setSchools] = useState([]);
     const [selectedSchool, setSelectedSchool] = useState(null);
-    const [courses, setCourses] = useState(null);
+    const [courses, setCourses] = useState([]);
     const [selectedCourse, setSelectedCourse] = useState(null);
 
 
@@ -70,6 +70,7 @@ export default function NewBookingPage() {
 
             await fetch(`http://localhost:8080/api/school/schools`, requestOptions)
                 .then(response => {
+                    console.log(response);
                     return response.json()
                 })
                 .then((data) => {

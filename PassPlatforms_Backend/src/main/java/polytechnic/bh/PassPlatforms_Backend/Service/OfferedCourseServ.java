@@ -81,6 +81,26 @@ public class OfferedCourseServ
         return new OfferedCourseDao(offeredCourseRepo.save(newOfferedCourse));
     }
 
+    // multi course add
+    public List<OfferedCourseDao> createMultiOfferedCourse(List<OfferedCourseDao> offeredCourseDaos)
+    {
+        List<OfferedCourseDao> newOfferedCourse = new ArrayList<>();
+
+        for (OfferedCourseDao offeredCourseDao : offeredCourseDaos)
+        {
+            if (!offeredCourseRepo.existsByLeader_UseridAndCourse_Courseid(offeredCourseDao.getLeader().getUserid(), offeredCourseDao.getCourse().getCourseid()))
+            {
+                newOfferedCourse.add(createOfferedCourse(offeredCourseDao.getLeader().getUserid(), offeredCourseDao.getCourse().getCourseid()));
+            }
+            else
+            {
+                System.out.println("ignoring dup course");
+            }
+        }
+
+        return newOfferedCourse;
+    }
+
     // delete one course
     public boolean deleteOfferedCourse(int offerID)
     {

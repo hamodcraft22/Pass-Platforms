@@ -33,7 +33,7 @@ public class OfferedCourseCont
     @Autowired
     private UserServ userServ;
 
-    // get all offered courses - tested
+    // get all offered courses - tested / not needed
     @GetMapping("")
     public ResponseEntity<GenericDto<List<OfferedCourseDao>>> getAllOfferedCourses(
             @RequestHeader(value = "Authorization") String requestKey
@@ -188,7 +188,36 @@ public class OfferedCourseCont
 
     }
 
-    // delete offered course - tested
+    // create offered course - tested | added
+    @PostMapping("/multi")
+    public ResponseEntity<GenericDto<List<OfferedCourseDao>>> createMultiOfferedCourse(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestBody List<OfferedCourseDao> offeredCourseDao)
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_LEADER)
+            {
+                    return new ResponseEntity<>(new GenericDto<>(null, offeredCourseServ.createMultiOfferedCourse(offeredCourseDao), null, null), HttpStatus.CREATED);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+    }
+
+    // delete offered course - tested | added
     @DeleteMapping("/{offerID}")
     public ResponseEntity<GenericDto<Void>> deleteOfferedCourse(
             @RequestHeader(value = "Authorization") String requestKey,

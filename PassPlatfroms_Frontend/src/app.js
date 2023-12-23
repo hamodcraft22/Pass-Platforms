@@ -44,7 +44,7 @@ const MainContent = () => {
                     return `Bearer ${token.accessToken}`
                 })
                 .then((barerToken) => {
-                    UserProfile.setUserID(activeAccount.idTokenClaims.emails);
+                    UserProfile.setUserID(activeAccount.idTokenClaims.preferred_username.split('@')[0]);
                     UserProfile.setUserName(activeAccount.idTokenClaims.name);
                     UserProfile.setAuthToken(barerToken);
                     UserProfile.setExpTime(activeAccount.idTokenClaims.exp);

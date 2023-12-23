@@ -71,6 +71,26 @@ public class TranscriptServ
         return new TranscriptDao(transcriptRepo.save(newTranscript));
     }
 
+    // create multi transcript entry
+    public List<TranscriptDao> createMultiTranscript(List<TranscriptDao> transcriptDaos)
+    {
+        List<TranscriptDao> transcriptDaoList = new ArrayList<>();
+
+        for (TranscriptDao transcriptDao : transcriptDaos)
+        {
+            if (!transcriptRepo.existsByStudent_UseridAndAndCourseid(transcriptDao.getStudent().getUserid(), transcriptDao.getCourseid()))
+            {
+                transcriptDaoList.add(createTranscript(transcriptDao.getGrade(), transcriptDao.getStudent().getUserid(), transcriptDao.getCourseid()));
+            }
+            else
+            {
+                System.out.println("skipping dup ranscript");
+            }
+        }
+
+        return transcriptDaoList;
+    }
+
     // edit grade - should not be allowed
     public TranscriptDao editTranscript(TranscriptDao updatedTranscript)
     {

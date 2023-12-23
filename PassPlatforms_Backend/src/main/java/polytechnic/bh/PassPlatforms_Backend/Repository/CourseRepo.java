@@ -21,6 +21,6 @@ public interface CourseRepo extends JpaRepository<Course, String>
 
     // get all courses that a leader can offer
     @Transactional
-    @Query(value = "select * from pp_transcript WHERE courseid in (:courseIds)", nativeQuery = true)
+    @Query(value = "select * from pp_course WHERE courseid in (:courseIds)", nativeQuery = true)
     List<Course> findLeaderPosbCourses(List<String> courseIds);
 }

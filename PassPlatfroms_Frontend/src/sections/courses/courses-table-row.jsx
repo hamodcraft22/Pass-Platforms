@@ -108,7 +108,7 @@ export default function CoursesTableRow({courseID, courseName}) {
         }
         finally
         {
-            setShowEditDialog(false);
+            setShowDeleteDialog(false);
         }
     }
 

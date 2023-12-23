@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -30,19 +30,42 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import MultiSelect from "../MultiSelect";
+import {it} from "date-fns/locale";
+import UserProfile from "../../../components/auth/UserInfo";
+import {Alert, Backdrop, CircularProgress, FormHelperText, Snackbar} from "@mui/material";
 
 // ----------------------------------------------------------------------
 
 export default function OfferedCoursesPage() {
 
-    const [schoolParm, setSchoolParm] = useSearchParams();
-    schoolParm.get("schoolID")
+    const [loadingShow, setLoadingShow] = useState(false);
+
+    // alerts elements
+    const [errorShow, setErrorShow] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setErrorShow(false);
+    };
+
+    const [successShow, setSuccessShow] = useState(false);
+    const [successMsg, setSuccessMsg] = useState("");
+    const handleSuccessAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSuccessShow(false);
+    };
+
+    const queryParameters = new URLSearchParams(window.location.search)
+    const leaderIDParm = queryParameters.get("leaderID");
+
 
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState('asc');
-
-    const [selected, setSelected] = useState([]);
 
     const [orderBy, setOrderBy] = useState('name');
 
@@ -50,16 +73,99 @@ export default function OfferedCoursesPage() {
 
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
+    const [userID, setUserID] = useState("");
+    const [userRole, setUserRole] = useState("");
 
-    // fake users
+    const [offeredCourses, setOfferedCourses] = useState([]);
 
-    const users = [...Array(24)].map((_, index) => ({
-        userid: 567,
-        avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
-        name: "faker.person.fullName()",
-        role: "Leader"
-    }));
 
+    // get offered courses api
+    async function getLeaderCourses(leaderID) {
+        try {
+            setLoadingShow(true);
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
+
+            await fetch(`http://localhost:8080/api/offeredcourse/leader/${leaderID}`, requestOptions)
+                .then(response =>
+                {
+                    return response.json()
+                })
+                .then((data) =>
+                {
+                    parseOfferedCourses(data.transObject);
+                }).then(() => {setLoadingShow(false);})
+        } catch (error)
+        {
+            setLoadingShow(false);
+            setErrorMsg("No Courses Found");
+            setErrorShow(true);
+            console.log(error);
+        }
+    }
+
+    function parseOfferedCourses(offeredCourses)
+    {
+        let correctedOfferedCourses = [];
+
+        offeredCourses.forEach((offer) => {
+            correctedOfferedCourses.push({"offerid":offer.offerid, "courseid":offer.course.courseid, "coursename":offer.course.coursename});
+        });
+
+        setOfferedCourses(correctedOfferedCourses);
+    }
+
+    async function getCoursesAvlb(leaderID) {
+        try {
+            setLoadingShow(true);
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
+
+            await fetch(`http://localhost:8080/api/course/leader/${leaderID}`, requestOptions)
+                .then(response =>
+                {
+                    if (response.status === 200)
+                    {
+                        return response.json()
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                })
+                .then((data) =>
+                {
+                    if (data !== null)
+                    {
+                        setCoursesAvlb(data.transObject)
+                    }
+                }).then(() => {setLoadingShow(false);})
+        } catch (error)
+        {
+            setLoadingShow(false);
+            setErrorMsg("No Courses Found");
+            setErrorShow(true);
+            console.log(error);
+        }
+    }
+
+    // get user info
+    async function getUserInfo()
+    {
+        let userID = await UserProfile.getUserID();
+        let userRole = await UserProfile.getUserRole();
+
+        setUserID(userID);
+        setUserRole(userRole);
+
+        getLeaderCourses(userID);
+        getCoursesAvlb(userID);
+    }
+
+    // get school and courses on load - if not leader and there is param
+    useEffect(() => {if (leaderIDParm !== null && leaderIDParm !== undefined && Object.keys(leaderIDParm).length !== 0) {getLeaderCourses(leaderIDParm)} else {getUserInfo()}}, [])
 
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
@@ -67,15 +173,6 @@ export default function OfferedCoursesPage() {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
-    };
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = users.map((n) => n.name);
-            setSelected(newSelecteds);
-            return;
-        }
-        setSelected([]);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -93,21 +190,89 @@ export default function OfferedCoursesPage() {
     };
 
     const dataFiltered = applyFilter({
-        inputData: users,
+        inputData: offeredCourses,
         comparator: getComparator(order, orderBy),
         filterName,
     });
 
     const notFound = !dataFiltered.length && !!filterName;
 
-
     const [showAddDialog, setShowAddDialog] = useState(false);
 
-    const coursesAvlb = [{courseID: "it6008", name: "Maths for computing"}, {
-        courseID: "it6010",
-        name: "Mathasdasds for computing"
-    }, {courseID: "it7008", name: "chile the getto"}];
-    let coursesToAdd = [];
+
+
+    const [coursesAvlb, setCoursesAvlb] = useState([]);
+
+    const [coursesToAdd, setCoursesToAdd] = useState([]);
+
+    function createSubmit()
+    {
+        let offeredCoursesList = [];
+
+        coursesToAdd.forEach((course) => {
+            offeredCoursesList.push({"leader":{"userid":userID}, "course":{"courseid":course.courseid}})
+        })
+
+        submitCourses(offeredCoursesList);
+    }
+
+    // add offered courses api
+    async function submitCourses(offeredCoursesList)
+    {
+        let isok = false;
+
+        try
+        {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(offeredCoursesList)};
+
+            await fetch(`http://localhost:8080/api/offeredcourse/multi`, requestOptions)
+                .then((response) => {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        isok = true;
+                        return response.json();
+                    }
+                    else if (response.status === 401)
+                    {
+                        setErrorMsg("you are not allowed to do this action");
+                        setErrorShow(true);
+                    }
+                    else if (response.status === 404)
+                    {
+                        setErrorMsg("the request was not found on the server, double check your connection");
+                        setErrorShow(true);
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+                .then((data) => {
+                    setLoadingShow(false);
+                    if (isok)
+                    {
+                        // refresh transcript
+                        setSuccessMsg("Courses added, duplicates (if any) ignored");
+                        setSuccessShow(true);
+                        getLeaderCourses(userID);
+                        getCoursesAvlb(userID);
+                    }
+                });
+
+        }
+        catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
+        }
+    }
 
     const handleAddClickOpen = () => {
         setShowAddDialog(true);
@@ -117,23 +282,49 @@ export default function OfferedCoursesPage() {
     };
     const handleAddSave = () => {
         setShowAddDialog(false);
+        createSubmit();
     };
 
 
     return (
         <Container>
+            {/* loading */}
+            <Backdrop
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={loadingShow}
+            >
+                <CircularProgress color="inherit"/>
+            </Backdrop>
+
+            {/* alerts */}
+            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%'}}>
+                    {errorMsg}
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={successShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleSuccessAlertClose} severity="success" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                    {successMsg}
+                </Alert>
+            </Snackbar>
+
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Courses</Typography>
 
-                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
-                        onClick={handleAddClickOpen}>
-                    New Course
-                </Button>
+                {
+                    leaderIDParm === null && userRole === "leader" &&
+                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
+                            onClick={handleAddClickOpen}>
+                        New Course
+                    </Button>
+                }
             </Stack>
 
             <Card>
                 <OfferedCoursesTableToolbar
-                    numSelected={selected.length}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
                 />
@@ -144,15 +335,13 @@ export default function OfferedCoursesPage() {
                             <TableMainHead
                                 order={order}
                                 orderBy={orderBy}
-                                rowCount={users.length}
-                                numSelected={selected.length}
+                                rowCount={offeredCourses.length}
                                 onRequestSort={handleSort}
-                                onSelectAllClick={handleSelectAllClick}
                                 headLabel={[
-                                    {id: '', label: ''},
-                                    {id: 'code', label: 'Code'},
-                                    {id: 'name', label: 'Name'},
-                                    {id: '', label: ''}
+                                    {id: 'zift1', label: ''},
+                                    {id: 'courseid', label: 'Code'},
+                                    {id: 'coursename', label: 'Name'},
+                                    {id: 'zift2', label: ''}
                                 ]}
                             />
                             <TableBody>
@@ -160,15 +349,15 @@ export default function OfferedCoursesPage() {
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
                                         <OfferedCoursesTableRow
-                                            offerID={row.offerID}
-                                            courseID={row.userid}
-                                            courseName={row.name}
+                                            offerID={row.offerid}
+                                            courseID={row.courseid}
+                                            courseName={row.coursename}
                                         />
                                     ))}
 
                                 <TableEmptyRows
                                     height={77}
-                                    emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                                    emptyRows={emptyRows(page, rowsPerPage, offeredCourses.length)}
                                 />
 
                                 {notFound && <TableNoData query={filterName}/>}
@@ -180,7 +369,7 @@ export default function OfferedCoursesPage() {
                 <TablePagination
                     page={page}
                     component="div"
-                    count={users.length}
+                    count={offeredCourses.length}
                     rowsPerPage={rowsPerPage}
                     onPageChange={handleChangePage}
                     rowsPerPageOptions={[5, 10, 25, 50]}
@@ -202,10 +391,9 @@ export default function OfferedCoursesPage() {
                                 items={coursesAvlb}
                                 label="Courses"
                                 selectAllLabel="All"
-                                courses={(items) => {
-                                    coursesToAdd = items;
-                                }}
+                                courses={(items) => {setCoursesToAdd(items)}}
                             />
+                            <FormHelperText>Make sure you have uploaded your transcript, if not uploaded no courses with be allowed.</FormHelperText>
                         </div>
                     </DialogContent>
                     <DialogActions>

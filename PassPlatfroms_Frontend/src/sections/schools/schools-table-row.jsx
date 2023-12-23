@@ -119,7 +119,7 @@ export default function SchoolsTableRow({schoolID, schoolName}) {
         }
         finally
         {
-            setShowEditDialog(false);
+            setShowDeleteDialog(false);
         }
     }
 

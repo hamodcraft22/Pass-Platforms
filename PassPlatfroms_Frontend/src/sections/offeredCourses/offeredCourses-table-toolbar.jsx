@@ -9,29 +9,21 @@ import Iconify from '../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function OfferedCoursesTableToolbar({numSelected, filterName, onFilterName}) {
+export default function OfferedCoursesTableToolbar({filterName, onFilterName}) {
     return (
         <Toolbar
             sx={{
                 height: 96,
                 display: 'flex',
                 justifyContent: 'space-between',
-                p: (theme) => theme.spacing(0, 1, 0, 3),
-                ...(numSelected > 0 && {
-                    color: 'primary.main',
-                    bgcolor: 'primary.lighter',
-                }),
+                p: (theme) => theme.spacing(0, 1, 0, 3)
             }}
         >
-            {numSelected > 0 ? (
-                <Typography component="div" variant="subtitle1">
-                    {numSelected} selected
-                </Typography>
-            ) : (
+
                 <OutlinedInput
                     value={filterName}
                     onChange={onFilterName}
-                    placeholder="Search Schoools..."
+                    placeholder="Search Courses..."
                     startAdornment={
                         <InputAdornment position="start">
                             <Iconify
@@ -41,14 +33,12 @@ export default function OfferedCoursesTableToolbar({numSelected, filterName, onF
                         </InputAdornment>
                     }
                 />
-            )}
 
         </Toolbar>
     );
 }
 
 OfferedCoursesTableToolbar.propTypes = {
-    numSelected: PropTypes.number,
     filterName: PropTypes.string,
     onFilterName: PropTypes.func,
 };

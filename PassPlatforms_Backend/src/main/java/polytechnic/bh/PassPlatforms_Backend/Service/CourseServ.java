@@ -3,6 +3,7 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.CourseDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.OfferedCourseDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.TranscriptDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Course;
 import polytechnic.bh.PassPlatforms_Backend.Repository.CourseRepo;
@@ -24,6 +25,9 @@ public class CourseServ
 
     @Autowired
     private TranscriptServ transcriptServ;
+
+    @Autowired
+    private OfferedCourseServ offeredCourseServ;
 
     public List<CourseDao> getAllCourses()
     {
@@ -70,6 +74,15 @@ public class CourseServ
         // get all user trans courses
         List<TranscriptDao> leaderTrans = transcriptServ.getLeaderTranscripts(leaderID);
 
+        List<OfferedCourseDao> leaderOfferedCourses = offeredCourseServ.getLeaderOfferedCourses(leaderID);
+
+
+        List<String> alredyOfferedCourseIDs = new ArrayList<>();
+        for (OfferedCourseDao offeredCourseDao : leaderOfferedCourses)
+        {
+            alredyOfferedCourseIDs.add(offeredCourseDao.getCourse().getCourseid());
+        }
+
         List<String> courseIDs = new ArrayList<>();
 
         for (TranscriptDao transcript : leaderTrans)
@@ -83,7 +96,11 @@ public class CourseServ
         // get all courses where course code in trans courses
         for (Course course : courseRepo.findLeaderPosbCourses(courseIDs))
         {
-            leaderCourses.add(new CourseDao(course.getCourseid(), course.getCoursename(), null));
+            // check if it has already been added
+            if (!alredyOfferedCourseIDs.contains(course.getCourseid()))
+            {
+                leaderCourses.add(new CourseDao(course.getCourseid(), course.getCoursename(), null));
+            }
         }
 
         return leaderCourses;

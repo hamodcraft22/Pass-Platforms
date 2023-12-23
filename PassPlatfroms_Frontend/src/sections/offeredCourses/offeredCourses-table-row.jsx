@@ -10,10 +10,22 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from "@mui/material/DialogActions";
+import {Alert, Snackbar} from "@mui/material";
+import UserProfile from "../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
 export default function OfferedCoursesTableRow({offerID, courseID, courseName}) {
+
+    // alerts elements
+    const [errorShow, setErrorShow] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setErrorShow(false);
+    };
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const handleDeleteClickOpen = () => {
@@ -23,12 +35,44 @@ export default function OfferedCoursesTableRow({offerID, courseID, courseName}) 
         setShowDeleteDialog(false);
     };
     const handleDeleteSave = () => {
-        setShowDeleteDialog(false);
+        deleteCourse();
     };
 
+    // delete api - add
+    async function deleteCourse() {
+        try {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions =
+                {
+                    method: "DELETE",
+                    headers: {'Content-Type': 'application/json', 'Authorization': token}
+                };
+
+            await fetch(`http://localhost:8080/api/offeredcourse/${offerID}`, requestOptions)
+                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
+        } catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error)
+        }
+        finally
+        {
+            setShowDeleteDialog(false);
+        }
+    }
 
     return (
         <>
+            {/* alerts */}
+            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                    {errorMsg}
+                </Alert>
+            </Snackbar>
+
             <TableRow hover tabIndex={-1}>
 
                 <TableCell></TableCell>
@@ -74,5 +118,4 @@ OfferedCoursesTableRow.propTypes = {
     handleClick: PropTypes.func,
     name: PropTypes.any,
     role: PropTypes.any,
-    selected: PropTypes.any,
 };

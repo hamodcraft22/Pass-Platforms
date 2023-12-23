@@ -59,7 +59,7 @@ export default function SchoolsPage() {
         if (reason === 'clickaway') {
             return;
         }
-        setErrorShow(false);
+        setSuccessShow(false);
     };
 
     // schools
@@ -241,7 +241,7 @@ export default function SchoolsPage() {
                         // it is fine, go on
                         getSchools()
                             .then(() => {
-                                setSuccessMsg("Courses added, duplicates ignored");
+                                setSuccessMsg("Courses added, duplicates (if any) ignored");
                                 setSuccessShow(true);
                                 console.log(data);
                             })
@@ -351,9 +351,9 @@ export default function SchoolsPage() {
                                 rowCount={schools.length}
                                 onRequestSort={handleSort}
                                 headLabel={[
-                                    {id: '', label: ''},
+                                    {id: 'zift1', label: ''},
                                     {id: 'schoolname', label: 'Name'},
-                                    {id: '', label: ''}
+                                    {id: 'zift2', label: ''}
                                 ]}
                             />
                             <TableBody>

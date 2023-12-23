@@ -86,7 +86,7 @@ public class CourseCont
 
     }
 
-    // get leader (possible) courses - schools they can teach that have not been added
+    // get leader (possible) courses - schools they can teach that have not been added -- tested | added
     @GetMapping("/leader/{leaderID}")
     public ResponseEntity<GenericDto<List<CourseDao>>> getLeaderCourseDetails(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -111,7 +111,6 @@ public class CourseCont
         {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-
 
     }
 
