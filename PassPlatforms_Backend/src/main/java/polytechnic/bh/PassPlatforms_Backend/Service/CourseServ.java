@@ -113,9 +113,16 @@ public class CourseServ
 
         for (CourseDao course : courses)
         {
-            Course newCourse = new Course(course.getCourseid(), course.getCoursename(), schoolRepo.getReferenceById(course.getSchool().getSchoolid()));
+            try
+            {
+                Course newCourse = new Course(course.getCourseid(), course.getCoursename(), schoolRepo.getReferenceById(course.getSchool().getSchoolid()));
 
-            addedCourses.add(new CourseDao(courseRepo.save(newCourse)));
+                addedCourses.add(new CourseDao(courseRepo.save(newCourse)));
+            }
+            catch (Exception ex)
+            {
+                System.out.println("ignored dup school");
+            }
         }
 
 

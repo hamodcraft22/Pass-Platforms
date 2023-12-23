@@ -12,12 +12,25 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {TextField} from "@mui/material";
+import {Alert, Snackbar, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
+import UserProfile from "../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
 export default function SchoolsTableRow({schoolID, schoolName}) {
+
+
+    // alerts elements
+    const [errorShow, setErrorShow] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setErrorShow(false);
+    };
+
 
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [editSchoolName, setEditSchoolName] = useState(null);
@@ -32,8 +45,15 @@ export default function SchoolsTableRow({schoolID, schoolName}) {
         setEditSchoolName(null);
     };
     const handleEditSave = () => {
-        // add validation TODO
-        editSchool();
+        if (editSchoolName !== null && editSchoolName !== undefined && Object.keys(editSchoolName).length !== 0)
+        {
+            editSchool();
+        }
+        else
+        {
+            setErrorMsg("Please add school name");
+            setErrorShow(true);
+        }
     };
 
 
@@ -45,7 +65,7 @@ export default function SchoolsTableRow({schoolID, schoolName}) {
         setShowDeleteDialog(false);
     };
     const handleDeleteSave = () => {
-        setShowDeleteDialog(false);
+        deleteSchool();
     };
 
     // go to courses
@@ -58,33 +78,61 @@ export default function SchoolsTableRow({schoolID, schoolName}) {
     // edit schools api
     async function editSchool() {
         try {
+            let token = await UserProfile.getAuthToken();
+
             const requestOptions =
                 {
                     method: "PUT",
-                    headers: {'Content-Type': 'application/json', 'Authorization': '27afc256-2734-4a04-8c8e-49997bb0f638'},
+                    headers: {'Content-Type': 'application/json', 'Authorization': token},
                     body: JSON.stringify({"schoolid": schoolID, "schoolname": editSchoolName})
                 };
 
             await fetch(`http://localhost:8080/api/school`, requestOptions)
                 .then(response => {
-                    return response.json()
-                })
-                .then(() => {
-                    window.location.reload(false)
+                    if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}
                 });
         } catch (error) {
             console.log(error)
         } finally {
             setShowEditDialog(false);
-
-            setEditSchoolName(null);
         }
     }
 
     // delete api - add
+    async function deleteSchool() {
+        try {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions =
+                {
+                    method: "DELETE",
+                    headers: {'Content-Type': 'application/json', 'Authorization': token}
+                };
+
+            await fetch(`http://localhost:8080/api/school/${schoolID}`, requestOptions)
+                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
+        } catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error)
+        }
+        finally
+        {
+            setShowEditDialog(false);
+        }
+    }
 
     return (
         <>
+            {/* alerts */}
+            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                    {errorMsg}
+                </Alert>
+            </Snackbar>
+
             <TableRow hover tabIndex={-1}>
 
                 <TableCell></TableCell>

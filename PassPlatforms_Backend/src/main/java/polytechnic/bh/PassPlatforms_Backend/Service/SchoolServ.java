@@ -151,6 +151,47 @@ public class SchoolServ
         return new SchoolDao(schoolRepo.save(newSchool));
     }
 
+    public List<SchoolDao> createMultiSchool(List<SchoolDao> schools)
+    {
+        List<SchoolDao> addedSchools = new ArrayList<>();
+
+        for (SchoolDao schoolDao : schools)
+        {
+            try
+            {
+                School newSchool = new School();
+
+                newSchool.setSchoolid(schoolDao.getSchoolid());
+                newSchool.setSchoolname(schoolDao.getSchoolname());
+
+                if (schoolDao.getCourses() != null && !schoolDao.getCourses().isEmpty())
+                {
+                    // save the school first
+                    SchoolDao savedSchool = new SchoolDao(schoolRepo.save(newSchool));
+
+                    // add all the courses to the school
+                    List<CourseDao> savedCourses = courseServ.createMultiCourse(schoolDao.getCourses());
+
+                    // add the courses to the object
+                    savedSchool.setCourses(savedCourses);
+
+                    // return
+                    addedSchools.add(savedSchool);
+                }
+                else
+                {
+                    addedSchools.add(new SchoolDao(schoolRepo.save(newSchool)));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.out.println("ignored dup school");
+            }
+        }
+
+        return addedSchools;
+    }
+
     public SchoolDao editSchool(SchoolDao updatedSchool)
     {
         Optional<School> retrievedSchool = schoolRepo.findById(updatedSchool.getSchoolid());

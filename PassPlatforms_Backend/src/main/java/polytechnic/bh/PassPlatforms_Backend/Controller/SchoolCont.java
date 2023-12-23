@@ -141,6 +141,37 @@ public class SchoolCont
 
     }
 
+    // create multi school -- tested | added
+    @PostMapping("/multi")
+    public ResponseEntity<GenericDto<List<SchoolDao>>> createMultiSchool(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestBody List<SchoolDao> schoolsDao)
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            {
+                List<SchoolDao> createdSchool = schoolServ.createMultiSchool(schoolsDao);
+
+                return new ResponseEntity<>(new GenericDto<>(null, createdSchool, null, null), HttpStatus.CREATED);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+    }
+
     // create school
     @PostMapping("")
     public ResponseEntity<GenericDto<SchoolDao>> createSchool(
@@ -172,7 +203,7 @@ public class SchoolCont
 
     }
 
-    // edit school
+    // edit school -- tested | added
     @PutMapping("")
     public ResponseEntity<GenericDto<SchoolDao>> editSchool(
             @RequestHeader(value = "Authorization") String requestKey,

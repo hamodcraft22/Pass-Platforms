@@ -33,7 +33,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import UserProfile from "../../../components/auth/UserInfo";
-import {Backdrop, CircularProgress} from "@mui/material";
+import {Alert, Backdrop, CircularProgress, Snackbar} from "@mui/material";
+import {useNavigate} from "react-router-dom";
 
 
 // ----------------------------------------------------------------------
@@ -42,9 +43,27 @@ export default function SchoolsPage() {
 
     const [loadingShow, setLoadingShow] = useState(false);
 
+    // alerts elements
+    const [errorShow, setErrorShow] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setErrorShow(false);
+    };
+
+    const [successShow, setSuccessShow] = useState(false);
+    const [successMsg, setSuccessMsg] = useState("");
+    const handleSuccessAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setErrorShow(false);
+    };
+
     // schools
     const [schools, setSchools] = useState([]);
-
 
     // get schools api
     async function getSchools() {
@@ -76,12 +95,13 @@ export default function SchoolsPage() {
         getSchools()
     }, [])
 
+
+
+
     // table vars
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState('asc');
-
-    const [selected, setSelected] = useState([]);
 
     const [orderBy, setOrderBy] = useState('name');
 
@@ -96,33 +116,6 @@ export default function SchoolsPage() {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
-    };
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = schools.map((n) => n.name);
-            setSelected(newSelecteds);
-            return;
-        }
-        setSelected([]);
-    };
-
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected = [];
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1)
-            );
-        }
-        setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -150,18 +143,9 @@ export default function SchoolsPage() {
     const [showAddDialog, setShowAddDialog] = useState(false);
 
 
-    const handleAddClickOpen = () => {
-        setShowAddDialog(true);
-    };
-    const handleAddClose = () => {
-        setShowAddDialog(false);
-    };
-    const handleAddSave = () => {
-        setShowAddDialog(false);
-    };
+
 
     // excel extract
-
     const [schoolsUpload, setSchoolsUpload] = useState([]);
 
     const handleFileChange = async (event) => {
@@ -179,10 +163,10 @@ export default function SchoolsPage() {
             let formattedCourses = [];
 
             courses.forEach((course) => {
-                formattedCourses.push({"courseCode": sheetName + course[0], "courseName": course[1]})
+                formattedCourses.push({"courseid": sheetName + course[0], "coursename": course[1], "school":{"schoolid": sheetName}})
             });
 
-            sheetsData.push({"schoolCode": sheetName, "schoolName": data[0][0], "courses": formattedCourses});
+            sheetsData.push({"schoolid": sheetName, "schoolname": data[0][0], "courses": formattedCourses});
         });
 
         setSchoolsUpload(sheetsData);
@@ -205,6 +189,92 @@ export default function SchoolsPage() {
             reader.readAsArrayBuffer(file);
         });
     };
+
+    // upload school elements
+    const handleAddClickOpen = () => {
+        setShowAddDialog(true);
+    };
+    const handleAddClose = () => {
+        setShowAddDialog(false);
+    };
+    const handleAddSave = () => {
+        setShowAddDialog(false);
+        submitBooking();
+    };
+
+
+    async function submitBooking()
+    {
+        let isok = false;
+        let isBad = false;
+
+        try {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(schoolsUpload)};
+
+            await fetch(`http://localhost:8080/api/school/multi`, requestOptions)
+                .then(response => {
+                    if (response.status === 201 || response.status === 200) {
+                        isok = true;
+                        return response.json();
+                    } else if (response.status === 400) {
+                        isBad = true;
+                        return response.json();
+                    } else if (response.status === 401) {
+                        setErrorMsg("you are not allowed to do this action");
+                        setErrorShow(true);
+                    } else if (response.status === 404) {
+                        setErrorMsg("the request was not found on the server, double check your connection");
+                        setErrorShow(true);
+                    } else {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+                .then((data) => {
+                    setLoadingShow(false);
+                    if (isok)
+                    {
+                        // it is fine, go on
+                        getSchools()
+                            .then(() => {
+                                setSuccessMsg("Courses added, duplicates ignored");
+                                setSuccessShow(true);
+                                console.log(data);
+                            })
+                    }
+                    else if (isBad)
+                    {
+                        setErrorMsg("Unkown error, some schools or courses may have not been uploaded");
+                        setErrorShow(true);
+                        console.log(data);
+                    }
+                    else
+                    {
+                        console.log(data);
+                    }
+                })
+
+        } catch (error) {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
+        }
+    }
+
+
+
+    // naviagation links
+    let navigate = useNavigate();
+    const goToNewSchool = () => {
+            let path = `/newSchool`;
+            navigate(path);
+
+    }
 
 
     const VisuallyHiddenInput = styled('input')({
@@ -235,6 +305,22 @@ export default function SchoolsPage() {
                 <CircularProgress color="inherit"/>
             </Backdrop>
 
+            {/* alerts */}
+            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                    {errorMsg}
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={successShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleSuccessAlertClose} severity="success" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                    {successMsg}
+                </Alert>
+            </Snackbar>
+
+            {/* tob bar */}
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Schools</Typography>
 
@@ -244,7 +330,7 @@ export default function SchoolsPage() {
                         Upload Schools
                     </Button>
 
-                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} sx={{m: 1}}>
+                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} sx={{m: 1}} onClick={goToNewSchool}>
                         New School
                     </Button>
                 </div>
@@ -252,7 +338,6 @@ export default function SchoolsPage() {
 
             <Card>
                 <SchoolsTableToolbar
-                    numSelected={selected.length}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
                 />
@@ -264,9 +349,7 @@ export default function SchoolsPage() {
                                 order={order}
                                 orderBy={orderBy}
                                 rowCount={schools.length}
-                                numSelected={selected.length}
                                 onRequestSort={handleSort}
-                                onSelectAllClick={handleSelectAllClick}
                                 headLabel={[
                                     {id: '', label: ''},
                                     {id: 'name', label: 'Name'},
@@ -327,7 +410,7 @@ export default function SchoolsPage() {
                                     <Table aria-label="simple table" sx={{minWidth: "200px"}}>
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell colspan="2" style={{"text-align": "center"}}><b>{school.schoolName}</b></TableCell>
+                                                <TableCell colspan="2" style={{"text-align": "center"}}><b>{school.schoolid + " | " + school.schoolname}</b></TableCell>
                                             </TableRow>
                                             <TableRow>
                                                 <TableCell>Course Code</TableCell>
@@ -342,9 +425,9 @@ export default function SchoolsPage() {
                                                         sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                                     >
                                                         <TableCell align="center" component="th" scope="row">
-                                                            {course.courseCode}
+                                                            {course.courseid}
                                                         </TableCell>
-                                                        <TableCell>{course.courseName}</TableCell>
+                                                        <TableCell>{course.coursename}</TableCell>
                                                     </TableRow>
                                                 ))
                                             }
