@@ -27,14 +27,27 @@ import Iconify from "../../../components/iconify";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import {CardActions, CardContent, TextField} from "@mui/material";
+import {Alert, Backdrop, CardActions, CardContent, CircularProgress, Snackbar, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import Box from "@mui/material/Box";
 import UserProfile from "../../../components/auth/UserInfo";
+import {useNavigate} from "react-router-dom";
 
 // ----------------------------------------------------------------------
 
 export default function CoursesPage() {
+
+    const [loadingShow, setLoadingShow] = useState(false);
+
+    // alerts elements
+    const [errorShow, setErrorShow] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setErrorShow(false);
+    };
 
     const queryParameters = new URLSearchParams(window.location.search)
     const schoolIDParm = queryParameters.get("schoolID")
@@ -45,6 +58,7 @@ export default function CoursesPage() {
     // get school and courses api
     async function getSchoolCourses() {
         try {
+            setLoadingShow(true);
             let token = await UserProfile.getAuthToken();
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
@@ -56,15 +70,19 @@ export default function CoursesPage() {
                 .then((data) => {
                     setSchool(data.transObject);
                     setCourses(data.transObject.courses)
-                })
-        } catch (error) {
-            console.log(error)
+                }).then(() => {setLoadingShow(false);})
+        } catch (error)
+        {
+            setLoadingShow(false);
+            setErrorMsg("No Courses Found");
+            setErrorShow(true);
+            console.log(error);
         }
     }
 
     // get school and courses on load
     useEffect(() => {
-        getSchoolCourses()
+        if (schoolIDParm !== null && schoolIDParm !== undefined && Object.keys(schoolIDParm).length !== 0) {getSchoolCourses()}
     }, [])
 
     const [showAddDialog, setShowAddDialog] = useState(false);
@@ -140,9 +158,39 @@ export default function CoursesPage() {
 
     const notFound = !dataFiltered.length && !!filterName;
 
+    let navigate = useNavigate();
+    const goToSchools = () => {
+            let path = `/schools`;
+            navigate(path);
+
+    }
+
+    const goToHome = () => {
+            let path = `/`;
+            navigate(path);
+
+    }
+
+
 
     return (
         <Container>
+
+            {/* loading */}
+            <Backdrop
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={loadingShow}
+            >
+                <CircularProgress color="inherit"/>
+            </Backdrop>
+
+            {/* alerts */}
+            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                    {errorMsg}
+                </Alert>
+            </Snackbar>
 
             {/* if there is a school id */}
             {
@@ -246,12 +294,6 @@ export default function CoursesPage() {
                 schoolIDParm === null &&
                 <Box width={"100%"} height={"100%"} display="flex" justifyContent="center" alignItems="center">
                     <Card sx={{maxWidth: 345}}>
-                        {/*<CardMedia*/}
-                        {/*    component="img"*/}
-                        {/*    alt="green iguana"*/}
-                        {/*    height="140"*/}
-                        {/*    image="/static/images/cards/contemplative-reptile.jpg"*/}
-                        {/*/>*/}
                         <CardContent>
                             <Typography gutterBottom variant="h5" component="div">
                                 Uh oh!
@@ -261,8 +303,8 @@ export default function CoursesPage() {
                             </Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">Home</Button>
-                            <Button size="small">Schools</Button>
+                            <Button size="small" onClick={goToHome}>Home</Button>
+                            <Button size="small" onClick={goToSchools}>Schools</Button>
                         </CardActions>
                     </Card>
                 </Box>

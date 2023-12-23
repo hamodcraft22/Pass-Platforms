@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {Alert, FormHelperText, Snackbar, TextField} from "@mui/material";
+import {Alert, Backdrop, CircularProgress, FormHelperText, Snackbar, TextField} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import LinearProgress from '@mui/material/LinearProgress';
@@ -20,11 +20,16 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import DeleteIcon from "@mui/icons-material/Delete";
+import moment from "moment/moment";
+import UserProfile from "../../../components/auth/UserInfo";
+import {useNavigate} from "react-router-dom";
 
 
 // ----------------------------------------------------------------------
 
 export default function NewSchoolPage() {
+
+    const [loadingShow, setLoadingShow] = useState(false);
 
     const [shownSection, setShownSection] = useState(1);
     const [progPercent, setProgPercent] = useState(0);
@@ -64,7 +69,8 @@ export default function NewSchoolPage() {
         if (addCourseID !== null && addCourseName !== null) {
             courses.push({
                 "courseid": addCourseID,
-                "coursename": addCourseName
+                "coursename": addCourseName,
+                "school":{"schoolid":schoolID}
             });
 
             setAddCourseID(null);
@@ -75,6 +81,68 @@ export default function NewSchoolPage() {
         } else {
             setErrorMsg("Please Add all the course details");
             setErrorShow(true);
+        }
+    }
+
+
+    async function createSubmit() {
+
+        // do school dto
+        const schoolDto = {"schoolid": schoolID, "schoolname": schoolName, "courses": courses};
+        console.log(schoolDto);
+
+        await submitBooking(schoolDto);
+    }
+
+    async function submitBooking(schoolDto) {
+        let isok = false;
+        let isBad = false;
+
+        try {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(schoolDto)};
+
+            await fetch(`http://localhost:8080/api/school`, requestOptions)
+                .then(response => {
+                    if (response.status === 201 || response.status === 200) {
+                        isok = true;
+                        setProgPercent(100);
+                        return response.json();
+                    } else if (response.status === 400) {
+                        isBad = true;
+                    } else if (response.status === 401) {
+                        setErrorMsg("you are not allowed to do this action");
+                        setErrorShow(true);
+                    } else if (response.status === 404) {
+                        setErrorMsg("the request was not found on the server, double check your connection");
+                        setErrorShow(true);
+                    } else {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+                .then((data) => {
+                    setLoadingShow(false);
+                    if (isok) {
+                        // it is fine, go on
+                        goToSchools();
+                        console.log(data);
+                    } else if (isBad) {
+                        setErrorMsg("the school code is already present");
+                        setErrorShow(true);
+                    } else {
+                        console.log(data);
+                    }
+                })
+
+        } catch (error) {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
         }
     }
 
@@ -94,10 +162,15 @@ export default function NewSchoolPage() {
         }
 
         if (shownSection === 3) {
-            alert("call api and show results based on api return");
-            setProgPercent(100);
-            // change color of progress to red if it is error etc
+            createSubmit();
         }
+
+    }
+
+    let navigate = useNavigate();
+    const goToSchools = () => {
+        let path = `/schools`;
+        navigate(path);
 
     }
 
@@ -114,6 +187,13 @@ export default function NewSchoolPage() {
 
 
         <Container>
+            {/* loading */}
+            <Backdrop
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={loadingShow}
+            >
+                <CircularProgress color="inherit"/>
+            </Backdrop>
 
             {/* alerts */}
             <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}

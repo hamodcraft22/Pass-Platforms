@@ -172,7 +172,7 @@ public class SchoolCont
 
     }
 
-    // create school
+    // create school -- tested | added
     @PostMapping("")
     public ResponseEntity<GenericDto<SchoolDao>> createSchool(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -187,9 +187,16 @@ public class SchoolCont
 
             if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
             {
-                SchoolDao createdSchool = schoolServ.createSchool(schoolDao.getSchoolid(), schoolDao.getSchoolname(), schoolDao.getCourses());
+                if (schoolServ.getSchoolDetails(schoolDao.getSchoolid()) == null)
+                {
+                    SchoolDao createdSchool = schoolServ.createSchool(schoolDao.getSchoolid(), schoolDao.getSchoolname(), schoolDao.getCourses());
 
-                return new ResponseEntity<>(new GenericDto<>(null, createdSchool, null, null), HttpStatus.CREATED);
+                    return new ResponseEntity<>(new GenericDto<>(null, createdSchool, null, null), HttpStatus.CREATED);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
             }
             else
             {
@@ -242,7 +249,7 @@ public class SchoolCont
 
     }
 
-    // delete school
+    // delete school -- tested | added
     @DeleteMapping("/{schoolID}")
     public ResponseEntity<GenericDto<Void>> deleteSchool(
             @RequestHeader(value = "Authorization") String requestKey,
