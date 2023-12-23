@@ -9,15 +9,9 @@ export function applyFilter({inputData, comparator, filterName}) {
 
     inputData = stabilizedThis.map((el) => el[0]);
 
-    if (filterName) {
-        inputData = inputData.filter(
-            (user) => user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-        );
-
-        // to filter by diff items TODO
-        // inputData = inputData.filter(
-        //     (user) => user.userid.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-        // );
+    if (filterName)
+    {
+        inputData = inputData.filter((course) => {return (course.coursename.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 || course.courseid.toLowerCase().indexOf(filterName.toLowerCase()) !== -1)});
     }
 
     return inputData;

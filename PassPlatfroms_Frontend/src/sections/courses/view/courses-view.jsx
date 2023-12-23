@@ -102,7 +102,69 @@ export default function CoursesPage() {
     };
     const handleAddSave = () => {
         setShowAddDialog(false);
+        createSubmit();
     };
+
+
+    async function createSubmit() {
+
+        // do course dto
+        const courseDto = {"courseid": addCourseID, "coursename": addCourseName, "school": {"schoolid":schoolIDParm}};
+        console.log(courseDto);
+
+        await submitCourse(courseDto);
+    }
+
+    async function submitCourse(courseDto) {
+        let isok = false;
+        let isBad = false;
+
+        try {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(courseDto)};
+
+            await fetch(`http://localhost:8080/api/course`, requestOptions)
+                .then(response => {
+                    if (response.status === 201 || response.status === 200) {
+                        isok = true;
+                        return response.json();
+                    } else if (response.status === 400) {
+                        isBad = true;
+                    } else if (response.status === 401) {
+                        setErrorMsg("you are not allowed to do this action");
+                        setErrorShow(true);
+                    } else if (response.status === 404) {
+                        setErrorMsg("the request was not found on the server, double check your connection");
+                        setErrorShow(true);
+                    } else {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+                .then((data) => {
+                    setLoadingShow(false);
+                    if (isok) {
+                        // it is fine, go on
+                        window.location.reload();
+                        console.log(data);
+                    } else if (isBad) {
+                        setErrorMsg("the course code is already present");
+                        setErrorShow(true);
+                    } else {
+                        console.log(data);
+                    }
+                })
+
+        } catch (error) {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
+        }
+    }
 
 
     // table vars and functions
@@ -110,8 +172,6 @@ export default function CoursesPage() {
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState('asc');
-
-    const [selected, setSelected] = useState([]);
 
     const [orderBy, setOrderBy] = useState('name');
 
@@ -125,15 +185,6 @@ export default function CoursesPage() {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
-    };
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = courses.map((n) => n.name);
-            setSelected(newSelecteds);
-            return;
-        }
-        setSelected([]);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -207,7 +258,6 @@ export default function CoursesPage() {
 
                     <Card>
                         <CoursesTableToolbar
-                            numSelected={selected.length}
                             filterName={filterName}
                             onFilterName={handleFilterByName}
                         />
@@ -219,12 +269,11 @@ export default function CoursesPage() {
                                         order={order}
                                         orderBy={orderBy}
                                         rowCount={courses.length}
-                                        numSelected={selected.length}
                                         onRequestSort={handleSort}
-                                        onSelectAllClick={handleSelectAllClick}
                                         headLabel={[
                                             {id: '', label: ''},
-                                            {id: 'name', label: 'Name'},
+                                            {id: 'courseid', label: 'Code'},
+                                            {id: 'coursename', label: 'Name'},
                                             {id: '', label: ''}
                                         ]}
                                     />

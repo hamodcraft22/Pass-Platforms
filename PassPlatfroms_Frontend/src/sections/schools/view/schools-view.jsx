@@ -352,7 +352,7 @@ export default function SchoolsPage() {
                                 onRequestSort={handleSort}
                                 headLabel={[
                                     {id: '', label: ''},
-                                    {id: 'name', label: 'Name'},
+                                    {id: 'schoolname', label: 'Name'},
                                     {id: '', label: ''}
                                 ]}
                             />

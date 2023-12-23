@@ -115,7 +115,7 @@ public class CourseCont
 
     }
 
-    // create course
+    // create course -- tested | added
     @PostMapping("")
     public ResponseEntity<GenericDto<CourseDao>> createCourse(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -129,13 +129,20 @@ public class CourseCont
 
             if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
             {
-                CourseDao createdCourse = courseServ.createCourse(
-                        courseDao.getCourseid(),
-                        courseDao.getCoursename(),
-                        courseDao.getSchool().getSchoolid()
-                );
+                if (courseServ.getCourseDetails(courseDao.getCourseid()) == null)
+                {
+                    CourseDao createdCourse = courseServ.createCourse(
+                            courseDao.getCourseid(),
+                            courseDao.getCoursename(),
+                            courseDao.getSchool().getSchoolid()
+                    );
 
-                return new ResponseEntity<>(new GenericDto<>(null, createdCourse, null, null), HttpStatus.CREATED);
+                    return new ResponseEntity<>(new GenericDto<>(null, createdCourse, null, null), HttpStatus.CREATED);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
             }
             else
             {
@@ -149,7 +156,7 @@ public class CourseCont
 
     }
 
-    // multi create course
+    // multi create course - not really needed
     @PostMapping("/multi/")
     public ResponseEntity<GenericDto<List<CourseDao>>> createMultiCourse(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -180,7 +187,7 @@ public class CourseCont
 
     }
 
-    // edit course
+    // edit course -- tested | added
     @PutMapping("")
     public ResponseEntity<GenericDto<CourseDao>> editCourse(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -218,7 +225,7 @@ public class CourseCont
 
     }
 
-    // delete course
+    // delete course -- tested | added
     @DeleteMapping("/{courseID}")
     public ResponseEntity<GenericDto<Void>> deleteCourse(
             @RequestHeader(value = "Authorization") String requestKey,

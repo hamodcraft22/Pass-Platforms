@@ -136,7 +136,7 @@ public class CourseServ
         if (retrievedCourse.isPresent())
         {
             retrievedCourse.get().setCoursename(updatedCourse.getCoursename());
-            retrievedCourse.get().setSchool(schoolRepo.getReferenceById(updatedCourse.getSchool().getSchoolid()));
+            // retrievedCourse.get().setSchool(schoolRepo.getReferenceById(updatedCourse.getSchool().getSchoolid()));
 
             return new CourseDao(courseRepo.save(retrievedCourse.get()));
         }

@@ -10,13 +10,23 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {TextField} from "@mui/material";
+import {Alert, Snackbar, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
+import UserProfile from "../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
 export default function CoursesTableRow({courseID, courseName}) {
 
+    // alerts elements
+    const [errorShow, setErrorShow] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setErrorShow(false);
+    };
 
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [editCourseName, setEditCourseName] = useState(null);
@@ -24,17 +34,22 @@ export default function CoursesTableRow({courseID, courseName}) {
     const handleEditClickOpen = () => {
         setEditCourseName(courseName);
 
-
         setShowEditDialog(true);
     };
     const handleEditClose = () => {
         setShowEditDialog(false);
 
         setEditCourseName(null);
-
     };
     const handleEditSave = () => {
-        setShowEditDialog(false);
+        if (editCourseName !== null && editCourseName !== undefined && Object.keys(editCourseName).length !== 0)
+        {
+            editCourse();
+        }
+        else {
+            setErrorMsg("Please add school name");
+            setErrorShow(true);
+        }
     };
 
 
@@ -46,17 +61,75 @@ export default function CoursesTableRow({courseID, courseName}) {
         setShowDeleteDialog(false);
     };
     const handleDeleteSave = () => {
-        setShowDeleteDialog(false);
+        deleteCourse();
     };
+
+    // edit schools api
+    async function editCourse() {
+        try {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions =
+                {
+                    method: "PUT",
+                    headers: {'Content-Type': 'application/json', 'Authorization': token},
+                    body: JSON.stringify({"courseid": courseID, "coursename": editCourseName})
+                };
+
+            await fetch(`http://localhost:8080/api/course`, requestOptions)
+                .then(response => {
+                    if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}
+                });
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setShowEditDialog(false);
+        }
+    }
+
+    // delete api - add
+    async function deleteCourse() {
+        try {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions =
+                {
+                    method: "DELETE",
+                    headers: {'Content-Type': 'application/json', 'Authorization': token}
+                };
+
+            await fetch(`http://localhost:8080/api/course/${courseID}`, requestOptions)
+                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
+        } catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error)
+        }
+        finally
+        {
+            setShowEditDialog(false);
+        }
+    }
 
 
     return (
         <>
+            {/* alerts */}
+            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                    {errorMsg}
+                </Alert>
+            </Snackbar>
+
             <TableRow hover tabIndex={-1}>
 
                 <TableCell></TableCell>
 
-                <TableCell>{courseID} {courseName}</TableCell>
+                <TableCell>{courseID}</TableCell>
+
+                <TableCell>{courseName}</TableCell>
 
                 <TableCell align={"right"}>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"}
@@ -115,9 +188,6 @@ export default function CoursesTableRow({courseID, courseName}) {
 }
 
 CoursesTableRow.propTypes = {
-    avatarUrl: PropTypes.any,
     handleClick: PropTypes.func,
     courseName: PropTypes.any,
-    role: PropTypes.any,
-    selected: PropTypes.any,
 };

@@ -91,10 +91,10 @@ export default function NewSchoolPage() {
         const schoolDto = {"schoolid": schoolID, "schoolname": schoolName, "courses": courses};
         console.log(schoolDto);
 
-        await submitBooking(schoolDto);
+        await submitSchool(schoolDto);
     }
 
-    async function submitBooking(schoolDto) {
+    async function submitSchool(schoolDto) {
         let isok = false;
         let isBad = false;
 
