@@ -46,6 +46,18 @@ public class RecommendationServ
         return recommendations;
     }
 
+    public List<RecommendationDao> getTutorRecommendations(String tutorID)
+    {
+        List<RecommendationDao> recommendations = new ArrayList<>();
+
+        for (Recommendation retrievedRecommendation : recommendationRepo.findAllByTutor_Userid(tutorID))
+        {
+            recommendations.add(new RecommendationDao(retrievedRecommendation));
+        }
+
+        return recommendations;
+    }
+
     public RecommendationDao getRecommendationDetails(int recID)
     {
         Optional<Recommendation> retrievedRecommendation = recommendationRepo.findById(recID);
@@ -84,8 +96,8 @@ public class RecommendationServ
 
         if (retrievedRecommendation.isPresent())
         {
-            retrievedRecommendation.get().setDatetime(Timestamp.from(updatedRecommendation.getDatetime()));
-            retrievedRecommendation.get().setNote(updatedRecommendation.getNote());
+            // retrievedRecommendation.get().setDatetime(Timestamp.from(updatedRecommendation.getDatetime()));
+            // retrievedRecommendation.get().setNote(updatedRecommendation.getNote());
             retrievedRecommendation.get().setStatus(recStatusRepo.getReferenceById(updatedRecommendation.getRecStatus().getStatusid()));
 
             // notify tutor

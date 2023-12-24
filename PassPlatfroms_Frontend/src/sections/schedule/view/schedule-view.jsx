@@ -125,7 +125,7 @@ export default function SchedulePage() {
 
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {if (studentIDParm !== null && studentIDParm !== undefined && Object.keys(studentIDParm).length !== 0) {getSchedules(studentIDParm)} else {getUserInfo()}}, [])
+    useEffect(() => {if (studentIDParm !== null && studentIDParm !== undefined && Object.keys(studentIDParm).length !== 0) {getSchedules(studentIDParm)} else {getUserInfo()}}, []);
 
 
     const [showAddDialog, setShowAddDialog] = useState(false);
@@ -314,8 +314,8 @@ export default function SchedulePage() {
                                 headLabel={[
                                     {id: 'zift1', label: ''},
                                     {id: 'day', label: 'Day'},
-                                    {id: 'startTime', label: 'Start Time', align: 'center'},
-                                    {id: 'endTime', label: 'EndT Time', align: 'center'},
+                                    {id: 'starttime', label: 'Start Time', align: 'center'},
+                                    {id: 'endtime', label: 'EndT Time', align: 'center'},
                                     {id: 'zift2', label: ''}
                                 ]}
                             />

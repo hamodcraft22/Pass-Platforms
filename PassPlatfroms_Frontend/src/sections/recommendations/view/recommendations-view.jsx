@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -26,17 +26,256 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-import {Autocomplete, TextField} from "@mui/material";
+import {Alert, Autocomplete, Backdrop, CircularProgress, FormHelperText, Snackbar, TextField} from "@mui/material";
+import UserProfile from "../../../components/auth/UserInfo";
+import moment from "moment";
 
 
 // ----------------------------------------------------------------------
 
 export default function RecommendationsPage() {
+
+    const [loadingShow, setLoadingShow] = useState(false);
+
+    // alerts elements
+    const [errorShow, setErrorShow] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setErrorShow(false);
+    };
+
+    const [successShow, setSuccessShow] = useState(false);
+    const [successMsg, setSuccessMsg] = useState("");
+    const handleSuccessAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSuccessShow(false);
+    };
+
+    const [userID, setUserID] = useState("");
+    const [userRole, setUserRole] = useState("");
+
+    const [recommendations, setRecommendations] = useState([]);
+
+    // all users to be added to group
+    const [allUsers, setAllUsers] = useState([]);
+
+    // get all users api
+    async function getAllUsers() {
+        try {
+            setLoadingShow(true);
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
+
+            await fetch(`http://localhost:8080/api/users/students`, requestOptions)
+                .then(response => {
+                    return response.json()
+                })
+                .then((data) => {
+                    setAllUsers(data)
+                })
+                .then(() => {
+                    setLoadingShow(false);
+                })
+
+        } catch (error) {
+            console.log(error);
+            setLoadingShow(false);
+        }
+    }
+
+
+    async function getAllRecommendations()
+    {
+        try
+        {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
+
+            await fetch(`http://localhost:8080/api/recommendation`, requestOptions)
+                .then(response =>
+                {
+                    return response.json()
+                })
+                .then((data) =>
+                {
+                    parseRecommendations(data.transObject);
+                }).then(() => {setLoadingShow(false);})
+        }
+        catch (error)
+        {
+            setLoadingShow(false);
+            setErrorMsg("No Recommendations Found");
+            setErrorShow(true);
+            console.log(error);
+        }
+    }
+
+    async function getTutorRecommendations(tutorID)
+    {
+        try
+        {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
+
+            await fetch(`http://localhost:8080/api/recommendation/tutor/${tutorID}`, requestOptions)
+                .then(response =>
+                {
+                    return response.json()
+                })
+                .then((data) =>
+                {
+                    parseRecommendations(data.transObject);
+                }).then(() => {setLoadingShow(false);})
+        }
+        catch (error)
+        {
+            setLoadingShow(false);
+            setErrorMsg("You do not have any Recommendations");
+            setErrorShow(true);
+            console.log(error);
+        }
+    }
+
+    function parseRecommendations(retrivedRecommendations)
+    {
+        let correctedRecommendations = [];
+
+        retrivedRecommendations.forEach((recm) => {
+            correctedRecommendations.push({"recid":recm.recid, "datetime": recm.datetime, "note":recm.note, "recStatus":recm.recStatus.statusname, "studentid":recm.student.userid, "studentname":recm.student.userName, "tutorid":recm.tutor.userid, "tutorname":recm.tutor.userName});
+        });
+
+        setRecommendations(correctedRecommendations);
+    }
+
+    // get user info (get the recommendations of the logged in user)
+    async function getUserInfo()
+    {
+        let userID = await UserProfile.getUserID();
+        let userRole = await UserProfile.getUserRole();
+
+        setUserID(userID);
+        setUserRole(userRole);
+
+        if (userRole === "manager" || userRole === "admin")
+        {
+            getAllRecommendations();
+        }
+        else if (userRole === "tutor")
+        {
+            getTutorRecommendations(userID);
+            getAllUsers();
+        }
+    }
+
+
+    // get school and courses on load - if not leader and there is param
+    useEffect(() => {getUserInfo()}, []);
+
+
+    const [showAddDialog, setShowAddDialog] = useState(false);
+
+    const [studentToRecommend, setStudentToRecommend] = useState(null);
+    const [recmText, setRecmText] = useState("");
+
+    const handleAddClickOpen = () => {
+        setShowAddDialog(true);
+    };
+    const handleAddClose = () => {
+        setShowAddDialog(false);
+
+        setStudentToRecommend(null);
+        setRecmText("");
+    };
+    const handleAddSave = () => {
+        if (studentToRecommend !== null && recmText !== "null")
+        {
+            setShowAddDialog(false);
+            createSubmit();
+        }
+        else
+        {
+            setErrorMsg("please fill in all data");
+            setErrorShow(true);
+        }
+    };
+
+
+    function createSubmit()
+    {
+        const recmToSubmit = {"datetime":moment(), "note":recmText, "student":{"userid":studentToRecommend.userID}, "tutor":{"userid":userID}};
+
+        console.log(recmToSubmit);
+
+        submitRecommendation(recmToSubmit);
+    }
+
+    // add recommendation submit
+    async function submitRecommendation(recmToSubmit)
+    {
+        let isok = false;
+
+        try
+        {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(recmToSubmit)};
+
+            await fetch(`http://localhost:8080/api/recommendation`, requestOptions)
+                .then((response) => {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        isok = true;
+                        return response.json();
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+                .then((data) => {
+                    setLoadingShow(false);
+                    if (isok)
+                    {
+                        // refresh transcript
+                        setSuccessMsg("Schedules added");
+                        setSuccessShow(true);
+                        getTutorRecommendations(userID);
+
+                        // clear all the things in add
+                        setStudentToRecommend(null);
+                        setRecmText("");
+                    }
+                });
+
+        }
+        catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
+        }
+    }
+
+
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState('asc');
-
-    const [selected, setSelected] = useState([]);
 
     const [orderBy, setOrderBy] = useState('name');
 
@@ -44,50 +283,12 @@ export default function RecommendationsPage() {
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-
-    // fake users
-
-    const users = [...Array(24)].map((_, index) => ({
-        userid: 567,
-        avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
-        name: "faker.person.fullName()",
-        role: "Leader"
-    }));
-
-
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
         if (id !== '') {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
-    };
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = users.map((n) => n.name);
-            setSelected(newSelecteds);
-            return;
-        }
-        setSelected([]);
-    };
-
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected = [];
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1)
-            );
-        }
-        setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -105,7 +306,7 @@ export default function RecommendationsPage() {
     };
 
     const dataFiltered = applyFilter({
-        inputData: users,
+        inputData: recommendations,
         comparator: getComparator(order, orderBy),
         filterName,
     });
@@ -113,31 +314,46 @@ export default function RecommendationsPage() {
     const notFound = !dataFiltered.length && !!filterName;
 
 
-    const [showAddDialog, setShowAddDialog] = useState(false);
-
-    const handleAddClickOpen = () => {
-        setShowAddDialog(true);
-    };
-    const handleAddClose = () => {
-        setShowAddDialog(false);
-    };
-    const handleAddSave = () => {
-        setShowAddDialog(false);
-    };
 
     return (
         <Container>
+
+            {/* loading */}
+            <Backdrop
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={loadingShow}
+            >
+                <CircularProgress color="inherit"/>
+            </Backdrop>
+
+            {/* alerts */}
+            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%'}}>
+                    {errorMsg}
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={successShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleSuccessAlertClose} severity="success" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                    {successMsg}
+                </Alert>
+            </Snackbar>
+
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Recommendations</Typography>
 
-                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} onClick={handleAddClickOpen}>
-                    New Recommendation
-                </Button>
+                {
+                    userRole === "tutor" &&
+                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} onClick={handleAddClickOpen}>
+                        New Recommendation
+                    </Button>
+                }
             </Stack>
 
             <Card>
                 <RecommendationsTableToolbar
-                    numSelected={selected.length}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
                 />
@@ -148,16 +364,14 @@ export default function RecommendationsPage() {
                             <TableMainHead
                                 order={order}
                                 orderBy={orderBy}
-                                rowCount={users.length}
-                                numSelected={selected.length}
+                                rowCount={recommendations.length}
                                 onRequestSort={handleSort}
-                                onSelectAllClick={handleSelectAllClick}
                                 headLabel={[
-                                    {id: '', label: ''},
-                                    {id: 'student', label: 'Student'},
-                                    {id: 'date', label: 'Date'},
-                                    {id: 'status', label: 'Status'},
-                                    {id: '', label: ''}
+                                    {id: 'zift1', label: ''},
+                                    {id: 'studentid', label: 'Student'},
+                                    {id: 'datetime', label: 'Date'},
+                                    {id: 'recStatus', label: 'Status'},
+                                    {id: 'zift2', label: ''}
                                 ]}
                             />
                             <TableBody>
@@ -165,18 +379,21 @@ export default function RecommendationsPage() {
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
                                         <RecommendationsTableRow
-                                            key={row.recID}
-                                            student={row.student}
-                                            tutor={row.tutor}
-                                            date={row.date}
+                                            recID={row.recid}
+                                            dateTime={row.datetime}
                                             note={row.note}
-                                            status={row.status}
+                                            recStatus={row.recStatus}
+                                            studentID={row.studentid}
+                                            studentName={row.studentname}
+                                            tutorID={row.tutorid}
+                                            tutorName={row.tutorname}
+                                            userRole={userRole}
                                         />
                                     ))}
 
                                 <TableEmptyRows
                                     height={77}
-                                    emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                                    emptyRows={emptyRows(page, rowsPerPage, recommendations.length)}
                                 />
 
                                 {notFound && <TableNoData query={filterName}/>}
@@ -188,7 +405,7 @@ export default function RecommendationsPage() {
                 <TablePagination
                     page={page}
                     component="div"
-                    count={users.length}
+                    count={recommendations.length}
                     rowsPerPage={rowsPerPage}
                     onPageChange={handleChangePage}
                     rowsPerPageOptions={[5, 10, 25, 50]}
@@ -199,6 +416,7 @@ export default function RecommendationsPage() {
                 <Dialog
                     open={showAddDialog}
                     onClose={handleAddClose}
+
                 >
                     <DialogTitle>
                         Add New Recommendation
@@ -206,12 +424,17 @@ export default function RecommendationsPage() {
                     <DialogContent>
                         <div style={{marginTop: "5px"}}>
                             <Autocomplete
-                                disablePortal
-                                options={[]}
-                                sx={{width: 300}}
+                                options={allUsers}
+                                getOptionLabel={(option) => option.userID + " | " + option.userName}
+                                value={studentToRecommend}
+                                onChange={(event, newValue) => {setStudentToRecommend(newValue)}}
+                                sx={{width: '100%', mt: 1}}
                                 renderInput={(params) => <TextField {...params} label="Student"/>}
                             />
-                            <TextField label="Note" multiline rows={2} fullWidth sx={{mt: 2}}/>
+                            <FormHelperText>Student you want to recommend. please note that the student may already be a pass leader</FormHelperText>
+
+                            <TextField label="Note" multiline rows={2} fullWidth sx={{mt: 2}} value={recmText} onChange={(event) => {setRecmText(event.target.value)}}/>
+                            <FormHelperText>why you think this student is fit?.</FormHelperText>
                         </div>
                     </DialogContent>
                     <DialogActions>

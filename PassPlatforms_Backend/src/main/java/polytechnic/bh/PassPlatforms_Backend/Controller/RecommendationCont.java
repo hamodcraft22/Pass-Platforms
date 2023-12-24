@@ -65,6 +65,44 @@ public class RecommendationCont
 
     }
 
+    // get tutor recommendations -- added | tested
+    @GetMapping("/tutor/{tutorID}")
+    public ResponseEntity<GenericDto<List<RecommendationDao>>> getTutorRecommendations(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @PathVariable(value = "tutorID") String tutorID)
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_TUTOR)
+            {
+                List<RecommendationDao> recommendations = recommendationServ.getTutorRecommendations(tutorID);
+
+                if (recommendations != null && !recommendations.isEmpty())
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, recommendations, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+    }
+
     // get recommendation details
     @GetMapping("/{recID}")
     public ResponseEntity<GenericDto<RecommendationDao>> getRecommendationDetails(
@@ -124,7 +162,7 @@ public class RecommendationCont
 
     }
 
-    // create recommendation
+    // create recommendation -- added | tested
     @PostMapping("")
     public ResponseEntity<GenericDto<RecommendationDao>> createRecommendation(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -187,26 +225,26 @@ public class RecommendationCont
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
             }
-            else if (user.getRole().getRoleid() == ROLE_TUTOR)
-            {
-                RecommendationDao editedRecommendation = recommendationServ.getRecommendationDetails(recommendationDao.getRecid());
-
-                if (editedRecommendation != null)
-                {
-                    if (Objects.equals(editedRecommendation.getTutor().getUserid(), userID))
-                    {
-                        return new ResponseEntity<>(new GenericDto<>(null, recommendationServ.editRecommendation(recommendationDao), null, null), HttpStatus.OK);
-                    }
-                    else
-                    {
-                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-                    }
-                }
-                else
-                {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-                }
-            }
+//            else if (user.getRole().getRoleid() == ROLE_TUTOR)
+//            {
+//                RecommendationDao editedRecommendation = recommendationServ.getRecommendationDetails(recommendationDao.getRecid());
+//
+//                if (editedRecommendation != null)
+//                {
+//                    if (Objects.equals(editedRecommendation.getTutor().getUserid(), userID))
+//                    {
+//                        return new ResponseEntity<>(new GenericDto<>(null, recommendationServ.editRecommendation(recommendationDao), null, null), HttpStatus.OK);
+//                    }
+//                    else
+//                    {
+//                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+//                    }
+//                }
+//                else
+//                {
+//                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//                }
+//            }
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
@@ -219,7 +257,7 @@ public class RecommendationCont
 
     }
 
-    // delete recommendation
+    // delete recommendation -- added | tested
     @DeleteMapping("/{recID}")
     public ResponseEntity<GenericDto<Void>> deleteRecommendation(
             @RequestHeader(value = "Authorization") String requestKey,

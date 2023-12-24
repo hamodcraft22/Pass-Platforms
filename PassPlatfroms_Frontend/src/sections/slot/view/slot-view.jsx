@@ -349,8 +349,8 @@ export default function SlotPage()
                                 headLabel={[
                                     {id: 'zift1', label: ''},
                                     {id: 'day', label: 'Day'},
-                                    {id: 'startTime', label: 'Start Time', align: 'center'},
-                                    {id: 'endTime', label: 'EndT Time', align: 'center'},
+                                    {id: 'starttime', label: 'Start Time', align: 'center'},
+                                    {id: 'endtime', label: 'EndT Time', align: 'center'},
                                     {id: 'type', label: '', align: 'center'},
                                     {id: 'zift2', label: ''}
                                 ]}

@@ -11,13 +11,8 @@ export function applyFilter({inputData, comparator, filterName}) {
 
     if (filterName) {
         inputData = inputData.filter(
-            (user) => user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+            (recm) => (recm.studentid.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 || recm.studentname.toLowerCase().indexOf(filterName.toLowerCase()) !== -1)
         );
-
-        // to filter by diff items TODO
-        // inputData = inputData.filter(
-        //     (user) => user.userid.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-        // );
     }
 
     return inputData;
