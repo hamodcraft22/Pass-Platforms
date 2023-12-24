@@ -110,7 +110,6 @@ export default function ViewApplicationPage() {
                 {
                     if (isok)
                     {
-                        console.log(data.transObject);
                         setApplication(data.transObject);
                         setVeiwApplication(true);
                     }

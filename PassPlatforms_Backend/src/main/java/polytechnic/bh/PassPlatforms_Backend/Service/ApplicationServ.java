@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationStatusDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Application;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Notification;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.ApplicationStatusConstant.APLC_CREATED;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.ManagerConst.MANGER_ID;
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
 
 @Service
 public class ApplicationServ
@@ -50,7 +52,7 @@ public class ApplicationServ
                         retrivedApplication.getDatetime().toInstant(),
                         retrivedApplication.getNote(),
                         new ApplicationStatusDao(retrivedApplication.getApplicationStatus()),
-                        null,
+                        new UserDao(retrivedApplication.getUser().getUserid(),null,getAzureAdName(retrivedApplication.getUser().getUserid()),null),
                         null));
             }
         }

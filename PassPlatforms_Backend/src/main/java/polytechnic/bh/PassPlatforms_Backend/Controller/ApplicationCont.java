@@ -46,7 +46,7 @@ public class ApplicationCont
             UserDao user = userServ.getUser(userID);
 
             // check roles for api
-            if (user.getRole().getRoleid() == 4 || user.getRole().getRoleid() == 5)
+            if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
             {
                 //retrieve from service
                 List<ApplicationDao> applicationDaos = applicationServ.getAllApplications(false);
@@ -162,6 +162,20 @@ public class ApplicationCont
                     {
                         return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                     }
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
+
+            }
+            else if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            {
+                ApplicationDao applicationDao = applicationServ.getApplicationDetailsByUser(studentID);
+
+                if (applicationDao != null)
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, applicationDao, null, null), HttpStatus.OK);
                 }
                 else
                 {

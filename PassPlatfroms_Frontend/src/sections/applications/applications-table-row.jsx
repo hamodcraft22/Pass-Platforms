@@ -13,13 +13,31 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import {Autocomplete, TextField} from "@mui/material";
+import {Alert, Autocomplete, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
+import moment from "moment";
+import {useNavigate} from "react-router-dom";
+import UserProfile from "../../components/auth/UserInfo";
+import MenuItem from "@mui/material/MenuItem";
+
 
 // ----------------------------------------------------------------------
 
-export default function ApplicationsTableRow({key, student, tutor, date, note, status}) {
+export default function ApplicationsTableRow({aplicID, studentID, student, date, status}) {
+
+    // alerts elements
+    const [errorShow, setErrorShow] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setErrorShow(false);
+    };
+
     const [showEditDialog, setShowEditDialog] = useState(false);
+
+    const [editStatus, setEditStatus] = useState(null);
 
     const handleEditClickOpen = () => {
         setShowEditDialog(true);
@@ -28,7 +46,16 @@ export default function ApplicationsTableRow({key, student, tutor, date, note, s
         setShowEditDialog(false);
     };
     const handleEditSave = () => {
-        setShowEditDialog(false);
+        if (editStatus !== null)
+        {
+            setShowEditDialog(false);
+            editSubmit();
+        }
+        else
+        {
+            setErrorMsg("please select status");
+            setErrorShow(true);
+        }
     };
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -40,8 +67,92 @@ export default function ApplicationsTableRow({key, student, tutor, date, note, s
     };
     const handleDeleteSave = () => {
         setShowDeleteDialog(false);
+        deleteApplication();
     };
 
+
+    // delete api - add
+    async function deleteApplication() {
+        try {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions =
+                {
+                    method: "DELETE",
+                    headers: {'Content-Type': 'application/json', 'Authorization': token}
+                };
+
+            await fetch(`http://localhost:8080/api/application/${aplicID}`, requestOptions)
+                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
+        } catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error)
+        }
+        finally
+        {
+            setShowDeleteDialog(false);
+        }
+    }
+
+
+    // submit new application
+    function editSubmit()
+    {
+        const applicationToSubmit = {"applicationid":aplicID,  "applicationStatus":{"statusid":editStatus}};
+
+        submitEditApplication(applicationToSubmit);
+    }
+
+    // add offered courses api
+    async function submitEditApplication(applicationToSubmit)
+    {
+        try
+        {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(applicationToSubmit)};
+
+            await fetch(`http://localhost:8080/api/application`, requestOptions)
+                .then((response) => {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload();
+                    }
+                    else if (response.status === 401)
+                    {
+                        setErrorMsg("you are not allowed to do this action");
+                        setErrorShow(true);
+                    }
+                    else
+                    {
+                        console.log(response);
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                });
+
+        }
+        catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+        }
+        finally
+        {
+            setShowEditDialog(false);
+        }
+    }
+
+
+    // go to courses
+    let navigate = useNavigate();
+    const goToView = () => {
+        let path = `/viewApplication?studentID=${studentID}`;
+        navigate(path);
+    }
 
     return (
         <>
@@ -55,12 +166,12 @@ export default function ApplicationsTableRow({key, student, tutor, date, note, s
                     </Typography>
                 </TableCell>
 
-                <TableCell>{date}</TableCell>
+                <TableCell>{date && moment(date).format("hh:mm A | DD/MM/YYYY")}</TableCell>
 
                 <TableCell><Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label></TableCell>
 
                 <TableCell align="right">
-                    <Button variant="contained" sx={{ml: 1}} size={"small"}><InfoIcon fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={goToView}><InfoIcon fontSize={"small"}/></Button>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"} onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"} onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
                 </TableCell>
@@ -77,11 +188,22 @@ export default function ApplicationsTableRow({key, student, tutor, date, note, s
                 </DialogTitle>
                 <DialogContent>
                     <div style={{margin: "5px"}}>
-                        <Autocomplete
-                            options={[]}
-                            sx={{width: 300}}
-                            renderInput={(params) => <TextField {...params} label="Status"/>}
-                        />
+
+                        {
+                            errorShow &&
+
+                            <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                                {errorMsg}
+                            </Alert>
+                        }
+
+                        <TextField select label="Status" sx={{width: '100%', mt: 1}} value={editStatus} onChange={(event, newValue) => {setEditStatus(newValue.props.value)}}>
+                            <MenuItem value={'R'}>Reviewed</MenuItem>
+                            <MenuItem value={'I'}>Interviewed</MenuItem>
+                            <MenuItem value={'A'}>Accepted</MenuItem>
+                            <MenuItem value={'N'}>Rejected</MenuItem>
+                        </TextField>
+
                     </div>
                 </DialogContent>
                 <DialogActions>

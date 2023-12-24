@@ -53,8 +53,16 @@ export default function RecommendationsTableRow({recID, dateTime, note, recStatu
         setShowEditDialog(false);
     };
     const handleEditSave = () => {
-        setShowEditDialog(false);
-        editSubmit();
+        if (editStatus !== null)
+        {
+            setShowEditDialog(false);
+            editSubmit();
+        }
+        else
+        {
+            setErrorMsg("please select status");
+            setErrorShow(true);
+        }
     };
 
 

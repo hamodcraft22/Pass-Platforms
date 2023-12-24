@@ -9,7 +9,7 @@ import Iconify from '../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function ApplicationsTableToolbar({numSelected, filterName, onFilterName}) {
+export default function ApplicationsTableToolbar({filterName, onFilterName}) {
     return (
         <Toolbar
             sx={{
@@ -17,17 +17,9 @@ export default function ApplicationsTableToolbar({numSelected, filterName, onFil
                 display: 'flex',
                 justifyContent: 'space-between',
                 p: (theme) => theme.spacing(0, 1, 0, 3),
-                ...(numSelected > 0 && {
-                    color: 'primary.main',
-                    bgcolor: 'primary.lighter',
-                }),
             }}
         >
-            {numSelected > 0 ? (
-                <Typography component="div" variant="subtitle1">
-                    {numSelected} selected
-                </Typography>
-            ) : (
+
                 <OutlinedInput
                     value={filterName}
                     onChange={onFilterName}
@@ -41,7 +33,6 @@ export default function ApplicationsTableToolbar({numSelected, filterName, onFil
                         </InputAdornment>
                     }
                 />
-            )}
 
         </Toolbar>
     );
