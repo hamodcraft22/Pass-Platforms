@@ -95,6 +95,7 @@ public class UserCont
     @GetMapping("/userlog")
     public ResponseEntity<GenericDto<UserDao>> userLog(@RequestHeader(value = "Authorization") String barerKey)
     {
+        System.out.println("user logged");
         String userID = isValidToken(barerKey);
 
         if (userID != null)

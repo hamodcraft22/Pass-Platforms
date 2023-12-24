@@ -6,8 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ApplicationDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
+import polytechnic.bh.PassPlatforms_Backend.Dto.ApplicationDto;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.ApplicationServ;
+import polytechnic.bh.PassPlatforms_Backend.Service.TranscriptServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
 import java.util.List;
@@ -28,6 +30,9 @@ public class ApplicationCont
 
     @Autowired
     private UserServ userServ;
+
+    @Autowired
+    private TranscriptServ transcriptServ;
 
     @GetMapping("")
     public ResponseEntity<GenericDto<List<ApplicationDao>>> getAllApplications(
@@ -128,11 +133,60 @@ public class ApplicationCont
 
     }
 
+
+    // get application by student
+    @GetMapping("/student/{studentID}")
+    public ResponseEntity<GenericDto<ApplicationDao>> getStudentApplication(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @PathVariable("studentID") String studentID)
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            //if it is a student, get their
+            if (user.getRole().getRoleid() == ROLE_STUDENT)
+            {
+                ApplicationDao applicationDao = applicationServ.getApplicationDetailsByUser(studentID);
+
+                if (applicationDao != null)
+                {
+                    if (Objects.equals(applicationDao.getUser().getUserid(), userID))
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, applicationDao, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    }
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
+
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+
+    }
+
     // creating an application (by student);
     @PostMapping("")
     public ResponseEntity<GenericDto<ApplicationDao>> createApplication(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestBody String applicationNote)
+            @RequestBody ApplicationDto applicationDto)
     {
         String userID = isValidToken(requestKey);
 
@@ -150,9 +204,11 @@ public class ApplicationCont
                 {
                     // user has no application, can create a new one
 
-                    //** should check if transcript is present **//
+                    // multi transcript upload
+                    transcriptServ.createMultiTranscript(applicationDto.getTranscripts());
 
-                    if (applicationServ.createApplication(userID, applicationNote) != null)
+
+                    if (applicationServ.createApplication(userID, applicationDto.getNote()) != null)
                     {
                         return new ResponseEntity<>(null, HttpStatus.OK);
                     }
