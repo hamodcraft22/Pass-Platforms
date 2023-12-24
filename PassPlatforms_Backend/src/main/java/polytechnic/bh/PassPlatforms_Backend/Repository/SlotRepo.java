@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface SlotRepo extends JpaRepository<Slot, Integer>
 {
-    List<Slot> findSlotsByLeader(User leader);
+    List<Slot> findSlotsByLeader_Userid(String leaderID);
 
     Optional<Slot> findSlotByLeader_UseridAndSlotType_Typeid(String leaderID, char typeID);
 

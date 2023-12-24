@@ -28,9 +28,9 @@ import ExportToExcel from "../../../utils/exportExcel";
 export default function RecommendationsPage() {
     const [page, setPage] = useState(0);
 
-    const [order, setOrder] = useState('asc');
+    const [order, setOrder] = useState('desc');
 
-    const [orderBy, setOrderBy] = useState('name');
+    const [orderBy, setOrderBy] = useState('date');
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 

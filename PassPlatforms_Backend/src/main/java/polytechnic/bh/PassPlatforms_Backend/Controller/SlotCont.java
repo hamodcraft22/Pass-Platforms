@@ -61,9 +61,9 @@ public class SlotCont
     }
 
 
-    // get leader slots
+    // get leaders slots
     @GetMapping("/leaders")
-    public ResponseEntity<GenericDto<List<LeadersSlotsDto>>> getLeaderSlots(
+    public ResponseEntity<GenericDto<List<LeadersSlotsDto>>> getLeadersSlots(
             @RequestHeader(value = "Authorization") String requestKey,
             @RequestBody List<String> leaderIDs)
     {
@@ -72,7 +72,7 @@ public class SlotCont
         if (userID != null)
         {
 
-            List<LeadersSlotsDto> slots = slotServ.getAllLeaderSlots(leaderIDs);
+            List<LeadersSlotsDto> slots = slotServ.getAllLeadersSlots(leaderIDs);
 
             if (slots != null && !slots.isEmpty())
             {
@@ -92,6 +92,36 @@ public class SlotCont
 
     }
 
+
+    // get leader slots -- added | tested
+    @GetMapping("/leader/{leaderID}")
+    public ResponseEntity<GenericDto<List<SlotDao>>> getLeaderSlots(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @PathVariable(value = "leaderID") String leaderID)
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            List<SlotDao> slots = slotServ.getAllLeaderSlots(leaderID);
+
+            if (slots != null && !slots.isEmpty())
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, slots, null, null), HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            }
+
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+
+    }
 
     // get open leader slots for a course -- tested | added
     @GetMapping("/course/{courseID}")
@@ -157,7 +187,7 @@ public class SlotCont
 
     }
 
-    // create slot
+    // create slot -- added | tested
     @PostMapping("")
     public ResponseEntity<GenericDto<SlotDao>> createSlot(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -187,7 +217,7 @@ public class SlotCont
                 }
                 else
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, null, List.of("Slot clashes with another slot time"), null), HttpStatus.CREATED);
+                    return new ResponseEntity<>(new GenericDto<>(null, null, List.of("Slot clashes with another slot time"), null), HttpStatus.BAD_REQUEST);
                 }
 
             }
@@ -250,7 +280,7 @@ public class SlotCont
 
     }
 
-    // delete slot
+    // delete slot -- added | tested
     @DeleteMapping("/{slotID}")
     public ResponseEntity<GenericDto<Boolean>> deleteSlot(
             @RequestHeader(value = "Authorization") String requestKey,

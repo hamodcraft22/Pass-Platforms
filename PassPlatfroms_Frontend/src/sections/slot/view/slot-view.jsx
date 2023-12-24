@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -15,7 +15,6 @@ import TableNoData from '../../../components/table/table-no-data';
 import TableMainHead from '../../../components/table/table-head';
 import TableEmptyRows from '../../../components/table/table-empty-rows';
 import {emptyRows, getComparator} from '../../../components/table/utils';
-import {applyFilter} from '../filterUtil';
 
 
 import SlotTableRow from '../slot-table-row';
@@ -26,7 +25,7 @@ import {useSearchParams} from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import {FormHelperText, TextField, ToggleButton} from "@mui/material";
+import {Alert, Backdrop, CircularProgress, FormHelperText, Snackbar, TextField, ToggleButton} from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import DialogActions from "@mui/material/DialogActions";
 import PublicIcon from '@mui/icons-material/Public';
@@ -34,77 +33,104 @@ import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {TimePicker} from "@mui/x-date-pickers";
 import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
+import UserProfile from "../../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
-export default function SlotPage() {
+export default function SlotPage()
+{
 
-    const [schoolParm, setSchoolParm] = useSearchParams();
-    schoolParm.get("schoolID")
+    const queryParameters = new URLSearchParams(window.location.search)
+    const leaderIDParm = queryParameters.get("leaderID");
 
-    const [page, setPage] = useState(0);
+    const [loadingShow, setLoadingShow] = useState(false);
 
-    const [order, setOrder] = useState('asc');
-
-    const [selected, setSelected] = useState([]);
-
-    const [orderBy, setOrderBy] = useState('name');
-
-    const [filterName, setFilterName] = useState('');
-
-    const [rowsPerPage, setRowsPerPage] = useState(5);
-
-
-    // fake userSlots
-
-    const userSlots = [...Array(24)].map((_, index) => ({
-        slotID: 567,
-        day: 'S',
-        startTime: "mock Time",
-        endTime: "mock time",
-        note: "some text",
-        isOnline: true
-    }));
-
-
-    const handleSort = (event, id) => {
-        const isAsc = orderBy === id && order === 'asc';
-        if (id !== '') {
-            setOrder(isAsc ? 'desc' : 'asc');
-            setOrderBy(id);
-        }
-    };
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = userSlots.map((n) => n.name);
-            setSelected(newSelecteds);
+    // alerts elements
+    const [errorShow, setErrorShow] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
             return;
         }
-        setSelected([]);
+        setErrorShow(false);
     };
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
+    const [successShow, setSuccessShow] = useState(false);
+    const [successMsg, setSuccessMsg] = useState("");
+    const handleSuccessAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSuccessShow(false);
     };
 
-    const handleChangeRowsPerPage = (event) => {
-        setPage(0);
-        setRowsPerPage(parseInt(event.target.value, 10));
-    };
 
-    const handleFilterByName = (event) => {
-        setPage(0);
-        setFilterName(event.target.value);
-    };
 
-    const dataFiltered = applyFilter({
-        inputData: userSlots,
-        comparator: getComparator(order, orderBy),
-        filterName,
-    });
+    // api related items
 
-    const notFound = !dataFiltered.length && !!filterName;
+    // user slots
+    const [userID, setUserID] = useState("");
+    const [userSlots, setUserSlots]= useState([]);
+
+
+    const [userRole, setUserRole] = useState("");
+
+    async function getSlots(leaderID)
+    {
+        try
+        {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
+
+            await fetch(`http://localhost:8080/api/slot/leader/${leaderID}`, requestOptions)
+                .then(response =>
+                {
+                    return response.json()
+                })
+                .then((data) =>
+                {
+                    parseUserSlots(data.transObject);
+                }).then(() => {setLoadingShow(false);})
+        }
+        catch (error)
+        {
+            setLoadingShow(false);
+            setErrorMsg("No Slots Found");
+            setErrorShow(true);
+            console.log(error);
+        }
+    }
+
+    function parseUserSlots(retrivedUserSlots)
+    {
+        let correctedUserSlots = [];
+
+        retrivedUserSlots.forEach((slot) => {
+            correctedUserSlots.push({"slotid":slot.slotid, "starttime":slot.starttime, "endtime":slot.endtime, "note":slot.note, "type":slot.slotType.typename, "day":slot.day.dayid});
+        });
+
+        setUserSlots(correctedUserSlots);
+    }
+
+    // get user info (get the slots of the logged in user)
+    async function getUserInfo()
+    {
+        let userID = await UserProfile.getUserID();
+        let userRole = await UserProfile.getUserRole();
+
+        setUserID(userID);
+        setUserRole(userRole);
+
+        getSlots(userID);
+    }
+
+
+    // get school and courses on load - if not leader and there is param
+    useEffect(() => {if (leaderIDParm !== null && leaderIDParm !== undefined && Object.keys(leaderIDParm).length !== 0) {getSlots(leaderIDParm)} else {getUserInfo()}}, [])
+
 
 
     const [showAddDialog, setShowAddDialog] = useState(false);
@@ -117,8 +143,8 @@ export default function SlotPage() {
 
     const [addSlotNote, setAddSlotNote] = useState(null);
 
-    const [slotSelectedStartTime, setSlotSelectedStartTime] = useState();
-    const [slotSelectedEndTime, setSlotSelectedEndTime] = useState();
+    const [slotSelectedStartTime, setSlotSelectedStartTime] = useState(null);
+    const [slotSelectedEndTime, setSlotSelectedEndTime] = useState(null);
 
     const handleAddClickOpen = () => {
         setShowAddDialog(true);
@@ -128,30 +154,189 @@ export default function SlotPage() {
 
         setSlotSelectedStartTime(null);
         setSlotSelectedEndTime(null);
+        setAddSlotNote(null);
         setAddSlotDay(null);
-        setAddSlotOnline(null);
+        setAddSlotOnline(false);
+        setAddSlotPhysical(false);
     };
     const handleAddSave = () => {
-        setShowAddDialog(false);
+        if (slotSelectedStartTime !== null && slotSelectedEndTime !== null && addSlotDay !== null && (addSlotOnline !== false || addSlotPhysical !== false))
+        {
+            setShowAddDialog(false);
+            createSubmit();
+        }
+        else
+        {
+            setErrorMsg("please fill in all data");
+            setErrorShow(true);
+        }
     };
+
+
+    // submit new slot
+    function createSubmit()
+    {
+        let slotType = '';
+
+        if (addSlotOnline && addSlotPhysical)
+        {
+            slotType = 'B';
+        }
+        else if (addSlotOnline)
+        {
+            slotType = 'O'
+        }
+        else if (addSlotPhysical)
+        {
+            slotType = 'P'
+        }
+
+        const slotToSubmit = {"starttime":slotSelectedStartTime, "endtime":slotSelectedEndTime, "note":addSlotNote, "slotType":{"typeid":slotType}, "day":{"dayid":addSlotDay}, "leader":{"userid":userID}};
+
+        submitSlot(slotToSubmit);
+    }
+
+    // add offered courses api
+    async function submitSlot(slotToSubmit)
+    {
+        let isok = false;
+
+        try
+        {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(slotToSubmit)};
+
+            await fetch(`http://localhost:8080/api/slot`, requestOptions)
+                .then((response) => {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        isok = true;
+                        return response.json();
+                    }
+                    else if (response.status === 400)
+                    {
+                        setErrorMsg("Slot clashes with another slot time");
+                        setErrorShow(true);
+                    }
+                    else if (response.status === 401)
+                    {
+                        setErrorMsg("you are not allowed to do this action");
+                        setErrorShow(true);
+                    }
+                    else if (response.status === 404)
+                    {
+                        setErrorMsg("the request was not found on the server, double check your connection");
+                        setErrorShow(true);
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+                .then((data) => {
+                    setLoadingShow(false);
+                    if (isok)
+                    {
+                        // refresh transcript
+                        setSuccessMsg("Slots added");
+                        setSuccessShow(true);
+                        getSlots(userID);
+
+                        // clear all the things in add
+                        setSlotSelectedStartTime(null);
+                        setSlotSelectedEndTime(null);
+                        setAddSlotNote(null);
+                        setAddSlotDay(null);
+                        setAddSlotOnline(null);
+                        setAddSlotPhysical(null);
+                    }
+                });
+
+        }
+        catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
+        }
+    }
+
+
+    const [page, setPage] = useState(0);
+
+    const [order, setOrder] = useState('asc');
+
+    const [orderBy, setOrderBy] = useState('name');
+
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
+
+    const handleSort = (event, id) => {
+        const isAsc = orderBy === id && order === 'asc';
+        if (id !== '') {
+            setOrder(isAsc ? 'desc' : 'asc');
+            setOrderBy(id);
+        }
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setPage(0);
+        setRowsPerPage(parseInt(event.target.value, 10));
+    };
+
+
 
 
     return (
         <Container>
+
+            {/* loading */}
+            <Backdrop
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={loadingShow}
+            >
+                <CircularProgress color="inherit"/>
+            </Backdrop>
+
+            {/* alerts */}
+            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%'}}>
+                    {errorMsg}
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={successShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleSuccessAlertClose} severity="success" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                    {successMsg}
+                </Alert>
+            </Snackbar>
+
+
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Slots</Typography>
 
-                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
-                        onClick={handleAddClickOpen}>
-                    Add Slot
-                </Button>
+                {
+                    leaderIDParm === null && userRole === "leader" &&
+                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
+                            onClick={handleAddClickOpen}>
+                        Add Slot
+                    </Button>
+                }
             </Stack>
 
             <Card>
                 <SlotTableToolbar
-                    numSelected={selected.length}
-                    filterName={filterName}
-                    onFilterName={handleFilterByName}
                 />
 
                 <Scrollbar>
@@ -161,29 +346,27 @@ export default function SlotPage() {
                                 order={order}
                                 orderBy={orderBy}
                                 rowCount={userSlots.length}
-                                numSelected={selected.length}
                                 onRequestSort={handleSort}
-                                onSelectAllClick={handleSelectAllClick}
                                 headLabel={[
-                                    {id: '', label: ''},
+                                    {id: 'zift1', label: ''},
                                     {id: 'day', label: 'Day'},
                                     {id: 'startTime', label: 'Start Time', align: 'center'},
                                     {id: 'endTime', label: 'EndT Time', align: 'center'},
-                                    {id: '', label: '', align: 'center'},
-                                    {id: '', label: ''}
+                                    {id: 'type', label: '', align: 'center'},
+                                    {id: 'zift2', label: ''}
                                 ]}
                             />
                             <TableBody>
-                                {dataFiltered
+                                {userSlots
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
                                         <SlotTableRow
-                                            slotID={row.slotID}
+                                            slotID={row.slotid}
                                             day={row.day}
-                                            startTime={row.startTime}
-                                            endTime={row.endTime}
+                                            startTime={row.starttime}
+                                            endTime={row.endtime}
                                             note={row.note}
-                                            isOnline={row.isOnline}
+                                            type={row.type}
                                         />
                                     ))}
 
@@ -192,7 +375,6 @@ export default function SlotPage() {
                                     emptyRows={emptyRows(page, rowsPerPage, userSlots.length)}
                                 />
 
-                                {notFound && <TableNoData query={filterName}/>}
                             </TableBody>
                         </Table>
                     </TableContainer>

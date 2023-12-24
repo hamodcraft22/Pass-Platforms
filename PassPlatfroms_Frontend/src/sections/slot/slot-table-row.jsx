@@ -13,7 +13,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {FormHelperText, TextField, ToggleButton} from "@mui/material";
+import {Alert, FormHelperText, Snackbar, TextField, ToggleButton} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import MenuItem from "@mui/material/MenuItem";
 import PublicIcon from '@mui/icons-material/Public';
@@ -21,11 +21,24 @@ import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {TimePicker} from "@mui/x-date-pickers";
 import DeskRoundedIcon from "@mui/icons-material/DeskRounded";
+import moment from "moment";
+import UserProfile from "../../components/auth/UserInfo";
 
 
 // ----------------------------------------------------------------------
 
-export default function SlotTableRow({slotID, day, startTime, endTime, note, isOnline}) {
+export default function SlotTableRow({slotID, day, startTime, endTime, note, type}) {
+
+    // alerts elements
+    const [errorShow, setErrorShow] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setErrorShow(false);
+    };
+
     const [showViewDialog, setShowViewDialog] = useState(false);
     const handleViewClickOpen = () => {
         setShowViewDialog(true);
@@ -64,16 +77,30 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, isO
 
     const [editSlotNote, setEditSlotNote] = useState(null);
 
-    const [slotSelectedStartTime, setSlotSelectedStartTime] = useState();
-    const [slotSelectedEndTime, setSlotSelectedEndTime] = useState();
+    const [slotSelectedStartTime, setSlotSelectedStartTime] = useState(null);
+    const [slotSelectedEndTime, setSlotSelectedEndTime] = useState(null);
 
     const handleEditClickOpen = () => {
         setShowEditDialog(true);
 
         setEditSlotDay(day);
-        setEditSlotOnline(isOnline);
-        //setSlotSelectedStartTime(startTime);
-        //setSlotSelectedEndTime(endTime);
+        setSlotSelectedStartTime(startTime);
+        setSlotSelectedEndTime(endTime);
+
+        if (type === 'online')
+        {
+            setEditSlotOnline(true);
+        }
+        else if (type === 'physical')
+        {
+            setEditSlotPhysical(true);
+        }
+        else if (type === 'both')
+        {
+            setEditSlotOnline(true);
+            setEditSlotPhysical(true);
+        }
+
         setEditSlotNote(note);
     };
     const handleEditClose = () => {
@@ -86,7 +113,16 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, isO
         setEditSlotNote(null);
     };
     const handleEditSave = () => {
-        setShowEditDialog(false);
+        if ( editSlotOnline !== false || editSlotPhysical !== false )
+        {
+            setShowEditDialog(false);
+            editSubmit();
+        }
+        else
+        {
+            setErrorMsg("please fill in all data");
+            setErrorShow(true);
+        }
     };
 
 
@@ -99,22 +135,116 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, isO
     };
     const handleDeleteSave = () => {
         setShowDeleteDialog(false);
+        deleteSlot();
     };
 
 
+    // delete api
+    async function deleteSlot()
+    {
+        try
+        {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions =
+                {
+                    method: "DELETE",
+                    headers: {'Content-Type': 'application/json', 'Authorization': token}
+                };
+
+            await fetch(`http://localhost:8080/api/slot/${slotID}`, requestOptions)
+                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
+        }
+        catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error)
+        }
+        finally
+        {
+            setShowDeleteDialog(false);
+        }
+    }
+
+    // edit api
+    // submit new slot
+    function editSubmit()
+    {
+        let slotType = '';
+
+        if (editSlotOnline && editSlotPhysical)
+        {
+            slotType = 'B';
+        }
+        else if (editSlotOnline)
+        {
+            slotType = 'O'
+        }
+        else if (editSlotPhysical)
+        {
+            slotType = 'P'
+        }
+
+        const slotToSubmit = {"slotid":slotID, "note":editSlotNote, "slotType":{"typeid":slotType}};
+
+        submitEditSlot(slotToSubmit);
+    }
+
+    // add offered courses api
+    async function submitEditSlot(slotToSubmit)
+    {
+        try
+        {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(slotToSubmit)};
+
+            await fetch(`http://localhost:8080/api/slot`, requestOptions)
+                .then((response) => {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload();
+                    }
+                    else if (response.status === 401)
+                    {
+                        setErrorMsg("you are not allowed to do this action");
+                        setErrorShow(true);
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                });
+
+        }
+        catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+        }
+        finally
+        {
+            setShowDeleteDialog(false);
+        }
+    }
+
     return (
         <>
+
             <TableRow hover tabIndex={-1}>
 
                 <TableCell></TableCell>
 
                 <TableCell>{dayWord(day)}</TableCell>
 
-                <TableCell align={"center"}>{startTime}</TableCell>
+                <TableCell align={"center"}>{moment(startTime).format("hh:mm A")}</TableCell>
 
-                <TableCell align={"center"}>{endTime}</TableCell>
+                <TableCell align={"center"}>{moment(endTime).format("hh:mm A")}</TableCell>
 
-                <TableCell align={"center"}>{isOnline && <PublicIcon/>}</TableCell>
+                <TableCell align={"center"}>{type === 'online' && <PublicIcon/>} {type === 'physical' && <DeskRoundedIcon/>} {type === 'both' && <><PublicIcon/> <DeskRoundedIcon/> </>}  </TableCell>
 
                 <TableCell align={"right"}>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon
@@ -137,9 +267,9 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, isO
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        <TextField label="Day" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={day}/>
-                        <TextField label="Start Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={startTime}/>
-                        <TextField label="End Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={endTime}/>
+                        <TextField label="Day" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={dayWord(day)}/>
+                        <TextField label="Start Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={moment(startTime).format("hh:mm A")}/>
+                        <TextField label="End Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={moment(endTime).format("hh:mm A")}/>
                         <TextField label="Note" variant="standard" fullWidth sx={{mb: 2}} InputProps={{readOnly: true}} multiline maxRows={2} defaultValue={note}/>
                     </DialogContentText>
                 </DialogContent>
@@ -154,6 +284,15 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, isO
                     Edit Slot
                 </DialogTitle>
                 <DialogContent>
+
+                    {
+                        errorShow &&
+
+                        <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                            {errorMsg}
+                        </Alert>
+                    }
+
                     <TextField InputProps={{readOnly: true}} select label="Day" sx={{mt: 1}} value={editSlotDay}
                                fullWidth>
                         <MenuItem value={'U'}>Sunday</MenuItem>
@@ -167,12 +306,12 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, isO
                     <FormHelperText>Day is none-editable</FormHelperText>
 
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker readOnly sx={{mt: 2, mr: 1}} label="Start Time" value={slotSelectedStartTime} onChange={(newValue) => {
+                        <TimePicker readOnly sx={{mt: 2, mr: 1}} label="Start Time" value={moment(slotSelectedStartTime)} onChange={(newValue) => {
                             setSlotSelectedStartTime(newValue)
                         }}/>
                     </LocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker readOnly sx={{mt: 2}} label="End Time" minTime={slotSelectedStartTime} value={slotSelectedEndTime} onChange={(newValue) => {
+                        <TimePicker readOnly sx={{mt: 2}} label="End Time"  value={moment(slotSelectedEndTime)} onChange={(newValue) => {
                             setSlotSelectedEndTime(newValue)
                         }}/>
                     </LocalizationProvider>
@@ -224,9 +363,18 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, isO
                     Delete Slot
                 </DialogTitle>
                 <DialogContent>
+
+                    {
+                        errorShow &&
+
+                        <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                            {errorMsg}
+                        </Alert>
+                    }
+
                     <DialogContentText>
                         Are you sure you want to delete the slot
-                        on <b>{day}</b> from <b>{startTime}</b> till <b>{endTime}</b>?
+                        on <b>{dayWord(day)}</b> from <b>{startTime && moment(startTime).format("hh:mm a")}</b> till <b>{endTime && moment(endTime).format("hh:mm a")}</b>?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

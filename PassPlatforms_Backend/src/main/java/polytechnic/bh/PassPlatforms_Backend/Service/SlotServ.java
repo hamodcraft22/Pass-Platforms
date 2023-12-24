@@ -59,7 +59,21 @@ public class SlotServ
     }
 
     // get slots based on a list of leaders (or a single leader)
-    public List<LeadersSlotsDto> getAllLeaderSlots(List<String> userIDs)
+    public List<SlotDao> getAllLeaderSlots(String LeaderID)
+    {
+        List<SlotDao> slots = new ArrayList<>();
+
+        for (Slot retrievedSlot : slotRepo.findSlotsByLeader_Userid(LeaderID))
+        {
+            slots.add(new SlotDao(retrievedSlot.getSlotid(), retrievedSlot.getStarttime().toInstant(), retrievedSlot.getEndtime().toInstant(), retrievedSlot.getNote(), new SlotTypeDao(retrievedSlot.getSlotType()), new DayDao(retrievedSlot.getDay()), null));
+        }
+
+        return slots;
+    }
+
+
+    // get slots based on a list of leaders -- tested
+    public List<LeadersSlotsDto> getAllLeadersSlots(List<String> userIDs)
     {
         List<LeadersSlotsDto> leaderSlots = new ArrayList<>();
 
@@ -71,7 +85,7 @@ public class SlotServ
             {
                 List<SlotDao> slots = new ArrayList<>();
 
-                for (Slot retrievedSlot : slotRepo.findSlotsByLeader(new User(retrievedUser)))
+                for (Slot retrievedSlot : slotRepo.findSlotsByLeader_Userid(userID))
                 {
                     slots.add(new SlotDao(retrievedSlot.getSlotid(), retrievedSlot.getStarttime().toInstant(), retrievedSlot.getEndtime().toInstant(), retrievedSlot.getNote(), new SlotTypeDao(retrievedSlot.getSlotType()), new DayDao(retrievedSlot.getDay()), null));
                 }
@@ -147,7 +161,7 @@ public class SlotServ
         }
 
         // get all of their slots
-        List<LeadersSlotsDto> allLeadersSlots = getAllLeaderSlots(leaderIDs);
+        List<LeadersSlotsDto> allLeadersSlots = getAllLeadersSlots(leaderIDs);
 
         // filter slots and return
         return getAvailableLeaderSlots(allLeadersSlots, weekStartDate);
@@ -190,11 +204,11 @@ public class SlotServ
 
         if (retrivedSlot.isPresent())
         {
-            retrivedSlot.get().setStarttime(Timestamp.from(gottenSlot.getStarttime()));
-            retrivedSlot.get().setEndtime(Timestamp.from(gottenSlot.getEndtime()));
+            // retrivedSlot.get().setStarttime(Timestamp.from(gottenSlot.getStarttime()));
+            // retrivedSlot.get().setEndtime(Timestamp.from(gottenSlot.getEndtime()));
             retrivedSlot.get().setNote(gottenSlot.getNote());
             retrivedSlot.get().setSlotType(slotTypeRepo.getReferenceById(gottenSlot.getSlotType().getTypeid()));
-            retrivedSlot.get().setDay(dayRepo.getReferenceById(gottenSlot.getDay().getDayid()));
+            // retrivedSlot.get().setDay(dayRepo.getReferenceById(gottenSlot.getDay().getDayid()));
 
             return new SlotDao(slotRepo.save(retrivedSlot.get()));
         }
