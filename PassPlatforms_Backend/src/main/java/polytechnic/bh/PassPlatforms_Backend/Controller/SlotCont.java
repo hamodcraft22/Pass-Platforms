@@ -61,7 +61,7 @@ public class SlotCont
     }
 
 
-    // get leaders slots
+    // get leaders slots -- not sure if will be used
     @GetMapping("/leaders")
     public ResponseEntity<GenericDto<List<LeadersSlotsDto>>> getLeadersSlots(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -234,7 +234,7 @@ public class SlotCont
 
     }
 
-    // edit slot
+    // edit slot -- added | tested
     @PutMapping("")
     public ResponseEntity<GenericDto<SlotDao>> editSlot(
             @RequestHeader(value = "Authorization") String requestKey,

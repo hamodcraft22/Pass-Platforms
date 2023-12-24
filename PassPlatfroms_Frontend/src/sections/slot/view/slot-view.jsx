@@ -69,10 +69,9 @@ export default function SlotPage()
     // api related items
 
     // user slots
-    const [userID, setUserID] = useState("");
     const [userSlots, setUserSlots]= useState([]);
 
-
+    const [userID, setUserID] = useState("");
     const [userRole, setUserRole] = useState("");
 
     async function getSlots(leaderID)

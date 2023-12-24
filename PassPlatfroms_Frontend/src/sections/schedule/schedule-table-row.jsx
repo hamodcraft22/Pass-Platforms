@@ -13,17 +13,31 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {FormHelperText, TextField} from "@mui/material";
+import {Alert, FormHelperText, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import MenuItem from "@mui/material/MenuItem";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {TimePicker} from "@mui/x-date-pickers";
+import moment from "moment/moment";
+import UserProfile from "../../components/auth/UserInfo";
 
 
 // ----------------------------------------------------------------------
 
-export default function ScheduleTableRow({slotID, day, startTime, endTime, note, isOnline}) {
+export default function ScheduleTableRow({scheduleID, day, startTime, endTime})
+{
+    // alerts elements
+    const [errorShow, setErrorShow] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setErrorShow(false);
+    };
+
+
     const [showViewDialog, setShowViewDialog] = useState(false);
     const handleViewClickOpen = () => {
         setShowViewDialog(true);
@@ -55,28 +69,37 @@ export default function ScheduleTableRow({slotID, day, startTime, endTime, note,
 
     const [showEditDialog, setShowEditDialog] = useState(false);
 
-    const [editSlotDay, setEditSlotDay] = useState(null);
+    const [editScheduleDay, setEditScheduleDay] = useState(null);
 
 
-    const [slotSelectedStartTime, setSlotSelectedStartTime] = useState();
-    const [slotSelectedEndTime, setSlotSelectedEndTime] = useState();
+    const [scheduleSelectedStartTime, setScheduleSelectedStartTime] = useState(null);
+    const [scheduleSelectedEndTime, setScheduleSelectedEndTime] = useState(null);
 
     const handleEditClickOpen = () => {
         setShowEditDialog(true);
 
-        setEditSlotDay(day);
-        //setSlotSelectedStartTime(startTime);
-        //setSlotSelectedEndTime(endTime);
+        setEditScheduleDay(day);
+        setScheduleSelectedStartTime(startTime);
+        setScheduleSelectedEndTime(endTime);
     };
     const handleEditClose = () => {
         setShowEditDialog(false);
 
-        setEditSlotDay(null);
-        setSlotSelectedStartTime(null);
-        setSlotSelectedEndTime(null);
+        setEditScheduleDay(null);
+        setScheduleSelectedStartTime(null);
+        setScheduleSelectedEndTime(null);
     };
     const handleEditSave = () => {
-        setShowEditDialog(false);
+        if (editScheduleDay !== null && scheduleSelectedStartTime !== null && scheduleSelectedEndTime!== null)
+        {
+            setShowEditDialog(false);
+            editSubmit();
+        }
+        else
+        {
+            setErrorMsg("please fill in all data");
+            setErrorShow(true);
+        }
     };
 
 
@@ -89,7 +112,86 @@ export default function ScheduleTableRow({slotID, day, startTime, endTime, note,
     };
     const handleDeleteSave = () => {
         setShowDeleteDialog(false);
+        deleteSchedule();
     };
+
+
+    // delete api
+    async function deleteSchedule()
+    {
+        try
+        {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions =
+                {
+                    method: "DELETE",
+                    headers: {'Content-Type': 'application/json', 'Authorization': token}
+                };
+
+            await fetch(`http://localhost:8080/api/schedule/${scheduleID}`, requestOptions)
+                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
+        }
+        catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error)
+        }
+        finally
+        {
+            setShowDeleteDialog(false);
+        }
+    }
+
+    // edit api
+    // submit new schedule
+    function editSubmit()
+    {
+        const scheduleToSubmit = {"scheduleid":scheduleID,  "starttime": scheduleSelectedStartTime, "endtime": scheduleSelectedEndTime, "day":{"dayid":editScheduleDay}};
+
+        submitEditSchedule(scheduleToSubmit);
+    }
+
+    // add offered courses api
+    async function submitEditSchedule(scheduleToSubmit)
+    {
+        try
+        {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(scheduleToSubmit)};
+
+            await fetch(`http://localhost:8080/api/schedule`, requestOptions)
+                .then((response) => {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload();
+                    }
+                    else if (response.status === 401)
+                    {
+                        setErrorMsg("you are not allowed to do this action");
+                        setErrorShow(true);
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                });
+
+        }
+        catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+        }
+        finally
+        {
+            setShowDeleteDialog(false);
+        }
+    }
 
 
     return (
@@ -100,9 +202,9 @@ export default function ScheduleTableRow({slotID, day, startTime, endTime, note,
 
                 <TableCell>{dayWord(day)}</TableCell>
 
-                <TableCell align={"center"}>{startTime}</TableCell>
+                <TableCell align={"center"}>{moment(startTime).format("hh:mm A")}</TableCell>
 
-                <TableCell align={"center"}>{endTime}</TableCell>
+                <TableCell align={"center"}>{moment(endTime).format("hh:mm A")}</TableCell>
 
                 <TableCell align={"right"}>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon
@@ -121,13 +223,13 @@ export default function ScheduleTableRow({slotID, day, startTime, endTime, note,
                 onClose={handleViewClose}
             >
                 <DialogTitle>
-                    Slot Information
+                    Schedule Information
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        <TextField label="Day" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={day}/>
-                        <TextField label="Start Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={startTime}/>
-                        <TextField label="End Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={endTime}/>
+                        <TextField label="Day" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={dayWord(day)}/>
+                        <TextField label="Start Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={moment(startTime).format("hh:mm A")}/>
+                        <TextField label="End Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={moment(endTime).format("hh:mm A")}/>
                     </DialogContentText>
                 </DialogContent>
             </Dialog>
@@ -138,12 +240,20 @@ export default function ScheduleTableRow({slotID, day, startTime, endTime, note,
                 onClose={handleEditClose}
             >
                 <DialogTitle>
-                    Edit Slot
+                    Edit Schedule
                 </DialogTitle>
                 <DialogContent>
 
-                    <TextField select label="Day" sx={{width: '100%', mt: 1}} value={editSlotDay} onChange={(event, newValue) => {
-                        setEditSlotDay(newValue.props.value)
+                    {
+                        errorShow &&
+
+                        <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                            {errorMsg}
+                        </Alert>
+                    }
+
+                    <TextField select label="Day" sx={{width: '100%', mt: 1}} value={editScheduleDay} onChange={(event, newValue) => {
+                        setEditScheduleDay(newValue.props.value)
                     }}>
                         <MenuItem value={'U'}>Sunday</MenuItem>
                         <MenuItem value={'M'}>Monday</MenuItem>
@@ -156,13 +266,13 @@ export default function ScheduleTableRow({slotID, day, startTime, endTime, note,
                     <FormHelperText>Which day is your session.</FormHelperText>
 
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker sx={{mt: 2, mr: 1}} label="Start Time" value={slotSelectedStartTime} onChange={(newValue) => {
-                            setSlotSelectedStartTime(newValue)
+                        <TimePicker sx={{mt: 2, mr: 1}} label="Start Time" value={moment(scheduleSelectedStartTime)} onChange={(newValue) => {
+                            setScheduleSelectedStartTime(newValue)
                         }}/>
                     </LocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker sx={{mt: 2}} label="End Time" minTime={slotSelectedStartTime} value={slotSelectedEndTime} onChange={(newValue) => {
-                            setSlotSelectedEndTime(newValue)
+                        <TimePicker sx={{mt: 2}} label="End Time" minTime={moment(scheduleSelectedStartTime)} value={moment(scheduleSelectedEndTime)} onChange={(newValue) => {
+                            setScheduleSelectedEndTime(newValue)
                         }}/>
                     </LocalizationProvider>
                     <FormHelperText>Select start and end time for the scheduled session.</FormHelperText>
@@ -182,12 +292,12 @@ export default function ScheduleTableRow({slotID, day, startTime, endTime, note,
                 onClose={handleDeleteClose}
             >
                 <DialogTitle>
-                    Delete Slot
+                    Delete Schedule
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete the Schedule slot
-                        on <b>{dayWord(day)}</b> from <b>{startTime}</b> till <b>{endTime}</b>?
+                        Are you sure you want to delete the Schedule schedule
+                        on <b>{dayWord(day)}</b> from <b>{startTime && moment(startTime).format("hh:mm a")}</b> till <b>{endTime && moment(endTime).format("hh:mm a")}</b>?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

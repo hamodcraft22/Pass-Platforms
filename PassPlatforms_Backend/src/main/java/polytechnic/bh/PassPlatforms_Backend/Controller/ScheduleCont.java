@@ -28,7 +28,7 @@ public class ScheduleCont
     @Autowired
     private UserServ userServ;
 
-    // get all schedules
+    // get all schedules -- not really needed
     @GetMapping("")
     public ResponseEntity<GenericDto<List<ScheduleDao>>> getAllSchedules(
             @RequestHeader(value = "Authorization") String requestKey)
@@ -65,21 +65,18 @@ public class ScheduleCont
 
     }
 
-    // get a user schedules
-    @GetMapping("/user")
+    // get a user schedules -- added | tested
+    @GetMapping("/student/{studentID}")
     public ResponseEntity<GenericDto<List<ScheduleDao>>> getUserSchedules(
-            @RequestHeader(value = "Authorization") String requestKey)
+            @RequestHeader(value = "Authorization") String requestKey,
+            @PathVariable(value = "studentID") String studentID)
     {
         String userID = isValidToken(requestKey);
 
         if (userID != null)
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
 
-            if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
-            {
-                List<ScheduleDao> schedules = scheduleServ.getUserSchedules(userID);
+                List<ScheduleDao> schedules = scheduleServ.getUserSchedules(studentID);
 
                 if (schedules != null && !schedules.isEmpty())
                 {
@@ -89,11 +86,7 @@ public class ScheduleCont
                 {
                     return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
                 }
-            }
-            else
-            {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
+
         }
         else
         {
@@ -102,7 +95,7 @@ public class ScheduleCont
 
     }
 
-    // get schedule details
+    // get schedule details -- not needed
     @GetMapping("/{scheduleID}")
     public ResponseEntity<GenericDto<ScheduleDao>> getScheduleDetails(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -160,7 +153,7 @@ public class ScheduleCont
 
     }
 
-    // create schedule
+    // create schedule -- added | tested
     @PostMapping("")
     public ResponseEntity<GenericDto<ScheduleDao>> createSchedule(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -196,7 +189,7 @@ public class ScheduleCont
 
     }
 
-    // edit schedule
+    // edit schedule -- added | tested
     @PutMapping("")
     public ResponseEntity<GenericDto<ScheduleDao>> editSchedule(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -215,7 +208,7 @@ public class ScheduleCont
 
                 if (editedSchedule != null)
                 {
-                    if (Objects.equals(scheduleDao.getUser().getUserid(), userID))
+                    if (Objects.equals(editedSchedule.getUser().getUserid(), userID))
                     {
                         return new ResponseEntity<>(new GenericDto<>(null, scheduleServ.editSchedule(scheduleDao), null, null), HttpStatus.OK);
                     }
@@ -241,7 +234,7 @@ public class ScheduleCont
 
     }
 
-    // delete schedule
+    // delete schedule -- added | tested
     @DeleteMapping("/{scheduleID}")
     public ResponseEntity<GenericDto<Void>> deleteSchedule(
             @RequestHeader(value = "Authorization") String requestKey,
