@@ -115,13 +115,6 @@ export default function CoursesTableRow({courseID, courseName}) {
 
     return (
         <>
-            {/* alerts */}
-            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
-                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
-                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
-                    {errorMsg}
-                </Alert>
-            </Snackbar>
 
             <TableRow hover tabIndex={-1}>
 
@@ -150,6 +143,15 @@ export default function CoursesTableRow({courseID, courseName}) {
                     {courseName}
                 </DialogTitle>
                 <DialogContent>
+
+                    {
+                        errorShow &&
+
+                        <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                            {errorMsg}
+                        </Alert>
+                    }
+
                     <TextField sx={{width: '100%', mt: 1}} label="Course Name" variant="outlined" value={editCourseName}
                                onChange={(newValue) => setEditCourseName(newValue.target.value)}/>
 
@@ -171,6 +173,7 @@ export default function CoursesTableRow({courseID, courseName}) {
                     {courseName}
                 </DialogTitle>
                 <DialogContent>
+
                     <DialogContentText>
                         Are you sure you want to delete <b>{courseName}</b>? this will delete all bookings, and revisions
                         within this course.

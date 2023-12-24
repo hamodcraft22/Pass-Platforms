@@ -65,13 +65,6 @@ export default function OfferedCoursesTableRow({offerID, courseID, courseName}) 
 
     return (
         <>
-            {/* alerts */}
-            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
-                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
-                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
-                    {errorMsg}
-                </Alert>
-            </Snackbar>
 
             <TableRow hover tabIndex={-1}>
 

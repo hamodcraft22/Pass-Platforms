@@ -125,13 +125,6 @@ export default function SchoolsTableRow({schoolID, schoolName}) {
 
     return (
         <>
-            {/* alerts */}
-            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
-                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
-                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
-                    {errorMsg}
-                </Alert>
-            </Snackbar>
 
             <TableRow hover tabIndex={-1}>
 
@@ -160,6 +153,15 @@ export default function SchoolsTableRow({schoolID, schoolName}) {
                     {schoolName}
                 </DialogTitle>
                 <DialogContent>
+
+                    {
+                        errorShow &&
+
+                        <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                            {errorMsg}
+                        </Alert>
+                    }
+
                     <TextField sx={{width: '100%', mt: 1}} label="School Name" variant="outlined" value={editSchoolName}
                                onChange={(newValue) => setEditSchoolName(newValue.target.value)}/>
                 </DialogContent>
