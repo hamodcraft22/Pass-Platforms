@@ -22,7 +22,7 @@ public class User
     private String userid;
 
     @ManyToOne
-    @JoinColumn(name = "roleid", referencedColumnName = "roleid", insertable = false, updatable = false)
+    @JoinColumn(name = "roleid", referencedColumnName = "roleid")
     private Role role;
 
     @OneToMany

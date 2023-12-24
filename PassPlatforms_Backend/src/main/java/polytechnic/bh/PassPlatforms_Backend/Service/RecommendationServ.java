@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static polytechnic.bh.PassPlatforms_Backend.Constant.ManagerConst.MANGER_ID;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.RecommendationStatusConstant.RECSTS_CREATED;
 
 @Service
@@ -82,7 +83,7 @@ public class RecommendationServ
         newNotification.setEntity("Recommendation");
         newNotification.setItemid(String.valueOf(savedRec.getRecid()));
         newNotification.setNotficmsg("new recommendation by tutor");
-        newNotification.setUser(new User(userServ.getUser("MANAGERID")));
+        newNotification.setUser(new User(userServ.getUser(MANGER_ID)));
         newNotification.setSeen(false);
 
         notificationRepo.save(newNotification);
