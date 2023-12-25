@@ -71,7 +71,7 @@ public class BookingCont
     }
 
     // get all bookings - per school
-    @GetMapping("/{schoolID}")
+    @GetMapping("/school/{schoolID}")
     public ResponseEntity<GenericDto<List<BookingDao>>> getSchoolBookings(
             @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("schoolID") String schoolID)
@@ -245,7 +245,7 @@ public class BookingCont
         }
     }
 
-    // get booking details -- added | tested
+    // get booking details --
     @GetMapping("/{bookingID}")
     public ResponseEntity<GenericDto<BookingDao>> getBookingDetails(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -318,13 +318,41 @@ public class BookingCont
 
                 if (retrivedBooking != null)
                 {
+                    // check if leader owns the booking
                     if (Objects.equals(retrivedBooking.getSlot().getLeader().getUserid(), userID))
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, retrivedBooking, null, null), HttpStatus.OK);
+                    }
+                    // check if the leader is a student of the booking
+                    else if (Objects.equals(retrivedBooking.getStudent().getUserid(), userID))
                     {
                         return new ResponseEntity<>(new GenericDto<>(null, retrivedBooking, null, null), HttpStatus.OK);
                     }
                     else
                     {
-                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        // check if the leader is a member of this booking
+
+                        // loop to see if member of
+                        boolean hasAcss = false;
+
+                        for (BookingMemberDao bookingMember : retrivedBooking.getBookingMembers())
+                        {
+                            if (Objects.equals(bookingMember.getStudent().getUserid(), userID))
+                            {
+                                hasAcss = true;
+                                break;
+                            }
+                        }
+
+                        if (hasAcss)
+                        {
+                            return new ResponseEntity<>(new GenericDto<>(null, retrivedBooking, null, null), HttpStatus.OK);
+                        }
+                        else
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        }
+
                     }
                 }
                 else

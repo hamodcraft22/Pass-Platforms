@@ -188,7 +188,7 @@ export default function RecommendationsPage() {
         }
         else
         {
-            setErrorMsg("you are not allowed to access application");
+            setErrorMsg("you are not allowed to access Bookings");
             setErrorShow(true);
         }
 

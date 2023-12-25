@@ -247,8 +247,6 @@ export default function ViewApplicationPage() {
 
     async function submitUserNote()
     {
-        let isok = false;
-
         try {
             setLoadingShow(true);
 

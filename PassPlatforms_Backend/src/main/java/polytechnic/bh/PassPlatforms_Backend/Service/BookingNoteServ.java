@@ -12,6 +12,7 @@ import polytechnic.bh.PassPlatforms_Backend.Repository.BookingRepo;
 import polytechnic.bh.PassPlatforms_Backend.Repository.NotificationRepo;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -67,14 +68,14 @@ public class BookingNoteServ
         return retrievedBookingNote.map(BookingNoteDao::new).orElse(null);
     }
 
-    public BookingNoteDao createBookingNote(BookingNoteDao bookingNoteDao)
+    public BookingNoteDao createBookingNote(int bookingID, String bookingNote, String userID)
     {
         BookingNote newBookingNote = new BookingNote();
 
-        newBookingNote.setDatetime(Timestamp.from(bookingNoteDao.getDatetime()));
-        newBookingNote.setNotebody(bookingNoteDao.getNotebody());
-        newBookingNote.setBooking(bookingRepo.getReferenceById(bookingNoteDao.getBooking().getBookingid()));
-        newBookingNote.setUser(new User(userServ.getUser(bookingNoteDao.getUser().getUserid())));
+        newBookingNote.setDatetime(Timestamp.from(Instant.now()));
+        newBookingNote.setNotebody(bookingNote);
+        newBookingNote.setBooking(bookingRepo.getReferenceById(bookingID));
+        newBookingNote.setUser(new User(userServ.getUser(userID)));
 
         BookingNote addedBookingNote = bookingNoteRepo.save(newBookingNote);
 
@@ -103,7 +104,7 @@ public class BookingNoteServ
         {
             for (BookingMember bookingMember : addedBookingNote.getBooking().getBookingMembers())
             {
-                if (!Objects.equals(bookingMember.getStudent().getUserid(), bookingNoteDao.getUser().getUserid()))
+                if (!Objects.equals(bookingMember.getStudent().getUserid(), userID))
                 {
                     newNotification.setUser(bookingMember.getStudent());
                     notificationRepo.save(newNotification);

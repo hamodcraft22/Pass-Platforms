@@ -49,8 +49,8 @@ export default function CoursesPage() {
         setErrorShow(false);
     };
 
-    const queryParameters = new URLSearchParams(window.location.search)
-    const schoolIDParm = queryParameters.get("schoolID")
+    const queryParameters = new URLSearchParams(window.location.search);
+    const schoolIDParm = queryParameters.get("schoolID");
 
     const [school, setSchool] = useState(null);
     const [courses, setCourses] = useState([]);

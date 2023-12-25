@@ -233,10 +233,11 @@ public class BookingNoteCont
     }
 
     // create booking note
-    @PostMapping("")
+    @PostMapping("/{bookingID}")
     public ResponseEntity<GenericDto<BookingNoteDao>> createBookingNote(
             @RequestHeader(value = "Authorization") String requestKey,
-            @RequestBody BookingNoteDao bookingNoteDao)
+            @PathVariable(value = "bookingID") int bookingID,
+            @RequestBody String bookingNote)
     {
         String userID = isValidToken(requestKey);
 
@@ -247,11 +248,11 @@ public class BookingNoteCont
 
             if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
             {
-                BookingDao booking = bookingServ.getBookingDetails(bookingNoteDao.getBooking().getBookingid());
+                BookingDao booking = bookingServ.getBookingDetails(bookingID);
 
                 if (booking != null)
                 {
-                    BookingNoteDao createdBookingNote = bookingNoteServ.createBookingNote(bookingNoteDao);
+                    BookingNoteDao createdBookingNote = bookingNoteServ.createBookingNote(bookingID, bookingNote, userID);
 
                     return new ResponseEntity<>(new GenericDto<>(null, createdBookingNote, null, null), HttpStatus.CREATED);
                 }
@@ -263,13 +264,13 @@ public class BookingNoteCont
             else if (user.getRole().getRoleid() == ROLE_STUDENT)
             {
                 // check if student booked, or is a member of the booking
-                BookingDao retrivedBooking = bookingServ.getBookingDetails(bookingNoteDao.getBooking().getBookingid());
+                BookingDao retrivedBooking = bookingServ.getBookingDetails(bookingID);
 
                 if (retrivedBooking != null)
                 {
                     if (Objects.equals(retrivedBooking.getStudent().getUserid(), userID))
                     {
-                        BookingNoteDao createdBookingNote = bookingNoteServ.createBookingNote(bookingNoteDao);
+                        BookingNoteDao createdBookingNote = bookingNoteServ.createBookingNote(bookingID, bookingNote, userID);
 
                         return new ResponseEntity<>(new GenericDto<>(null, createdBookingNote, null, null), HttpStatus.CREATED);
                     }
@@ -289,7 +290,7 @@ public class BookingNoteCont
 
                         if (hasAcss)
                         {
-                            BookingNoteDao createdBookingNote = bookingNoteServ.createBookingNote(bookingNoteDao);
+                            BookingNoteDao createdBookingNote = bookingNoteServ.createBookingNote(bookingID, bookingNote, userID);
 
                             return new ResponseEntity<>(new GenericDto<>(null, createdBookingNote, null, null), HttpStatus.CREATED);
                         }
@@ -307,19 +308,47 @@ public class BookingNoteCont
             }
             else if (user.getRole().getRoleid() == ROLE_LEADER)
             {
-                BookingDao retrivedBooking = bookingServ.getBookingDetails(bookingNoteDao.getBooking().getBookingid());
+                BookingDao retrivedBooking = bookingServ.getBookingDetails(bookingID);
 
                 if (retrivedBooking != null)
                 {
                     if (Objects.equals(retrivedBooking.getSlot().getLeader().getUserid(), userID))
                     {
-                        BookingNoteDao createdBookingNote = bookingNoteServ.createBookingNote(bookingNoteDao);
+                        BookingNoteDao createdBookingNote = bookingNoteServ.createBookingNote(bookingID, bookingNote, userID);
+
+                        return new ResponseEntity<>(new GenericDto<>(null, createdBookingNote, null, null), HttpStatus.CREATED);
+                    }
+                    else if (Objects.equals(retrivedBooking.getStudent().getUserid(), userID))
+                    {
+                        BookingNoteDao createdBookingNote = bookingNoteServ.createBookingNote(bookingID, bookingNote, userID);
 
                         return new ResponseEntity<>(new GenericDto<>(null, createdBookingNote, null, null), HttpStatus.CREATED);
                     }
                     else
                     {
-                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        // loop to see if member of
+                        boolean hasAcss = false;
+
+                        for (BookingMemberDao bookingMember : retrivedBooking.getBookingMembers())
+                        {
+                            if (Objects.equals(bookingMember.getStudent().getUserid(), userID))
+                            {
+                                hasAcss = true;
+                                break;
+                            }
+                        }
+
+                        if (hasAcss)
+                        {
+                            BookingNoteDao createdBookingNote = bookingNoteServ.createBookingNote(bookingID, bookingNote, userID);
+
+                            return new ResponseEntity<>(new GenericDto<>(null, createdBookingNote, null, null), HttpStatus.CREATED);
+                        }
+                        else
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        }
+
                     }
                 }
                 else
