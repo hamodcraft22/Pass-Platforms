@@ -83,7 +83,7 @@ export default function ApplicationsPage() {
                     else if (response.status === 401)
                     {
                         setErrorMsg("you are not allowed to view applications");
-                        errorMsg(true);
+                        setErrorShow(true);
                     }
                     else
                     {

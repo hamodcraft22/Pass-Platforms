@@ -65,7 +65,7 @@ public class SlotServ
 
         for (Slot retrievedSlot : slotRepo.findSlotsByLeader_Userid(LeaderID))
         {
-            slots.add(new SlotDao(retrievedSlot.getSlotid(), retrievedSlot.getStarttime().toInstant(), retrievedSlot.getEndtime().toInstant(), retrievedSlot.getNote(), new SlotTypeDao(retrievedSlot.getSlotType()), new DayDao(retrievedSlot.getDay()), null));
+            slots.add(new SlotDao(retrievedSlot.getSlotid(), retrievedSlot.getStarttime().toInstant(), retrievedSlot.getEndtime().toInstant(), retrievedSlot.getNote(), new SlotTypeDao(retrievedSlot.getSlotType()), new DayDao(retrievedSlot.getDay()), new UserDao(retrievedSlot.getLeader().getUserid(), null, getAzureAdName(retrievedSlot.getLeader().getUserid()), null)));
         }
 
         return slots;

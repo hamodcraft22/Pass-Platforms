@@ -105,7 +105,7 @@ export default function SchedulePage() {
         let correctedUserSchedules = [];
 
         retrivedUserSchedules.forEach((schedule) => {
-            correctedUserSchedules.push({"scheduleid":schedule.scheduleid, "starttime":schedule.starttime, "endtime":schedule.endtime, "day":schedule.day.dayid});
+            correctedUserSchedules.push({"scheduleid":schedule.scheduleid, "starttime":schedule.starttime, "endtime":schedule.endtime, "day":schedule.day.dayid, "userName":schedule.user.userName});
         });
 
         setUserSchedules(correctedUserSchedules);
@@ -120,12 +120,14 @@ export default function SchedulePage() {
         setUserID(userID);
         setUserRole(userRole);
 
+        setCanEdit(true);
+
         getSchedules(userID);
     }
 
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {if (studentIDParm !== null && studentIDParm !== undefined && Object.keys(studentIDParm).length !== 0) {getSchedules(studentIDParm)} else {getUserInfo()}}, []);
+    useEffect(() => {if (studentIDParm !== null && studentIDParm !== undefined && Object.keys(studentIDParm).length !== 0) {getSchedules(studentIDParm); setCanEdit(false);} else {getUserInfo()}}, []);
 
 
     const [showAddDialog, setShowAddDialog] = useState(false);
@@ -136,6 +138,8 @@ export default function SchedulePage() {
 
     const [scheduleSelectedStartTime, setScheduleSelectedStartTime] = useState(null);
     const [scheduleSelectedEndTime, setScheduleSelectedEndTime] = useState(null);
+
+    const [canEdit, setCanEdit] = useState(false);
 
     const handleAddClickOpen = () => {
         setShowAddDialog(true);
@@ -289,7 +293,7 @@ export default function SchedulePage() {
             </Snackbar>
 
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4">Schedule</Typography>
+                <Typography variant="h4">{userSchedules && Object.keys(userSchedules).length !== 0 && <>{userSchedules[0].userName}</>} Schedule</Typography>
 
                 {
                     studentIDParm === null && (userRole === "leader" || userRole === "student") &&
@@ -328,6 +332,7 @@ export default function SchedulePage() {
                                             day={row.day}
                                             startTime={row.starttime}
                                             endTime={row.endtime}
+                                            canEdit={canEdit}
                                         />
                                     ))}
 

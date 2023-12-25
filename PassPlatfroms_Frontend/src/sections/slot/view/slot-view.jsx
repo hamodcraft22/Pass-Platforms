@@ -64,7 +64,7 @@ export default function SlotPage()
         setSuccessShow(false);
     };
 
-
+    const [canEdit, setCanEdit] = useState(false);
 
     // api related items
 
@@ -108,7 +108,7 @@ export default function SlotPage()
         let correctedUserSlots = [];
 
         retrivedUserSlots.forEach((slot) => {
-            correctedUserSlots.push({"slotid":slot.slotid, "starttime":slot.starttime, "endtime":slot.endtime, "note":slot.note, "type":slot.slotType.typename, "day":slot.day.dayid});
+            correctedUserSlots.push({"slotid":slot.slotid, "starttime":slot.starttime, "endtime":slot.endtime, "note":slot.note, "type":slot.slotType.typename, "day":slot.day.dayid, "userName":slot.leader.userName});
         });
 
         setUserSlots(correctedUserSlots);
@@ -123,12 +123,14 @@ export default function SlotPage()
         setUserID(userID);
         setUserRole(userRole);
 
+        setCanEdit(true);
+
         getSlots(userID);
     }
 
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {if (leaderIDParm !== null && leaderIDParm !== undefined && Object.keys(leaderIDParm).length !== 0) {getSlots(leaderIDParm)} else {getUserInfo()}}, [])
+    useEffect(() => {if (leaderIDParm !== null && leaderIDParm !== undefined && Object.keys(leaderIDParm).length !== 0) {getSlots(leaderIDParm);  setCanEdit(false);} else {getUserInfo()}}, [])
 
 
 
@@ -323,7 +325,7 @@ export default function SlotPage()
 
 
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4">Slots</Typography>
+                <Typography variant="h4">{userSlots && Object.keys(userSlots).length !== 0 && <>{userSlots[0].userName}</>} Slots</Typography>
 
                 {
                     leaderIDParm === null && userRole === "leader" &&
@@ -366,6 +368,7 @@ export default function SlotPage()
                                             endTime={row.endtime}
                                             note={row.note}
                                             type={row.type}
+                                            canEdit={canEdit}
                                         />
                                     ))}
 

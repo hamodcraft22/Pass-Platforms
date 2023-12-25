@@ -177,6 +177,11 @@ export default function RecommendationsPage() {
             getTutorRecommendations(userID);
             getAllUsers();
         }
+        else
+        {
+            setErrorMsg("You are not allowed to view recommendations");
+            setErrorShow(true);
+        }
     }
 
 

@@ -188,42 +188,61 @@ export default function TranscriptPage() {
 
 
     const queryParameters = new URLSearchParams(window.location.search)
-    const leaderIDParm = queryParameters.get("leaderID");
+    const studentIDParm = queryParameters.get("leaderID");
 
     const [userID, setUserID] = useState("");
     const [userRole, setUserRole] = useState("");
 
 
-    // get user info (get the transcript of the logged in user)
+
     async function getUserInfo()
     {
+        // if leader, get his booking
+        // if student, get his booking,
+
+        // if admin/manager, get param and get his booking
+
         let userID = await UserProfile.getUserID();
         let userRole = await UserProfile.getUserRole();
 
-        setUserID(userID);
-        setUserRole(userRole);
+        await setUserID(userID);
+        await setUserRole(userRole);
 
-        getTranscripts(userID);
-    }
-
-    // get the transcript of another user - only manager / admin
-    async function getUserTranscript()
-    {
-        let userRole = await UserProfile.getUserRole();
-
-        if (userRole === 'manager' || userRole === 'admin')
+        // if admin / manager and there is student paramteter
+        if (userRole === "manager" || userRole === "admin")
         {
-            getTranscripts(leaderIDParm);
+            //call admin function
+            if (studentIDParm !== null)
+            {
+                // get bookings made by student (could be leader as well)
+                getTranscripts(studentIDParm);
+            }
+            else
+            {
+                setErrorMsg("No student id supplied!");
+                setErrorShow(true);
+            }
+        }
+        else if (userRole === "student")
+        {
+            // get student bookings
+            getTranscripts(userID);
+        }
+        else if (userRole === "leader")
+        {
+            // get leader bookings
+            getTranscripts(userID);
         }
         else
         {
-            setErrorMsg("you are not allowed to view other user's Transcripts");
+            setErrorMsg("you are not allowed to access others Transcript");
             setErrorShow(true);
         }
+
     }
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {if (leaderIDParm !== null && leaderIDParm !== undefined && Object.keys(leaderIDParm).length !== 0) {getUserTranscript()} else {getUserInfo()}}, [])
+    useEffect(() => {getUserInfo()}, []);
 
 
 
@@ -369,10 +388,10 @@ export default function TranscriptPage() {
             </Snackbar>
 
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4">Student - Transcript</Typography>
+                <Typography variant="h4">{transcripts && Object.keys(transcripts).length !== 0 && <>{transcripts[0].student.userName}</>} - Transcript</Typography>
 
                 {
-                    leaderIDParm === null && userRole === "leader" &&
+                    studentIDParm === null && userRole === "leader" &&
                     <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
                             onClick={handleAddClickOpen}>
                         Upload Transcript

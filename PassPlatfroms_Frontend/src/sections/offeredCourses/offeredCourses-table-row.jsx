@@ -15,7 +15,7 @@ import UserProfile from "../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
-export default function OfferedCoursesTableRow({offerID, courseID, courseName}) {
+export default function OfferedCoursesTableRow({offerID, courseID, courseName, canDelete}) {
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
@@ -75,8 +75,11 @@ export default function OfferedCoursesTableRow({offerID, courseID, courseName}) 
                 <TableCell>{courseName}</TableCell>
 
                 <TableCell align={"right"}>
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
-                            onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
+                    {
+                        canDelete &&
+                        <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
+                                onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
+                    }
                 </TableCell>
 
             </TableRow>

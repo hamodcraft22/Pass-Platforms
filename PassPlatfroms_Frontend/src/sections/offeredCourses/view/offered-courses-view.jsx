@@ -78,6 +78,7 @@ export default function OfferedCoursesPage() {
 
     const [offeredCourses, setOfferedCourses] = useState([]);
 
+    const [canEdit, setCanEdit] = useState(false);
 
     // get offered courses api
     async function getLeaderCourses(leaderID) {
@@ -90,11 +91,22 @@ export default function OfferedCoursesPage() {
             await fetch(`http://localhost:8080/api/offeredcourse/leader/${leaderID}`, requestOptions)
                 .then(response =>
                 {
-                    return response.json()
+                    if (response.status === 200)
+                    {
+                        return response.json()
+                    }
                 })
                 .then((data) =>
                 {
-                    parseOfferedCourses(data.transObject);
+                    if (data !== null && Object.keys(data.transObject).length !== 0)
+                    {
+                        parseOfferedCourses(data.transObject);
+                    }
+                    else
+                    {
+                        setErrorMsg("No Courses Found");
+                        setErrorShow(true);
+                    }
                 }).then(() => {setLoadingShow(false);})
         } catch (error)
         {
@@ -110,7 +122,7 @@ export default function OfferedCoursesPage() {
         let correctedOfferedCourses = [];
 
         offeredCourses.forEach((offer) => {
-            correctedOfferedCourses.push({"offerid":offer.offerid, "courseid":offer.course.courseid, "coursename":offer.course.coursename});
+            correctedOfferedCourses.push({"offerid":offer.offerid, "courseid":offer.course.courseid, "coursename":offer.course.coursename, "userName":offer.leader.userName});
         });
 
         setOfferedCourses(correctedOfferedCourses);
@@ -160,12 +172,14 @@ export default function OfferedCoursesPage() {
         setUserID(userID);
         setUserRole(userRole);
 
+        setCanEdit(true);
+
         getLeaderCourses(userID);
         getCoursesAvlb(userID);
     }
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {if (leaderIDParm !== null && leaderIDParm !== undefined && Object.keys(leaderIDParm).length !== 0) {getLeaderCourses(leaderIDParm)} else {getUserInfo()}}, [])
+    useEffect(() => {if (leaderIDParm !== null && leaderIDParm !== undefined && Object.keys(leaderIDParm).length !== 0) {getLeaderCourses(leaderIDParm); setCanEdit(false);} else {getUserInfo()}}, [])
 
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
@@ -312,7 +326,7 @@ export default function OfferedCoursesPage() {
             </Snackbar>
 
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4">Courses</Typography>
+                <Typography variant="h4">{offeredCourses && Object.keys(offeredCourses).length !== 0 && <>{offeredCourses[0].userName}</>} Offered Courses</Typography>
 
                 {
                     leaderIDParm === null && userRole === "leader" &&
@@ -352,6 +366,7 @@ export default function OfferedCoursesPage() {
                                             offerID={row.offerid}
                                             courseID={row.courseid}
                                             courseName={row.coursename}
+                                            canDelete={canEdit}
                                         />
                                     ))}
 

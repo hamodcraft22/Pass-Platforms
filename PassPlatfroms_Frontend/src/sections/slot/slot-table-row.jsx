@@ -27,7 +27,7 @@ import UserProfile from "../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
-export default function SlotTableRow({slotID, day, startTime, endTime, note, type}) {
+export default function SlotTableRow({slotID, day, startTime, endTime, note, type, canEdit}) {
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
@@ -249,10 +249,15 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, typ
                 <TableCell align={"right"}>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon
                         fontSize={"small"}/></Button>
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"}
-                            onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
-                            onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
+                    {
+                        canEdit &&
+                        <>
+                            <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"}
+                                    onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
+                            <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
+                                    onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
+                        </>
+                    }
                 </TableCell>
 
             </TableRow>
