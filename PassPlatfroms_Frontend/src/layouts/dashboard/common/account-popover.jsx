@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -10,26 +10,8 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
 import {useMsal} from '@azure/msal-react';
+import UserProfile from "../../../components/auth/UserInfo";
 
-
-// ----------------------------------------------------------------------
-
-const MENU_OPTIONS = [
-    {
-        label: 'Home',
-        icon: 'eva:home-fill',
-    },
-    {
-        label: 'Profile',
-        icon: 'eva:person-fill',
-    },
-    {
-        label: 'Settings',
-        icon: 'eva:settings-2-fill',
-    },
-];
-
-// ----------------------------------------------------------------------
 
 export default function AccountPopover() {
     const {instance} = useMsal();
@@ -55,6 +37,22 @@ export default function AccountPopover() {
         instance.logoutRedirect({account: activeAccount}).catch((error) => console.log(error));
     };
 
+
+    const [userName, setUserName] = useState("");
+
+    async function getUserName() {
+        await UserProfile.getUserName().then((data) => {
+            const words = data.trim().split(/\s+/);
+            const firstName = words[0];
+            const lastName = words[words.length - 1];
+            setUserName(firstName + " " + lastName);
+        })
+    }
+
+    useEffect(() => {
+        getUserName()
+    }, [])
+
     return (
         <>
             <IconButton
@@ -70,14 +68,14 @@ export default function AccountPopover() {
                 }}
             >
                 <Avatar
-                    // alt="{account.displayName}"
+
                     sx={{
                         width: 36,
                         height: 36,
                         border: (theme) => `solid 2px ${theme.palette.background.default}`,
                     }}
                 >
-                    {/*{account.displayName.charAt(0).toUpperCase()}*/}
+
                 </Avatar>
             </IconButton>
 
@@ -98,22 +96,11 @@ export default function AccountPopover() {
             >
                 <Box sx={{my: 1.5, px: 2}}>
                     <Typography variant="subtitle2" noWrap>
-                        {/*{account.displayName}*/}
-                    </Typography>
-                    <Typography variant="body2" sx={{color: 'text.secondary'}} noWrap>
-                        {/*{account.email}*/}
+                        {userName}
                     </Typography>
                 </Box>
 
                 <Divider sx={{borderStyle: 'dashed'}}/>
-
-                {MENU_OPTIONS.map((option) => (
-                    <MenuItem key={option.label} onClick={handleClose}>
-                        {option.label}
-                    </MenuItem>
-                ))}
-
-                <Divider sx={{borderStyle: 'dashed', m: 0}}/>
 
                 <MenuItem
                     disableRipple

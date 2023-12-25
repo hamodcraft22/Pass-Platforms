@@ -24,9 +24,15 @@ import TableBody from "@mui/material/TableBody";
 
 export default function ProfileView() {
 
+    const queryParameters = new URLSearchParams(window.location.search)
+    const leaderIDParm = queryParameters.get("userID");
+
     const [userName, setUserName] = useState("Mohamed Adel Jaafar Abdulredha Hasan");
+
+
     const [userID, setUserID] = useState("202002789");
     const [userRole, setUserRole] = useState("Leader");
+
 
     const [courses, setCourses] = useState([]);
 

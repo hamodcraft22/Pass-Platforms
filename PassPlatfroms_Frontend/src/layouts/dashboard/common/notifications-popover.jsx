@@ -19,6 +19,7 @@ import {fToNow} from '../../../utils/format-time';
 import Iconify from '../../../components/iconify';
 import Scrollbar from '../../../components/scrollbar';
 import ReplayCircleFilledRoundedIcon from '@mui/icons-material/ReplayCircleFilledRounded';
+import UserProfile from "../../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
@@ -71,9 +72,40 @@ const NOTIFICATIONS = [
 ];
 
 export default function NotificationsPopover() {
-    const [notifications, setNotifications] = useState(NOTIFICATIONS);
+    const [notifications, setNotifications] = useState([]);
 
-    const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
+    async function getNotification()
+    {
+        try
+        {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
+
+            await fetch("http://localhost:8080/api/notification", requestOptions)
+                .then((response) => {
+                    if (response.status === 200)
+                    {
+                        return response.json();
+                    }
+                    else {return null}
+                })
+                .then((data) => {
+                    if (data !== null)
+                    {
+                        setNotifications(data.transObject);
+                    }
+                })
+        }
+        catch (error)
+        {
+            console.log(error);
+        }
+    }
+
+    useState(() => {getNotification()}, []);
+
+    const totalUnRead = notifications.filter((item) => item.seen === false).length;
 
     const [open, setOpen] = useState(null);
 
@@ -85,6 +117,34 @@ export default function NotificationsPopover() {
         setOpen(null);
     };
 
+    async function setNotficationRead(notficID)
+    {
+        try
+        {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
+
+            await fetch(`http://localhost:8080/api/notification/${notficID}`, requestOptions)
+                .then((response) => {
+                    if (response.status === 200)
+                    {
+                        return response.json();
+                    }
+                    else {return null}
+                })
+                .then((data) => {
+                    if (data !== null)
+                    {
+                        getNotification();
+                    }
+                })
+        }
+        catch (error)
+        {
+            console.log(error);
+        }
+    }
 
     return (
         <>
@@ -117,9 +177,7 @@ export default function NotificationsPopover() {
                     </Box>
 
                     <Tooltip title=" Refresh">
-                        <IconButton color="primary" onClick={() => {
-                            alert("call api")
-                        }}>
+                        <IconButton color="primary" onClick={() => {getNotification()}}>
                             <ReplayCircleFilledRoundedIcon/>
                         </IconButton>
                     </Tooltip>
@@ -137,8 +195,8 @@ export default function NotificationsPopover() {
                             </ListSubheader>
                         }
                     >
-                        {notifications.slice(0, 2).map((notification) => (
-                            <NotificationItem key={notification.id} notification={notification}/>
+                        {notifications.filter((item) => item.seen === false).map((notification) => (
+                            <NotificationItem key={notification.notficid} notification={notification} onReadNotifc={() => {setNotficationRead(notification.notficid)}}/>
                         ))}
                     </List>
 
@@ -150,19 +208,13 @@ export default function NotificationsPopover() {
                             </ListSubheader>
                         }
                     >
-                        {notifications.slice(2, 5).map((notification) => (
-                            <NotificationItem key={notification.id} notification={notification}/>
+                        {notifications.filter((item) => item.seen === true).map((notification) => (
+                            <NotificationItem key={notification.notficid} notification={notification}/>
                         ))}
                     </List>
                 </Scrollbar>
 
                 <Divider sx={{borderStyle: 'dashed'}}/>
-
-                {/*<Box sx={{p: 1}}>*/}
-                {/*    <Button fullWidth disableRipple>*/}
-                {/*        View All*/}
-                {/*    </Button>*/}
-                {/*</Box>*/}
             </Popover>
         </>
     );
@@ -181,7 +233,7 @@ NotificationItem.propTypes = {
     }),
 };
 
-function NotificationItem({notification}) {
+function NotificationItem({notification, onReadNotifc}) {
     const {title} = renderContent(notification);
 
     return (
@@ -190,7 +242,7 @@ function NotificationItem({notification}) {
                 py: 1.5,
                 px: 2.5,
                 mt: '1px',
-                ...(notification.isUnRead && {
+                ...(notification.seen !== true && {
                     bgcolor: 'action.selected',
                 }),
             }}
@@ -211,6 +263,7 @@ function NotificationItem({notification}) {
                         {fToNow(notification.createdAt)}
                     </Typography>
                 }
+                onClick={onReadNotifc}
             />
         </ListItemButton>
     );
@@ -221,9 +274,9 @@ function NotificationItem({notification}) {
 function renderContent(notification) {
     const title = (
         <Typography variant="subtitle2">
-            {notification.title}
+            {notification.entity}
             <Typography component="span" variant="body2" sx={{color: 'text.secondary'}}>
-                &nbsp; {notification.description}
+                &nbsp; {notification.notficmsg}
             </Typography>
         </Typography>
     );

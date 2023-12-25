@@ -117,11 +117,11 @@ const navConfig = [
         path: '/management',
         icon: icon('ic_user'),
     },
-    {
-        title: 'Profile',
-        path: '/profile',
-        icon: icon('ic_user'),
-    },
+    // {
+    //     title: 'Profile',
+    //     path: '/profile',
+    //     icon: icon('ic_user'),
+    // },
     // {
     //     title: 'Unscheduled Booking',
     //     path: '/unscheduledBooking',
