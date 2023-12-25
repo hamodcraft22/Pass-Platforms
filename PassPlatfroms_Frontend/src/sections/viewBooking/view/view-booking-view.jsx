@@ -229,6 +229,8 @@ export default function ViewBookingPage() {
 
                                     <TextField label="Booked Date" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={moment(bookingInfo.datebooked).format("hh:mm A | DD/MM/YYYY")}/>
 
+                                    <TextField label="Booking Date" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={bookingInfo.bookingDate}/>
+
                                     <TextField label="Scheduled Time" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={`${moment(bookingInfo.slot.starttime).format("hh:mm A")} - ${moment(bookingInfo.slot.endtime).format("hh:mm A")}`}/>
 
                                     {
@@ -370,7 +372,7 @@ export default function ViewBookingPage() {
                                 Uh oh!
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                                it seems like you have gotten here somehow with selecting a school! please select one from the schools list
+                                it seems like you have gotten here somehow with selecting a Booking! please select one from the bookings list
                             </Typography>
                         </CardContent>
                         <CardActions>

@@ -146,7 +146,7 @@ public class BookingNoteCont
 
                 if (retrivedBooking != null)
                 {
-                    if (Objects.equals(retrivedBooking.getSlot().getLeader().getUserid(), userID))
+                    if (retrivedBooking.getSlot() != null && Objects.equals(retrivedBooking.getSlot().getLeader().getUserid(), userID))
                     {
                         List<BookingNoteDao> bookingNotes = bookingNoteServ.getBookingNotes(bookingID);
                         return new ResponseEntity<>(new GenericDto<>(null, bookingNotes, null, null), HttpStatus.OK);
@@ -312,7 +312,7 @@ public class BookingNoteCont
 
                 if (retrivedBooking != null)
                 {
-                    if (Objects.equals(retrivedBooking.getSlot().getLeader().getUserid(), userID))
+                    if (retrivedBooking.getSlot() != null && Objects.equals(retrivedBooking.getSlot().getLeader().getUserid(), userID))
                     {
                         BookingNoteDao createdBookingNote = bookingNoteServ.createBookingNote(bookingID, bookingNote, userID);
 

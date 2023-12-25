@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingTypeConstant.BKNGTYP_GROUP;
-import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingTypeConstant.BKNGTYP_GROUP_UNSCHEDULED;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingTypeConstant.*;
 
 @Service
 public class BookingNoteServ
@@ -85,7 +84,8 @@ public class BookingNoteServ
         newNotification.setItemid(String.valueOf(addedBookingNote.getBooking().getBookingid()));
         newNotification.setNotficmsg("new note added to Booking");
         newNotification.setSeen(false);
-        if (Objects.equals(addedBookingNote.getUser().getUserid(), addedBookingNote.getBooking().getSlot().getLeader().getUserid()))
+
+        if ((addedBookingNote.getBooking().getSlot() != null && Objects.equals(addedBookingNote.getUser().getUserid(), addedBookingNote.getBooking().getSlot().getLeader().getUserid())) || (addedBookingNote.getBooking().getBookingType().getTypeid() == BKNGTYP_REVISION && Objects.equals(addedBookingNote.getUser().getUserid(), addedBookingNote.getBooking().getStudent().getUserid())))
         {
             // send to student
             newNotification.setUser(addedBookingNote.getBooking().getStudent());
@@ -95,8 +95,16 @@ public class BookingNoteServ
         else
         {
             // send to leader
-            newNotification.setUser(addedBookingNote.getBooking().getSlot().getLeader());
-            notificationRepo.save(newNotification);
+            if (addedBookingNote.getBooking().getBookingType().getTypeid() == BKNGTYP_REVISION)
+            {
+                newNotification.setUser(addedBookingNote.getBooking().getStudent());
+                notificationRepo.save(newNotification);
+            }
+            else
+            {
+                newNotification.setUser(addedBookingNote.getBooking().getSlot().getLeader());
+                notificationRepo.save(newNotification);
+            }
         }
 
         // if group send to all students as well

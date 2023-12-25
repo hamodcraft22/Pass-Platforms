@@ -35,7 +35,7 @@ public class RevisionCont
     private UserServ userServ;
 
     // get all revisions - per school
-    @GetMapping("/{schoolID}")
+    @GetMapping("/school/{schoolID}")
     public ResponseEntity<GenericDto<List<BookingDao>>> getSchoolRevisions(
             @RequestHeader(value = "Authorization") String requestKey,
             @PathVariable("schoolID") String schoolID)
