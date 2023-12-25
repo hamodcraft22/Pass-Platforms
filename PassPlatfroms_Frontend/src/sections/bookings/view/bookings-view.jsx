@@ -293,7 +293,7 @@ export default function RecommendationsPage() {
 
             </Stack>
 
-            {/* leader selection bar - only show if a leader - switch between my bookings & leader bookings / */}
+            {/* selection bar - only show if a leader - switch between my bookings & leader bookings / */}
 
             {
                 (userRole === 'leader' || userRole === 'student') &&

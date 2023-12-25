@@ -6,42 +6,42 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import Iconify from '../../components/iconify';
+import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
+import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
+import {DatePicker} from "@mui/x-date-pickers";
+import Button from "@mui/material/Button";
+import React from "react";
 
 // ----------------------------------------------------------------------
 
-export default function RevisionsTableToolbar({numSelected, filterName, onFilterName}) {
+export default function RevisionsTableToolbar({startDate, onDateStart, endDate, onDateEnd, onClearButton}) {
     return (
         <Toolbar
             sx={{
                 height: 96,
                 display: 'flex',
                 justifyContent: 'space-between',
-                p: (theme) => theme.spacing(0, 1, 0, 3),
-                ...(numSelected > 0 && {
-                    color: 'primary.main',
-                    bgcolor: 'primary.lighter',
-                }),
+                p: (theme) => theme.spacing(0, 1, 0, 3)
             }}
         >
-            {numSelected > 0 ? (
-                <Typography component="div" variant="subtitle1">
-                    {numSelected} selected
-                </Typography>
-            ) : (
-                <OutlinedInput
-                    value={filterName}
-                    onChange={onFilterName}
-                    placeholder="Search user..."
-                    startAdornment={
-                        <InputAdornment position="start">
-                            <Iconify
-                                icon="eva:search-fill"
-                                sx={{color: 'text.disabled', width: 20, height: 20}}
-                            />
-                        </InputAdornment>
-                    }
-                />
-            )}
+
+            <div>
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                    <DatePicker label="From Date" value={startDate} onChange={(newValue) => {
+                        onDateStart(newValue)
+                    }}/>
+                </LocalizationProvider>
+
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                    <DatePicker sx={{ml: 2}} label="To Date" minDate={startDate} value={endDate} onChange={(newValue) => {
+                        onDateEnd(newValue)
+                    }}/>
+                </LocalizationProvider>
+            </div>
+
+
+            <Button variant={"contained"} onClick={onClearButton} disabled={(startDate === null && endDate === null) || (startDate === undefined && endDate === undefined)}>Clear</Button>
+
 
         </Toolbar>
     );

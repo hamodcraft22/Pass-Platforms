@@ -110,6 +110,85 @@ public class RevisionCont
 
     }
 
+
+    // get student revisions
+    @GetMapping("/student/{studentID}")
+    public ResponseEntity<GenericDto<List<BookingDao>>> getStudentRevisions(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @PathVariable("studentID") String studentID)
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER || user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
+            {
+                List<BookingDao> bookings = bookingServ.getStudentRevisions(studentID);
+
+                if (bookings != null && !bookings.isEmpty())
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, bookings, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+    }
+
+
+    // get student revisions
+    @GetMapping("/leader/{leaderID}")
+    public ResponseEntity<GenericDto<List<BookingDao>>> getLeaderRevisions(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @PathVariable("leaderID") String leaderID)
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER || user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
+            {
+                List<BookingDao> bookings = bookingServ.getLeaderRevisions(leaderID);
+
+                if (bookings != null && !bookings.isEmpty())
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, bookings, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+    }
+
+
     // create a revision - only leaders -- tested | added
     @PostMapping("")
     public ResponseEntity<GenericDto<BookingDao>> createNewRevision(
@@ -170,7 +249,7 @@ public class RevisionCont
             //token is valid, get user and role
             UserDao user = userServ.getUser(userID);
 
-            if (user.getRole().getRoleid() == ROLE_STUDENT)
+            if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
             {
                 GenericDto<BookingMemberDao> newMember = bookingMemberServ.revisionSignUp(revisionID, userID);
 
@@ -216,7 +295,7 @@ public class RevisionCont
             //token is valid, get user and role
             UserDao user = userServ.getUser(userID);
 
-            if (user.getRole().getRoleid() == ROLE_STUDENT)
+            if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
             {
                 if (bookingMemberServ.removeStudentMember(revisionID, userID))
                 {
@@ -241,13 +320,10 @@ public class RevisionCont
     }
 
     // update a revision
-    @PutMapping("/{revisionID}")
+    @PutMapping("")
     public ResponseEntity<GenericDto<BookingDao>> updateRevision(
             @RequestHeader(value = "Authorization") String requestKey,
-            @PathVariable("revisionID") int revisionID,
-            @RequestAttribute(value = "statusID") char statusID,
-            @RequestAttribute(value = "startTime", required = false) Instant startTime,
-            @RequestAttribute(value = "endTime", required = false) Instant endTime)
+            @RequestBody BookingDao bookingDao)
     {
         String userID = isValidToken(requestKey);
 
@@ -258,7 +334,7 @@ public class RevisionCont
 
             if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
             {
-                if (bookingServ.updateBooking(revisionID, statusID, false, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
+                if (bookingServ.updateBooking(bookingDao.getBookingid(), bookingDao.getBookingStatus().getStatusid(), false, null, null) != null)
                 {
                     return new ResponseEntity<>(null, HttpStatus.OK);
                 }
@@ -270,9 +346,9 @@ public class RevisionCont
             else if (user.getRole().getRoleid() == ROLE_LEADER)
             {
                 // does the leader own this booking?
-                if (Objects.equals(bookingServ.getBookingDetails(revisionID).getStudent().getUserid(), userID))
+                if (Objects.equals(bookingServ.getBookingDetails(bookingDao.getBookingid()).getStudent().getUserid(), userID))
                 {
-                    if (bookingServ.updateBooking(revisionID, statusID, false, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
+                    if (bookingServ.updateBooking(bookingDao.getBookingid(), bookingDao.getBookingStatus().getStatusid(), false, null, null) != null)
                     {
                         return new ResponseEntity<>(null, HttpStatus.OK);
                     }
@@ -322,6 +398,33 @@ public class RevisionCont
                 else
                 {
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+            }
+            else if (user.getRole().getRoleid() == ROLE_LEADER)
+            {
+                BookingDao retrivedRevision = bookingServ.getBookingDetails(revisionID);
+
+                if (retrivedRevision != null)
+                {
+                    if (Objects.equals(retrivedRevision.getStudent().getUserid(), userID))
+                    {
+                        if (bookingServ.deleteBooking(revisionID))
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.OK);
+                        }
+                        else
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                        }
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    }
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
                 }
             }
             else

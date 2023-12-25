@@ -216,8 +216,11 @@ export default function BookingsTableRow({bookingID, subject, date, startTime, e
                     }
 
                     {/* should only show delete button for manager / admin */}
+                    {
+                        (userType === 'manager' || userType === 'admin') &&
+                        <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"} onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
+                    }
 
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"} onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
                 </TableCell>
             </TableRow>
 

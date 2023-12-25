@@ -30,6 +30,14 @@ public interface BookingRepo extends JpaRepository<Booking, Integer>
     List<Booking> findAllLeaderBookings(String leaderID);
 
     @Transactional
+    @Query(value = "select * from pp_booking WHERE typeid = 'R' and bookingid IN (select bookingid from pp_bookingmember where studentid = :studentID)", nativeQuery = true)
+    List<Booking> findAllStudentRevisions(String studentID);
+
+    @Transactional
+    @Query(value = "select * from pp_booking WHERE typeid = 'R' and studentid = :leaderID", nativeQuery = true)
+    List<Booking> findAllLeaderRevisions(String leaderID);
+
+    @Transactional
     @Query(value = "select count(*) from pp_booking where slotid = :slotID and statusid = 'A' and trunc(bookingdate) = trunc(:bookingdate)", nativeQuery = true)
     int activeUnderSlot(int slotID, Date bookingdate);
 

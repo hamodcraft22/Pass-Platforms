@@ -116,6 +116,32 @@ public class BookingServ
         return bookings;
     }
 
+    // get student revisions
+    public List<BookingDao> getStudentRevisions(String studentID)
+    {
+        List<BookingDao> bookings = new ArrayList<>();
+
+        for (Booking retrivedBooking : bookingRepo.findAllStudentRevisions(studentID))
+        {
+            bookings.add(new BookingDao(retrivedBooking));
+        }
+
+        return bookings;
+    }
+
+    // get leader revisions
+    public List<BookingDao> getLeaderRevisions(String leaderID)
+    {
+        List<BookingDao> bookings = new ArrayList<>();
+
+        for (Booking retrivedBooking : bookingRepo.findAllLeaderRevisions(leaderID))
+        {
+            bookings.add(new BookingDao(retrivedBooking));
+        }
+
+        return bookings;
+    }
+
     // get a single booking
     public BookingDao getBookingDetails(int bookingID)
     {
@@ -451,7 +477,7 @@ public class BookingServ
         {
             bookingToUpdate.get().setBookingStatus(bookingStatusRepo.getReferenceById(statusID));
 
-            if (statusID == BKNGSTAT_FINISHED)
+            if (statusID == BKNGSTAT_FINISHED && bookingToUpdate.get().getBookingType().getTypeid() != BKNGTYP_REVISION)
             {
                 bookingToUpdate.get().setStarttime(startTime);
                 bookingToUpdate.get().setEndtime(endTime);

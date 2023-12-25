@@ -1,4 +1,4 @@
-export function applyFilter({inputData, comparator, filterName}) {
+export function applyFilter({inputData, comparator, startDate, endDate}) {
     const stabilizedThis = inputData.map((el, index) => [el, index]);
 
     stabilizedThis.sort((a, b) => {
@@ -9,15 +9,16 @@ export function applyFilter({inputData, comparator, filterName}) {
 
     inputData = stabilizedThis.map((el) => el[0]);
 
-    if (filterName) {
-        inputData = inputData.filter(
-            (user) => user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-        );
+    if (startDate) {
+        inputData = inputData.filter((booking) => {
+            return (new Date(booking.bookingDate).getTime() >= new Date(startDate).getTime())
+        });
+    }
 
-        // to filter by diff items TODO
-        // inputData = inputData.filter(
-        //     (user) => user.userid.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-        // );
+    if (endDate) {
+        inputData = inputData.filter((booking) => {
+            return (new Date(booking.bookingDate).getTime() <= new Date(endDate).getTime())
+        });
     }
 
     return inputData;
