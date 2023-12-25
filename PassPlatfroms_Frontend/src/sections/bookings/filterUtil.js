@@ -11,13 +11,13 @@ export function applyFilter({inputData, comparator, startDate, endDate}) {
 
     if (startDate) {
         inputData = inputData.filter((booking) => {
-            return (new Date(booking.date).getTime() >= new Date(startDate).getTime())
+            return (new Date(booking.bookingDate).getTime() >= new Date(startDate).getTime())
         });
     }
 
     if (endDate) {
         inputData = inputData.filter((booking) => {
-            return (new Date(booking.date).getTime() <= new Date(endDate).getTime())
+            return (new Date(booking.bookingDate).getTime() <= new Date(endDate).getTime())
         });
     }
 

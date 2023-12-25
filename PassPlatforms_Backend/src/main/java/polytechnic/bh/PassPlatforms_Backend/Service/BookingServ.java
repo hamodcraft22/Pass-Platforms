@@ -77,6 +77,45 @@ public class BookingServ
         return bookings;
     }
 
+    // get student bookings
+    public List<BookingDao> getStudentBookings(String studentID)
+    {
+        List<BookingDao> bookings = new ArrayList<>();
+
+        for (Booking retrivedBooking : bookingRepo.findAllStudentBookings(studentID))
+        {
+            bookings.add(new BookingDao(retrivedBooking));
+        }
+
+        return bookings;
+    }
+
+    // get member bookings
+    public List<BookingDao> getMemberBookings(String studentID)
+    {
+        List<BookingDao> bookings = new ArrayList<>();
+
+        for (Booking retrivedBooking : bookingRepo.findAllMemberBookings(studentID))
+        {
+            bookings.add(new BookingDao(retrivedBooking));
+        }
+
+        return bookings;
+    }
+
+    // get leader bookings
+    public List<BookingDao> getLeaderBookings(String leaderID)
+    {
+        List<BookingDao> bookings = new ArrayList<>();
+
+        for (Booking retrivedBooking : bookingRepo.findAllLeaderBookings(leaderID))
+        {
+            bookings.add(new BookingDao(retrivedBooking));
+        }
+
+        return bookings;
+    }
+
     // get a single booking
     public BookingDao getBookingDetails(int bookingID)
     {

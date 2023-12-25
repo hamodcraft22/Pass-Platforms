@@ -107,7 +107,145 @@ public class BookingCont
         }
     }
 
-    // get booking details
+    // get all student bookings -- added | tested
+    @GetMapping("/student/{studentID}")
+    public ResponseEntity<GenericDto<List<BookingDao>>> getStudentBookings(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @PathVariable("studentID") String studentID)
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER || user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            {
+                // check if the id is same as request id
+                if (userID.equals(studentID) || user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+                {
+                    List<BookingDao> bookings = bookingServ.getStudentBookings(studentID);
+
+                    if (bookings != null && !bookings.isEmpty())
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, bookings, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    }
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
+
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    // get all member bookings -- tested | added
+    @GetMapping("/member/{studentID}")
+    public ResponseEntity<GenericDto<List<BookingDao>>> getMemberBookings(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @PathVariable("studentID") String studentID)
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER || user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            {
+                // check if the id is same as request id
+                if (userID.equals(studentID) || user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+                {
+                    List<BookingDao> bookings = bookingServ.getMemberBookings(studentID);
+
+                    if (bookings != null && !bookings.isEmpty())
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, bookings, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    }
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
+
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    // get all leader bookings -- added | tested
+    @GetMapping("/leader/{leaderID}")
+    public ResponseEntity<GenericDto<List<BookingDao>>> getLeaderBookings(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @PathVariable("leaderID") String leaderID)
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_LEADER || user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            {
+                // check if the id is same as request id
+                if (userID.equals(leaderID) || user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+                {
+                    List<BookingDao> bookings = bookingServ.getLeaderBookings(leaderID);
+
+                    if (bookings != null && !bookings.isEmpty())
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, bookings, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    }
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
+
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    // get booking details -- added | tested
     @GetMapping("/{bookingID}")
     public ResponseEntity<GenericDto<BookingDao>> getBookingDetails(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -397,14 +535,11 @@ public class BookingCont
 
     }
 
-    // update booking - only status / times for leader
-    @PutMapping("/{bookingID}")
+    // update booking - only status / times for leader -- added | tested
+    @PutMapping("")
     public ResponseEntity<GenericDto<BookingDao>> updateBooking(
             @RequestHeader(value = "Authorization") String requestKey,
-            @PathVariable("bookingID") int bookingID,
-            @RequestAttribute(value = "statusID") char statusID,
-            @RequestAttribute(value = "startTime", required = false) Instant startTime,
-            @RequestAttribute(value = "endTime", required = false) Instant endTime)
+            @RequestBody BookingDao bookingDao)
     {
         String userID = isValidToken(requestKey);
 
@@ -415,7 +550,7 @@ public class BookingCont
 
             if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
             {
-                if (bookingServ.updateBooking(bookingID, statusID, false, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
+                if (bookingServ.updateBooking(bookingDao.getBookingid(), bookingDao.getBookingStatus().getStatusid(), false, (bookingDao.getStarttime() == null ? null : Timestamp.from(bookingDao.getStarttime())), (bookingDao.getEndtime() == null ? null : Timestamp.from(bookingDao.getEndtime()))) != null)
                 {
                     return new ResponseEntity<>(null, HttpStatus.OK);
                 }
@@ -428,9 +563,21 @@ public class BookingCont
             {
                 // does the leader own this booking?
 
-                if (Objects.equals(bookingServ.getBookingDetails(bookingID).getSlot().getLeader().getUserid(), userID))
+                if (Objects.equals(bookingServ.getBookingDetails(bookingDao.getBookingid()).getSlot().getLeader().getUserid(), userID))
                 {
-                    if (bookingServ.updateBooking(bookingID, statusID, false, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
+                    if (bookingServ.updateBooking(bookingDao.getBookingid(), bookingDao.getBookingStatus().getStatusid(), false, (bookingDao.getStarttime() == null ? null : Timestamp.from(bookingDao.getStarttime())), (bookingDao.getEndtime() == null ? null : Timestamp.from(bookingDao.getEndtime()))) != null)
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
+                }
+                else if (Objects.equals(bookingServ.getBookingDetails(bookingDao.getBookingid()).getStudent().getUserid(), userID))
+                {
+                    // did the leader make this booking?
+                    if (bookingServ.updateBooking(bookingDao.getBookingid(), bookingDao.getBookingStatus().getStatusid(), true, null, null) != null)
                     {
                         return new ResponseEntity<>(null, HttpStatus.OK);
                     }
@@ -448,9 +595,9 @@ public class BookingCont
             {
                 // is the student the one who booked the session?
 
-                if (Objects.equals(bookingServ.getBookingDetails(bookingID).getStudent().getUserid(), userID))
+                if (Objects.equals(bookingServ.getBookingDetails(bookingDao.getBookingid()).getStudent().getUserid(), userID))
                 {
-                    if (bookingServ.updateBooking(bookingID, statusID, true, (startTime == null ? null : Timestamp.from(startTime)), (endTime == null ? null : Timestamp.from(endTime))) != null)
+                    if (bookingServ.updateBooking(bookingDao.getBookingid(), bookingDao.getBookingStatus().getStatusid(), true, null, null) != null)
                     {
                         return new ResponseEntity<>(null, HttpStatus.OK);
                     }
@@ -477,7 +624,7 @@ public class BookingCont
     }
 
 
-    // actually delete booking - managers only
+    // actually delete booking - managers only -- added |
     @DeleteMapping("/{bookingID}")
     public ResponseEntity<GenericDto<BookingDao>> deleteBooking(
             @RequestHeader(value = "Authorization") String requestKey,

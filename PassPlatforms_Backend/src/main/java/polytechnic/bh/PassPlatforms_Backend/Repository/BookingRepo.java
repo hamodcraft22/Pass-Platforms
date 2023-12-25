@@ -18,6 +18,18 @@ public interface BookingRepo extends JpaRepository<Booking, Integer>
 //    boolean existsBySlot_SlotidAndBookingdateAndBookingStatus_Statusid(int slotID, Date date, char statusID);
 
     @Transactional
+    @Query(value = "select * from pp_booking where STUDENTID = :studentID and TYPEID not in ('R')", nativeQuery = true)
+    List<Booking> findAllStudentBookings(String studentID);
+
+    @Transactional
+    @Query(value = "select * from pp_booking WHERE typeid IN ('G', 'Z') AND bookingid in (select bookingid from pp_bookingmember WHERE studentid = :studentID)", nativeQuery = true)
+    List<Booking> findAllMemberBookings(String studentID);
+
+    @Transactional
+    @Query(value = "select * from pp_booking WHERE typeid IN ('N', 'U', 'G', 'Z') and slotid IN (select slotid from pp_slot WHERE leaderid = :leaderID)", nativeQuery = true)
+    List<Booking> findAllLeaderBookings(String leaderID);
+
+    @Transactional
     @Query(value = "select count(*) from pp_booking where slotid = :slotID and statusid = 'A' and trunc(bookingdate) = trunc(:bookingdate)", nativeQuery = true)
     int activeUnderSlot(int slotID, Date bookingdate);
 

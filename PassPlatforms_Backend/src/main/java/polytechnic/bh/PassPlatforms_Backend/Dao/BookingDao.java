@@ -18,7 +18,6 @@ import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdN
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookingDao
 {
     private int bookingid;

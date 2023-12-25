@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -21,11 +21,193 @@ import {applyFilter} from '../filterUtil';
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
 import ExportToExcel from "../../../utils/exportExcel";
+import UserProfile from "../../../components/auth/UserInfo";
+import {useNavigate} from "react-router-dom";
+import {Alert, Backdrop, CircularProgress, Snackbar} from "@mui/material";
 
 
 // ----------------------------------------------------------------------
 
 export default function RecommendationsPage() {
+
+    const queryParameters = new URLSearchParams(window.location.search)
+    const studentIDParm = queryParameters.get("studentID");
+    const leaderIDParm = queryParameters.get("leaderID");
+
+    const [loadingShow, setLoadingShow] = useState(false);
+
+    // alerts elements
+    const [errorShow, setErrorShow] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleAlertClose = (event, reason) => {
+        setErrorShow(false);
+    };
+
+
+    // fake bookings
+    const [bookings, setBookings] = useState([]);
+
+
+    const [userID, setUserID] = useState("");
+    const [userRole, setUserRole] = useState("");
+
+
+    // types
+    // myBookings -- bookings made by a leader
+    // memberBookings -- bookings the leader is a member off
+    // leaderBookings -- bookings where the leader has been booked
+
+    const [typeSelection, setTypeSelection] = useState("myBookings");
+
+
+    function parseBookings(bookingsDto)
+    {
+        let parssedBookings = [];
+
+        bookingsDto.forEach((booking) => {
+            parssedBookings.push({"bookingid":booking.bookingid, "bookingDate": booking.bookingDate, "slotstarttime":booking.slot.starttime, "slotendtime": booking.slot.endtime, "realstarttime":booking.starttime,  "realendtime":booking.endtime, "status":booking.bookingStatus.statusname, "bookingType":booking.bookingType.typename, "subject":booking.course.courseid + " " + booking.course.coursename, "online":booking.isonline});
+        });
+
+        setBookings(parssedBookings);
+    }
+
+
+    // get bookings api
+    async function getBookings(userID, bookingType)
+    {
+        let isok = false;
+        setLoadingShow(true);
+        setBookings([]);
+        try
+        {
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
+
+            let urlPath = "";
+
+            if (bookingType === "myBookings")
+            {
+                urlPath = `http://localhost:8080/api/booking/student/${userID}`
+            }
+            else if (bookingType === "memberBookings")
+            {
+                urlPath = `http://localhost:8080/api/booking/member/${userID}`
+            }
+            else if (bookingType === "leaderBookings")
+            {
+                urlPath = `http://localhost:8080/api/booking/leader/${userID}`
+            }
+
+            await fetch(urlPath, requestOptions)
+                .then((response) => {
+                    if (response.status === 200)
+                    {
+                        isok = true;
+                        return response.json();
+                    }
+                    else if (response.status === 204)
+                    {
+                        setErrorMsg("no bookings found")
+                        setErrorShow(true);
+                    }
+                    else if (response.status === 401)
+                    {
+                        setErrorMsg("you are unauthorized to access the selected information");
+                        setErrorShow(true);
+                    }
+                    else
+                    {
+                        console.log(response);
+                        setErrorMsg("Unknown error, please check logs");
+                        setErrorShow(true);
+                    }
+                })
+                .then((data) => {
+                    if (isok)
+                    {
+                        parseBookings(data.transObject);
+                    }
+                })
+        }
+        catch (error)
+        {
+            setErrorMsg("Unknown error, please check console");
+            setErrorShow(true);
+            console.log(error);
+        }
+        finally
+        {
+            setLoadingShow(false);
+        }
+    }
+
+    // user info - get bookings if leader
+    async function getUserInfo()
+    {
+        // if leader, get his booking
+        // if student, get his booking,
+
+        // if admin/manager, get param and get his booking
+
+        let userID = await UserProfile.getUserID();
+        let userRole = await UserProfile.getUserRole();
+
+        await setUserID(userID);
+        await setUserRole(userRole);
+
+        // if admin / manager and there is student paramteter
+        if (userRole === "manager" || userRole === "admin")
+        {
+            //call admin function
+            if (studentIDParm !== null)
+            {
+                // get bookings made by student (could be leader as well)
+                getBookings(studentIDParm, "myBookings");
+            }
+            else if (leaderIDParm !== null)
+            {
+                // get booking the leader has
+                getBookings(leaderIDParm, "leaderBookings");
+            }
+            else
+            {
+                setErrorMsg("No student id supplied!");
+                setErrorShow(true);
+            }
+        }
+        else if (userRole === "student")
+        {
+            // get student bookings
+            getBookings(userID, typeSelection);
+        }
+        else if (userRole === "leader")
+        {
+            // get leader bookings
+            getBookings(userID, typeSelection);
+        }
+        else
+        {
+            setErrorMsg("you are not allowed to access application");
+            setErrorShow(true);
+        }
+
+    }
+
+    function changeType(bookingType)
+    {
+        setTypeSelection(bookingType);
+
+        // call api
+        getBookings(userID, bookingType);
+    }
+
+    useEffect(() => {getUserInfo()}, []);
+
+
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState('desc');
@@ -33,97 +215,6 @@ export default function RecommendationsPage() {
     const [orderBy, setOrderBy] = useState('date');
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
-
-
-    // fake bookings
-    const bookings = [
-        {
-            subject: 'IT6008, Unix Computers',
-            date: '2016-08-21T00:00:00.000Z',
-            starttime: '08:30 AM',
-            endtime: '09:30 AM',
-            status: 'active',
-            online: true
-        },
-        {
-            subject: 'IT6012, Data Structures',
-            date: '2016-08-22T00:00:00.000Z',
-            starttime: '10:00 AM',
-            endtime: '11:00 AM',
-            status: 'canceled',
-            online: false
-        },
-        {
-            subject: 'IT6018, Web Development',
-            date: '2016-08-23T00:00:00.000Z',
-            starttime: '02:00 PM',
-            endtime: '03:00 PM',
-            status: 'finished',
-            online: true
-        },
-        {
-            subject: 'IT6025, Database Management',
-            date: '2016-08-24T00:00:00.000Z',
-            starttime: '09:30 AM',
-            endtime: '10:30 AM',
-            status: 'active',
-            online: false
-        },
-        {
-            subject: 'IT6031, Software Engineering',
-            date: '2016-08-25T00:00:00.000Z',
-            starttime: '11:30 AM',
-            endtime: '12:30 PM',
-            status: 'finished',
-            online: true
-        },
-        {
-            subject: 'IT6038, Artificial Intelligence',
-            date: '2016-08-26T00:00:00.000Z',
-            starttime: '03:30 PM',
-            endtime: '04:30 PM',
-            status: 'active',
-            online: true
-        },
-        {
-            subject: 'IT6045, Networking Fundamentals',
-            date: '2016-08-27T00:00:00.000Z',
-            starttime: '01:00 PM',
-            endtime: '02:00 PM',
-            status: 'canceled',
-            online: false
-        },
-        {
-            subject: 'IT6052, Mobile App Development',
-            date: '2016-08-28T00:00:00.000Z',
-            starttime: '10:30 AM',
-            endtime: '11:30 AM',
-            status: 'finished',
-            online: true
-        },
-        {
-            subject: 'IT6062, Data Analytics',
-            date: '2016-08-29T00:00:00.000Z',
-            starttime: '11:00 AM',
-            endtime: '12:00 PM',
-            status: 'active',
-            online: false
-        },
-        {
-            subject: 'IT6071, Cybersecurity',
-            date: '2016-08-30T00:00:00.000Z',
-            starttime: '09:00 AM',
-            endtime: '10:00 AM',
-            status: 'finished',
-            online: true
-        },
-        // Add more booking objects as needed
-    ];
-
-
-    const [startDate, setStartDate] = useState();
-    const [endDate, setEndDate] = useState();
-
 
     const handleStartDate = (dateValue) => {
         setPage(0);
@@ -134,7 +225,6 @@ export default function RecommendationsPage() {
         setPage(0);
         setEndDate(dateValue);
     };
-
 
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
@@ -153,7 +243,6 @@ export default function RecommendationsPage() {
         setRowsPerPage(parseInt(event.target.value, 10));
     };
 
-
     const dataFiltered = applyFilter({
         inputData: bookings,
         comparator: getComparator(order, orderBy),
@@ -161,17 +250,43 @@ export default function RecommendationsPage() {
         endDate
     });
 
+    // go to courses
+    let navigate = useNavigate();
+    const goToNewBooking = () => {
+        let path = `/newBooking`;
+        navigate(path);
+    }
 
     return (
         <Container>
+            {/* loading */}
+            <Backdrop
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={loadingShow}
+            >
+                <CircularProgress color="inherit"/>
+            </Backdrop>
+
+            {/* alerts */}
+            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                    {errorMsg}
+                </Alert>
+            </Snackbar>
+
+
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4"> Student Name - Bookings</Typography>
 
                 {/* only show if a student */}
                 <div>
-                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}>
-                        New Booking
-                    </Button>
+                    {
+                        (userRole === 'leader' || userRole === 'student') &&
+                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} onClick={() => {goToNewBooking()}}>
+                            New Booking
+                        </Button>
+                    }
 
                     <ExportToExcel data={dataFiltered} filename="Studnet Bookings - DATE TO DATE"/>
                 </div>
@@ -179,17 +294,19 @@ export default function RecommendationsPage() {
             </Stack>
 
             {/* leader selection bar - only show if a leader - switch between my bookings & leader bookings / */}
-            <Card sx={{mb: 2, p: 2, display: 'flex', justifyContent: 'space-around'}}>
-                <Button variant="contained" color="inherit">My Bookings</Button>
-                <Button variant="contained">Member Bookings</Button>
-                <Button variant="contained">Student Bookings</Button>
-            </Card>
 
-            {/* student selection bar - only show if a student - switch between my bookings & member bookings / */}
-            <Card sx={{mb: 2, p: 2, display: 'flex', justifyContent: 'space-around'}}>
-                <Button variant="contained" color="inherit">My Bookings</Button>
-                <Button variant="contained">Member Bookings</Button>
-            </Card>
+            {
+                (userRole === 'leader' || userRole === 'student') &&
+                <Card sx={{mb: 2, p: 2, display: 'flex', justifyContent: 'space-around'}}>
+                    <Button variant="contained" disabled={typeSelection === 'myBookings'} onClick={() => {changeType("myBookings")}}>My Bookings</Button>
+                    <Button variant="contained" disabled={typeSelection === 'memberBookings'} onClick={() => {changeType("memberBookings")}}>Member Bookings</Button>
+                    {
+                        userRole === 'leader' &&
+                        <Button variant="contained" disabled={typeSelection === 'leaderBookings'} onClick={() => {changeType("leaderBookings")}}>Offered Bookings</Button>
+                    }
+                </Card>
+            }
+
 
             <Card>
                 <BookingsTableToolbar
@@ -212,14 +329,14 @@ export default function RecommendationsPage() {
                                 rowCount={bookings.length}
                                 onRequestSort={handleSort}
                                 headLabel={[
-                                    {id: '', label: ''},
+                                    {id: 'zift1', label: ''},
                                     {id: 'subject', label: 'Subject'},
-                                    {id: 'date', label: 'Date'},
+                                    {id: 'bookingDate', label: 'Date'},
                                     {id: 'startTime', label: 'Start Time'},
                                     {id: 'endTime', label: 'End Time'},
                                     {id: 'status', label: 'Status'},
-                                    {id: 'online', label: ''},
-                                    {id: '', label: ''}
+                                    {id: 'bookingtype', label: ''},
+                                    {id: 'zift2', label: ''}
                                 ]}
                             />
                             <TableBody>
@@ -227,12 +344,18 @@ export default function RecommendationsPage() {
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => (
                                         <BookingsTableRow
-                                            key={row.bookingID}
+                                            bookingID={row.bookingid}
                                             subject={row.subject}
-                                            date={row.date}
-                                            startTime={row.starttime}
-                                            endTime={row.endtime}
+                                            date={row.bookingDate}
+                                            startTime={row.realstarttime}
+                                            endTime={row.realendtime}
+                                            slotStartTime={row.slotstarttime}
+                                            slotEndTime={row.slotendtime}
                                             status={row.status}
+                                            bookingType={row.bookingType}
+                                            online={row.online}
+                                            viewType={typeSelection}
+                                            userType={userRole}
                                         />
                                     ))}
 

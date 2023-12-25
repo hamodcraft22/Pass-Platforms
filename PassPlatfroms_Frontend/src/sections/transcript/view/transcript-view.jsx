@@ -98,6 +98,11 @@ export default function TranscriptPage() {
                         isok = true;
                         return response.json();
                     }
+                    else if (response.status === 204)
+                    {
+                        setErrorMsg("no transcripts found");
+                        setErrorShow(true);
+                    }
                     else if (response.status === 401)
                     {
                         setErrorMsg("you are not allowed to do this action");
@@ -110,6 +115,7 @@ export default function TranscriptPage() {
                     }
                     else
                     {
+                        console.log(response);
                         setErrorMsg("an unknown error occurred, please check console");
                         setErrorShow(true);
                     }
