@@ -2,13 +2,13 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
-import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
-import polytechnic.bh.PassPlatforms_Backend.Dao.MetadataDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.*;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
+import polytechnic.bh.PassPlatforms_Backend.Dto.RevisionSlotsDto;
 import polytechnic.bh.PassPlatforms_Backend.Entity.*;
 import polytechnic.bh.PassPlatforms_Backend.Repository.*;
 
+import java.awt.print.Book;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.Instant;
@@ -16,11 +16,13 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingStatusConstant.BKNGSTAT_ACTIVE;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingStatusConstant.BKNGSTAT_FINISHED;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingTypeConstant.*;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.SlotTypeConstant.*;
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
 
 @Service
 public class BookingServ
@@ -114,6 +116,51 @@ public class BookingServ
         }
 
         return bookings;
+    }
+
+    // get open revisions
+    public List<RevisionSlotsDto> getCourseRevs(String courseID, Date weekStartDate)
+    {
+        // get all revisions for a course (within the week range);
+        Date weekEndDate = Date.from(weekStartDate.toInstant().plusSeconds(518400));
+
+        // revisions for course within range
+        List<Booking> revisions = bookingRepo.findAllCourseRevisions(courseID, weekStartDate, weekEndDate);
+
+        // revisions mapped by user
+        Map<User, List<Booking>> mappedRevisions = revisions.stream().collect(Collectors.groupingBy(Booking::getStudent));
+
+        // final list of bookings to be returned
+        List<RevisionSlotsDto> revisionsAvlb = new ArrayList<>();
+
+        for (User user : mappedRevisions.keySet())
+        {
+            // revisions which are still open (have space)
+            List<BookingDao> bookingsDao = new ArrayList<>();
+
+            for (Booking userRevision : mappedRevisions.get(user))
+            {
+                if (userRevision.getBookingMembers().size() < userRevision.getBookinglimit())
+                {
+                    bookingsDao.add(new BookingDao(userRevision));
+                }
+            }
+
+            // if the user does have any revisions
+            if (!bookingsDao.isEmpty())
+            {
+                RevisionSlotsDto newRevision = new RevisionSlotsDto();
+
+                newRevision.setLeaderID(user.getUserid());
+                newRevision.setLeaderName(getAzureAdName(user.getUserid()));
+                newRevision.setRevisions(bookingsDao);
+
+                revisionsAvlb.add(newRevision);
+            }
+        }
+
+        // return
+        return revisionsAvlb;
     }
 
     // get student revisions

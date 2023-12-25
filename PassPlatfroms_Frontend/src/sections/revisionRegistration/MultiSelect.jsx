@@ -10,8 +10,14 @@ export default function MultiSelect({
                                         selectAllLabel,
                                         leaders
                                     }) {
-    const [selectedOptions, setSelectedOptions] = useState(items);
+    const [selectedOptions, setSelectedOptions] = useState([]);
     const allSelected = items.length === selectedOptions.length;
+
+    useEffect(() => {
+        if (items !== null && Object.keys(items).length !== 0) {
+            setSelectedOptions(items)
+        }
+    }, [items]);
 
     const handleToggleOption = (selectedOps) => setSelectedOptions(selectedOps);
     const handleClearOptions = () => setSelectedOptions([]);
@@ -30,7 +36,7 @@ export default function MultiSelect({
 
     const handleChange = (event, selectedOps, reason) => {
         if (reason === "selectOption" || reason === "removeOption") {
-            if (selectedOps.find((option) => option.name === "All")) {
+            if (selectedOps.find((option) => option.leaderName === "All")) {
                 handleToggleSelectAll();
             } else {
                 handleToggleOption && handleToggleOption(selectedOps);
@@ -59,20 +65,20 @@ export default function MultiSelect({
             options={items}
             value={selectedOptions}
             onChange={handleChange}
-            getOptionLabel={(option) => option.name}
+            getOptionLabel={(option) => option.leaderName}
             filterOptions={(options, params) => {
                 const filtered = filter(options, params);
-                return [{id: 0, name: selectAllLabel}, ...filtered];
+                return [{leaderID: 0, leaderName: selectAllLabel}, ...filtered];
             }}
             renderOption={(props, option, {selected}) => {
                 // To control the state of 'select-all' checkbox
                 const selectAllProps =
-                    option.name === "All" ? {checked: allSelected} : {};
+                    option.leaderName === "All" ? {checked: allSelected} : {};
                 return (
                     <li {...props}>
                         <Checkbox checked={selected} {...selectAllProps} />
                         <SquareRoundedIcon fontSize="small" style={{marginRight: 8, color: `${option.color}`}}/>
-                        {option.name}
+                        {option.leaderName}
                     </li>
                 );
             }}
@@ -83,7 +89,7 @@ export default function MultiSelect({
                 <Chip
                     key={index}
                     variant="outlined"
-                    label={option.name}
+                    label={option.leaderName}
                     sx={{background: `${option.color}`, marginRight: "3px"}}
                     onDelete={() => {
                         setSelectedOptions([

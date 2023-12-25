@@ -24,5 +24,6 @@ public interface BookingMemberRepo extends JpaRepository<BookingMember, Integer>
     int sameTimeMemberSessionsFind(String studentID, Date bookingDate, Timestamp startTime, Timestamp endTime);
 
     // delete by student user id and booking id
+    @Transactional
     void deleteByStudent_UseridAndBooking_Bookingid(String studentID, int bookingID);
 }

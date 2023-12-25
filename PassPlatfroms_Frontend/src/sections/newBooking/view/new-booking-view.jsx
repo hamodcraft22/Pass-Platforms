@@ -111,7 +111,7 @@ export default function NewBookingPage() {
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch(`http://localhost:8080/api/slot/course/IT6008?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
+            await fetch(`http://localhost:8080/api/slot/course/${selectedCourse.courseid}?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
                 .then(response => {
                     return response.json()
                 })
@@ -208,9 +208,11 @@ export default function NewBookingPage() {
                 }
             })
 
-
-            // add parsed leaders
-            parsedLeaders.push({"leaderID": leaderID, "leaderName": leaderName, "slots": leaderSlos, "color": leaderColor});
+            if (leaderSlos.length !== 0)
+            {
+                // add parsed leaders
+                parsedLeaders.push({"leaderID": leaderID, "leaderName": leaderName, "slots": leaderSlos, "color": leaderColor});
+            }
         });
 
         setLeaders(parsedLeaders);
@@ -296,7 +298,15 @@ export default function NewBookingPage() {
 
             await fetch(`http://localhost:8080/api/users/students`, requestOptions)
                 .then(response => {
-                    return response.json()
+                    if (response.status === 200)
+                    {
+                        return response.json()
+                    }
+                    else
+                    {
+                        setErrorMsg("No Slots found, try another week");
+                        setErrorShow(true);
+                    }
                 })
                 .then((data) => {
                     setAllUsers(data)

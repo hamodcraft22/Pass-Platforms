@@ -11,7 +11,7 @@ import MultiSelect from "../MultiSelect";
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {Alert, Autocomplete, CircularProgress, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField} from "@mui/material";
+import {Alert, Autocomplete, Backdrop, CircularProgress, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField} from "@mui/material";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -24,14 +24,20 @@ import InputAdornment from "@mui/material/InputAdornment";
 import {AccountCircle} from "@mui/icons-material";
 import List from "@mui/material/List";
 import ListItemText from "@mui/material/ListItemText";
+import UserProfile from "../../../components/auth/UserInfo";
+import bookingSlot from "../../newBooking/bookingSlot";
+import {useNavigate} from "react-router-dom";
 
 
 // ----------------------------------------------------------------------
 
 export default function NewRegistrationPage() {
 
+    const [loadingShow, setLoadingShow] = useState(false);
+
     const [shownSection, setShownSection] = useState(1);
     const [progPercent, setProgPercent] = useState(0);
+    const [progColor, setProgColor] = useState("primary");
     useEffect(() => {
         (setProgPercent(((shownSection - 1) / 3) * 100))
     }, [shownSection]);
@@ -46,60 +52,200 @@ export default function NewRegistrationPage() {
         setErrorShow(false);
     };
 
-    // school and courses elements
-    const mockSchools = [{"schoolID": "zift1", "schoolName": "ziftSchool1"}, {
-        "schoolID": "zift2",
-        "schoolName": "ziftSchool2"
-    }];
-    const mockCourses = [{"courseID": "zift1", "courseName": "ziftcourse1"}, {
-        "courseID": "zift2",
-        "courseName": "asdsd"
-    }];
 
-    const [schools, setSchools] = useState(mockSchools);
-    const [selectedSchool, setSelectedSchool] = useState();
-    const [courses, setCourses] = useState(mockCourses);
+    const [schools, setSchools] = useState([]);
+    const [selectedSchool, setSelectedSchool] = useState(null);
+    const [courses, setCourses] = useState([]);
     const [selectedCourse, setSelectedCourse] = useState();
 
-    // time slots elements
-    const [courseLeaders, setCourseLeaders] = useState([]);
-    const [leaderSlots, setLeadersSlot] = useState([]);
-    const selectedIntervals = [
-        {
-            uid: 1,
-            day: 'mockDay',
-            leader: 'Mock Leader',
-            start: moment({h: 10, m: 0}),
-            end: moment({h: 11, m: 0}),
-            color: "#94E387FF"
-        },
-        {
-            uid: 2,
-            day: 'mockDay',
-            leader: 'Mock Leader',
-            start: moment({h: 12, m: 0}).add(2, 'd'),
-            end: moment({h: 13, m: 0}).add(2, 'd'),
-            online: true,
-            color: "#E494EEFF"
-        },
-        {
-            uid: 3,
-            day: 'mockDay',
-            leader: 'Mock Leader',
-            start: moment({h: 10, m: 0}).add(-1, 'd').add(-1, 'h'),
-            end: moment({h: 11, m: 0}).add(-1, 'd').add(-1, 'h'),
-            online: true,
-            color: "#94E387FF"
+
+    // get schools and courses
+    async function getRevSchools() {
+        try {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
+
+            await fetch(`http://localhost:8080/api/school/revisions`, requestOptions)
+                .then(response => {
+                    return response.json()
+                })
+                .then((data) => {
+                    setSchools(data.transObject)
+                })
+                .then(() => {
+                    setLoadingShow(false)
+                });
+        } catch (error) {
+            console.log(error);
+            setLoadingShow(false);
         }
+    }
 
-    ]
+    function handleSelectedSchool(school) {
+        setLoadingShow(true);
+        setSelectedSchool(school);
+        setCourses(school.courses);
+        setLoadingShow(false);
+    }
 
-    const leaders = [
-        {id: 202002789, name: "Mohamed Hasan", color: "#94E387FF"},
-        {id: 202001478, name: "Sara Alshamari", color: "#E494EEFF"},
-    ];
 
-    let selectedLeaders = [];
+    useEffect(() => {
+        getRevSchools()
+    }, [])
+
+
+    // time slots elements
+
+    const [bookingStartDate, setBookingStartDate] = useState(moment().weekday(0));
+
+    const [recivedBookingsDto, setRecivedBookingDto] = useState([]);
+
+    // slots to be shown
+    const [selectedIntervals, setSelectedIntervals] = useState([]);
+
+    const [leaders, setLeaders] = useState([]);
+
+    // selcted leaders + their slots
+    const [selectedLeaders, setSelectedLeaders] = useState([]);
+
+    async function getAvlbRevisions()
+    {
+        try
+        {
+            setLoadingShow(true);
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
+
+            await fetch(`http://localhost:8080/api/revision/course/${selectedCourse.courseid}?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
+                .then(response =>
+                {
+                    if (response.status === 200)
+                    {
+                        return response.json()
+                    }
+                    else
+                    {
+                        setErrorMsg("No Slots found, try another week");
+                        setErrorShow(true);
+                    }
+                })
+                .then((data) =>
+                {
+                    setRecivedBookingDto(data.transObject)
+                })
+                .then(() =>
+                {
+                    setLoadingShow(false);
+                })
+
+        } catch (error) {
+            console.log(error);
+            setLoadingShow(false);
+        }
+    }
+
+    function parseRevisions()
+    {
+        setLoadingShow(true);
+        const pastelColors = [
+            '#ff9496',
+            '#f494ff',
+            '#9496ff',
+            '#94d6ff',
+            '#94ffcf',
+            '#94ff96',
+            '#f8ff94',
+            '#ffb994',
+            '#793131',
+            '#794731',
+            '#797531',
+            '#317932',
+            '#317960',
+            '#315b79',
+            '#333179',
+            '#793173',
+            '#180a0a',
+            '#0a180b',
+            '#0d2820',
+            '#3f0a27',
+        ];
+
+        let parsedLeaders = [];
+
+        recivedBookingsDto.forEach((leader, index) => {
+            const leaderColor = pastelColors[index];
+
+            const leaderID = leader.leaderID;
+            const leaderName = leader.leaderName;
+
+            let leaderSlots = [];
+
+            leader.revisions.forEach((revision) => {
+                const bookingid = revision.bookingid;
+                const online = revision.isonline;
+
+                const startTime = moment(`${revision.bookingDate} ${moment(revision.starttime).format('HH:mm')}`);
+                const endTime = moment(`${revision.bookingDate} ${moment(revision.endtime).format('HH:mm')}`);
+
+                if (startTime > moment())
+                {
+                    leaderSlots.push({"uid":bookingid, "start":startTime, "end":endTime, "online":online, "color":leaderColor, "leaderName":leaderName});
+                }
+            });
+
+            if (leaderSlots.length !== 0)
+            {
+                parsedLeaders.push({"leaderID": leaderID, "leaderName": leaderName, "revisions": leaderSlots, "color": leaderColor});
+            }
+        });
+
+        setLeaders(parsedLeaders);
+        setLoadingShow(false);
+    }
+
+    function handleSlots() {
+        setLoadingShow(true);
+        let allSlots = [];
+
+        selectedLeaders.forEach((leader) => {
+            leader.revisions.forEach((slot) => {
+                allSlots.push(slot);
+            })
+        })
+
+        setSelectedIntervals(allSlots);
+        setLoadingShow(false);
+    }
+
+    useEffect(() => {
+        if (shownSection === 2) {
+            getAvlbRevisions()
+        }
+    }, [shownSection]);
+
+    // get upoan date change
+    useEffect(() => {
+        if (shownSection === 2) {
+            getAvlbRevisions()
+        }
+    }, [bookingStartDate]);
+
+
+    useEffect(() => {
+        if (Object.keys(recivedBookingsDto).length !== 0) {
+            parseRevisions()
+        }
+    }, [recivedBookingsDto])
+
+    useEffect(() => {
+        if (selectedLeaders.length !== 0) {
+            handleSlots()
+        }
+    }, [selectedLeaders]);
 
 
     // slot confirmation elemnts
@@ -129,11 +275,75 @@ export default function NewRegistrationPage() {
         }
     }, [selctedSlot]);
 
+    const [showComplete, setShowComplete] = useState(false);
 
-    // group & information setup elements
-    const [groupMembers, setGroupMembers] = useState([]);
+    async function submitBooking() {
+        let isok = false;
+        let isBad = false;
 
-    const [helpInText, setHelpInText] = useState("");
+        try {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}};
+
+            await fetch(`http://localhost:8080/api/revision/${selctedSlot.uid}/member`, requestOptions)
+                .then(response => {
+                    if (response.status === 201 || response.status === 200) {
+                        isok = true;
+                        setProgPercent(100);
+                        return response.json();
+                    } else if (response.status === 400) {
+                        isBad = true;
+                        return response.json();
+                    } else if (response.status === 401) {
+                        setErrorMsg("you are not allowed to do this action");
+                        setErrorShow(true);
+                    } else if (response.status === 404) {
+                        setErrorMsg("the request was not found on the server, double check your connection");
+                        setErrorShow(true);
+                    } else {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+                .then((data) => {
+                    setLoadingShow(false);
+                    if (isok) {
+                        // it is fine, go on
+                        setShowComplete(true);
+                    }
+                    else if (isBad)
+                    {
+                        // errors for booking
+                        let errorString = "";
+                        data.error.forEach((errorItem) =>
+                        {
+                            if (errorString === "")
+                            {
+                                errorString = errorItem
+                            }
+                            else
+                            {
+                                errorString = errorItem + "\n" + errorString
+                            }
+                        });
+                        setErrorMsg(errorString);
+                        setErrorShow(true);
+                        console.log(data);
+                    } else {
+                        console.log(data);
+                    }
+                })
+
+        } catch (error) {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
+        }
+    }
 
 
     function nextSection() {
@@ -156,9 +366,7 @@ export default function NewRegistrationPage() {
         }
 
         if (shownSection === 3) {
-            alert("call api and show results based on api return");
-            setProgPercent(100);
-            // change color of progress to red if it is error etc
+            submitBooking();
         }
 
     }
@@ -167,15 +375,28 @@ export default function NewRegistrationPage() {
         setShownSection((shownSection) - 1);
     }
 
+    let navigate = useNavigate();
+    const goToRevision = () => {
+        if (showComplete !== false) {
+            let path = `/viewRevision?revisionID=${selctedSlot.uid}`;
+            navigate(path);
+        }
+    }
 
     const CustomPaper = (props) => {
         return <Paper elevation={8} {...props} />;
     };
 
     return (
-
-
         <Container>
+
+            {/* loading */}
+            <Backdrop
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={loadingShow}
+            >
+                <CircularProgress color="inherit"/>
+            </Backdrop>
 
             {/* alerts */}
             <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
@@ -184,6 +405,25 @@ export default function NewRegistrationPage() {
                     {errorMsg}
                 </Alert>
             </Snackbar>
+
+            {/* complete dialog */}
+            <Dialog
+                open={showComplete}
+            >
+                <DialogTitle>
+                    {"Success!!"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        you are registerd!!, please click below to view it.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    {
+                        <Button onClick={goToRevision} autoFocus> Go to Revision. </Button>
+                    }
+                </DialogActions>
+            </Dialog>
 
             {/* top bar */}
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -208,7 +448,7 @@ export default function NewRegistrationPage() {
             </Stack>
 
             <Box sx={{width: '100%', mb: 2}}>
-                <LinearProgress variant="determinate" value={progPercent} style={{borderRadius: 5, height: 10}}/>
+                <LinearProgress variant="determinate" value={progPercent} style={{borderRadius: 5, height: 10}} color={progColor}/>
             </Box>
 
             {/* elements */}
@@ -222,15 +462,15 @@ export default function NewRegistrationPage() {
                             options={schools}
                             value={selectedSchool}
                             onChange={(event, newValue) => {
-                                setSelectedSchool(newValue)
+                                handleSelectedSchool(newValue)
                             }}
                             sx={{width: '100%', mt: 1}}
                             renderInput={(params) => <TextField {...params} label="School"/>}
-                            getOptionLabel={(option) => option.schoolName}
+                            getOptionLabel={(option) => option.schoolname}
                             renderOption={(props, option) => {
                                 return (
                                     <li {...props}>
-                                        {option.schoolName}
+                                        {option.schoolname}
                                     </li>
                                 );
                             }}
@@ -248,11 +488,11 @@ export default function NewRegistrationPage() {
                             }}
                             sx={{width: '100%', mt: 1}}
                             renderInput={(params) => <TextField {...params} label="Course"/>}
-                            getOptionLabel={(option) => option.courseName}
+                            getOptionLabel={(option) => option.courseid + " " + option.coursename}
                             renderOption={(props, option) => {
                                 return (
                                     <li {...props}>
-                                        {option.courseName}
+                                        {option.courseid + " " + option.coursename}
                                     </li>
                                 );
                             }}
@@ -283,18 +523,22 @@ export default function NewRegistrationPage() {
                                 label="Leaders"
                                 selectAllLabel="All"
                                 leaders={(items) => {
-                                    selectedLeaders = items;
+                                    setSelectedLeaders(items)
                                 }}
                             />
 
                             <Box sx={{mt: 1, width: '100%', display: 'flex', justifyContent: 'space-between'}}>
                                 <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:arrow-ios-back-fill"/>}
-                                        onClick={prevSection}>
+                                        onClick={() => {
+                                            setBookingStartDate(bookingStartDate.clone().add(-7, 'day'))
+                                        }}>
                                     Prev Week
                                 </Button>
 
                                 <Button variant="contained" color="inherit" endIcon={<Iconify icon="eva:arrow-ios-forward-fill"/>}
-                                        onClick={nextSection}>
+                                        onClick={() => {
+                                            setBookingStartDate(bookingStartDate.clone().add(7, 'day'))
+                                        }}>
                                     Next Week
                                 </Button>
                             </Box>
@@ -303,7 +547,7 @@ export default function NewRegistrationPage() {
 
                         <WeekCalendar
                             dayFormat={"dd DD/MM"}
-                            firstDay={moment().weekday(0)}
+                            firstDay={bookingStartDate}
                             numberOfDays={7}
                             startTime={moment({h: 8, m: 0})}
                             endTime={moment({h: 22, m: 0})}
@@ -313,7 +557,7 @@ export default function NewRegistrationPage() {
                             useModal={false}
                             selectedIntervals={selectedIntervals}
                             onEventClick={handleSlotSelect}
-                            eventComponent={RevisionSlot}
+                            eventComponent={bookingSlot}
                             eventSpacing={0}
                         />
                     </div>
@@ -362,9 +606,9 @@ export default function NewRegistrationPage() {
                         <FormHelperText>Please validate your Registration before submitting.</FormHelperText>
 
                         <TextField label="School" variant="standard" fullWidth sx={{mb: 1, mt: 3}}
-                                   InputProps={{readOnly: true}} defaultValue={selectedSchool.schoolName}/>
+                                   InputProps={{readOnly: true}} defaultValue={selectedSchool.schoolname}/>
                         <TextField label="Course" variant="standard" fullWidth sx={{mb: 1, mt: 1}}
-                                   InputProps={{readOnly: true}} defaultValue={selectedCourse.courseName}/>
+                                   InputProps={{readOnly: true}} defaultValue={selectedCourse.courseid + " " + selectedCourse.coursename}/>
 
                         <TextField label="Date" variant="standard" fullWidth sx={{mb: 1, mt: 2}}
                                    InputProps={{readOnly: true}}
@@ -378,28 +622,8 @@ export default function NewRegistrationPage() {
                         <TextField label="Leader" variant="standard" fullWidth sx={{mb: 2, mt: 2}} InputProps={{
                             startAdornment: (<InputAdornment position="start"><AccountCircle/></InputAdornment>),
                             readOnly: true
-                        }} defaultValue={selctedSlot.leader}/>
+                        }} defaultValue={selctedSlot.leaderName}/>
 
-                        {/* loop of members - if added - maybe add name get? */}
-                        {
-                            groupMembers !== null && groupMembers !== undefined && Object.keys(groupMembers).length !== 0 ?
-                                (
-                                    <>
-                                        <FormHelperText>Members</FormHelperText>
-                                        <List dense>
-                                            {
-                                                groupMembers && groupMembers.map((studentID) => (
-                                                    <ListItem>
-                                                        <ListItemIcon><AccountCircle/></ListItemIcon>
-                                                        <ListItemText primary={studentID}/>
-                                                    </ListItem>
-                                                ))
-                                            }
-                                        </List>
-                                    </>
-                                ) : (<></>)
-
-                        }
 
 
                     </div>

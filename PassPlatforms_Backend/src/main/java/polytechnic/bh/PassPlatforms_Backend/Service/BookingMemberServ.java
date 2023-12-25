@@ -162,6 +162,7 @@ public class BookingMemberServ
         {
             BookingMember newRevMember = new BookingMember();
 
+            newRevMember.setDatetime(Timestamp.from(Instant.now()));
             newRevMember.setBooking(bookingRepo.getReferenceById(retrivedBooking.get().getBookingid()));
             newRevMember.setStudent(new User(userServ.getUser(studentID)));
 

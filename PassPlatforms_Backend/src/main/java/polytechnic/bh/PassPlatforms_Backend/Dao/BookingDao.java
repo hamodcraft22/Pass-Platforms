@@ -63,7 +63,7 @@ public class BookingDao
         }
         this.bookingStatus = new BookingStatusDao(booking.getBookingStatus());
         this.student = new UserDao(booking.getStudent().getUserid(), new RoleDao(booking.getStudent().getRole()), getAzureAdName(booking.getStudent().getUserid()), null);
-        this.course = new CourseDao(booking.getCourse());
+        this.course = new CourseDao(booking.getCourse().getCourseid(), booking.getCourse().getCoursename(), new SchoolDao(booking.getCourse().getSchool().getSchoolid(), booking.getCourse().getSchool().getSchoolname(), null));
 
         List<BookingMemberDao> bookingMembers = new ArrayList<>();
         if (booking.getBookingMembers() != null && !booking.getBookingMembers().isEmpty())

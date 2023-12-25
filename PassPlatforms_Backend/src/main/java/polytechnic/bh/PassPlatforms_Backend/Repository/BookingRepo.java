@@ -17,6 +17,11 @@ public interface BookingRepo extends JpaRepository<Booking, Integer>
 //    // check if slot is used by another active booking
 //    boolean existsBySlot_SlotidAndBookingdateAndBookingStatus_Statusid(int slotID, Date date, char statusID);
 
+    // get a course booking within a range
+    @Transactional
+    @Query(value = "select * from pp_booking WHERE typeid = 'R' and statusid = 'A' and COURSEID = :courseID and trunc(bookingdate) <= trunc(:endDate) and trunc(bookingdate) >= trunc(:startDate)", nativeQuery = true)
+    List<Booking> findAllCourseRevisions(String courseID, Date startDate, Date endDate);
+
     @Transactional
     @Query(value = "select * from pp_booking where STUDENTID = :studentID and TYPEID not in ('R')", nativeQuery = true)
     List<Booking> findAllStudentBookings(String studentID);
