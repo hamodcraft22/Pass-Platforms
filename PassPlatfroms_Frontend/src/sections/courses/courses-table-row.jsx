@@ -16,7 +16,7 @@ import UserProfile from "../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
-export default function CoursesTableRow({courseID, courseName}) {
+export default function CoursesTableRow({courseID, courseName, role}) {
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
@@ -125,10 +125,15 @@ export default function CoursesTableRow({courseID, courseName}) {
                 <TableCell>{courseName}</TableCell>
 
                 <TableCell align={"right"}>
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"}
-                            onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
-                            onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
+                    {
+                        (role === 'admin' || role === 'manager') &&
+                        <>
+                            <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"}
+                                    onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
+                            <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
+                                    onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
+                        </>
+                    }
                 </TableCell>
 
             </TableRow>

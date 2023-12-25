@@ -5,9 +5,14 @@ import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.MetadataDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Metadata;
 import polytechnic.bh.PassPlatforms_Backend.Repository.MetadataRepo;
+import polytechnic.bh.PassPlatforms_Backend.Repository.SchoolRepo;
+import polytechnic.bh.PassPlatforms_Backend.Repository.StatisticRepo;
+import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
 
 import java.sql.Date;
 import java.util.Optional;
+
+import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.*;
 
 @Service
 public class MetadataServ
@@ -16,6 +21,15 @@ public class MetadataServ
     @Autowired
     private MetadataRepo metadataRepo;
 
+    @Autowired
+    private SchoolRepo schoolRepo;
+
+    @Autowired
+    private UserRepo userRepo;
+
+    @Autowired
+    private StatisticRepo statisticRepo;
+
     // Get metadata
     public MetadataDao getMetadata()
     {
@@ -23,14 +37,34 @@ public class MetadataServ
         return retrievedMetadata.map(MetadataDao::new).orElse(null);
     }
 
+    // get if disabled
+    public boolean getDisable()
+    {
+        Optional<Metadata> retrievedMetadata = metadataRepo.findById(1);
+
+        if (retrievedMetadata.isPresent())
+        {
+            if (retrievedMetadata.get().isEnabled())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     // Update metadata
     public MetadataDao updateMetadata(MetadataDao metadataDao)
     {
-        Optional<Metadata> existingMetadata = metadataRepo.findById(1);
 
-        if (existingMetadata.isPresent())
-        {
-            Metadata updatedMetadata = existingMetadata.get();
+            Metadata updatedMetadata = new Metadata();
+            updatedMetadata.setMetadataid(1);
             updatedMetadata.setMrwstart(new Date(metadataDao.getMrwstart().getTime()));
             updatedMetadata.setMrwend(new Date(metadataDao.getMrwend().getTime()));
             updatedMetadata.setMwstart(new Date(metadataDao.getMwstart().getTime()));
@@ -43,8 +77,33 @@ public class MetadataServ
             updatedMetadata.setBooking(metadataDao.isBooking());
 
             return new MetadataDao(metadataRepo.save(updatedMetadata));
-        }
 
-        return null;
+    }
+
+    public boolean resetSystem()
+    {
+        try
+        {
+            // delete all users - automatically deletes everything
+            userRepo.deleteAllByRole_Roleid(ROLE_STUDENT);
+            userRepo.deleteAllByRole_Roleid(ROLE_LEADER);
+            userRepo.deleteAllByRole_Roleid(ROLE_TUTOR);
+
+            // delete all schools
+            schoolRepo.deleteAll();
+
+            // delete stats
+            statisticRepo.deleteAll();
+
+            // delete metadata
+            metadataRepo.deleteAll();
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            return false;
+        }
     }
 }

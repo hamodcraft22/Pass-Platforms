@@ -9,6 +9,7 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Service.MetadataServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
+import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.ROLE_ADMIN;
 import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.ROLE_MANAGER;
 import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 
@@ -37,7 +38,7 @@ public class MetadataController
             MetadataDao metadata = metadataServ.getMetadata();
             return (metadata != null) ?
                     new ResponseEntity<>(metadata, HttpStatus.OK) :
-                    new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                    new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         else
         {
@@ -45,6 +46,14 @@ public class MetadataController
         }
 
 
+    }
+
+    @GetMapping("/disabled")
+    public ResponseEntity<Boolean> getSysDisable()
+    {
+        Boolean metadata = metadataServ.getDisable();
+
+        return new ResponseEntity<>(metadata, HttpStatus.OK);
     }
 
     // Update metadata
@@ -66,6 +75,41 @@ public class MetadataController
                 return (updatedMetadata != null) ?
                         new ResponseEntity<>(updatedMetadata, HttpStatus.OK) :
                         new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+    }
+
+    // reset database
+    @DeleteMapping("")
+    public ResponseEntity<MetadataDao> resetSystem(
+            @RequestHeader(value = "Authorization") String requestKey)
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            //token is valid, get user and role
+            UserDao user = userServ.getUser(userID);
+
+            if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
+            {
+                if (metadataServ.resetSystem())
+                {
+                    return new ResponseEntity<>(null, HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
             }
             else
             {

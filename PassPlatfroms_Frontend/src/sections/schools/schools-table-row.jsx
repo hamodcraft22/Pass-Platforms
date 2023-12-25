@@ -18,7 +18,7 @@ import UserProfile from "../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
-export default function SchoolsTableRow({schoolID, schoolName}) {
+export default function SchoolsTableRow({schoolID, schoolName, role}) {
 
 
     // alerts elements
@@ -133,12 +133,18 @@ export default function SchoolsTableRow({schoolID, schoolName}) {
                 <TableCell>{schoolName}</TableCell>
 
                 <TableCell align={"right"}>
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"}
-                            onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
                     <Button variant="contained" sx={{ml: 1}} size={"small"} color={"success"}
                             onClick={goToCourse}><ListAltIcon fontSize={"small"}/></Button>
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
-                            onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
+
+                    {
+                        (role === 'admin' || role === 'manager') &&
+                        <>
+                            <Button variant="contained" sx={{ml: 1}} size={"small"} color={"warning"}
+                                    onClick={handleEditClickOpen}><EditIcon fontSize={"small"}/></Button>
+                            <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
+                                    onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
+                        </>
+                    }
                 </TableCell>
 
             </TableRow>

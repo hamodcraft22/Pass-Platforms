@@ -85,6 +85,28 @@ export default function CoursesPage() {
         if (schoolIDParm !== null && schoolIDParm !== undefined && Object.keys(schoolIDParm).length !== 0) {getSchoolCourses()}
     }, [])
 
+
+    const [userID, setUserID] = useState("");
+    const [userRole, setUserRole] = useState("");
+
+    async function getUserInfo()
+    {
+        // if leader, get his booking
+        // if student, get his booking,
+
+        // if admin/manager, get param and get his booking
+
+        let userID = await UserProfile.getUserID();
+        let userRole = await UserProfile.getUserRole();
+
+        await setUserID(userID);
+        await setUserRole(userRole);
+    }
+
+    // get school and courses on load - if not leader and there is param
+    useEffect(() => {getUserInfo()}, []);
+
+
     const [showAddDialog, setShowAddDialog] = useState(false);
     const [addCourseID, setAddCourseID] = useState(null);
     const [addCourseName, setAddCourseName] = useState(null);
@@ -250,10 +272,13 @@ export default function CoursesPage() {
                     <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                         <Typography variant="h4">{school !== null && school.schoolname} Courses</Typography>
 
-                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
-                                onClick={handleAddClickOpen}>
-                            New Course
-                        </Button>
+                        {
+                            (userRole === 'admin' || userRole === 'manager') &&
+                            <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
+                                    onClick={handleAddClickOpen}>
+                                New Course
+                            </Button>
+                        }
                     </Stack>
 
                     <Card>
@@ -284,6 +309,7 @@ export default function CoursesPage() {
                                                 <CoursesTableRow
                                                     courseID={row.courseid}
                                                     courseName={row.coursename}
+                                                    role={userRole}
                                                 />
                                             ))}
 

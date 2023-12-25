@@ -188,7 +188,7 @@ export default function TranscriptPage() {
 
 
     const queryParameters = new URLSearchParams(window.location.search)
-    const studentIDParm = queryParameters.get("leaderID");
+    const studentIDParm = queryParameters.get("studentID");
 
     const [userID, setUserID] = useState("");
     const [userRole, setUserRole] = useState("");

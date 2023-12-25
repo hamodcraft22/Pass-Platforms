@@ -143,6 +143,25 @@ export default function SchoolsPage() {
     const [showAddDialog, setShowAddDialog] = useState(false);
 
 
+    const [userID, setUserID] = useState("");
+    const [userRole, setUserRole] = useState("");
+
+    async function getUserInfo()
+    {
+        // if leader, get his booking
+        // if student, get his booking,
+
+        // if admin/manager, get param and get his booking
+
+        let userID = await UserProfile.getUserID();
+        let userRole = await UserProfile.getUserRole();
+
+        await setUserID(userID);
+        await setUserRole(userRole);
+    }
+
+    // get school and courses on load - if not leader and there is param
+    useEffect(() => {getUserInfo()}, []);
 
 
     // excel extract
@@ -325,15 +344,18 @@ export default function SchoolsPage() {
                 <Typography variant="h4">Schools</Typography>
 
 
-                <div>
-                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} sx={{m: 1}} onClick={handleAddClickOpen}>
-                        Upload Schools
-                    </Button>
+                {
+                    (userRole === 'admin' || userRole === 'manager') &&
+                    <div>
+                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} sx={{m: 1}} onClick={handleAddClickOpen}>
+                            Upload Schools
+                        </Button>
 
-                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} sx={{m: 1}} onClick={goToNewSchool}>
-                        New School
-                    </Button>
-                </div>
+                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} sx={{m: 1}} onClick={goToNewSchool}>
+                            New School
+                        </Button>
+                    </div>
+                }
             </Stack>
 
             <Card>
@@ -363,6 +385,7 @@ export default function SchoolsPage() {
                                         <SchoolsTableRow
                                             schoolID={row.schoolid}
                                             schoolName={row.schoolname}
+                                            role={userRole}
                                         />
                                     ))}
 

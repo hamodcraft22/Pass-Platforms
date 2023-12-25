@@ -6,7 +6,7 @@ import moment from "moment";
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {Alert, Autocomplete, CardContent, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField} from "@mui/material";
+import {Alert, Autocomplete, Backdrop, CardContent, CircularProgress, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import LinearProgress from '@mui/material/LinearProgress';
@@ -32,11 +32,14 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Dialog from "@mui/material/Dialog";
 import DialogContentText from "@mui/material/DialogContentText";
+import UserProfile from "../../../components/auth/UserInfo";
 
 
 // ----------------------------------------------------------------------
 
 export default function ManagementPage() {
+
+    const [loadingShow, setLoadingShow] = useState(false);
 
     const [shownSection, setShownSection] = useState(1);
     const [progPercent, setProgPercent] = useState(0);
@@ -52,6 +55,15 @@ export default function ManagementPage() {
             return;
         }
         setErrorShow(false);
+    };
+
+    const [successShow, setSuccessShow] = useState(false);
+    const [successMsg, setSuccessMsg] = useState("");
+    const handleSuccessAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSuccessShow(false);
     };
 
     function nextSection() {
@@ -114,9 +126,7 @@ export default function ManagementPage() {
         }
 
         if (shownSection === 5) {
-            alert("call api and show results based on api return");
-            setProgPercent(100);
-            // change color of progress to red if it is error etc
+            createSubmit();
         }
     }
 
@@ -127,7 +137,7 @@ export default function ManagementPage() {
     // change to false, both items are false, and they are changed based on return fom api
 
     const [setupMode, setSetupMode] = useState(false);
-    const [viewEditMode, setViewEditMode] = useState(true);
+    const [viewEditMode, setViewEditMode] = useState(false);
 
 
     // dates
@@ -144,7 +154,7 @@ export default function ManagementPage() {
     const [midWeekStartEdit, setMidWeekStartEdit] = useState(null);
     const [midWeekEndEdit, setMidWeekEndEdit] = useState(null);
 
-
+    // fin dates
     const [finRevWeekStart, setFinRevWeekStart] = useState(null);
     const [finRevWeekEnd, setFinRevWeekEnd] = useState(null);
 
@@ -164,9 +174,299 @@ export default function ManagementPage() {
     const [bookingEnable, setBookingEnable] = useState(false);
 
 
+    const [assignLeadersShow, setAssignLeadersShow] = useState(false);
+
+
     // excel extract
     const [schoolsUpload, setSchoolsUpload] = useState([]);
+    const [leadersUpload, setLeadersUpload] = useState([]);
 
+    // all the apis
+
+    async function parseMetadata(metaData)
+    {
+        const mrwstart = moment(metaData.mrwstart);
+        const mrwend = moment(metaData.mrwend);
+        const mwstart = moment(metaData.mwstart);
+        const mwend = moment(metaData.mwend);
+
+        setMidRevWeekStart(mrwstart);
+        setMidRevWeekEnd(mrwend);
+        setMidWeekStart(mwstart);
+        setMidWeekEnd(mwend);
+
+        setMidRevWeekStartEdit(mrwstart);
+        setMidRevWeekEndEdit(mrwend);
+        setMidWeekStartEdit(mwstart);
+        setMidWeekEndEdit(mwend);
+
+        const frwstart = moment(metaData.frwstart);
+        const frwend = moment(metaData.frwend);
+        const fwstart = moment(metaData.fwstart);
+        const fwend = moment(metaData.fwend);
+
+        setFinRevWeekStart(frwstart);
+        setFinRevWeekEnd(frwend);
+        setFinWeekStart(fwstart);
+        setFinWeekEnd(fwend);
+
+        setFinRevWeekStartEdit(frwstart);
+        setFinRevWeekEndEdit(frwend);
+        setFinWeekStartEdit(fwstart);
+        setFinWeekEndEdit(fwend);
+
+        setSystemEnable(metaData.enabled);
+        setBookingEnable(metaData.booking);
+
+        setViewEditMode(true);
+    }
+
+    // get metadata
+    async function getMetaData()
+    {
+        try
+        {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
+
+            await fetch("http://localhost:8080/api/metadata",requestOptions)
+                .then((response) => {
+                    if (response.status === 200)
+                    {
+                        return response.json();
+                    }
+                    else
+                    {
+                        setSetupMode(true);
+                        return null;
+                    }
+                })
+                .then((data) => {
+                    if (data !== null)
+                    {
+                        parseMetadata(data);
+                    }
+                })
+        }
+        catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
+        }
+        finally
+        {
+            setLoadingShow(false);
+        }
+    }
+
+
+    async function createEdit(online, system)
+    {
+        setLoadingShow(true);
+        const metaData = {"mrwstart":midRevWeekStartEdit, "mrwend":midRevWeekEndEdit, "mwstart":midWeekStartEdit, "mwend":midWeekEndEdit, "frwstart":finRevWeekStartEdit, "frwend":finRevWeekEndEdit, "fwstart":finWeekStartEdit, "fwend":finWeekEndEdit, "enabled":system, "booking":online};
+
+        let metaSubmit = await submitSetupData(metaData);
+
+        if (metaSubmit)
+        {
+            await getMetaData();
+            setLoadingShow(false);
+        }
+        else
+        {
+            setErrorMsg("errors while setting up, view consle");
+            setErrorShow(true);
+            setLoadingShow(true);
+        }
+    }
+
+    async function createSubmit()
+    {
+        setLoadingShow(true);
+        const metaData = {"mrwstart":midRevWeekStart, "mrwend":midRevWeekEnd, "mwstart":midWeekStart, "mwend":midWeekEnd, "frwstart":finRevWeekStart, "frwend":finRevWeekEnd, "fwstart":finWeekStart, "fwend":finWeekEnd, "enabled":false, "booking":false};
+
+        let metaSubmit = await submitSetupData(metaData);
+        let schoolsSubmit = await submitSchools();
+        let leadersSubmit = await submitLeaders();
+
+        if (metaSubmit && schoolsSubmit && leadersSubmit)
+        {
+            window.location.reload();
+            setLoadingShow(true);
+        }
+        else
+        {
+            setErrorMsg("errors while setting up, view consle");
+            setErrorShow(true);
+            setLoadingShow(true);
+        }
+    }
+
+    async function submitSetupData(meteDataDto)
+    {
+        try
+        {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(meteDataDto)};
+
+            return await fetch("http://localhost:8080/api/metadata",requestOptions)
+                .then((response) => {
+                    if (response.status === 200 || response.status === 201)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        console.log(response);
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                        return false;
+                    }
+                })
+        }
+        catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
+            return false;
+        }
+        finally
+        {
+            setLoadingShow(false);
+        }
+    }
+
+    async function submitSchools()
+    {
+
+        try {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(schoolsUpload)};
+
+            return await fetch(`http://localhost:8080/api/school/multi`, requestOptions)
+                .then(response => {
+                    if (response.status === 201 || response.status === 200) {
+                        return true;
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                        return false;
+                    }
+                });
+
+        } catch (error) {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
+            return false;
+        }
+    }
+
+
+    async function submitLeaders()
+    {
+        try {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(leadersUpload)};
+
+            return await fetch(`http://localhost:8080/api/user/leaderify`, requestOptions)
+                .then(response => {
+                    if (response.status === 201 || response.status === 200) {
+                        return true;
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                        return false;
+                    }
+                });
+
+        } catch (error) {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
+            return false;
+        }
+    }
+
+    async function resetAll()
+    {
+        try {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "DELETE", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(leadersUpload)};
+
+            return await fetch(`http://localhost:8080/api/metadata`, requestOptions)
+                .then(response => {
+                    if (response.status === 201 || response.status === 200) {
+                        window.location.reload()
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                        return false;
+                    }
+                });
+
+        } catch (error) {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
+            return false;
+        }
+    }
+
+    async function getUserInfo()
+    {
+        // if admin/manager, get param and get his booking
+
+        let userID = await UserProfile.getUserID();
+        let userRole = await UserProfile.getUserRole();
+
+        // if admin / manager and there is student paramteter
+        if (userRole === "manager" || userRole === "admin")
+        {
+            getMetaData();
+        }
+        else
+        {
+            setErrorMsg("you are not allowed to access this interface");
+            setErrorShow(true);
+        }
+
+    }
+
+
+    useEffect(() => {getUserInfo()}, []);
+
+
+
+    // file extracters
     const handleSchoolsFileChange = async (event) => {
         const file = event.target.files[0];
 
@@ -182,16 +482,15 @@ export default function ManagementPage() {
             let formattedCourses = [];
 
             courses.forEach((course) => {
-                formattedCourses.push({"courseCode": sheetName + course[0], "courseName": course[1]})
+                formattedCourses.push({"courseid": sheetName + course[0], "coursename": course[1], "school":{"schoolid": sheetName}})
             });
 
-            sheetsData.push({"schoolCode": sheetName, "schoolName": data[0][0], "courses": formattedCourses});
+            sheetsData.push({"schoolid": sheetName, "schoolname": data[0][0], "courses": formattedCourses});
         });
 
         setSchoolsUpload(sheetsData);
     };
 
-    const [leadersUpload, setLeadersUpload] = useState([]);
 
     const handleLeadersFileChange = async (event) => {
         const file = event.target.files[0];
@@ -209,14 +508,9 @@ export default function ManagementPage() {
             });
         });
 
-        if (setupMode === true) {
-            setLeadersUpload(sheetsData);
-        }
 
-        if (viewEditMode === true) {
-            console.log(sheetsData);
-            setLeaderIDsToAdd([leaderIDsToAdd, ...sheetsData]);
-        }
+            setLeadersUpload(sheetsData);
+
     };
 
     const readFile = (file) => {
@@ -253,28 +547,39 @@ export default function ManagementPage() {
     const [updateDateShow, setUpdateDateShow] = useState(false);
 
     function handleUpdateDateConfirm() {
-        alert("call api");
+        createEdit(bookingEnable, systemEnable);
 
         setUpdateDateShow(false);
-        // show errors etc based on return
     }
 
+    async function handleAssignLeadersConfirm() {
+        if (leadersUpload.length !== 0)
+        {
+            if (await submitLeaders())
+            {
+                setAssignLeadersShow(false);
+                setLoadingShow(false);
 
-    const [leaderIDsToAdd, setLeaderIDsToAdd] = useState([]);
-
-    const [assignLeadersShow, setAssignLeadersShow] = useState(false);
-
-    function handleAssignLeadersConfirm() {
-        alert("call api");
-
-        setAssignLeadersShow(false);
-        // show errors etc based on return
+                setSuccessMsg("Leaders added, duplicates (if any) ignored");
+                setSuccessShow(true);
+            }
+            else
+            {
+                setErrorMsg("Unknown error occurred, check console, try again later");
+                setErrorShow(true);
+            }
+        }
+        else
+        {
+            setErrorMsg("no leaders uploaded");
+            setErrorShow(true);
+        }
     }
 
     const [enableSysShow, setEnableSysShow] = useState(false);
 
     function handleEnableSysConfirm() {
-        alert("call api");
+        createEdit(bookingEnable, true);
 
         setEnableSysShow(false);
     }
@@ -282,31 +587,28 @@ export default function ManagementPage() {
     const [disableSysShow, setDisableSysShow] = useState(false);
 
     function handleDisableSysConfirm() {
-        alert("call api");
-
+        createEdit(false, false);
         setDisableSysShow(false);
     }
 
     const [enableBookingShow, setEnableBookingShow] = useState(false);
 
     function handleEnableBookingConfirm() {
-        alert("call api");
-
+        createEdit(true, true);
         setEnableBookingShow(false);
     }
 
     const [disableBookingShow, setDisableBookingShow] = useState(false);
 
     function handleDisableBookingConfirm() {
-        alert("call api");
-
+        createEdit(false, systemEnable);
         setDisableBookingShow(false);
     }
 
     const [resetSysShow, setResetSysShow] = useState(false);
 
     function handleResetSysConfirm() {
-        alert("call api");
+        resetAll();
 
         setResetSysShow(false);
     }
@@ -323,7 +625,6 @@ export default function ManagementPage() {
         whiteSpace: 'nowrap',
         width: 1,
     });
-
 
     const getChartOptions = (color) => {
         return {
@@ -397,12 +698,26 @@ export default function ManagementPage() {
 
 
         <Container maxWidth={getWidth}>
+            {/* loading */}
+            <Backdrop
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={loadingShow}
+            >
+                <CircularProgress color="inherit"/>
+            </Backdrop>
 
             {/* alerts */}
             <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
                       anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
                 <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%'}}>
                     {errorMsg}
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={successShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleSuccessAlertClose} severity="success" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                    {successMsg}
                 </Alert>
             </Snackbar>
 
@@ -541,7 +856,7 @@ export default function ManagementPage() {
                                                 <Table aria-label="simple table" sx={{minWidth: "200px"}}>
                                                     <TableHead>
                                                         <TableRow>
-                                                            <TableCell colspan="2" style={{"text-align": "center"}}><b>{school.schoolName}</b></TableCell>
+                                                            <TableCell colspan="2" style={{"text-align": "center"}}><b>{school.schoolname}</b></TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell align="center">Course Code</TableCell>
@@ -556,9 +871,9 @@ export default function ManagementPage() {
                                                                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                                                 >
                                                                     <TableCell align="center" component="th" scope="row">
-                                                                        {course.courseCode}
+                                                                        {course.courseid}
                                                                     </TableCell>
-                                                                    <TableCell>{course.courseName}</TableCell>
+                                                                    <TableCell>{course.coursename}</TableCell>
                                                                 </TableRow>
                                                             ))
                                                         }
@@ -638,7 +953,7 @@ export default function ManagementPage() {
                                                 <Table aria-label="simple table" sx={{minWidth: "200px"}}>
                                                     <TableHead>
                                                         <TableRow>
-                                                            <TableCell colspan="2" style={{"text-align": "center"}}><b>{school.schoolName}</b></TableCell>
+                                                            <TableCell colspan="2" style={{"text-align": "center"}}><b>{school.schoolname}</b></TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell align="center">Course Code</TableCell>
@@ -653,9 +968,9 @@ export default function ManagementPage() {
                                                                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                                                 >
                                                                     <TableCell align="center" component="th" scope="row">
-                                                                        {course.courseCode}
+                                                                        {course.courseid}
                                                                     </TableCell>
-                                                                    <TableCell>{course.courseName}</TableCell>
+                                                                    <TableCell>{course.coursename}</TableCell>
                                                                 </TableRow>
                                                             ))
                                                         }
@@ -702,288 +1017,6 @@ export default function ManagementPage() {
                     <Grid container spacing={3}>
 
 
-                        {/* top stats */}
-                        <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
-                                <ApexChart
-                                    options={getChartOptions("#c03e3e")}
-                                    series={chartSeries}
-                                    type="area"
-                                    height={150}
-                                    width="100%"
-                                />
-                                <div
-                                    style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        width: '100%',
-                                        height: '100%',
-                                        background: 'rgba(0, 0, 0, 0.1)',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        zIndex: 1
-                                    }}
-                                >
-                                    <Box sx={{width: 64, height: 64}}>sdf</Box>
-
-                                    <Stack spacing={0.5}>
-                                        <Typography variant="h4">num</Typography>
-
-                                        <Typography variant="subtitle2" sx={{color: 'text.disabled'}}>
-                                            title
-                                        </Typography>
-                                    </Stack>
-                                </div>
-                            </Card>
-                        </Grid>
-
-                        <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
-                                <ApexChart
-                                    options={getChartOptions("#c03e3e")}
-                                    series={chartSeries}
-                                    type="area"
-                                    height={150}
-                                    width="100%"
-                                />
-                                <div
-                                    style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        width: '100%',
-                                        height: '100%',
-                                        background: 'rgba(0, 0, 0, 0.1)',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        zIndex: 1
-                                    }}
-                                >
-                                    <Box sx={{width: 64, height: 64}}>sdf</Box>
-
-                                    <Stack spacing={0.5}>
-                                        <Typography variant="h4">num</Typography>
-
-                                        <Typography variant="subtitle2" sx={{color: 'text.disabled'}}>
-                                            title
-                                        </Typography>
-                                    </Stack>
-                                </div>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
-                                <ApexChart
-                                    options={getChartOptions("#c03e3e")}
-                                    series={chartSeries}
-                                    type="area"
-                                    height={150}
-                                    width="100%"
-                                />
-                                <div
-                                    style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        width: '100%',
-                                        height: '100%',
-                                        background: 'rgba(0, 0, 0, 0.1)',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        zIndex: 1
-                                    }}
-                                >
-                                    <Box sx={{width: 64, height: 64}}>sdf</Box>
-
-                                    <Stack spacing={0.5}>
-                                        <Typography variant="h4">num</Typography>
-
-                                        <Typography variant="subtitle2" sx={{color: 'text.disabled'}}>
-                                            title
-                                        </Typography>
-                                    </Stack>
-                                </div>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
-                                <ApexChart
-                                    options={getChartOptions("#c03e3e")}
-                                    series={chartSeries}
-                                    type="area"
-                                    height={150}
-                                    width="100%"
-                                />
-                                <div
-                                    style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        width: '100%',
-                                        height: '100%',
-                                        background: 'rgba(0, 0, 0, 0.1)',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        zIndex: 1
-                                    }}
-                                >
-                                    <Box sx={{width: 64, height: 64}}>sdf</Box>
-
-                                    <Stack spacing={0.5}>
-                                        <Typography variant="h4">num</Typography>
-
-                                        <Typography variant="subtitle2" sx={{color: 'text.disabled'}}>
-                                            title
-                                        </Typography>
-                                    </Stack>
-                                </div>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
-                                <ApexChart
-                                    options={getChartOptions("#c03e3e")}
-                                    series={chartSeries}
-                                    type="area"
-                                    height={150}
-                                    width="100%"
-                                />
-                                <div
-                                    style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        width: '100%',
-                                        height: '100%',
-                                        background: 'rgba(0, 0, 0, 0.1)',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        zIndex: 1
-                                    }}
-                                >
-                                    <Box sx={{width: 64, height: 64}}>sdf</Box>
-
-                                    <Stack spacing={0.5}>
-                                        <Typography variant="h4">num</Typography>
-
-                                        <Typography variant="subtitle2" sx={{color: 'text.disabled'}}>
-                                            title
-                                        </Typography>
-                                    </Stack>
-                                </div>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
-                                <ApexChart
-                                    options={getChartOptions("#c03e3e")}
-                                    series={chartSeries}
-                                    type="area"
-                                    height={150}
-                                    width="100%"
-                                />
-                                <div
-                                    style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        width: '100%',
-                                        height: '100%',
-                                        background: 'rgba(0, 0, 0, 0.1)',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        zIndex: 1
-                                    }}
-                                >
-                                    <Box sx={{width: 64, height: 64}}>sdf</Box>
-
-                                    <Stack spacing={0.5}>
-                                        <Typography variant="h4">num</Typography>
-
-                                        <Typography variant="subtitle2" sx={{color: 'text.disabled'}}>
-                                            title
-                                        </Typography>
-                                    </Stack>
-                                </div>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
-                                <ApexChart
-                                    options={getChartOptions("#c03e3e")}
-                                    series={chartSeries}
-                                    type="area"
-                                    height={150}
-                                    width="100%"
-                                />
-                                <div
-                                    style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        width: '100%',
-                                        height: '100%',
-                                        background: 'rgba(0, 0, 0, 0.1)',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        zIndex: 1
-                                    }}
-                                >
-                                    <Box sx={{width: 64, height: 64}}>sdf</Box>
-
-                                    <Stack spacing={0.5}>
-                                        <Typography variant="h4">num</Typography>
-
-                                        <Typography variant="subtitle2" sx={{color: 'text.disabled'}}>
-                                            title
-                                        </Typography>
-                                    </Stack>
-                                </div>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={3}>
-                            <Card spacing={3} direction="row" sx={{borderRadius: 2, position: 'relative'}}>
-                                <ApexChart
-                                    options={getChartOptions("#c03e3e")}
-                                    series={chartSeries}
-                                    type="area"
-                                    height={150}
-                                    width="100%"
-                                />
-                                <div
-                                    style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        width: '100%',
-                                        height: '100%',
-                                        background: 'rgba(0, 0, 0, 0.1)',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        zIndex: 1
-                                    }}
-                                >
-                                    <Box sx={{width: 64, height: 64}}>sdf</Box>
-
-                                    <Stack spacing={0.5}>
-                                        <Typography variant="h4">num</Typography>
-
-                                        <Typography variant="subtitle2" sx={{color: 'text.disabled'}}>
-                                            title
-                                        </Typography>
-                                    </Stack>
-                                </div>
-                            </Card>
-                        </Grid>
 
                         {/* mid dates card */}
                         <Grid xs={12} md={6} lg={4}>
@@ -1121,26 +1154,39 @@ export default function ManagementPage() {
                                     }}>Assign Leader/s</Button>
                                     <FormHelperText>Assign student id's as pass leaders.</FormHelperText>
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth onClick={() => {
-                                        setEnableSysShow(true)
-                                    }}>Enable System</Button>
-                                    <FormHelperText>Make the system enabled for leaders and tutors.</FormHelperText>
+                                    {
+                                        systemEnable ?
+                                            (<>
+                                                <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"} onClick={() => {
+                                                    setDisableSysShow(true)
+                                                }}>Disable System</Button>
+                                                <FormHelperText>Disable all users (other than you).</FormHelperText>
+                                            </>)
+                                            :
+                                            (<>
+                                                <Button sx={{mt: 2}} variant={"contained"} fullWidth onClick={() => {
+                                                    setEnableSysShow(true)
+                                                }}>Enable System</Button>
+                                                <FormHelperText>Make the system enabled for leaders and tutors.</FormHelperText>
+                                            </>)
+                                    }
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"} onClick={() => {
-                                        setDisableSysShow(true)
-                                    }}>Disable System</Button>
-                                    <FormHelperText>Disable all users (other than you).</FormHelperText>
-
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth onClick={() => {
-                                        setEnableBookingShow(true)
-                                    }}>Enable Booking</Button>
-                                    <FormHelperText>Allow Bookings for students.</FormHelperText>
-
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"} onClick={() => {
-                                        setDisableBookingShow(true)
-                                    }}>Disable Booking</Button>
-                                    <FormHelperText>Stop new Bookings.</FormHelperText>
-
+                                    {
+                                        bookingEnable ?
+                                            (<>
+                                                <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"} onClick={() => {
+                                                    setDisableBookingShow(true)
+                                                }}>Disable Booking</Button>
+                                                <FormHelperText>Stop new Bookings.</FormHelperText>
+                                            </>)
+                                            :
+                                            (<>
+                                                <Button sx={{mt: 2}} variant={"contained"} fullWidth onClick={() => {
+                                                    setEnableBookingShow(true)
+                                                }}>Enable Booking</Button>
+                                                <FormHelperText>Allow Bookings for students.</FormHelperText>
+                                            </>)
+                                    }
 
                                     <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"error"} onClick={() => {
                                         setResetSysShow(true)
@@ -1202,9 +1248,9 @@ export default function ManagementPage() {
                         freeSolo
                         sx={{width: '100%', mt: 3}}
                         options={[]}
-                        value={leaderIDsToAdd}
+                        value={leadersUpload}
                         onChange={(event, newValue) => {
-                            setLeaderIDsToAdd(newValue)
+                            setLeadersUpload(newValue)
                         }}
                         renderInput={(params) => <TextField {...params} label="Student ID/s"/>}
                     />

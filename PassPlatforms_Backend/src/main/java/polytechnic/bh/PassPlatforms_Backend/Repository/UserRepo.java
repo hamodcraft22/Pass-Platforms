@@ -26,4 +26,8 @@ public interface UserRepo extends JpaRepository<User, String>
     @Transactional
     @Query(value = "select * from pp_user WHERE userid in (select UNIQUE(LEADERID) from pp_offeredcourse where courseid = :courseID)", nativeQuery = true)
     List<User> getCourseLeaders(String courseID);
+
+    // delete all user for rest
+    @Transactional
+    int deleteAllByRole_Roleid(int roleID);
 }

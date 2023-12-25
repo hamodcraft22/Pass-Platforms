@@ -16,7 +16,7 @@ import {Backdrop, CircularProgress} from "@mui/material";
 import Box from "@mui/material/Box";
 import LoginIcon from '@mui/icons-material/Login';
 import Paper from "@mui/material/Paper";
-
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 
 // ----------------------------------------------------------------------
 
@@ -28,6 +28,7 @@ const MainContent = () => {
     const activeAccount = instance.getActiveAccount();
 
     const [allowLoad, setAllowLoad] = useState(false)
+    const [sysDisable, setSysDisable] = useState(false);
 
     async function getToken() {
         const accessTokenRequest = {
@@ -51,9 +52,27 @@ const MainContent = () => {
                     return barerToken;
                 });
 
+            const sysEnabled = await isDisabled();
+
             await logUser(token)
                 .then((role) => {
-                    UserProfile.setUserRole(role).then(setAllowLoad(true))
+                    UserProfile.setUserRole(role).then(() => {
+                        if ((role === 'admin' || role === 'manager') && !sysEnabled)
+                        {
+                            setAllowLoad(true);
+                        }
+                        else
+                        {
+                            if (sysEnabled)
+                            {
+                                setAllowLoad(true);
+                            }
+                            else
+                            {
+                                setSysDisable(true);
+                            }
+                        }
+                    })
                 });
         }
     }
@@ -77,6 +96,26 @@ const MainContent = () => {
         }
     }
 
+    async function isDisabled()
+    {
+        try {
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json'}};
+
+            let enable = await fetch(`http://localhost:8080/api/metadata/disabled`, requestOptions)
+                .then(response => {
+                    return response.json()
+                })
+                .then((data) => {
+                    return data;
+                });
+
+            return enable;
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
         getToken()
     }, [activeAccount])
@@ -86,12 +125,16 @@ const MainContent = () => {
         instance.loginRedirect(loginRequest).catch((error) => console.log(error));
     };
 
+    const handleLogoutRedirect = () => {
+        instance.logoutRedirect({account: activeAccount}).catch((error) => console.log(error));
+    };
+
     useScrollToTop();
 
     return (
         <>
             <AuthenticatedTemplate>
-                {allowLoad ? (<Router/>) : <Backdrop sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}} open={true}><CircularProgress color="inherit"/></Backdrop>}
+                {allowLoad ? (<Router/>) : <Backdrop sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}} open={true}>{sysDisable ? (<><p>The system is being setup and is disabled, check back later</p> <Button sx={{ml: 2}} onClick={handleLogoutRedirect} variant={"contained"} endIcon={<LogoutRoundedIcon/>}>Logout</Button> </>) : (<CircularProgress color="inherit"/>)}</Backdrop>}
             </AuthenticatedTemplate>
             <UnauthenticatedTemplate>
                 <Box sx={{

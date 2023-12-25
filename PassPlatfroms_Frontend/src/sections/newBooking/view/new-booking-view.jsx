@@ -113,10 +113,21 @@ export default function NewBookingPage() {
 
             await fetch(`http://localhost:8080/api/slot/course/${selectedCourse.courseid}?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
                 .then(response => {
-                    return response.json()
+                    if (response.status == 200 || response.status === 201)
+                    {
+                        return response.json()
+                    }
+                    else
+                    {
+                        setErrorMsg("no slots, try another week");
+                        setErrorShow(true);
+                    }
                 })
                 .then((data) => {
-                    setRecivedSlotsDto(data.transObject)
+                    if (data !== null)
+                    {
+                        setRecivedSlotsDto(data.transObject)
+                    }
                 })
                 .then(() => {
                     setLoadingShow(false);
