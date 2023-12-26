@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
@@ -19,6 +19,11 @@ import {NAV} from './config-layout';
 import navConfig from './config-navigation';
 import studentNav from './student-navs';
 import {Divider} from '@mui/material';
+import UserProfile from "../../components/auth/UserInfo";
+import adminNav from "./admin-navs";
+import leaderNav from "./leader-navs";
+import managerNavs from "./manager-navs";
+import tutorNavs from "./tutor-navs";
 
 // ----------------------------------------------------------------------
 
@@ -26,6 +31,16 @@ export default function Nav({openNav, onCloseNav}) {
     const pathname = usePathname();
 
     const upLg = useResponsive('up', 'lg');
+
+    const [userRole, setUserRole] = useState("");
+
+    async function getUserInfo() {
+        let userRole = await UserProfile.getUserRole();
+
+        await setUserRole(userRole);
+    }
+
+    useEffect(() => {getUserInfo()},[]);
 
     useEffect(() => {
         if (openNav) {
@@ -53,6 +68,50 @@ export default function Nav({openNav, onCloseNav}) {
         </Stack>
     );
 
+    // admin menu
+    const adminMenu = (
+        <Stack component="nav" spacing={0.5} sx={{px: 2}}>
+            {adminNav.slice(0,4).map((item) => (
+                <NavItem key={item.title} item={item}/>
+            ))}
+            <Divider sx={{mt: 2, mb: 2}}/>
+            {adminNav.slice(4).map((item) => (
+                <NavItem key={item.title} item={item}/>
+            ))}
+        </Stack>
+    );
+
+    // leaders menu
+    const leaderMenu = (
+        <Stack component="nav" spacing={0.5} sx={{px: 2}}>
+            {leaderNav.slice(0,6).map((item) => (
+                <NavItem key={item.title} item={item}/>
+            ))}
+            <Divider sx={{mt: 2, mb: 2}}/>
+            {leaderNav.slice(6).map((item) => (
+                <NavItem key={item.title} item={item}/>
+            ))}
+        </Stack>
+    );
+
+    // leaders menu
+    const managerMenu = (
+        <Stack component="nav" spacing={0.5} sx={{px: 2}}>
+            {managerNavs.map((item) => (
+                <NavItem key={item.title} item={item}/>
+            ))}
+        </Stack>
+    );
+
+    // tutor menu
+    const tutorMenu = (
+        <Stack component="nav" spacing={0.5} sx={{px: 2}}>
+            {tutorNavs.map((item) => (
+                <NavItem key={item.title} item={item}/>
+            ))}
+        </Stack>
+    );
+
     const renderContent = (
         <Scrollbar
             sx={{
@@ -70,9 +129,30 @@ export default function Nav({openNav, onCloseNav}) {
 
             <Divider sx={{mt: 2, mb: 2}}/>
 
-            {/* add logged in user elements here  */}
+            {
+                userRole === "student" &&
+                <>{studentMenu}</>
+            }
 
-            {/*{studentMenu}*/}
+            {
+                userRole === "admin" &&
+                <>{adminMenu}</>
+            }
+
+            {
+                userRole === "leader" &&
+                <>{leaderMenu}</>
+            }
+
+            {
+                userRole === "manager" &&
+                <>{managerMenu}</>
+            }
+
+            {
+                userRole === "tutor" &&
+                <>{tutorMenu}</>
+            }
 
             <Box sx={{flexGrow: 1}}/>
 
@@ -129,7 +209,15 @@ function NavItem({item}) {
     // custom paths and active sessions
     if (item.path === "/schools" && pathname === "/courses") {
         active = true;
-    } else {
+    }
+    else if (item.path === "/bookings" && pathname === "/viewBooking") {
+        active = true;
+    }
+    else if (item.path === "/revisions" && pathname === "/viewRevision") {
+        active = true;
+    }
+    else
+    {
         active = item.path === pathname;
     }
 

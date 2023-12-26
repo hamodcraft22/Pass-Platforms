@@ -23,11 +23,6 @@ import RunningWithErrorsTwoToneIcon from '@mui/icons-material/RunningWithErrorsT
 import AssignmentLateTwoToneIcon from '@mui/icons-material/AssignmentLateTwoTone';
 import DisplaySettingsTwoToneIcon from '@mui/icons-material/DisplaySettingsTwoTone';
 
-// ----------------------------------------------------------------------
-
-// const icon = (name) => (
-//     <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{width: 1, height: 1}}/>
-// );
 
 
 const navConfig = [
@@ -42,104 +37,9 @@ const navConfig = [
         icon: <AccountBoxTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
-        title: 'New Booking',
-        path: '/newBooking',
-        icon: <EditCalendarTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'New Revision',
-        path: '/newRevision',
-        icon: <WorkHistoryTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
         title: 'Schools',
         path: '/schools',
         icon: <AccountBalanceTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'New School',
-        path: '/newSchool',
-        icon: <EditCalendarTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'Courses',
-        path: '/courses',
-        icon: <BallotTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'Offered Courses',
-        path: '/offeredCourses',
-        icon: <BusinessCenterTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'Transcript',
-        path: '/transcript',
-        icon: <HistoryEduTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'Slot',
-        path: '/slot',
-        icon: <PendingActionsTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'Schedule',
-        path: '/schedule',
-        icon: <EventNoteTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'Recommendations',
-        path: '/recommendations',
-        icon: <GroupAddTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'Applications',
-        path: '/applications',
-        icon: <AddReactionTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'View Application',
-        path: '/viewApplication',
-        icon: <SupervisedUserCircleTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'Bookings',
-        path: '/bookings',
-        icon: <DnsTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'View Booking',
-        path: '/viewBooking',
-        icon: <LibraryBooksTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'Revisions',
-        path: '/revisions',
-        icon: <DnsTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'View Revision',
-        path: '/viewRevision',
-        icon: <CollectionsBookmarkTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'Revision Registration',
-        path: '/revisionRegistration',
-        icon: <FactCheckTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'Management',
-        path: '/management',
-        icon: <ManageAccountsTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'Audits',
-        path: '/audits',
-        icon: <DisplaySettingsTwoToneIcon sx={{width: 1, height: 1}}/>,
-    },
-    {
-        title: 'Logs',
-        path: '/logs',
-        icon: <AssignmentLateTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     // {
     //     title: 'Profile',

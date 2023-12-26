@@ -94,6 +94,8 @@ export default function ApplicationsPage()
                     }
                     else
                     {
+                        setErrorMsg("No Applications Found");
+                        setErrorShow(true);
                         console.log(response);
                     }
                 })
@@ -108,6 +110,8 @@ export default function ApplicationsPage()
                 })
 
         } catch (error) {
+            setErrorMsg("Unknown Error, please check console");
+            setErrorShow(true);
             console.log(error);
             setLoadingShow(false);
         }
