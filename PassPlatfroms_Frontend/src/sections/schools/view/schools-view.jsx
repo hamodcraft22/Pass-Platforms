@@ -37,9 +37,10 @@ import {Alert, Backdrop, CircularProgress, Snackbar} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 
 
-// ----------------------------------------------------------------------
 
 export default function SchoolsPage() {
+
+    // this page is used by everyone, and editing is only allowed for admins/ managers
 
     const [loadingShow, setLoadingShow] = useState(false);
 
@@ -148,11 +149,6 @@ export default function SchoolsPage() {
 
     async function getUserInfo()
     {
-        // if leader, get his booking
-        // if student, get his booking,
-
-        // if admin/manager, get param and get his booking
-
         let userID = await UserProfile.getUserID();
         let userRole = await UserProfile.getUserRole();
 

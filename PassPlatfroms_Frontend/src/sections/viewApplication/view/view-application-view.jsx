@@ -150,8 +150,16 @@ export default function ViewApplicationPage() {
         }
         else if (userRole === "student")
         {
-            // call student function
-            getUserApplication(userID, userRole);
+            if (studentIDParm !== null)
+            {
+                setErrorMsg("you are not allowed to access others applications");
+                setErrorShow(true);
+            }
+            else
+            {
+                // call student function
+                getUserApplication(userID, userRole);
+            }
         }
         else
         {

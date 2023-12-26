@@ -27,11 +27,13 @@ import {useNavigate} from "react-router-dom";
 
 // ----------------------------------------------------------------------
 
-export default function NewSchoolPage() {
+export default function NewSchoolPage()
+{
+    // this page is for managers / admins only
 
     const [loadingShow, setLoadingShow] = useState(false);
 
-    const [shownSection, setShownSection] = useState(1);
+    const [shownSection, setShownSection] = useState(0);
     const [progPercent, setProgPercent] = useState(0);
     useEffect(() => {
         (setProgPercent(((shownSection - 1) / 3) * 100))
@@ -47,6 +49,29 @@ export default function NewSchoolPage() {
         setErrorShow(false);
     };
 
+    const [userID, setUserID] = useState("");
+    const [userRole, setUserRole] = useState("");
+
+    async function getUserInfo()
+    {
+        let userID = await UserProfile.getUserID();
+        let userRole = await UserProfile.getUserRole();
+
+        await setUserID(userID);
+        await setUserRole(userRole);
+
+        if (userRole === 'manager' || userRole === 'admin')
+        {
+            setShownSection(1);
+        }
+        else
+        {
+            setErrorMsg("you are not allowed to access this page");
+            setErrorShow(true);
+        }
+    }
+
+    useEffect(() => {getUserInfo()}, []);
 
     const [schoolID, setSchoolID] = useState("");
     const [schoolName, setSchoolName] = useState("");

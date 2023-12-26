@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -20,10 +20,24 @@ import {applyFilter} from '../filterUtil';
 import UserTableRow from '../user-table-row';
 import UserTableToolbar from '../user-table-toolbar';
 import UserProfile from "../../../components/auth/UserInfo";
+import {Alert, Backdrop, CircularProgress, Snackbar} from "@mui/material";
 
 // ----------------------------------------------------------------------
 
 export default function UserPage() {
+
+    const [loadingShow, setLoadingShow] = useState(false);
+
+    // alerts elements
+    const [errorShow, setErrorShow] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setErrorShow(false);
+    };
+
     const [page, setPage] = useState(0);
 
     const [order, setOrder] = useState('desc');
@@ -39,9 +53,24 @@ export default function UserPage() {
 
     const [parsedUsers, setParsedUsers] = useState([]);
 
+    const [userID, setUserID] = useState("");
+    const [userRole, setUserRole] = useState("");
+
+    async function getUserInfo()
+    {
+        let userID = await UserProfile.getUserID();
+        let userRole = await UserProfile.getUserRole();
+
+        await setUserID(userID);
+        await setUserRole(userRole);
+    }
+
+    useEffect(() => {getUserInfo()}, []);
+
     // get users api
     async function getAllUsers() {
         try {
+            setLoadingShow(true);
             let token = await UserProfile.getAuthToken();
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
@@ -56,6 +85,9 @@ export default function UserPage() {
 
         } catch (error) {
             console.log(error)
+        }
+        finally {
+            setLoadingShow(false);
         }
     }
 
@@ -113,6 +145,24 @@ export default function UserPage() {
 
     return (
         <Container>
+
+            {/* loading */}
+            <Backdrop
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={loadingShow}
+            >
+                <CircularProgress color="inherit"/>
+            </Backdrop>
+
+            {/* alerts */}
+            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                    {errorMsg}
+                </Alert>
+            </Snackbar>
+
+
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Users</Typography>
             </Stack>
@@ -148,6 +198,7 @@ export default function UserPage() {
                                             name={row.userName}
                                             userid={row.userid}
                                             role={row.roleName}
+                                            loggedRole={userRole}
                                         />
                                     ))}
 

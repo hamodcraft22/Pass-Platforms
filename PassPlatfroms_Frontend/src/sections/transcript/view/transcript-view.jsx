@@ -43,6 +43,8 @@ import UserProfile from "../../../components/auth/UserInfo";
 
 export default function TranscriptPage() {
 
+    // this page is only for the managers / users of the transcript
+
     const [loadingShow, setLoadingShow] = useState(false);
 
     // alerts elements
@@ -225,13 +227,29 @@ export default function TranscriptPage() {
         }
         else if (userRole === "student")
         {
-            // get student bookings
-            getTranscripts(userID);
+            if (studentIDParm !== null )
+            {
+                setErrorMsg("you are not allowed to access others Transcript");
+                setErrorShow(true);
+            }
+            else
+            {
+                // get student bookings
+                getTranscripts(userID);
+            }
         }
         else if (userRole === "leader")
         {
-            // get leader bookings
-            getTranscripts(userID);
+            if (studentIDParm !== null )
+            {
+                setErrorMsg("you are not allowed to access others Transcript");
+                setErrorShow(true);
+            }
+            else
+            {
+                // get student bookings
+                getTranscripts(userID);
+            }
         }
         else
         {

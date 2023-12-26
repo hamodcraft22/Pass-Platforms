@@ -35,7 +35,9 @@ import {useNavigate} from "react-router-dom";
 
 // ----------------------------------------------------------------------
 
-export default function CoursesPage() {
+export default function CoursesPage()
+{
+    // this page is used by everyone, and editing is only allowed for admins/ managers
 
     const [loadingShow, setLoadingShow] = useState(false);
 

@@ -36,7 +36,9 @@ import {Alert, Backdrop, CircularProgress, FormHelperText, Snackbar} from "@mui/
 
 // ----------------------------------------------------------------------
 
-export default function OfferedCoursesPage() {
+export default function OfferedCoursesPage()
+{
+    // this page is open for everyone, editing is only for the manager / user
 
     const [loadingShow, setLoadingShow] = useState(false);
 

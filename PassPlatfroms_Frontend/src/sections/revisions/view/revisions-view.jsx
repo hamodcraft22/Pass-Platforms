@@ -29,7 +29,9 @@ import {Alert, Backdrop, CircularProgress, Snackbar} from "@mui/material";
 
 // ----------------------------------------------------------------------
 
-export default function RecommendationsPage() {
+export default function RevisionsPage() {
+
+    // this page is available for everyone other than tutors
 
     const queryParameters = new URLSearchParams(window.location.search)
     const studentIDParm = queryParameters.get("studentID");

@@ -9,13 +9,15 @@ import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import {useNavigate} from "react-router-dom";
+
 
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableRow({name, role, userid,}) {
+export default function UserTableRow({name, role, userid, loggedRole}) {
     const [open, setOpen] = useState(null);
 
     const handleOpenMenu = (event) => {
@@ -25,6 +27,43 @@ export default function UserTableRow({name, role, userid,}) {
     const handleCloseMenu = () => {
         setOpen(null);
     };
+
+
+    // naviagation links
+    let navigate = useNavigate();
+    const goToSchedule = () => {
+        let path = `/schedule?studentID=${userid}`;
+        navigate(path);
+    }
+    const goToSlots = () => {
+        let path = `/slot?leaderID=${userid}`;
+        navigate(path);
+    }
+    const goToCourses = () => {
+        let path = `/offeredCourses?leaderID=${userid}`;
+        navigate(path);
+    }
+    const goToTranscript = () => {
+        let path = `/transcript?studentID=${userid}`;
+        navigate(path);
+    }
+    const goToBookings = () => {
+        let path = `/bookings?studentID=${userid}`;
+        navigate(path);
+    }
+    const goToRevisions = () => {
+        let path = `/revisions?studentID=${userid}`;
+        navigate(path);
+    }
+
+    const goToLeaderBookings = () => {
+        let path = `/bookings?leaderID=${userid}`;
+        navigate(path);
+    }
+    const goToLeaderRevisions = () => {
+        let path = `/revisions?leaderID=${userid}`;
+        navigate(path);
+    }
 
     return (
         <>
@@ -65,18 +104,55 @@ export default function UserTableRow({name, role, userid,}) {
                     sx: {width: 140},
                 }}
             >
-                {/* change into normal buttons */}
-                <MenuItem onClick={handleCloseMenu}>
-                    <Iconify icon="eva:edit-fill" sx={{mr: 2}}/>
-                    View
-                </MenuItem>
-
                 {
-                    role === "student" &&
-                    <MenuItem onClick={handleCloseMenu} sx={{color: 'info.main'}}>
-                        <Iconify icon="eva:trash-2-outline" sx={{mr: 2}}/>
-                        Leader-ify
+                    (role === 'student' || role === 'leader') &&
+                    <MenuItem onClick={goToSchedule} >
+                        <Iconify icon="eva:calendar-outline" sx={{mr: 2}}/>
+                        Schedule
                     </MenuItem>
+                }
+                {
+                    role === "leader" &&
+                    <>
+                        <MenuItem onClick={goToSlots} >
+                            <Iconify icon="eva:clock-outline" sx={{mr: 2}}/>
+                            Slots
+                        </MenuItem>
+                        <MenuItem onClick={goToCourses} >
+                            <Iconify icon="eva:briefcase-outline" sx={{mr: 2}}/>
+                            Courses
+                        </MenuItem>
+                    </>
+                }
+                {
+                    (role === "leader" || role === "student") && (loggedRole === 'manager' || loggedRole === 'admin') &&
+                    <>
+                        <MenuItem onClick={goToTranscript} >
+                            <Iconify icon="eva:briefcase-outline" sx={{mr: 2}}/>
+                            Transcript
+                        </MenuItem>
+                        <MenuItem onClick={goToBookings} >
+                            <Iconify icon="eva:book-open-fill" sx={{mr: 2}}/>
+                            Bookings
+                        </MenuItem>
+                        <MenuItem onClick={goToRevisions} >
+                            <Iconify icon="eva:book-open-outline" sx={{mr: 2}}/>
+                            Revisions
+                        </MenuItem>
+                    </>
+                }
+                {
+                    (role === "leader") && (loggedRole === 'manager' || loggedRole === 'admin') &&
+                    <>
+                        <MenuItem onClick={goToLeaderBookings} >
+                            <Iconify icon="eva:clipboard-fill" sx={{mr: 2}}/>
+                            L Bookings
+                        </MenuItem>
+                        <MenuItem onClick={goToLeaderRevisions} >
+                            <Iconify icon="eva:clipboard-outline" sx={{mr: 2}}/>
+                            L Revisions
+                        </MenuItem>
+                    </>
                 }
             </Popover>
         </>

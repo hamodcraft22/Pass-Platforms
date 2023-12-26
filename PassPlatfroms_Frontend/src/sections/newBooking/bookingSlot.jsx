@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Box from "@mui/material/Box";
 import PublicIcon from '@mui/icons-material/Public';
+import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
+
 
 const propTypes = {
     start: PropTypes.object.isRequired,
@@ -15,7 +17,7 @@ class bookingSlot extends React.PureComponent {
         const {
             start,
             end,
-            online,
+            slotType,
             color
         } = this.props;
         return (
@@ -32,7 +34,8 @@ class bookingSlot extends React.PureComponent {
                         justifyContent: 'center',
                     }}
                 >
-                    {online && <PublicIcon></PublicIcon>}
+                    {(slotType === 'online' || slotType === 'both') && <PublicIcon></PublicIcon>}
+                    {(slotType === 'physical' || slotType === 'both') && <DeskRoundedIcon></DeskRoundedIcon>}
                     <span style={{
                         fontSize: "0.7em",
                         textAlign: "center"

@@ -28,7 +28,10 @@ import {Alert, Backdrop, CircularProgress, Snackbar} from "@mui/material";
 
 // ----------------------------------------------------------------------
 
-export default function RecommendationsPage() {
+export default function RecommendationsPage()
+{
+
+    // this page is open for everyone / other than tutors
 
     const queryParameters = new URLSearchParams(window.location.search)
     const studentIDParm = queryParameters.get("studentID");
@@ -176,15 +179,18 @@ export default function RecommendationsPage() {
                 setErrorShow(true);
             }
         }
-        else if (userRole === "student")
+        else if (userRole === "student" || userRole === "leader")
         {
-            // get student bookings
-            getBookings(userID, typeSelection);
-        }
-        else if (userRole === "leader")
-        {
-            // get leader bookings
-            getBookings(userID, typeSelection);
+            if (studentIDParm === null && leaderIDParm === null)
+            {
+                // get student bookings
+                getBookings(userID, typeSelection);
+            }
+            else
+            {
+                setErrorMsg("you are not allowed to access others Bookings");
+                setErrorShow(true);
+            }
         }
         else
         {

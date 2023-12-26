@@ -40,6 +40,8 @@ import UserProfile from "../../../components/auth/UserInfo";
 export default function SlotPage()
 {
 
+    // this page is open for everyone, editing is only for the manager / user
+
     const queryParameters = new URLSearchParams(window.location.search)
     const leaderIDParm = queryParameters.get("leaderID");
 

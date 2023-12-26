@@ -251,10 +251,10 @@ public class BookingServ
         {
             // check if in exam week - convert to local dates
             if (metadata != null && (
-                    (bookingDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().isAfter(metadata.getFrwstart().toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate()) && bookingDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().isBefore(metadata.getMrwend().toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate())) ||
-                            (bookingDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().isAfter(metadata.getFrwstart().toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate()) && bookingDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().isBefore(metadata.getFrwend().toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate())) ||
-                            (bookingDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().isAfter(metadata.getMwstart().toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate()) && bookingDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().isBefore(metadata.getMwend().toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate())) ||
-                            (bookingDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().isAfter(metadata.getFwstart().toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate()) && bookingDate.toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate().isBefore(metadata.getFwend().toInstant().atZone(ZoneId.of("Asia/Bahrain")).toLocalDate()))))
+                            (bookingDate.after(metadata.getMrwstart()) && bookingDate.before(metadata.getMrwend()) ) ||
+                            (bookingDate.after(metadata.getFrwstart()) && bookingDate.before(metadata.getFrwend()) )||
+                            (bookingDate.after(metadata.getMwstart()) && bookingDate.before(metadata.getMwend()) ) ||
+                            (bookingDate.after(metadata.getFwstart()) && bookingDate.before(metadata.getFwend())) ))
             {
                 errors.add("normal bookings are not allowed withing exam / exam break weeks");
             }

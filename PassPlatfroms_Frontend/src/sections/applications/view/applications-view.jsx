@@ -31,7 +31,10 @@ import UserProfile from "../../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
-export default function ApplicationsPage() {
+export default function ApplicationsPage()
+{
+
+    // this page is only usable by manager / admin
 
     const [loadingShow, setLoadingShow] = useState(false);
 
@@ -58,6 +61,10 @@ export default function ApplicationsPage() {
 
 
     const [applications, setApplications] = useState([]);
+
+
+    const [userID, setUserID] = useState("");
+    const [userRole, setUserRole] = useState("");
 
 
     // get all applications api
@@ -117,7 +124,38 @@ export default function ApplicationsPage() {
         setApplications(parrsedApplicatrions);
     }
 
-    useEffect(() => {getAllApplications()},[]);
+
+
+    async function getUserInfo()
+    {
+        // if leader, get his booking
+        // if student, get his booking,
+
+        // if admin/manager, get param and get his booking
+
+        let userID = await UserProfile.getUserID();
+        let userRole = await UserProfile.getUserRole();
+
+        await setUserID(userID);
+        await setUserRole(userRole);
+
+        // if admin / manager and there is student paramteter
+        if (userRole === "manager" || userRole === "admin")
+        {
+            getAllApplications()
+        }
+        else
+        {
+            setErrorMsg("you are not allowed to access this page");
+            setErrorShow(true);
+        }
+
+    }
+
+    // get school and courses on load - if not leader and there is param
+    useEffect(() => {getUserInfo()}, []);
+
+
 
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';

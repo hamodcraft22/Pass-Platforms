@@ -33,6 +33,8 @@ import {useNavigate} from "react-router-dom";
 
 export default function NewRegistrationPage() {
 
+    // this page is open for everyone but submitting is only allowed for students / leaders
+
     const [loadingShow, setLoadingShow] = useState(false);
 
     const [shownSection, setShownSection] = useState(1);
@@ -52,12 +54,22 @@ export default function NewRegistrationPage() {
         setErrorShow(false);
     };
 
+    const [userID, setUserID] = useState("");
+    const [userRole, setUserRole] = useState("");
 
     const [schools, setSchools] = useState([]);
     const [selectedSchool, setSelectedSchool] = useState(null);
     const [courses, setCourses] = useState([]);
     const [selectedCourse, setSelectedCourse] = useState();
 
+    async function getUserInfo()
+    {
+        let userID = await UserProfile.getUserID();
+        let userRole = await UserProfile.getUserRole();
+
+        await setUserID(userID);
+        await setUserRole(userRole);
+    }
 
     // get schools and courses
     async function getRevSchools() {
@@ -366,7 +378,15 @@ export default function NewRegistrationPage() {
         }
 
         if (shownSection === 3) {
-            submitBooking();
+            if (userRole === 'student' || userRole === 'leader')
+            {
+                submitBooking();
+            }
+            else
+            {
+                setErrorMsg("you are not allowed to book");
+                setErrorShow(true);
+            }
         }
 
     }

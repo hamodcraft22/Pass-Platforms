@@ -26,7 +26,9 @@ import {useNavigate} from "react-router-dom";
 
 // ----------------------------------------------------------------------
 
-export default function NewRevisionPage() {
+export default function NewRevisionPage()
+{
+    // this page is only for leaders
 
     const [loadingShow, setLoadingShow] = useState(false);
 
@@ -53,6 +55,8 @@ export default function NewRevisionPage() {
     const [courses, setCourses] = useState([]);
     const [selectedCourse, setSelectedCourse] = useState(null);
 
+    const [userID, setUserID] = useState("");
+    const [userRole, setUserRole] = useState("");
 
     // get schools and courses
     async function getAllSchools() {
@@ -86,10 +90,29 @@ export default function NewRevisionPage() {
         setLoadingShow(false);
     }
 
-    useEffect(() => {
-        getAllSchools()
-    }, [])
 
+    async function getUserInfo()
+    {
+        let userID = await UserProfile.getUserID();
+        let userRole = await UserProfile.getUserRole();
+
+        await setUserID(userID);
+        await setUserRole(userRole);
+
+        if (userRole === "leader")
+        {
+            getAllSchools();
+        }
+        else
+        {
+            setErrorMsg("you are not allowed to access this page");
+            setErrorShow(true);
+        }
+
+    }
+
+    // get school and courses on load - if not leader and there is param
+    useEffect(() => {getUserInfo()}, []);
 
 
     const [revWeekSelectedDate, setRevWeekSelectedDate] = useState(null);

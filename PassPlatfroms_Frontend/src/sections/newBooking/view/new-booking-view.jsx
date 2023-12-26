@@ -31,7 +31,9 @@ import {useNavigate} from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
-export default function NewBookingPage() {
+export default function NewBookingPage()
+{
+    // this page is accsasable for everyone / however bookings are not allowed only for students and leaders
 
     const [loadingShow, setLoadingShow] = useState(false);
 
@@ -58,6 +60,20 @@ export default function NewBookingPage() {
     const [courses, setCourses] = useState([]);
     const [selectedCourse, setSelectedCourse] = useState(null);
 
+    const [userID, setUserID] = useState("");
+    const [userRole, setUserRole] = useState("");
+
+    async function getUserInfo()
+    {
+        let userID = await UserProfile.getUserID();
+        let userRole = await UserProfile.getUserRole();
+
+        await setUserID(userID);
+        await setUserRole(userRole);
+    }
+
+    // get school and courses on load - if not leader and there is param
+    useEffect(() => {getUserInfo()}, []);
 
     // get schools and courses
     async function getAvlbSchools() {
@@ -500,8 +516,15 @@ export default function NewBookingPage() {
         }
 
         if (shownSection === 4) {
-            createSubmit();
-            // change color of progress to red if it is error etc
+            if (userRole === 'student' || userRole === 'leader')
+            {
+                createSubmit();
+            }
+            else
+            {
+                setErrorMsg("you are not allowed to book");
+                setErrorShow(true);
+            }
         }
 
     }
