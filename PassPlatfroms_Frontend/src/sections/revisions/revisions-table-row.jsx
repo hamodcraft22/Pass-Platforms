@@ -207,7 +207,7 @@ export default function RevisionsTableRow({bookingID, subject, date, startTime, 
                 <TableCell>{moment(startTime).format("hh:mm A")}</TableCell>
                 <TableCell>{moment(endTime).format("hh:mm A")}</TableCell>
 
-                <TableCell><Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label></TableCell>
+                <TableCell><Label color={(status === 'cancelled' && 'warning') || (status === 'finished' && 'success') || 'primary'}>{status}</Label></TableCell>
 
                 {/*type and online things */}
                 <TableCell>

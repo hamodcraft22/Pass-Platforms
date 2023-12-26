@@ -84,13 +84,16 @@ export default function UserTableRow({name, role, userid, loggedRole}) {
 
                 <TableCell>{userid}</TableCell>
 
-                <TableCell><Label color={(role === 'banned' && 'error') || 'success'}>{role}</Label></TableCell>
+                <TableCell><Label color={(role === 'tutor' && 'secondary') || (role === 'student' && 'warning') || (role === 'leader' && 'info') || 'success'}>{role}</Label></TableCell>
 
 
                 <TableCell align="right">
-                    <IconButton onClick={handleOpenMenu}>
-                        <Iconify icon="eva:more-vertical-fill"/>
-                    </IconButton>
+                    {
+                        (role === 'student' || role === 'leader') &&
+                        <IconButton onClick={handleOpenMenu}>
+                            <Iconify icon="eva:more-vertical-fill"/>
+                        </IconButton>
+                    }
                 </TableCell>
             </TableRow>
 

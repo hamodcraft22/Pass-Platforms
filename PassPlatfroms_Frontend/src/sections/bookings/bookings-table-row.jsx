@@ -192,7 +192,7 @@ export default function BookingsTableRow({bookingID, subject, date, startTime, e
                 <TableCell>{startTime ? (moment(startTime).format("hh:mm A")) : (moment(slotStartTime).format("hh:mm A"))}</TableCell>
                 <TableCell>{endTime ? (moment(endTime).format("hh:mm A")) : (moment(slotEndTime).format("hh:mm A"))}</TableCell>
 
-                <TableCell><Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label></TableCell>
+                <TableCell><Label color={(status === 'ignored' && 'error') || (status === 'student cancelled' && 'info') || (status === 'cancelled' && 'warning') || (status === 'finished' && 'success') || 'primary'}>{status}</Label></TableCell>
 
                 {/*type and online things */}
                 <TableCell>

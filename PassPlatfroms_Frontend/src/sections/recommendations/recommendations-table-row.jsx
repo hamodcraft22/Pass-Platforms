@@ -171,7 +171,7 @@ export default function RecommendationsTableRow({recID, dateTime, note, recStatu
 
                 <TableCell>{moment(dateTime).format("hh:mm A - DD/MM/YYYY")}</TableCell>
 
-                <TableCell><Label color={(recStatus === 'banned' && 'error') || 'success'}>{recStatus}</Label></TableCell>
+                <TableCell><Label color={(recStatus === 'rejected' && 'error') || (recStatus === 'accepted' && 'success') || (recStatus === 'interviewed' && 'info') || (recStatus === 'reviewed' && 'secondary') || 'primary'}>{recStatus}</Label></TableCell>
 
                 <TableCell align="right">
                     <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon fontSize={"small"}/></Button>

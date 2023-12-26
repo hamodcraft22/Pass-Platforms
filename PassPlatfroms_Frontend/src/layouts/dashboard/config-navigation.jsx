@@ -1,142 +1,147 @@
-import SvgColor from '../../components/svg-color';
+import AnalyticsTwoToneIcon from '@mui/icons-material/AnalyticsTwoTone';
+import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
+import EditCalendarTwoToneIcon from '@mui/icons-material/EditCalendarTwoTone';
+import WorkHistoryTwoToneIcon from '@mui/icons-material/WorkHistoryTwoTone';
+import SchoolTwoToneIcon from '@mui/icons-material/SchoolTwoTone';
+import HistoryEduTwoToneIcon from '@mui/icons-material/HistoryEduTwoTone';
+import BallotTwoToneIcon from '@mui/icons-material/BallotTwoTone';
+import BusinessCenterTwoToneIcon from '@mui/icons-material/BusinessCenterTwoTone';
+import PendingActionsTwoToneIcon from '@mui/icons-material/PendingActionsTwoTone';
+import EventNoteTwoToneIcon from '@mui/icons-material/EventNoteTwoTone';
+import GroupAddTwoToneIcon from '@mui/icons-material/GroupAddTwoTone';
+import AddReactionTwoToneIcon from '@mui/icons-material/AddReactionTwoTone';
+import SupervisedUserCircleTwoToneIcon from '@mui/icons-material/SupervisedUserCircleTwoTone';
+import AccountBalanceTwoToneIcon from '@mui/icons-material/AccountBalanceTwoTone';
+import HowToRegTwoToneIcon from '@mui/icons-material/HowToRegTwoTone';
+import ManageAccountsTwoToneIcon from '@mui/icons-material/ManageAccountsTwoTone';
+import LibraryBooksTwoToneIcon from '@mui/icons-material/LibraryBooksTwoTone';
+import DnsTwoToneIcon from '@mui/icons-material/DnsTwoTone';
+import FactCheckTwoToneIcon from '@mui/icons-material/FactCheckTwoTone';
+import CollectionsBookmarkTwoToneIcon from '@mui/icons-material/CollectionsBookmarkTwoTone';
 
 // ----------------------------------------------------------------------
 
-const icon = (name) => (
-    <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{width: 1, height: 1}}/>
-);
+// const icon = (name) => (
+//     <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{width: 1, height: 1}}/>
+// );
+
 
 const navConfig = [
-    // {
-    //     title: 'home',
-    //     path: '/',
-    //     icon: icon('ic_analytics'),
-    // },
-    // {
-    //     title: 'users',
-    //     path: '/user',
-    //     icon: icon('ic_user'),
-    // }
     {
         title: 'home',
         path: '/',
-        icon: icon('ic_analytics'),
+        icon: <AnalyticsTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'users',
         path: '/user',
-        icon: icon('ic_user'),
+        icon: <AccountBoxTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'New Booking',
         path: '/newBooking',
-        icon: icon('ic_user'),
+        icon: <EditCalendarTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'New Revision',
         path: '/newRevision',
-        icon: icon('ic_user'),
+        icon: <WorkHistoryTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'Schools',
         path: '/schools',
-        icon: icon('ic_user'),
+        icon: <AccountBalanceTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'New School',
         path: '/newSchool',
-        icon: icon('ic_user'),
+        icon: <EditCalendarTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'Courses',
         path: '/courses',
-        icon: icon('ic_user'),
+        icon: <BallotTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'Offered Courses',
         path: '/offeredCourses',
-        icon: icon('ic_user'),
+        icon: <BusinessCenterTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'Transcript',
         path: '/transcript',
-        icon: icon('ic_user'),
+        icon: <HistoryEduTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'Slot',
         path: '/slot',
-        icon: icon('ic_user'),
+        icon: <PendingActionsTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'Schedule',
         path: '/schedule',
-        icon: icon('ic_user'),
+        icon: <EventNoteTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'Recommendations',
         path: '/recommendations',
-        icon: icon('ic_user'),
+        icon: <GroupAddTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'Applications',
         path: '/applications',
-        icon: icon('ic_user'),
+        icon: <AddReactionTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'View Application',
         path: '/viewApplication',
-        icon: icon('ic_user'),
+        icon: <SupervisedUserCircleTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'Bookings',
         path: '/bookings',
-        icon: icon('ic_user'),
+        icon: <DnsTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'View Booking',
         path: '/viewBooking',
-        icon: icon('ic_user'),
+        icon: <LibraryBooksTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'Revisions',
         path: '/revisions',
-        icon: icon('ic_user'),
+        icon: <DnsTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'View Revision',
         path: '/viewRevision',
-        icon: icon('ic_user'),
+        icon: <CollectionsBookmarkTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'Revision Registration',
         path: '/revisionRegistration',
-        icon: icon('ic_user'),
+        icon: <FactCheckTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     {
         title: 'Management',
         path: '/management',
-        icon: icon('ic_user'),
+        icon: <ManageAccountsTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     // {
     //     title: 'Profile',
     //     path: '/profile',
-    //     icon: icon('ic_user'),
+    //     icon: <EditCalendarTwoToneIcon sx={{width: 1, height: 1}}/>,
     // },
     // {
     //     title: 'Unscheduled Booking',
     //     path: '/unscheduledBooking',
-    //     icon: icon('ic_user'),
+    //     icon: <EditCalendarTwoToneIcon sx={{width: 1, height: 1}}/>,
     // },
     // {
     //     title: 'about',
     //     path: '/404',
     //     icon: icon('ic_disabled'),
     // },
-    {
-        title: 'Not found',
-        path: '/404',
-        icon: icon('ic_disabled'),
-    },
 ];
 
 export default navConfig;

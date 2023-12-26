@@ -168,7 +168,7 @@ export default function ApplicationsTableRow({aplicID, studentID, student, date,
 
                 <TableCell>{date && moment(date).format("hh:mm A | DD/MM/YYYY")}</TableCell>
 
-                <TableCell><Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label></TableCell>
+                <TableCell><Label color={(status === 'rejected' && 'error') || (status === 'accepted' && 'success') || (status === 'interview' && 'info') || (status === 'reviewd' && 'secondary') || 'primary'}>{status}</Label></TableCell>
 
                 <TableCell align="right">
                     <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={goToView}><InfoIcon fontSize={"small"}/></Button>
