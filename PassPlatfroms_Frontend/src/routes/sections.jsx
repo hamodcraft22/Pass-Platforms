@@ -24,8 +24,11 @@ export const RevisionsPage = lazy(() => import('../pages/revisions'));
 export const ViewRevisionPage = lazy(() => import('../pages/viewRevision'));
 export const RevisionRegistrationPage = lazy(() => import('../pages/revisionRegistration'));
 export const ManagementPage = lazy(() => import('../pages/management'));
-export const ProfilePage = lazy(() => import('../pages/profile'));
-export const UnscheduledBookingPage = lazy(() => import('../pages/unscheduledBooking'));
+export const LogsPage = lazy(() => import('../pages/logs'));
+export const AuditsPage = lazy(() => import('../pages/audits'));
+
+// export const ProfilePage = lazy(() => import('../pages/profile'));
+// export const UnscheduledBookingPage = lazy(() => import('../pages/unscheduledBooking'));
 
 // ----------------------------------------------------------------------
 
@@ -60,8 +63,10 @@ export default function Router() {
                 {path: 'viewRevision', element: <ViewRevisionPage/>},
                 {path: 'revisionRegistration', element: <RevisionRegistrationPage/>},
                 {path: 'management', element: <ManagementPage/>},
-                {path: 'profile', element: <ProfilePage/>},
-                {path: 'unscheduledBooking', element: <UnscheduledBookingPage/>},
+                {path: 'logs', element: <LogsPage/>},
+                {path: 'audits', element: <AuditsPage/>},
+                // {path: 'profile', element: <ProfilePage/>},
+                // {path: 'unscheduledBooking', element: <UnscheduledBookingPage/>},
             ],
         },
         {

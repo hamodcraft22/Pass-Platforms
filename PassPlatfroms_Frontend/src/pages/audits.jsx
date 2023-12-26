@@ -1,17 +1,17 @@
 import {Helmet} from 'react-helmet-async';
 
-import {SlotView} from '../sections/slot/view';
+import {AuditsView} from '../sections/audits/view';
 
 // ----------------------------------------------------------------------
 
-export default function SlotPage() {
+export default function AuditsPage() {
     return (
         <>
             <Helmet>
-                <title> Slot </title>
+                <title> Audits </title>
             </Helmet>
 
-            <SlotView/>
+            <AuditsView/>
         </>
     );
 }

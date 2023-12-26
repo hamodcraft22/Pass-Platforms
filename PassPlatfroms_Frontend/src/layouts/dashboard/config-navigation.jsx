@@ -18,6 +18,10 @@ import LibraryBooksTwoToneIcon from '@mui/icons-material/LibraryBooksTwoTone';
 import DnsTwoToneIcon from '@mui/icons-material/DnsTwoTone';
 import FactCheckTwoToneIcon from '@mui/icons-material/FactCheckTwoTone';
 import CollectionsBookmarkTwoToneIcon from '@mui/icons-material/CollectionsBookmarkTwoTone';
+import VerifiedUserTwoToneIcon from '@mui/icons-material/VerifiedUserTwoTone';
+import RunningWithErrorsTwoToneIcon from '@mui/icons-material/RunningWithErrorsTwoTone';
+import AssignmentLateTwoToneIcon from '@mui/icons-material/AssignmentLateTwoTone';
+import DisplaySettingsTwoToneIcon from '@mui/icons-material/DisplaySettingsTwoTone';
 
 // ----------------------------------------------------------------------
 
@@ -126,6 +130,16 @@ const navConfig = [
         title: 'Management',
         path: '/management',
         icon: <ManageAccountsTwoToneIcon sx={{width: 1, height: 1}}/>,
+    },
+    {
+        title: 'Audits',
+        path: '/audits',
+        icon: <DisplaySettingsTwoToneIcon sx={{width: 1, height: 1}}/>,
+    },
+    {
+        title: 'Logs',
+        path: '/logs',
+        icon: <AssignmentLateTwoToneIcon sx={{width: 1, height: 1}}/>,
     },
     // {
     //     title: 'Profile',

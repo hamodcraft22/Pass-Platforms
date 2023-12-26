@@ -35,7 +35,7 @@ public class LogServ
         {
             logs.add(new LogDao(
                     retrivedLog.getLogid(),
-                    null,
+                    retrivedLog.getErrormsg(),
                     retrivedLog.getDatetime().toInstant(),
                     new UserDao(retrivedLog.getUser().getUserid(), new RoleDao(retrivedLog.getUser().getRole()), getAzureAdName(retrivedLog.getUser().getUserid()), null)
             ));
