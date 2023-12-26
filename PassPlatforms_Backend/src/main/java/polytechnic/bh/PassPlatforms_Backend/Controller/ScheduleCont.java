@@ -76,16 +76,16 @@ public class ScheduleCont
         if (userID != null)
         {
 
-                List<ScheduleDao> schedules = scheduleServ.getUserSchedules(studentID);
+            List<ScheduleDao> schedules = scheduleServ.getUserSchedules(studentID);
 
-                if (schedules != null && !schedules.isEmpty())
-                {
-                    return new ResponseEntity<>(new GenericDto<>(null, schedules, null, null), HttpStatus.OK);
-                }
-                else
-                {
-                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-                }
+            if (schedules != null && !schedules.isEmpty())
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, schedules, null, null), HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            }
 
         }
         else

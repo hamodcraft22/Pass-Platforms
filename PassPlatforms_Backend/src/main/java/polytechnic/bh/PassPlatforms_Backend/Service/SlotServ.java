@@ -16,14 +16,11 @@ import polytechnic.bh.PassPlatforms_Backend.Repository.SlotTypeRepo;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static polytechnic.bh.PassPlatforms_Backend.Constant.BookingStatusConstant.BKNGSTAT_ACTIVE;
 import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
 
 @Service

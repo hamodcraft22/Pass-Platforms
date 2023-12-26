@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Slot;
-import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 
 import java.sql.Timestamp;
 import java.util.List;

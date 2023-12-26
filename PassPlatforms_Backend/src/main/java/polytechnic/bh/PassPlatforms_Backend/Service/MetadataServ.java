@@ -42,41 +42,27 @@ public class MetadataServ
     {
         Optional<Metadata> retrievedMetadata = metadataRepo.findById(1);
 
-        if (retrievedMetadata.isPresent())
-        {
-            if (retrievedMetadata.get().isEnabled())
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
-            return false;
-        }
+        return retrievedMetadata.map(Metadata::isEnabled).orElse(false);
     }
 
     // Update metadata
     public MetadataDao updateMetadata(MetadataDao metadataDao)
     {
 
-            Metadata updatedMetadata = new Metadata();
-            updatedMetadata.setMetadataid(1);
-            updatedMetadata.setMrwstart(new Date(metadataDao.getMrwstart().getTime()));
-            updatedMetadata.setMrwend(new Date(metadataDao.getMrwend().getTime()));
-            updatedMetadata.setMwstart(new Date(metadataDao.getMwstart().getTime()));
-            updatedMetadata.setMwend(new Date(metadataDao.getMwend().getTime()));
-            updatedMetadata.setFrwstart(new Date(metadataDao.getFrwstart().getTime()));
-            updatedMetadata.setFrwend(new Date(metadataDao.getFrwend().getTime()));
-            updatedMetadata.setFwstart(new Date(metadataDao.getFwstart().getTime()));
-            updatedMetadata.setFwend(new Date(metadataDao.getFwend().getTime()));
-            updatedMetadata.setEnabled(metadataDao.isEnabled());
-            updatedMetadata.setBooking(metadataDao.isBooking());
+        Metadata updatedMetadata = new Metadata();
+        updatedMetadata.setMetadataid(1);
+        updatedMetadata.setMrwstart(new Date(metadataDao.getMrwstart().getTime()));
+        updatedMetadata.setMrwend(new Date(metadataDao.getMrwend().getTime()));
+        updatedMetadata.setMwstart(new Date(metadataDao.getMwstart().getTime()));
+        updatedMetadata.setMwend(new Date(metadataDao.getMwend().getTime()));
+        updatedMetadata.setFrwstart(new Date(metadataDao.getFrwstart().getTime()));
+        updatedMetadata.setFrwend(new Date(metadataDao.getFrwend().getTime()));
+        updatedMetadata.setFwstart(new Date(metadataDao.getFwstart().getTime()));
+        updatedMetadata.setFwend(new Date(metadataDao.getFwend().getTime()));
+        updatedMetadata.setEnabled(metadataDao.isEnabled());
+        updatedMetadata.setBooking(metadataDao.isBooking());
 
-            return new MetadataDao(metadataRepo.save(updatedMetadata));
+        return new MetadataDao(metadataRepo.save(updatedMetadata));
 
     }
 

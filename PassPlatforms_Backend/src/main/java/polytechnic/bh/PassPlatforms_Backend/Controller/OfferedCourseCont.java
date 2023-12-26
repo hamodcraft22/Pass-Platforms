@@ -203,7 +203,7 @@ public class OfferedCourseCont
 
             if (user.getRole().getRoleid() == ROLE_LEADER)
             {
-                    return new ResponseEntity<>(new GenericDto<>(null, offeredCourseServ.createMultiOfferedCourse(offeredCourseDao), null, null), HttpStatus.CREATED);
+                return new ResponseEntity<>(new GenericDto<>(null, offeredCourseServ.createMultiOfferedCourse(offeredCourseDao), null, null), HttpStatus.CREATED);
             }
             else
             {

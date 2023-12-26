@@ -2,13 +2,14 @@ package polytechnic.bh.PassPlatforms_Backend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import polytechnic.bh.PassPlatforms_Backend.Dao.*;
+import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
+import polytechnic.bh.PassPlatforms_Backend.Dao.MetadataDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Dto.RevisionSlotsDto;
 import polytechnic.bh.PassPlatforms_Backend.Entity.*;
 import polytechnic.bh.PassPlatforms_Backend.Repository.*;
 
-import java.awt.print.Book;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.Instant;
@@ -65,6 +66,9 @@ public class BookingServ
 
     @Autowired
     private BookingMemberServ bookingMemberServ;
+
+    @Autowired
+    private MailServ mailServ;
 
     // get all bookings / revisions - manager
     public List<BookingDao> getAllBookings()
@@ -251,10 +255,10 @@ public class BookingServ
         {
             // check if in exam week - convert to local dates
             if (metadata != null && (
-                            (bookingDate.after(metadata.getMrwstart()) && bookingDate.before(metadata.getMrwend()) ) ||
-                            (bookingDate.after(metadata.getFrwstart()) && bookingDate.before(metadata.getFrwend()) )||
-                            (bookingDate.after(metadata.getMwstart()) && bookingDate.before(metadata.getMwend()) ) ||
-                            (bookingDate.after(metadata.getFwstart()) && bookingDate.before(metadata.getFwend())) ))
+                    (bookingDate.after(metadata.getMrwstart()) && bookingDate.before(metadata.getMrwend())) ||
+                            (bookingDate.after(metadata.getFrwstart()) && bookingDate.before(metadata.getFrwend())) ||
+                            (bookingDate.after(metadata.getMwstart()) && bookingDate.before(metadata.getMwend())) ||
+                            (bookingDate.after(metadata.getFwstart()) && bookingDate.before(metadata.getFwend()))))
             {
                 errors.add("normal bookings are not allowed withing exam / exam break weeks");
             }
@@ -435,8 +439,21 @@ public class BookingServ
                     }
                 }
 
-                // return dto with correct things
-                return new GenericDto<>(null, new BookingDao(bookingRepo.findById(createdBooking.getBookingid()).get()), null, warnings);
+                Optional<Booking> addedBooking = bookingRepo.findById(createdBooking.getBookingid());
+
+                if (addedBooking.isPresent())
+                {
+                    // send email
+                    mailServ.sendInvite(new BookingDao(addedBooking.get()));
+
+                    return new GenericDto<>(null, new BookingDao(addedBooking.get()), null, warnings);
+                }
+                else
+                {
+                    errors.add("error creating booking");
+
+                    return new GenericDto<>(null, null, errors, null);
+                }
             }
             else
             {
@@ -462,8 +479,21 @@ public class BookingServ
 
                 notificationRepo.save(newNotification);
 
-                // return dto with correct things
-                return new GenericDto<>(null, new BookingDao(bookingRepo.findById(createdBooking.getBookingid()).get()), null, null);
+                Optional<Booking> addedBooking = bookingRepo.findById(createdBooking.getBookingid());
+
+                if (addedBooking.isPresent())
+                {
+                    // send email
+                    mailServ.sendInvite(new BookingDao(addedBooking.get()));
+
+                    return new GenericDto<>(null, new BookingDao(addedBooking.get()), null, null);
+                }
+                else
+                {
+                    errors.add("error creating booking");
+
+                    return new GenericDto<>(null, null, errors, null);
+                }
             }
         }
         else

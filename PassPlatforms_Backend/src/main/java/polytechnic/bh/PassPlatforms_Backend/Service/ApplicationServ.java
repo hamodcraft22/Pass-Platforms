@@ -52,7 +52,7 @@ public class ApplicationServ
                         retrivedApplication.getDatetime().toInstant(),
                         retrivedApplication.getNote(),
                         new ApplicationStatusDao(retrivedApplication.getApplicationStatus()),
-                        new UserDao(retrivedApplication.getUser().getUserid(),null,getAzureAdName(retrivedApplication.getUser().getUserid()),null),
+                        new UserDao(retrivedApplication.getUser().getUserid(), null, getAzureAdName(retrivedApplication.getUser().getUserid()), null),
                         null));
             }
         }

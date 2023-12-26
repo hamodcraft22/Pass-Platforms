@@ -48,7 +48,7 @@ public class UsersService
         }
     }
 
-    public static JSONObject refreshUsers() throws JSONException
+    public static void refreshUsers() throws JSONException
     {
         String url = "https://graph.microsoft.com/v1.0/users";
         String token = getToken();
@@ -73,7 +73,7 @@ public class UsersService
                 ObjectMapper objectMapper = new ObjectMapper();
 
                 // Convert the JSON string to a List of Map objects
-                List<Map<String, Object>> userList = objectMapper.readValue(myjson.get("value").toString(), new TypeReference<List<Map<String, Object>>>()
+                List<Map<String, Object>> userList = objectMapper.readValue(myjson.get("value").toString(), new TypeReference<>()
                 {
                 });
 
@@ -91,10 +91,9 @@ public class UsersService
                     resultMap.put(userID, displayName);
 
 
-
                     if (userID.charAt(0) == '2')
                     {
-                        allAzureStudents.add(new UserInfoDto(userID,displayName));
+                        allAzureStudents.add(new UserInfoDto(userID, displayName));
                     }
                 }
 
@@ -105,9 +104,7 @@ public class UsersService
                 e.printStackTrace();
             }
 
-            return myjson;
         }
-        return null;
     }
 
     private static String getToken()

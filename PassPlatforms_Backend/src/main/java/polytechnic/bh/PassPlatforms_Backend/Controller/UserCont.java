@@ -71,14 +71,7 @@ public class UserCont
             {
                 Optional<User> gottenUser = userRepo.findById(userID);
 
-                if (gottenUser.isPresent())
-                {
-                    return new ResponseEntity<>(new GenericDto<>(null, new UserDao(gottenUser.get()), null, null), HttpStatus.OK);
-                }
-                else
-                {
-                    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-                }
+                return gottenUser.<ResponseEntity<GenericDto<?>>>map(value -> new ResponseEntity<>(new GenericDto<>(null, new UserDao(value), null, null), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
             }
             else
             {
@@ -95,7 +88,6 @@ public class UserCont
     @GetMapping("/userlog")
     public ResponseEntity<GenericDto<UserDao>> userLog(@RequestHeader(value = "Authorization") String barerKey)
     {
-        System.out.println("user logged");
         String userID = isValidToken(barerKey);
 
         if (userID != null)
