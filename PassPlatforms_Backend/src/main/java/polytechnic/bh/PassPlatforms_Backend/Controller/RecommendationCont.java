@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.RecommendationDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
+import polytechnic.bh.PassPlatforms_Backend.Service.LogServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.RecommendationServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
@@ -28,6 +29,9 @@ public class RecommendationCont
     @Autowired
     private UserServ userServ;
 
+    @Autowired
+    private LogServ logServ;
+
     // get all recommendations
     @GetMapping("")
     public ResponseEntity<GenericDto<List<RecommendationDao>>> getAllRecommendations(
@@ -35,22 +39,29 @@ public class RecommendationCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            if (userID != null)
             {
-                List<RecommendationDao> recommendations = recommendationServ.getAllRecommendations();
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (recommendations != null && !recommendations.isEmpty())
+                if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, recommendations, null, null), HttpStatus.OK);
+                    List<RecommendationDao> recommendations = recommendationServ.getAllRecommendations();
+
+                    if (recommendations != null && !recommendations.isEmpty())
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, recommendations, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -58,11 +69,11 @@ public class RecommendationCont
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // get tutor recommendations -- added | tested
@@ -73,22 +84,29 @@ public class RecommendationCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_TUTOR)
+            if (userID != null)
             {
-                List<RecommendationDao> recommendations = recommendationServ.getTutorRecommendations(tutorID);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (recommendations != null && !recommendations.isEmpty())
+                if (user.getRole().getRoleid() == ROLE_TUTOR)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, recommendations, null, null), HttpStatus.OK);
+                    List<RecommendationDao> recommendations = recommendationServ.getTutorRecommendations(tutorID);
+
+                    if (recommendations != null && !recommendations.isEmpty())
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, recommendations, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -96,11 +114,11 @@ public class RecommendationCont
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // get recommendation details
@@ -111,55 +129,62 @@ public class RecommendationCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            if (userID != null)
             {
-                RecommendationDao recommendation = recommendationServ.getRecommendationDetails(recID);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (recommendation != null)
+                if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, recommendation, null, null), HttpStatus.OK);
-                }
-                else
-                {
-                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-                }
-            }
-            else if (user.getRole().getRoleid() == ROLE_TUTOR)
-            {
-                RecommendationDao recommendation = recommendationServ.getRecommendationDetails(recID);
+                    RecommendationDao recommendation = recommendationServ.getRecommendationDetails(recID);
 
-                if (recommendation != null)
-                {
-                    if (Objects.equals(recommendation.getTutor().getUserid(), userID))
+                    if (recommendation != null)
                     {
                         return new ResponseEntity<>(new GenericDto<>(null, recommendation, null, null), HttpStatus.OK);
                     }
                     else
                     {
-                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    }
+                }
+                else if (user.getRole().getRoleid() == ROLE_TUTOR)
+                {
+                    RecommendationDao recommendation = recommendationServ.getRecommendationDetails(recID);
+
+                    if (recommendation != null)
+                    {
+                        if (Objects.equals(recommendation.getTutor().getUserid(), userID))
+                        {
+                            return new ResponseEntity<>(new GenericDto<>(null, recommendation, null, null), HttpStatus.OK);
+                        }
+                        else
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        }
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
                     }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
+
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
-
     }
 
     // create recommendation -- added | tested
@@ -170,33 +195,40 @@ public class RecommendationCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_TUTOR)
+            if (userID != null)
             {
-                RecommendationDao createdRecommendation = recommendationServ.createRecommendation(
-                        recommendationDao.getDatetime(),
-                        recommendationDao.getNote(),
-                        recommendationDao.getTutor().getUserid(),
-                        recommendationDao.getStudent().getUserid()
-                );
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                return new ResponseEntity<>(new GenericDto<>(null, createdRecommendation, null, null), HttpStatus.CREATED);
+                if (user.getRole().getRoleid() == ROLE_TUTOR)
+                {
+                    RecommendationDao createdRecommendation = recommendationServ.createRecommendation(
+                            recommendationDao.getDatetime(),
+                            recommendationDao.getNote(),
+                            recommendationDao.getTutor().getUserid(),
+                            recommendationDao.getStudent().getUserid()
+                    );
+
+                    return new ResponseEntity<>(new GenericDto<>(null, createdRecommendation, null, null), HttpStatus.CREATED);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
             }
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
+
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
-
     }
 
     // edit recommendation
@@ -207,24 +239,26 @@ public class RecommendationCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            if (userID != null)
             {
-                RecommendationDao editedRecommendation = recommendationServ.editRecommendation(recommendationDao);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (editedRecommendation != null)
+                if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, editedRecommendation, null, null), HttpStatus.OK);
+                    RecommendationDao editedRecommendation = recommendationServ.editRecommendation(recommendationDao);
+
+                    if (editedRecommendation != null)
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, editedRecommendation, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
                 }
-                else
-                {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-                }
-            }
 //            else if (user.getRole().getRoleid() == ROLE_TUTOR)
 //            {
 //                RecommendationDao editedRecommendation = recommendationServ.getRecommendationDetails(recommendationDao.getRecid());
@@ -245,16 +279,21 @@ public class RecommendationCont
 //                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 //                }
 //            }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
+            }
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // delete recommendation -- added | tested
@@ -265,47 +304,54 @@ public class RecommendationCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            if (userID != null)
             {
-                if (recommendationServ.deleteRecommendation(recID))
-                {
-                    return new ResponseEntity<>(null, HttpStatus.OK);
-                }
-                else
-                {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-                }
-            }
-            else if (user.getRole().getRoleid() == ROLE_TUTOR)
-            {
-                RecommendationDao editedRecommendation = recommendationServ.getRecommendationDetails(recID);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (editedRecommendation != null)
+                if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
                 {
-                    if (Objects.equals(editedRecommendation.getTutor().getUserid(), userID))
+                    if (recommendationServ.deleteRecommendation(recID))
                     {
-                        if (recommendationServ.deleteRecommendation(recID))
+                        return new ResponseEntity<>(null, HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
+                }
+                else if (user.getRole().getRoleid() == ROLE_TUTOR)
+                {
+                    RecommendationDao editedRecommendation = recommendationServ.getRecommendationDetails(recID);
+
+                    if (editedRecommendation != null)
+                    {
+                        if (Objects.equals(editedRecommendation.getTutor().getUserid(), userID))
                         {
-                            return new ResponseEntity<>(null, HttpStatus.OK);
+                            if (recommendationServ.deleteRecommendation(recID))
+                            {
+                                return new ResponseEntity<>(null, HttpStatus.OK);
+                            }
+                            else
+                            {
+                                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                            }
                         }
                         else
                         {
-                            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                         }
                     }
                     else
                     {
-                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                     }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -313,10 +359,10 @@ public class RecommendationCont
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 }

@@ -1,9 +1,11 @@
 package polytechnic.bh.PassPlatforms_Backend.Controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dto.UserInfoDto;
+import polytechnic.bh.PassPlatforms_Backend.Service.LogServ;
 
 import java.util.List;
 
@@ -15,31 +17,42 @@ import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.*;
 @RequestMapping("/api/users")
 public class UsersCont
 {
+    @Autowired
+    private LogServ logServ;
+
     // get all users
     @GetMapping("")
     public ResponseEntity<?> getAllADUsers(@RequestHeader(value = "Authorization", required = false) String requestKey)
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            try
+            if (userID != null)
             {
-                if (allAzureAdUsers.isEmpty())
+                try
                 {
-                    refreshUsers();
-                }
+                    if (allAzureAdUsers.isEmpty())
+                    {
+                        refreshUsers();
+                    }
 
-                return new ResponseEntity<>(allAzureAdUsers, HttpStatus.OK);
+                    return new ResponseEntity<>(allAzureAdUsers, HttpStatus.OK);
+                }
+                catch (Exception e)
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
             }
-            catch (Exception e)
+            else
             {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -50,27 +63,34 @@ public class UsersCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            try
+            if (userID != null)
             {
-                if (allAzureStudents.isEmpty())
+                try
                 {
-                    refreshUsers();
+                    if (allAzureStudents.isEmpty())
+                    {
+                        refreshUsers();
+                    }
+
+                    return new ResponseEntity<>(allAzureStudents, HttpStatus.OK);
                 }
-
-                return new ResponseEntity<>(allAzureStudents, HttpStatus.OK);
+                catch (Exception e)
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
             }
-            catch (Exception e)
+            else
             {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // refresh all users in local cache - tested
@@ -79,23 +99,30 @@ public class UsersCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            try
+            if (userID != null)
             {
-                refreshUsers();
+                try
+                {
+                    refreshUsers();
 
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                    return new ResponseEntity<>(null, HttpStatus.OK);
+                }
+                catch (Exception ex)
+                {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 }

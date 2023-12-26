@@ -9,6 +9,7 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
+import polytechnic.bh.PassPlatforms_Backend.Service.LogServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
 import java.util.ArrayList;
@@ -32,26 +33,37 @@ public class UserCont
     @Autowired
     private UserServ userServ;
 
+    @Autowired
+    private LogServ logServ;
+
     // get all saved users -- tested | added
     @GetMapping("")
     public ResponseEntity<GenericDto<List<UserDao>>> getAllUsers(@RequestHeader(value = "Authorization", required = false) String requestKey)
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            List<UserDao> users = new ArrayList<>();
-
-            for (User user : userRepo.findAll())
+            if (userID != null)
             {
-                users.add(new UserDao(user.getUserid(), new RoleDao(user.getRole()), getAzureAdName(user.getUserid()), null));
-            }
+                List<UserDao> users = new ArrayList<>();
 
-            return new ResponseEntity<>(new GenericDto<>(null, users, null, null), HttpStatus.OK);
+                for (User user : userRepo.findAll())
+                {
+                    users.add(new UserDao(user.getUserid(), new RoleDao(user.getRole()), getAzureAdName(user.getUserid()), null));
+                }
+
+                return new ResponseEntity<>(new GenericDto<>(null, users, null, null), HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -62,25 +74,33 @@ public class UserCont
     {
         String thisUserID = isValidToken(requestKey);
 
-        if (thisUserID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            if (thisUserID != null)
             {
-                Optional<User> gottenUser = userRepo.findById(userID);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                return gottenUser.<ResponseEntity<GenericDto<?>>>map(value -> new ResponseEntity<>(new GenericDto<>(null, new UserDao(value), null, null), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+                if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+                {
+                    Optional<User> gottenUser = userRepo.findById(userID);
+
+                    return gottenUser.<ResponseEntity<GenericDto<?>>>map(value -> new ResponseEntity<>(new GenericDto<>(null, new UserDao(value), null, null), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
             }
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -90,13 +110,21 @@ public class UserCont
     {
         String userID = isValidToken(barerKey);
 
-        if (userID != null)
+        try
         {
-            return new ResponseEntity<>(new GenericDto<>(null, userServ.getUser(userID), null, null), HttpStatus.OK);
+            if (userID != null)
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, userServ.getUser(userID), null, null), HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, null, null, null), HttpStatus.UNAUTHORIZED);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, null, null, null), HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -107,13 +135,21 @@ public class UserCont
     {
         String userID = isValidToken(barerKey);
 
-        if (userID != null)
+        try
         {
-            return new ResponseEntity<>(new GenericDto<>(null, userServ.schoolLeaders(schoolID), null, null), HttpStatus.OK);
+            if (userID != null)
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, userServ.schoolLeaders(schoolID), null, null), HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, null, null, null), HttpStatus.UNAUTHORIZED);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, null, null, null), HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -124,13 +160,21 @@ public class UserCont
     {
         String userID = isValidToken(barerKey);
 
-        if (userID != null)
+        try
         {
-            return new ResponseEntity<>(new GenericDto<>(null, userServ.courseLeaders(courseID), null, null), HttpStatus.OK);
+            if (userID != null)
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, userServ.courseLeaders(courseID), null, null), HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(new GenericDto<>(null, null, null, null), HttpStatus.UNAUTHORIZED);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, null, null, null), HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -140,24 +184,32 @@ public class UserCont
     {
         String userID = isValidToken(barerKey);
 
-        if (userID != null)
+        try
         {
-            UserDao retrivedUser = userServ.getUser(userID);
-
-            if (retrivedUser.getRole().getRoleid() == 4 || retrivedUser.getRole().getRoleid() == 5)
+            if (userID != null)
             {
-                List<UserDao> newLeaders = userServ.makeLeaders(studentIDs);
+                UserDao retrivedUser = userServ.getUser(userID);
 
-                return new ResponseEntity<>(new GenericDto<>(null, newLeaders, null, null), HttpStatus.OK);
+                if (retrivedUser.getRole().getRoleid() == 4 || retrivedUser.getRole().getRoleid() == 5)
+                {
+                    List<UserDao> newLeaders = userServ.makeLeaders(studentIDs);
+
+                    return new ResponseEntity<>(new GenericDto<>(null, newLeaders, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, null, null, null), HttpStatus.UNAUTHORIZED);
+                }
             }
             else
             {
                 return new ResponseEntity<>(new GenericDto<>(null, null, null, null), HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, null, null, null), HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.SchoolDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
+import polytechnic.bh.PassPlatforms_Backend.Service.LogServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.SchoolServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
@@ -29,6 +30,9 @@ public class SchoolCont
     @Autowired
     private UserServ userServ;
 
+    @Autowired
+    private LogServ logServ;
+
     // get all schools -- tested | added
     @GetMapping("")
     public ResponseEntity<GenericDto<List<SchoolDao>>> getAllSchools(
@@ -37,24 +41,31 @@ public class SchoolCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            List<SchoolDao> schools = schoolServ.getAllSchools();
-
-            if (schools != null && !schools.isEmpty())
+            if (userID != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, schools, null, null), HttpStatus.OK);
+                List<SchoolDao> schools = schoolServ.getAllSchools();
+
+                if (schools != null && !schools.isEmpty())
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, schools, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // get revision schools -- tested
@@ -65,24 +76,31 @@ public class SchoolCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            List<SchoolDao> schools = schoolServ.getAllRevSchools();
-
-            if (schools != null && !schools.isEmpty())
+            if (userID != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, schools, null, null), HttpStatus.OK);
+                List<SchoolDao> schools = schoolServ.getAllRevSchools();
+
+                if (schools != null && !schools.isEmpty())
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, schools, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // get available schools -- tested | added
@@ -93,24 +111,31 @@ public class SchoolCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            List<SchoolDao> schools = schoolServ.getAllAvlbSchools();
-
-            if (schools != null && !schools.isEmpty())
+            if (userID != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, schools, null, null), HttpStatus.OK);
+                List<SchoolDao> schools = schoolServ.getAllAvlbSchools();
+
+                if (schools != null && !schools.isEmpty())
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, schools, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // get school details - not needed?
@@ -121,24 +146,31 @@ public class SchoolCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            SchoolDao school = schoolServ.getSchoolDetails(schoolID);
-
-            if (school != null)
+            if (userID != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, school, null, null), HttpStatus.OK);
+                SchoolDao school = schoolServ.getSchoolDetails(schoolID);
+
+                if (school != null)
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, school, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // create multi school -- tested | added
@@ -149,27 +181,34 @@ public class SchoolCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            if (userID != null)
             {
-                List<SchoolDao> createdSchool = schoolServ.createMultiSchool(schoolsDao);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                return new ResponseEntity<>(new GenericDto<>(null, createdSchool, null, null), HttpStatus.CREATED);
+                if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+                {
+                    List<SchoolDao> createdSchool = schoolServ.createMultiSchool(schoolsDao);
+
+                    return new ResponseEntity<>(new GenericDto<>(null, createdSchool, null, null), HttpStatus.CREATED);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
             }
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // create school -- tested | added
@@ -180,22 +219,29 @@ public class SchoolCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            if (userID != null)
             {
-                if (schoolServ.getSchoolDetails(schoolDao.getSchoolid()) == null)
-                {
-                    SchoolDao createdSchool = schoolServ.createSchool(schoolDao.getSchoolid(), schoolDao.getSchoolname(), schoolDao.getCourses());
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                    return new ResponseEntity<>(new GenericDto<>(null, createdSchool, null, null), HttpStatus.CREATED);
+                if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+                {
+                    if (schoolServ.getSchoolDetails(schoolDao.getSchoolid()) == null)
+                    {
+                        SchoolDao createdSchool = schoolServ.createSchool(schoolDao.getSchoolid(), schoolDao.getSchoolname(), schoolDao.getCourses());
+
+                        return new ResponseEntity<>(new GenericDto<>(null, createdSchool, null, null), HttpStatus.CREATED);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -203,11 +249,11 @@ public class SchoolCont
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // edit school -- tested | added
@@ -218,22 +264,29 @@ public class SchoolCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            if (userID != null)
             {
-                SchoolDao editedSchool = schoolServ.editSchool(schoolDao);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (editedSchool != null)
+                if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, editedSchool, null, null), HttpStatus.OK);
+                    SchoolDao editedSchool = schoolServ.editSchool(schoolDao);
+
+                    if (editedSchool != null)
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, editedSchool, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -241,11 +294,11 @@ public class SchoolCont
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
 
     }
 
@@ -257,20 +310,27 @@ public class SchoolCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            if (userID != null)
             {
-                if (schoolServ.deleteSchool(schoolID))
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
+
+                if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
                 {
-                    return new ResponseEntity<>(null, HttpStatus.OK);
+                    if (schoolServ.deleteSchool(schoolID))
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -278,11 +338,11 @@ public class SchoolCont
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 }
 

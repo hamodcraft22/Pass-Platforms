@@ -93,7 +93,7 @@ export default function ApplicationsTableRow({aplicID, studentID, student, date,
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`http://localhost:8080/api/application/${aplicID}`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/application/${aplicID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -137,7 +137,7 @@ export default function ApplicationsTableRow({aplicID, studentID, student, date,
 
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(applicationToSubmit)};
 
-            await fetch(`http://localhost:8080/api/application`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/application`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)

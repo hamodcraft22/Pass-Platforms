@@ -72,7 +72,7 @@ export default function NewRevisionPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`http://localhost:8080/api/school`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/school`, requestOptions)
                 .then(response =>
                 {
                     return response.json()
@@ -179,7 +179,7 @@ export default function NewRevisionPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(revisionDto)};
 
-            await fetch(`http://localhost:8080/api/revision`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/revision`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

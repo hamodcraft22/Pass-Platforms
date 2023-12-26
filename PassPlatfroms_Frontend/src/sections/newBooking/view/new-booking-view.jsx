@@ -92,7 +92,7 @@ export default function NewBookingPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`http://localhost:8080/api/school/schools`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/school/schools`, requestOptions)
                 .then(response =>
                 {
                     console.log(response);
@@ -144,7 +144,7 @@ export default function NewBookingPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch(`http://localhost:8080/api/slot/course/${selectedCourse.courseid}?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/slot/course/${selectedCourse.courseid}?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status == 200 || response.status === 201)
@@ -380,7 +380,7 @@ export default function NewBookingPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch(`http://localhost:8080/api/users/students`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/users/students`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200)
@@ -478,7 +478,7 @@ export default function NewBookingPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(bookingDto)};
 
-            await fetch(`http://localhost:8080/api/booking`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/booking`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.MetadataDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
+import polytechnic.bh.PassPlatforms_Backend.Service.LogServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.MetadataServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
@@ -25,6 +26,9 @@ public class MetadataController
     @Autowired
     private UserServ userServ;
 
+    @Autowired
+    private LogServ logServ;
+
     // Get metadata info
     @GetMapping("")
     public ResponseEntity<MetadataDao> getMetadata(
@@ -33,19 +37,26 @@ public class MetadataController
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            MetadataDao metadata = metadataServ.getMetadata();
-            return (metadata != null) ?
-                    new ResponseEntity<>(metadata, HttpStatus.OK) :
-                    new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (userID != null)
+            {
+                MetadataDao metadata = metadataServ.getMetadata();
+                return (metadata != null) ?
+                        new ResponseEntity<>(metadata, HttpStatus.OK) :
+                        new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
-
     }
 
     @GetMapping("/disabled")
@@ -64,26 +75,34 @@ public class MetadataController
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_MANAGER)
+            if (userID != null)
             {
-                MetadataDao updatedMetadata = metadataServ.updateMetadata(metadataDao);
-                return (updatedMetadata != null) ?
-                        new ResponseEntity<>(updatedMetadata, HttpStatus.OK) :
-                        new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
+
+                if (user.getRole().getRoleid() == ROLE_MANAGER)
+                {
+                    MetadataDao updatedMetadata = metadataServ.updateMetadata(metadataDao);
+                    return (updatedMetadata != null) ?
+                            new ResponseEntity<>(updatedMetadata, HttpStatus.OK) :
+                            new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
             }
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -95,20 +114,27 @@ public class MetadataController
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
+            if (userID != null)
             {
-                if (metadataServ.resetSystem())
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
+
+                if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
                 {
-                    return new ResponseEntity<>(null, HttpStatus.OK);
+                    if (metadataServ.resetSystem())
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -116,11 +142,11 @@ public class MetadataController
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 }
 

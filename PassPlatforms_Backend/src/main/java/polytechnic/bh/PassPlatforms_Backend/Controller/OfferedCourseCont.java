@@ -9,6 +9,7 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.OfferedCourseDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.CourseServ;
+import polytechnic.bh.PassPlatforms_Backend.Service.LogServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.OfferedCourseServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
@@ -33,6 +34,9 @@ public class OfferedCourseCont
     @Autowired
     private UserServ userServ;
 
+    @Autowired
+    private LogServ logServ;
+
     // get all offered courses - tested / not needed
     @GetMapping("")
     public ResponseEntity<GenericDto<List<OfferedCourseDao>>> getAllOfferedCourses(
@@ -41,24 +45,31 @@ public class OfferedCourseCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            List<OfferedCourseDao> offeredCourses = offeredCourseServ.getAllOfferedCourses();
-
-            if (offeredCourses != null && !offeredCourses.isEmpty())
+            if (userID != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, offeredCourses, null, null), HttpStatus.OK);
+                List<OfferedCourseDao> offeredCourses = offeredCourseServ.getAllOfferedCourses();
+
+                if (offeredCourses != null && !offeredCourses.isEmpty())
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, offeredCourses, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // get courses offered by a leader - tested
@@ -69,24 +80,31 @@ public class OfferedCourseCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            List<OfferedCourseDao> offeredCourse = offeredCourseServ.getLeaderOfferedCourses(leaderID);
-
-            if (offeredCourse != null)
+            if (userID != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, offeredCourse, null, null), HttpStatus.OK);
+                List<OfferedCourseDao> offeredCourse = offeredCourseServ.getLeaderOfferedCourses(leaderID);
+
+                if (offeredCourse != null)
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, offeredCourse, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // get leaders who are teaching the course - tested
@@ -97,24 +115,31 @@ public class OfferedCourseCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            List<OfferedCourseDao> offeredCourse = offeredCourseServ.getOfferedCourseLeaders(courseID);
-
-            if (offeredCourse != null)
+            if (userID != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, offeredCourse, null, null), HttpStatus.OK);
+                List<OfferedCourseDao> offeredCourse = offeredCourseServ.getOfferedCourseLeaders(courseID);
+
+                if (offeredCourse != null)
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, offeredCourse, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // get offered course details - not needed
@@ -125,24 +150,31 @@ public class OfferedCourseCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            OfferedCourseDao offeredCourse = offeredCourseServ.getOfferedCourseDetails(offerID);
-
-            if (offeredCourse != null)
+            if (userID != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, offeredCourse, null, null), HttpStatus.OK);
+                OfferedCourseDao offeredCourse = offeredCourseServ.getOfferedCourseDetails(offerID);
+
+                if (offeredCourse != null)
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, offeredCourse, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // create offered course - tested
@@ -153,93 +185,25 @@ public class OfferedCourseCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_LEADER)
+            if (userID != null)
             {
-                CourseDao course = courseServ.getCourseDetails(offeredCourseDao.getCourse().getCourseid());
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (course != null)
+                if (user.getRole().getRoleid() == ROLE_LEADER)
                 {
-                    OfferedCourseDao createdOfferedCourse = offeredCourseServ.createOfferedCourse(
-                            offeredCourseDao.getLeader().getUserid(),
-                            offeredCourseDao.getCourse().getCourseid()
-                    );
+                    CourseDao course = courseServ.getCourseDetails(offeredCourseDao.getCourse().getCourseid());
 
-                    return new ResponseEntity<>(new GenericDto<>(null, createdOfferedCourse, null, null), HttpStatus.CREATED);
-                }
-                else
-                {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-                }
-            }
-            else
-            {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-        }
-        else
-        {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
-
-    }
-
-    // create offered course - tested | added
-    @PostMapping("/multi")
-    public ResponseEntity<GenericDto<List<OfferedCourseDao>>> createMultiOfferedCourse(
-            @RequestHeader(value = "Authorization") String requestKey,
-            @RequestBody List<OfferedCourseDao> offeredCourseDao)
-    {
-        String userID = isValidToken(requestKey);
-
-        if (userID != null)
-        {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_LEADER)
-            {
-                return new ResponseEntity<>(new GenericDto<>(null, offeredCourseServ.createMultiOfferedCourse(offeredCourseDao), null, null), HttpStatus.CREATED);
-            }
-            else
-            {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-            }
-        }
-        else
-        {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
-
-    }
-
-    // delete offered course - tested | added
-    @DeleteMapping("/{offerID}")
-    public ResponseEntity<GenericDto<Void>> deleteOfferedCourse(
-            @RequestHeader(value = "Authorization") String requestKey,
-            @PathVariable("offerID") int offerID)
-    {
-        String userID = isValidToken(requestKey);
-
-        if (userID != null)
-        {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_LEADER)
-            {
-                // check if the user has access
-                OfferedCourseDao retrivedCourseOffer = offeredCourseServ.getOfferedCourseDetails(offerID);
-
-                if (Objects.equals(retrivedCourseOffer.getLeader().getUserid(), userID))
-                {
-                    if (offeredCourseServ.deleteOfferedCourse(offerID))
+                    if (course != null)
                     {
-                        return new ResponseEntity<>(null, HttpStatus.OK);
+                        OfferedCourseDao createdOfferedCourse = offeredCourseServ.createOfferedCourse(
+                                offeredCourseDao.getLeader().getUserid(),
+                                offeredCourseDao.getCourse().getCourseid()
+                        );
+
+                        return new ResponseEntity<>(new GenericDto<>(null, createdOfferedCourse, null, null), HttpStatus.CREATED);
                     }
                     else
                     {
@@ -250,18 +214,107 @@ public class OfferedCourseCont
                 {
                     return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
-
             }
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+    }
 
+    // create offered course - tested | added
+    @PostMapping("/multi")
+    public ResponseEntity<GenericDto<List<OfferedCourseDao>>> createMultiOfferedCourse(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestBody List<OfferedCourseDao> offeredCourseDao)
+    {
+        String userID = isValidToken(requestKey);
+
+        try
+        {
+            if (userID != null)
+            {
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
+
+                if (user.getRole().getRoleid() == ROLE_LEADER)
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, offeredCourseServ.createMultiOfferedCourse(offeredCourseDao), null, null), HttpStatus.CREATED);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        catch (Exception ex)
+        {
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // delete offered course - tested | added
+    @DeleteMapping("/{offerID}")
+    public ResponseEntity<GenericDto<Void>> deleteOfferedCourse(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @PathVariable("offerID") int offerID)
+    {
+        String userID = isValidToken(requestKey);
+
+        try
+        {
+            if (userID != null)
+            {
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
+
+                if (user.getRole().getRoleid() == ROLE_LEADER)
+                {
+                    // check if the user has access
+                    OfferedCourseDao retrivedCourseOffer = offeredCourseServ.getOfferedCourseDetails(offerID);
+
+                    if (Objects.equals(retrivedCourseOffer.getLeader().getUserid(), userID))
+                    {
+                        if (offeredCourseServ.deleteOfferedCourse(offerID))
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.OK);
+                        }
+                        else
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                        }
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    }
+
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        catch (Exception ex)
+        {
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 }
 

@@ -70,7 +70,7 @@ export default function CoursesPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`http://localhost:8080/api/school/${schoolIDParm}`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/school/${schoolIDParm}`, requestOptions)
                 .then(response =>
                 {
                     return response.json()
@@ -174,7 +174,7 @@ export default function CoursesPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(courseDto)};
 
-            await fetch(`http://localhost:8080/api/course`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/course`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

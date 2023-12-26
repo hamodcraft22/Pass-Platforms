@@ -83,7 +83,7 @@ export default function NewRegistrationPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`http://localhost:8080/api/school/revisions`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/school/revisions`, requestOptions)
                 .then(response =>
                 {
                     return response.json()
@@ -142,7 +142,7 @@ export default function NewRegistrationPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch(`http://localhost:8080/api/revision/course/${selectedCourse.courseid}?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/revision/course/${selectedCourse.courseid}?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200)
@@ -334,7 +334,7 @@ export default function NewRegistrationPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch(`http://localhost:8080/api/revision/${selctedSlot.uid}/member`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/revision/${selctedSlot.uid}/member`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

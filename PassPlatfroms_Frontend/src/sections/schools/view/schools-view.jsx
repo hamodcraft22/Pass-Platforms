@@ -81,7 +81,7 @@ export default function SchoolsPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`http://localhost:8080/api/school`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/school`, requestOptions)
                 .then(response =>
                 {
                     return response.json()
@@ -260,7 +260,7 @@ export default function SchoolsPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(schoolsUpload)};
 
-            await fetch(`http://localhost:8080/api/school/multi`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/school/multi`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

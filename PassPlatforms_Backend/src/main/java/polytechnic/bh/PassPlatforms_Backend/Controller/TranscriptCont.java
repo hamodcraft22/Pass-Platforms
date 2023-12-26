@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.TranscriptDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
+import polytechnic.bh.PassPlatforms_Backend.Service.LogServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.TranscriptServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
@@ -29,6 +30,9 @@ public class TranscriptCont
     @Autowired
     private UserServ userServ;
 
+    @Autowired
+    private LogServ logServ;
+
     // get all transcripts
     @GetMapping("")
     public ResponseEntity<GenericDto<List<TranscriptDao>>> getAllTranscripts(
@@ -36,22 +40,29 @@ public class TranscriptCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            if (userID != null)
             {
-                List<TranscriptDao> transcripts = transcriptServ.getAllTranscripts();
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (transcripts != null && !transcripts.isEmpty())
+                if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, transcripts, null, null), HttpStatus.OK);
+                    List<TranscriptDao> transcripts = transcriptServ.getAllTranscripts();
+
+                    if (transcripts != null && !transcripts.isEmpty())
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, transcripts, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -59,11 +70,11 @@ public class TranscriptCont
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @GetMapping("/leader/{leaderID}")
@@ -73,58 +84,65 @@ public class TranscriptCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            // if it is an admin or manager, return anyway
-            if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
+            if (userID != null)
             {
-                List<TranscriptDao> transcripts = transcriptServ.getLeaderTranscripts(leaderID);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (transcripts != null && !transcripts.isEmpty())
+                // if it is an admin or manager, return anyway
+                if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, transcripts, null, null), HttpStatus.OK);
-                }
-                else
-                {
-                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-                }
-            }
-            //if it is a student, check if it is their application
-            else if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
-            {
-                List<TranscriptDao> transcripts = transcriptServ.getLeaderTranscripts(leaderID);
+                    List<TranscriptDao> transcripts = transcriptServ.getLeaderTranscripts(leaderID);
 
-                if (transcripts != null && !transcripts.isEmpty())
-                {
-                    if (Objects.equals(userID, leaderID))
+                    if (transcripts != null && !transcripts.isEmpty())
                     {
                         return new ResponseEntity<>(new GenericDto<>(null, transcripts, null, null), HttpStatus.OK);
                     }
                     else
                     {
-                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
                     }
                 }
+                //if it is a student, check if it is their application
+                else if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
+                {
+                    List<TranscriptDao> transcripts = transcriptServ.getLeaderTranscripts(leaderID);
+
+                    if (transcripts != null && !transcripts.isEmpty())
+                    {
+                        if (Objects.equals(userID, leaderID))
+                        {
+                            return new ResponseEntity<>(new GenericDto<>(null, transcripts, null, null), HttpStatus.OK);
+                        }
+                        else
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        }
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    }
+
+                }
+                // if any other type, do not return anything
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
-
             }
-            // if any other type, do not return anything
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // get transcript details
@@ -135,58 +153,65 @@ public class TranscriptCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            // if it is an admin or manager, return anyway
-            if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
+            if (userID != null)
             {
-                TranscriptDao transcript = transcriptServ.getTranscriptDetails(transID);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (transcript != null)
+                // if it is an admin or manager, return anyway
+                if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, transcript, null, null), HttpStatus.OK);
-                }
-                else
-                {
-                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-                }
-            }
-            //if it is a student, check if it is their application
-            else if (user.getRole().getRoleid() == ROLE_STUDENT)
-            {
-                TranscriptDao transcript = transcriptServ.getTranscriptDetails(transID);
+                    TranscriptDao transcript = transcriptServ.getTranscriptDetails(transID);
 
-                if (transcript != null)
-                {
-                    if (Objects.equals(transcript.getStudent().getUserid(), userID))
+                    if (transcript != null)
                     {
                         return new ResponseEntity<>(new GenericDto<>(null, transcript, null, null), HttpStatus.OK);
                     }
                     else
                     {
-                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
                     }
                 }
+                //if it is a student, check if it is their application
+                else if (user.getRole().getRoleid() == ROLE_STUDENT)
+                {
+                    TranscriptDao transcript = transcriptServ.getTranscriptDetails(transID);
+
+                    if (transcript != null)
+                    {
+                        if (Objects.equals(transcript.getStudent().getUserid(), userID))
+                        {
+                            return new ResponseEntity<>(new GenericDto<>(null, transcript, null, null), HttpStatus.OK);
+                        }
+                        else
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        }
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                    }
+
+                }
+                // if any other type, do not return anything
                 else
                 {
                     return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
-
             }
-            // if any other type, do not return anything
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // create transcript
@@ -197,31 +222,38 @@ public class TranscriptCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_LEADER)
+            if (userID != null)
             {
-                TranscriptDao createdTranscript = transcriptServ.createTranscript(
-                        transcriptDao.getGrade(),
-                        transcriptDao.getStudent().getUserid(),
-                        transcriptDao.getCourseid()
-                );
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                return new ResponseEntity<>(new GenericDto<>(null, createdTranscript, null, null), HttpStatus.CREATED);
+                if (user.getRole().getRoleid() == ROLE_LEADER)
+                {
+                    TranscriptDao createdTranscript = transcriptServ.createTranscript(
+                            transcriptDao.getGrade(),
+                            transcriptDao.getStudent().getUserid(),
+                            transcriptDao.getCourseid()
+                    );
+
+                    return new ResponseEntity<>(new GenericDto<>(null, createdTranscript, null, null), HttpStatus.CREATED);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
             }
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // create transcript multi -- added | tested
@@ -232,23 +264,31 @@ public class TranscriptCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_LEADER)
+            if (userID != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, transcriptServ.createMultiTranscript(transcriptDao), null, null), HttpStatus.CREATED);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
+
+                if (user.getRole().getRoleid() == ROLE_LEADER)
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, transcriptServ.createMultiTranscript(transcriptDao), null, null), HttpStatus.CREATED);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
             }
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -261,22 +301,29 @@ public class TranscriptCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            if (userID != null)
             {
-                TranscriptDao editedTranscript = transcriptServ.editTranscript(transcriptDao);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (editedTranscript != null)
+                if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, editedTranscript, null, null), HttpStatus.OK);
+                    TranscriptDao editedTranscript = transcriptServ.editTranscript(transcriptDao);
+
+                    if (editedTranscript != null)
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, editedTranscript, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -284,11 +331,11 @@ public class TranscriptCont
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // delete transcript -- added | tested
@@ -299,64 +346,71 @@ public class TranscriptCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            // if it is an admin or manager, return anyway
-            if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
+            if (userID != null)
             {
-                if (transcriptServ.deleteTranscript(transID))
-                {
-                    return new ResponseEntity<>(null, HttpStatus.OK);
-                }
-                else
-                {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-                }
-            }
-            //if it is a student, check if it is their application
-            else if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
-            {
-                TranscriptDao transcript = transcriptServ.getTranscriptDetails(transID);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (transcript != null)
+                // if it is an admin or manager, return anyway
+                if (user.getRole().getRoleid() == ROLE_MANAGER || user.getRole().getRoleid() == ROLE_ADMIN)
                 {
-                    if (Objects.equals(transcript.getStudent().getUserid(), userID))
+                    if (transcriptServ.deleteTranscript(transID))
                     {
-                        if (transcriptServ.deleteTranscript(transID))
-                        {
-                            return new ResponseEntity<>(null, HttpStatus.OK);
-                        }
-                        else
-                        {
-                            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-                        }
+                        return new ResponseEntity<>(null, HttpStatus.OK);
                     }
                     else
                     {
-                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
+                }
+                //if it is a student, check if it is their application
+                else if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
+                {
+                    TranscriptDao transcript = transcriptServ.getTranscriptDetails(transID);
+
+                    if (transcript != null)
+                    {
+                        if (Objects.equals(transcript.getStudent().getUserid(), userID))
+                        {
+                            if (transcriptServ.deleteTranscript(transID))
+                            {
+                                return new ResponseEntity<>(null, HttpStatus.OK);
+                            }
+                            else
+                            {
+                                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                            }
+                        }
+                        else
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        }
+
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
                     }
 
                 }
+                // if any other type, do not return anything
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
-
             }
-            // if any other type, do not return anything
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 }
 

@@ -80,7 +80,7 @@ export default function RecommendationsPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch(`http://localhost:8080/api/users/students`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/users/students`, requestOptions)
                 .then(response =>
                 {
                     return response.json()
@@ -113,7 +113,7 @@ export default function RecommendationsPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`http://localhost:8080/api/recommendation`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/recommendation`, requestOptions)
                 .then(response =>
                 {
                     return response.json()
@@ -145,7 +145,7 @@ export default function RecommendationsPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`http://localhost:8080/api/recommendation/tutor/${tutorID}`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/recommendation/tutor/${tutorID}`, requestOptions)
                 .then(response =>
                 {
                     return response.json()
@@ -274,7 +274,7 @@ export default function RecommendationsPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(recmToSubmit)};
 
-            await fetch(`http://localhost:8080/api/recommendation`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/recommendation`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)

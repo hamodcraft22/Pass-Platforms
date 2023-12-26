@@ -5,11 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import polytechnic.bh.PassPlatforms_Backend.Entity.BookingMember;
-import polytechnic.bh.PassPlatforms_Backend.Entity.BookingNote;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
 import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
 

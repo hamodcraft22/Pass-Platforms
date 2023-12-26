@@ -88,7 +88,7 @@ export default function SlotPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`http://localhost:8080/api/slot/leader/${leaderID}`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/slot/leader/${leaderID}`, requestOptions)
                 .then(response =>
                 {
                     return response.json()
@@ -231,7 +231,7 @@ export default function SlotPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(slotToSubmit)};
 
-            await fetch(`http://localhost:8080/api/slot`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/slot`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)

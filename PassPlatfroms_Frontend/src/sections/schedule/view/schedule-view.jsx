@@ -84,7 +84,7 @@ export default function SchedulePage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`http://localhost:8080/api/schedule/student/${studentID}`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/schedule/student/${studentID}`, requestOptions)
                 .then(response =>
                 {
                     return response.json()
@@ -207,7 +207,7 @@ export default function SchedulePage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(scheduleToSubmit)};
 
-            await fetch(`http://localhost:8080/api/schedule`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/schedule`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)

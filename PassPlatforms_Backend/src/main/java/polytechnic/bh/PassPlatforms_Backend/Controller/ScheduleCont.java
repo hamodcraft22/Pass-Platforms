@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.ScheduleDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
+import polytechnic.bh.PassPlatforms_Backend.Service.LogServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.ScheduleServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
@@ -28,6 +29,9 @@ public class ScheduleCont
     @Autowired
     private UserServ userServ;
 
+    @Autowired
+    private LogServ logServ;
+
     // get all schedules -- not really needed
     @GetMapping("")
     public ResponseEntity<GenericDto<List<ScheduleDao>>> getAllSchedules(
@@ -35,22 +39,29 @@ public class ScheduleCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            if (userID != null)
             {
-                List<ScheduleDao> schedules = scheduleServ.getAllSchedules();
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (schedules != null && !schedules.isEmpty())
+                if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, schedules, null, null), HttpStatus.OK);
+                    List<ScheduleDao> schedules = scheduleServ.getAllSchedules();
+
+                    if (schedules != null && !schedules.isEmpty())
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, schedules, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -58,11 +69,11 @@ public class ScheduleCont
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // get a user schedules -- added | tested
@@ -73,26 +84,33 @@ public class ScheduleCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-
-            List<ScheduleDao> schedules = scheduleServ.getUserSchedules(studentID);
-
-            if (schedules != null && !schedules.isEmpty())
+            if (userID != null)
             {
-                return new ResponseEntity<>(new GenericDto<>(null, schedules, null, null), HttpStatus.OK);
+
+                List<ScheduleDao> schedules = scheduleServ.getUserSchedules(studentID);
+
+                if (schedules != null && !schedules.isEmpty())
+                {
+                    return new ResponseEntity<>(new GenericDto<>(null, schedules, null, null), HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                }
+
             }
             else
             {
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
-
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // get schedule details -- not needed
@@ -103,42 +121,49 @@ public class ScheduleCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
+            if (userID != null)
             {
-                ScheduleDao schedule = scheduleServ.getScheduleDetails(scheduleID);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (schedule != null)
+                if (user.getRole().getRoleid() == ROLE_ADMIN || user.getRole().getRoleid() == ROLE_MANAGER)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, schedule, null, null), HttpStatus.OK);
-                }
-                else
-                {
-                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-                }
-            }
-            else if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
-            {
-                ScheduleDao schedule = scheduleServ.getScheduleDetails(scheduleID);
+                    ScheduleDao schedule = scheduleServ.getScheduleDetails(scheduleID);
 
-                if (schedule != null)
-                {
-                    if (Objects.equals(schedule.getUser().getUserid(), userID))
+                    if (schedule != null)
                     {
                         return new ResponseEntity<>(new GenericDto<>(null, schedule, null, null), HttpStatus.OK);
                     }
                     else
                     {
-                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    }
+                }
+                else if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
+                {
+                    ScheduleDao schedule = scheduleServ.getScheduleDetails(scheduleID);
+
+                    if (schedule != null)
+                    {
+                        if (Objects.equals(schedule.getUser().getUserid(), userID))
+                        {
+                            return new ResponseEntity<>(new GenericDto<>(null, schedule, null, null), HttpStatus.OK);
+                        }
+                        else
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        }
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
                     }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -146,11 +171,11 @@ public class ScheduleCont
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // create schedule -- added | tested
@@ -161,32 +186,39 @@ public class ScheduleCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
+            if (userID != null)
             {
-                ScheduleDao createdSchedule = scheduleServ.createSchedule(
-                        scheduleDao.getStarttime(),
-                        scheduleDao.getEndtime(),
-                        scheduleDao.getDay().getDayid(),
-                        scheduleDao.getUser().getUserid()
-                );
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                return new ResponseEntity<>(new GenericDto<>(null, createdSchedule, null, null), HttpStatus.CREATED);
+                if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
+                {
+                    ScheduleDao createdSchedule = scheduleServ.createSchedule(
+                            scheduleDao.getStarttime(),
+                            scheduleDao.getEndtime(),
+                            scheduleDao.getDay().getDayid(),
+                            scheduleDao.getUser().getUserid()
+                    );
+
+                    return new ResponseEntity<>(new GenericDto<>(null, createdSchedule, null, null), HttpStatus.CREATED);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
             }
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // edit schedule -- added | tested
@@ -197,29 +229,36 @@ public class ScheduleCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
+            if (userID != null)
             {
-                ScheduleDao editedSchedule = scheduleServ.getScheduleDetails(scheduleDao.getScheduleid());
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (editedSchedule != null)
+                if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
                 {
-                    if (Objects.equals(editedSchedule.getUser().getUserid(), userID))
+                    ScheduleDao editedSchedule = scheduleServ.getScheduleDetails(scheduleDao.getScheduleid());
+
+                    if (editedSchedule != null)
                     {
-                        return new ResponseEntity<>(new GenericDto<>(null, scheduleServ.editSchedule(scheduleDao), null, null), HttpStatus.OK);
+                        if (Objects.equals(editedSchedule.getUser().getUserid(), userID))
+                        {
+                            return new ResponseEntity<>(new GenericDto<>(null, scheduleServ.editSchedule(scheduleDao), null, null), HttpStatus.OK);
+                        }
+                        else
+                        {
+                            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        }
                     }
                     else
                     {
-                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                     }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -227,11 +266,11 @@ public class ScheduleCont
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // delete schedule -- added | tested
@@ -242,36 +281,43 @@ public class ScheduleCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
+            if (userID != null)
             {
-                ScheduleDao toDeleteSchedule = scheduleServ.getScheduleDetails(scheduleID);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (toDeleteSchedule != null)
+                if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
                 {
-                    if (Objects.equals(toDeleteSchedule.getUser().getUserid(), userID))
+                    ScheduleDao toDeleteSchedule = scheduleServ.getScheduleDetails(scheduleID);
+
+                    if (toDeleteSchedule != null)
                     {
-                        if (scheduleServ.deleteSchedule(scheduleID))
+                        if (Objects.equals(toDeleteSchedule.getUser().getUserid(), userID))
                         {
-                            return new ResponseEntity<>(null, HttpStatus.OK);
+                            if (scheduleServ.deleteSchedule(scheduleID))
+                            {
+                                return new ResponseEntity<>(null, HttpStatus.OK);
+                            }
+                            else
+                            {
+                                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                            }
                         }
                         else
                         {
-                            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                         }
                     }
                     else
                     {
-                        return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                     }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -279,11 +325,11 @@ public class ScheduleCont
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
     }
 }
 

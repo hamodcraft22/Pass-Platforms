@@ -57,7 +57,7 @@ export default function TranscriptTableRow({transID, courseID, grade})
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`http://localhost:8080/api/transcript/${transID}`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/transcript/${transID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

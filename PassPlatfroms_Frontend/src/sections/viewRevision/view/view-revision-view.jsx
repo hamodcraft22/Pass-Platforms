@@ -69,7 +69,7 @@ export default function ViewRevisionPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`http://localhost:8080/api/revision/${revisionIDParm}`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/revision/${revisionIDParm}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200)
@@ -146,7 +146,7 @@ export default function ViewRevisionPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: userNote};
 
-            await fetch(`http://localhost:8080/api/bookingnote/${revisionInfo.bookingid}`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/bookingnote/${revisionInfo.bookingid}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

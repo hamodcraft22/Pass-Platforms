@@ -8,6 +8,7 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.AuditDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.AuditServ;
+import polytechnic.bh.PassPlatforms_Backend.Service.LogServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
 import java.util.List;
@@ -21,10 +22,13 @@ import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidT
 public class AuditCont
 {
     @Autowired
-    AuditServ auditServ;
+    private AuditServ auditServ;
 
     @Autowired
     private UserServ userServ;
+
+    @Autowired
+    private LogServ logServ;
 
     // get all audits
     @GetMapping("")
@@ -33,22 +37,29 @@ public class AuditCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN)
+            if (userID != null)
             {
-                List<AuditDao> audits = auditServ.getAllAudits();
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (audits != null && !audits.isEmpty())
+                if (user.getRole().getRoleid() == ROLE_ADMIN)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, audits, null, null), HttpStatus.OK);
+                    List<AuditDao> audits = auditServ.getAllAudits();
+
+                    if (audits != null && !audits.isEmpty())
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, audits, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -56,9 +67,10 @@ public class AuditCont
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -70,22 +82,29 @@ public class AuditCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN)
+            if (userID != null)
             {
-                AuditDao audit = auditServ.getAuditDetails(auditID);
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
 
-                if (audit != null)
+                if (user.getRole().getRoleid() == ROLE_ADMIN)
                 {
-                    return new ResponseEntity<>(new GenericDto<>(null, audit, null, null), HttpStatus.OK);
+                    AuditDao audit = auditServ.getAuditDetails(auditID);
+
+                    if (audit != null)
+                    {
+                        return new ResponseEntity<>(new GenericDto<>(null, audit, null, null), HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
             }
             else
@@ -93,9 +112,10 @@ public class AuditCont
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -107,31 +127,39 @@ public class AuditCont
     {
         String userID = isValidToken(requestKey);
 
-        if (userID != null)
+        try
         {
-            //token is valid, get user and role
-            UserDao user = userServ.getUser(userID);
-
-            if (user.getRole().getRoleid() == ROLE_ADMIN)
+            if (userID != null)
             {
-                if (auditServ.deleteAudit(auditID))
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
+
+                if (user.getRole().getRoleid() == ROLE_ADMIN)
                 {
-                    return new ResponseEntity<>(null, HttpStatus.OK);
+                    if (auditServ.deleteAudit(auditID))
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.OK);
+                    }
+                    else
+                    {
+                        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    }
                 }
                 else
                 {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
                 }
+
             }
             else
             {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
-
         }
-        else
+        catch (Exception ex)
         {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 }

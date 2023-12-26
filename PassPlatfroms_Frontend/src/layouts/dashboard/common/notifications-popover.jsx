@@ -83,7 +83,7 @@ export default function NotificationsPopover()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch("http://localhost:8080/api/notification", requestOptions)
+            await fetch("https://zift.ddnsfree.com:5679/api/notification", requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 200)
@@ -136,7 +136,7 @@ export default function NotificationsPopover()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch(`http://localhost:8080/api/notification/${notficID}`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/notification/${notficID}`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 200)

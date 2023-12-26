@@ -99,7 +99,7 @@ export default function SchoolsTableRow({schoolID, schoolName, role})
                     body: JSON.stringify({"schoolid": schoolID, "schoolname": editSchoolName})
                 };
 
-            await fetch(`http://localhost:8080/api/school`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/school`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -136,7 +136,7 @@ export default function SchoolsTableRow({schoolID, schoolName, role})
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`http://localhost:8080/api/school/${schoolID}`, requestOptions)
+            await fetch(`https://zift.ddnsfree.com:5679/api/school/${schoolID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

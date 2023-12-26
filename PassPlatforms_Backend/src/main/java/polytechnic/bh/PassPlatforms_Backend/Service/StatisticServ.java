@@ -6,8 +6,6 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.StatisticDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Statistic;
 import polytechnic.bh.PassPlatforms_Backend.Repository.StatisticRepo;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service

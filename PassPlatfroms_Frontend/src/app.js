@@ -91,7 +91,7 @@ const MainContent = () =>
         {
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': barerToken}};
 
-            let role = await fetch(`http://localhost:8080/api/user/userlog`, requestOptions)
+            let role = await fetch(`https://zift.ddnsfree.com:5679/api/user/userlog`, requestOptions)
                 .then(response =>
                 {
                     return response.json()
@@ -116,7 +116,7 @@ const MainContent = () =>
         {
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json'}};
 
-            let enable = await fetch(`http://localhost:8080/api/metadata/disabled`, requestOptions)
+            let enable = await fetch(`https://zift.ddnsfree.com:5679/api/metadata/disabled`, requestOptions)
                 .then(response =>
                 {
                     return response.json()
