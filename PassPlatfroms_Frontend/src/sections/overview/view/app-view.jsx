@@ -2,11 +2,13 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import AppCurrentVisits from '../app-current-visits';
-import AppWebsiteVisits from '../app-website-visits';
 import AppWidgetSummary from '../app-widget-summary';
 
 import UserProfile from "../../../components/auth/UserInfo";
 import {useEffect, useState} from "react";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import ImageGallery from "react-image-gallery";
 
 
 // ----------------------------------------------------------------------
@@ -14,6 +16,7 @@ import {useEffect, useState} from "react";
 
 export default function AppView()
 {
+    const [loadingShow, setLoadingShow] = useState(false);
 
     const [userName, setUserName] = useState("");
 
@@ -28,10 +31,99 @@ export default function AppView()
         })
     }
 
+    const [activeUsers, setActiveUsers] = useState(0);
+    const [leaders, setLeaders] = useState(0);
+    const [sessions, setSessions] = useState(0);
+    const [hours, setHours] = useState(0);
+
+    const [ict, setICT] = useState(0);
+    const [bus, setBus] = useState(0);
+    const [eng, setEng] = useState(0);
+    const [webM, setWebM] = useState(0);
+    const [visD, setVisD] = useState(0);
+    const [logt, setLogt] = useState(0);
+    const [other, setOther] = useState(0);
+
+    function parsetats(statsDTO)
+    {
+        if (Object.keys(statsDTO).length !== 0)
+        {
+            setActiveUsers(statsDTO.studentno);
+            setLeaders(statsDTO.leaderno);
+            setSessions(statsDTO.bkdsessionsno);
+            setHours(statsDTO.hoursno);
+
+            setICT(statsDTO.ict);
+            setBus(statsDTO.business);
+            setEng(statsDTO.engineering);
+            setWebM(statsDTO.webmedia);
+            setVisD(statsDTO.visualdesign);
+            setLogt(statsDTO.logistics);
+            setOther(statsDTO.other);
+        }
+    }
+
+    async function getStats()
+    {
+        try
+        {
+            setLoadingShow(true);
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
+
+            await fetch(`http://localhost:8080/api/Stat`, requestOptions)
+                .then(response =>
+                {
+                    if (response.status === 200)
+                    {
+                        return response.json()
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                })
+                .then((data) =>
+                {
+                    if (data !== null)
+                    {
+                        parsetats(data.transObject)
+                    }
+                });
+
+        }
+        catch (error)
+        {
+            setLoadingShow(false);
+            console.log(error);
+        }
+    }
+
     useEffect(() =>
     {
-        getUserName()
-    }, [])
+        getUserName();
+        getStats();
+
+    }, []);
+
+    const images = [
+        {
+            original: "/assets/images/Business24.png",
+        },
+        {
+            original: "/assets/images/Engineering23.png",
+        },
+        {
+            original: "/assets/images/ICT13.png",
+        },
+        {
+            original: "/assets/images/ICT23.png",
+        },
+        {
+            original: "/assets/images/WebMedia.png",
+        },
+    ];
 
     return (
 
@@ -44,91 +136,60 @@ export default function AppView()
             <Grid container spacing={3}>
                 <Grid xs={12} sm={6} md={3}>
                     <AppWidgetSummary
-                        title="Weekly Sales"
-                        total={714000}
-                        color="success"
-                        icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png"/>}
+                        title="Active Users"
+                        total={activeUsers}
+                        color="primary"
+                        icon={<img alt="icon" src="/assets/icons/glass/users.png"/>}
                     />
                 </Grid>
 
                 <Grid xs={12} sm={6} md={3}>
                     <AppWidgetSummary
-                        title="New Users"
-                        total={1352831}
+                        title="Leaders No."
+                        total={leaders}
                         color="info"
-                        icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png"/>}
+                        icon={<img alt="icon" src="/assets/icons/glass/leadrs.png"/>}
                     />
                 </Grid>
 
                 <Grid xs={12} sm={6} md={3}>
                     <AppWidgetSummary
-                        title="Item Orders"
-                        total={1723315}
+                        title="Sessions No."
+                        total={sessions}
                         color="warning"
-                        icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png"/>}
+                        icon={<img alt="icon" src="/assets/icons/glass/bookings.png"/>}
                     />
                 </Grid>
 
                 <Grid xs={12} sm={6} md={3}>
                     <AppWidgetSummary
-                        title="Bug Reports"
-                        total={234}
+                        title="Hours Taught"
+                        total={hours}
                         color="error"
-                        icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png"/>}
+                        icon={<img alt="icon" src="/assets/icons/glass/hours.png"/>}
                     />
                 </Grid>
 
                 <Grid xs={12} md={6} lg={8}>
-                    <AppWebsiteVisits
-                        title="Website Visits"
-                        subheader="(+43%) than last year"
-                        chart={{
-                            labels: [
-                                '01/01/2003',
-                                '02/01/2003',
-                                '03/01/2003',
-                                '04/01/2003',
-                                '05/01/2003',
-                                '06/01/2003',
-                                '07/01/2003',
-                                '08/01/2003',
-                                '09/01/2003',
-                                '10/01/2003',
-                                '11/01/2003',
-                            ],
-                            series: [
-                                {
-                                    name: 'Team A',
-                                    type: 'column',
-                                    fill: 'solid',
-                                    data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
-                                },
-                                {
-                                    name: 'Team B',
-                                    type: 'area',
-                                    fill: 'gradient',
-                                    data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-                                },
-                                {
-                                    name: 'Team C',
-                                    type: 'line',
-                                    fill: 'solid',
-                                    data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
-                                },
-                            ],
-                        }}
-                    />
+                    <Card>
+                        <Box>
+                            <ImageGallery items={images} autoPlay={true} slideDuration={5000} showPlayButton={false} showFullscreenButton={false} showNav={false}/>
+                        </Box>
+                    </Card>
                 </Grid>
 
                 <Grid xs={12} md={6} lg={4}>
                     <AppCurrentVisits
-                        title="Current Visits"
+                        title="Bookings %"
                         chart={{
                             series: [
-                                {label: 'America', value: 4344},
-                                {label: 'Asia', value: 5435},
-                                {label: 'Europe', value: 1443},
-                                {label: 'Africa', value: 4443},
+                                {label: 'ICT', value: ict},
+                                {label: 'Business', value: bus},
+                                {label: 'Engineering', value: eng},
+                                {label: 'Web Media', value: webM},
+                                {label: 'Visual Design', value: visD},
+                                {label: 'Logistics', value: logt},
+                                {label: 'Others', value: other},
                             ],
                         }}
                     />

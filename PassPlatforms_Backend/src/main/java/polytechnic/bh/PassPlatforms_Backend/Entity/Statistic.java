@@ -23,12 +23,9 @@ public class Statistic
     private java.sql.Date statdate;
     private int studentno;
     private int leaderno;
-    private int ofrdcoursesno;
     private int bkdsessionsno;
-    private int hlpdno;
     private int hoursno;
-    private int avgdayssnsno;
-    private int avragepercent;
+
 
     private int ict;
     private int business;
@@ -44,12 +41,8 @@ public class Statistic
         this.statdate = new Date(statisticDao.getStatdate().getTime());
         this.studentno = statisticDao.getStudentno();
         this.leaderno = statisticDao.getLeaderno();
-        this.ofrdcoursesno = statisticDao.getOfrdcoursesno();
         this.bkdsessionsno = statisticDao.getBkdsessionsno();
-        this.hlpdno = statisticDao.getHlpdno();
         this.hoursno = statisticDao.getHoursno();
-        this.avgdayssnsno = statisticDao.getAvgdayssnsno();
-        this.avragepercent = statisticDao.getAvragepercent();
 
         this.ict = statisticDao.getIct();
         this.business = statisticDao.getBusiness();

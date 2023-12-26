@@ -8,6 +8,7 @@ import polytechnic.bh.PassPlatforms_Backend.Repository.StatisticRepo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StatisticServ
@@ -15,16 +16,10 @@ public class StatisticServ
     @Autowired
     private StatisticRepo statisticRepo;
 
-    // get last 10 - includes for everything;
-    public List<StatisticDao> getLatest10()
+    public StatisticDao getLatest()
     {
-        List<StatisticDao> statistics = new ArrayList<>();
+        Optional<Statistic> retrivedStat = statisticRepo.getLatest();
 
-        for (Statistic statistic : statisticRepo.getLatest10Stats())
-        {
-            statistics.add(new StatisticDao(statistic));
-        }
-
-        return statistics;
+        return retrivedStat.map(StatisticDao::new).orElse(null);
     }
 }

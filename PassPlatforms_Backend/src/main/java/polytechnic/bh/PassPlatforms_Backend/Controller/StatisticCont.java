@@ -22,7 +22,7 @@ public class StatisticCont<T>
     StatisticServ statisticServ;
 
     @GetMapping("")
-    public ResponseEntity<GenericDto<List<StatisticDao>>> getAllStats(
+    public ResponseEntity<GenericDto<StatisticDao>> getLatest(
             @RequestHeader(value = "Authorization") String requestKey
     )
     {
@@ -30,7 +30,7 @@ public class StatisticCont<T>
 
         if (userID != null)
         {
-            return new ResponseEntity<>(new GenericDto<>(null, statisticServ.getLatest10(), null, null), HttpStatus.OK);
+            return new ResponseEntity<>(new GenericDto<>(null, statisticServ.getLatest(), null, null), HttpStatus.OK);
         }
         else
         {
