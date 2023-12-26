@@ -29,6 +29,7 @@ import DialogActions from "@mui/material/DialogActions";
 import {Alert, Autocomplete, Backdrop, CircularProgress, FormHelperText, Snackbar, TextField} from "@mui/material";
 import UserProfile from "../../../components/auth/UserInfo";
 import moment from "moment";
+import ExportToExcel from "../../../utils/exportExcel";
 
 
 // ----------------------------------------------------------------------
@@ -349,12 +350,16 @@ export default function RecommendationsPage() {
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Recommendations</Typography>
 
-                {
-                    userRole === "tutor" &&
-                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} onClick={handleAddClickOpen}>
-                        New Recommendation
-                    </Button>
-                }
+                <div>
+                    {
+                        userRole === "tutor" &&
+                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} onClick={handleAddClickOpen}>
+                            New Recommendation
+                        </Button>
+                    }
+
+                    <ExportToExcel data={dataFiltered} filename="Recommendations List"/>
+                </div>
             </Stack>
 
             <Card>

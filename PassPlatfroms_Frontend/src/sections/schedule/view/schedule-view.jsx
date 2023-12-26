@@ -32,6 +32,7 @@ import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {TimePicker} from "@mui/x-date-pickers";
 import UserProfile from "../../../components/auth/UserInfo";
+import ExportToExcel from "../../../utils/exportExcel";
 
 // ----------------------------------------------------------------------
 
@@ -296,13 +297,17 @@ export default function SchedulePage() {
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">{userSchedules && Object.keys(userSchedules).length !== 0 && <>{userSchedules[0].userName}</>} Schedule</Typography>
 
-                {
-                    studentIDParm === null && (userRole === "leader" || userRole === "student") &&
-                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
-                            onClick={handleAddClickOpen}>
-                        Add Schedule Schedule
-                    </Button>
-                }
+                <div>
+                    {
+                        studentIDParm === null && (userRole === "leader" || userRole === "student") &&
+                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
+                                onClick={handleAddClickOpen}>
+                            Add Schedule Schedule
+                        </Button>
+                    }
+
+                    <ExportToExcel data={userSchedules} filename="Schedule List"/>
+                </div>
             </Stack>
 
             <Card>

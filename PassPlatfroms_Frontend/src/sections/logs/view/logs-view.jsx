@@ -35,6 +35,7 @@ import {TimePicker} from "@mui/x-date-pickers";
 import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
 import UserProfile from "../../../components/auth/UserInfo";
 import {applyFilter} from "../filterUtil";
+import ExportToExcel from "../../../utils/exportExcel";
 
 // ----------------------------------------------------------------------
 
@@ -231,6 +232,8 @@ export default function LogsPage()
 
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Logs</Typography>
+
+                <ExportToExcel data={dataFiltered} filename="Logs List"/>
             </Stack>
 
             <Card>

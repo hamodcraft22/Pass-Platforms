@@ -33,6 +33,7 @@ import MultiSelect from "../MultiSelect";
 import {it} from "date-fns/locale";
 import UserProfile from "../../../components/auth/UserInfo";
 import {Alert, Backdrop, CircularProgress, FormHelperText, Snackbar} from "@mui/material";
+import ExportToExcel from "../../../utils/exportExcel";
 
 // ----------------------------------------------------------------------
 
@@ -330,13 +331,17 @@ export default function OfferedCoursesPage()
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">{offeredCourses && Object.keys(offeredCourses).length !== 0 && <>{offeredCourses[0].userName}</>} Offered Courses</Typography>
 
-                {
-                    leaderIDParm === null && userRole === "leader" &&
-                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
-                            onClick={handleAddClickOpen}>
-                        New Course
-                    </Button>
-                }
+                <div>
+                    {
+                        leaderIDParm === null && userRole === "leader" &&
+                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
+                                onClick={handleAddClickOpen}>
+                            New Course
+                        </Button>
+                    }
+
+                    <ExportToExcel data={dataFiltered} filename="Offered Courses List"/>
+                </div>
             </Stack>
 
             <Card>

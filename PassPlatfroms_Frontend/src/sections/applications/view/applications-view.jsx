@@ -27,6 +27,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import {Alert, Autocomplete, Backdrop, CircularProgress, Snackbar, TextField} from "@mui/material";
 import UserProfile from "../../../components/auth/UserInfo";
+import ExportToExcel from "../../../utils/exportExcel";
 
 
 // ----------------------------------------------------------------------
@@ -214,6 +215,8 @@ export default function ApplicationsPage()
 
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Applications</Typography>
+
+                <ExportToExcel data={dataFiltered} filename="Application List"/>
             </Stack>
 
             <Card>

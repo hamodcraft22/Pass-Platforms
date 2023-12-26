@@ -35,6 +35,7 @@ import TableCell from "@mui/material/TableCell";
 import UserProfile from "../../../components/auth/UserInfo";
 import {Alert, Backdrop, CircularProgress, Snackbar} from "@mui/material";
 import {useNavigate} from "react-router-dom";
+import ExportToExcel from "../../../utils/exportExcel";
 
 
 
@@ -339,10 +340,10 @@ export default function SchoolsPage() {
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Schools</Typography>
 
-
+                <div>
                 {
                     (userRole === 'admin' || userRole === 'manager') &&
-                    <div>
+                    <>
                         <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} sx={{m: 1}} onClick={handleAddClickOpen}>
                             Upload Schools
                         </Button>
@@ -350,8 +351,11 @@ export default function SchoolsPage() {
                         <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} sx={{m: 1}} onClick={goToNewSchool}>
                             New School
                         </Button>
-                    </div>
+                    </>
                 }
+
+                    <ExportToExcel data={dataFiltered} filename="Schools List"/>
+                </div>
             </Stack>
 
             <Card>

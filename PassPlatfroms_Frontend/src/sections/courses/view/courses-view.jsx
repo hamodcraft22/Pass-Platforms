@@ -32,6 +32,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Box from "@mui/material/Box";
 import UserProfile from "../../../components/auth/UserInfo";
 import {useNavigate} from "react-router-dom";
+import ExportToExcel from "../../../utils/exportExcel";
 
 // ----------------------------------------------------------------------
 
@@ -274,13 +275,17 @@ export default function CoursesPage()
                     <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                         <Typography variant="h4">{school !== null && school.schoolname} Courses</Typography>
 
-                        {
-                            (userRole === 'admin' || userRole === 'manager') &&
-                            <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
-                                    onClick={handleAddClickOpen}>
-                                New Course
-                            </Button>
-                        }
+                        <div>
+                            {
+                                (userRole === 'admin' || userRole === 'manager') &&
+                                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
+                                        onClick={handleAddClickOpen}>
+                                    New Course
+                                </Button>
+                            }
+
+                            <ExportToExcel data={dataFiltered} filename="Courses List"/>
+                        </div>
                     </Stack>
 
                     <Card>

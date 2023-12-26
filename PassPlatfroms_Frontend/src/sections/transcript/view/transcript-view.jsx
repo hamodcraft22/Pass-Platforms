@@ -37,6 +37,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import {Alert, Backdrop, CircularProgress, FormHelperText, Snackbar} from "@mui/material";
 import UserProfile from "../../../components/auth/UserInfo";
+import ExportToExcel from "../../../utils/exportExcel";
 
 
 // ----------------------------------------------------------------------
@@ -408,13 +409,17 @@ export default function TranscriptPage() {
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">{transcripts && Object.keys(transcripts).length !== 0 && <>{transcripts[0].student.userName}</>} - Transcript</Typography>
 
-                {
-                    studentIDParm === null && userRole === "leader" &&
-                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
-                            onClick={handleAddClickOpen}>
-                        Upload Transcript
-                    </Button>
-                }
+                <div>
+                    {
+                        studentIDParm === null && userRole === "leader" &&
+                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
+                                onClick={handleAddClickOpen}>
+                            Upload Transcript
+                        </Button>
+                    }
+
+                    <ExportToExcel data={dataFiltered} filename="Transcript List"/>
+                </div>
             </Stack>
 
             <Card>

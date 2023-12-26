@@ -294,7 +294,7 @@ export default function RecommendationsPage()
                         </Button>
                     }
 
-                    <ExportToExcel data={dataFiltered} filename="Studnet Bookings - DATE TO DATE"/>
+                    <ExportToExcel data={dataFiltered} filename="Bookings List"/>
                 </div>
 
             </Stack>

@@ -34,6 +34,7 @@ import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {TimePicker} from "@mui/x-date-pickers";
 import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
 import UserProfile from "../../../components/auth/UserInfo";
+import ExportToExcel from "../../../utils/exportExcel";
 
 // ----------------------------------------------------------------------
 
@@ -329,13 +330,17 @@ export default function SlotPage()
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">{userSlots && Object.keys(userSlots).length !== 0 && <>{userSlots[0].userName}</>} Slots</Typography>
 
-                {
-                    leaderIDParm === null && userRole === "leader" &&
-                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
-                            onClick={handleAddClickOpen}>
-                        Add Slot
-                    </Button>
-                }
+                <div>
+                    {
+                        leaderIDParm === null && userRole === "leader" &&
+                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
+                                onClick={handleAddClickOpen}>
+                            Add Slot
+                        </Button>
+                    }
+
+                    <ExportToExcel data={userSlots} filename="Slots List"/>
+                </div>
             </Stack>
 
             <Card>

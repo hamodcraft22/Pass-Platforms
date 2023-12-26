@@ -25,6 +25,7 @@ import Iconify from "../../../components/iconify";
 import {useNavigate} from "react-router-dom";
 import UserProfile from "../../../components/auth/UserInfo";
 import {Alert, Backdrop, CircularProgress, Snackbar} from "@mui/material";
+import ExportToExcel from "../../../utils/exportExcel";
 
 
 // ----------------------------------------------------------------------
@@ -279,13 +280,17 @@ export default function RevisionsPage() {
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4"> Student Name - Revisions</Typography>
 
-                {/* only show if a leader */}
-                {
-                    userRole === 'leader' &&
-                    <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} onClick={() => {goToNewRevision()}}>
-                        New Revision
-                    </Button>
-                }
+                <div>
+                    {/* only show if a leader */}
+                    {
+                        userRole === 'leader' &&
+                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} onClick={() => {goToNewRevision()}}>
+                            New Revision
+                        </Button>
+                    }
+
+                    <ExportToExcel data={dataFiltered} filename="Revisions List"/>
+                </div>
             </Stack>
 
             {/* leader selection bar - only show if a leader - switch between my bookings & leader bookings / */}
