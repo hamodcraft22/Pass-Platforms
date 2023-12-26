@@ -110,8 +110,6 @@ public class MailServ
                             "END:VCALENDAR";
 
 
-            System.out.println(calendarContent);
-
             // creating the email body parts and adding the event invite
             MimeBodyPart messageBodyPart = new MimeBodyPart();
 
