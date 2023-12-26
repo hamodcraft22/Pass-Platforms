@@ -8,17 +8,18 @@ import {RouterLink} from '../../routes/components';
 
 // ----------------------------------------------------------------------
 
-const Logo = forwardRef(({disabledLink = false, sx, ...other}, ref) => {
+const Logo = forwardRef(({disabledLink = false, sx, ...other}, ref) =>
+{
 
 
     // OR using local (public folder)
     // -------------------------------------------------------
     const logo = (
-      <Box
-        component="img"
-        src="/assets/logo/pass_logo.svg"
-        sx={{ width: 200, cursor: 'pointer', ...sx }}
-      />
+        <Box
+            component="img"
+            src="/assets/logo/pass_logo.svg"
+            sx={{width: 200, cursor: 'pointer', ...sx}}
+        />
     );
 
     // const logo = (
@@ -41,7 +42,8 @@ const Logo = forwardRef(({disabledLink = false, sx, ...other}, ref) => {
     //     </Box>
     // );
 
-    if (disabledLink) {
+    if (disabledLink)
+    {
         return logo;
     }
 

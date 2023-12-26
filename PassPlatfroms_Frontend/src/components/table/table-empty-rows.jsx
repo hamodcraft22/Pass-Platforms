@@ -5,8 +5,10 @@ import TableCell from '@mui/material/TableCell';
 
 // ----------------------------------------------------------------------
 
-export default function TableEmptyRows({emptyRows, height}) {
-    if (!emptyRows) {
+export default function TableEmptyRows({emptyRows, height})
+{
+    if (!emptyRows)
+    {
         return null;
     }
 

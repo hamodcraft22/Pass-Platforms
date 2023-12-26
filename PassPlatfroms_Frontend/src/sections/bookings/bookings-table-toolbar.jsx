@@ -9,7 +9,8 @@ import Button from "@mui/material/Button";
 
 // ----------------------------------------------------------------------
 
-export default function BookingsTableToolbar({startDate, onDateStart, endDate, onDateEnd, onClearButton}) {
+export default function BookingsTableToolbar({startDate, onDateStart, endDate, onDateEnd, onClearButton})
+{
     return (
         <Toolbar
             sx={{
@@ -22,13 +23,15 @@ export default function BookingsTableToolbar({startDate, onDateStart, endDate, o
 
             <div>
                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                    <DatePicker label="From Date" value={startDate} onChange={(newValue) => {
+                    <DatePicker label="From Date" value={startDate} onChange={(newValue) =>
+                    {
                         onDateStart(newValue)
                     }}/>
                 </LocalizationProvider>
 
                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                    <DatePicker sx={{ml: 2}} label="To Date" minDate={startDate} value={endDate} onChange={(newValue) => {
+                    <DatePicker sx={{ml: 2}} label="To Date" minDate={startDate} value={endDate} onChange={(newValue) =>
+                    {
                         onDateEnd(newValue)
                     }}/>
                 </LocalizationProvider>

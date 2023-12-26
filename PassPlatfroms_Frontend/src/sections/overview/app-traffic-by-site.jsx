@@ -10,7 +10,8 @@ import {fShortenNumber} from '../../utils/format-number';
 
 // ----------------------------------------------------------------------
 
-export default function AppTrafficBySite({title, subheader, list, ...other}) {
+export default function AppTrafficBySite({title, subheader, list, ...other})
+{
     return (
         <Card {...other}>
             <CardHeader title={title} subheader={subheader}/>

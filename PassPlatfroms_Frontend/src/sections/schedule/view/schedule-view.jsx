@@ -10,18 +10,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
 import Scrollbar from '../../../components/scrollbar';
-
-import TableNoData from '../../../components/table/table-no-data';
 import TableMainHead from '../../../components/table/table-head';
 import TableEmptyRows from '../../../components/table/table-empty-rows';
-import {emptyRows, getComparator} from '../../../components/table/utils';
-import {applyFilter} from '../filterUtil';
+import {emptyRows} from '../../../components/table/utils';
 
 import ScheduleTableRow from '../schedule-table-row';
 import ScheduleTableToolbar from '../schedule-table-toolbar';
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {useSearchParams} from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -36,7 +32,8 @@ import ExportToExcel from "../../../utils/exportExcel";
 
 // ----------------------------------------------------------------------
 
-export default function SchedulePage() {
+export default function SchedulePage()
+{
 
     // this page is open for everyone, editing is only for the manager / user
 
@@ -48,8 +45,10 @@ export default function SchedulePage() {
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -57,8 +56,10 @@ export default function SchedulePage() {
 
     const [successShow, setSuccessShow] = useState(false);
     const [successMsg, setSuccessMsg] = useState("");
-    const handleSuccessAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleSuccessAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setSuccessShow(false);
@@ -91,7 +92,10 @@ export default function SchedulePage() {
                 .then((data) =>
                 {
                     parseUserSchedules(data.transObject);
-                }).then(() => {setLoadingShow(false);})
+                }).then(() =>
+                {
+                    setLoadingShow(false);
+                })
         }
         catch (error)
         {
@@ -106,8 +110,9 @@ export default function SchedulePage() {
     {
         let correctedUserSchedules = [];
 
-        retrivedUserSchedules.forEach((schedule) => {
-            correctedUserSchedules.push({"scheduleid":schedule.scheduleid, "starttime":schedule.starttime, "endtime":schedule.endtime, "day":schedule.day.dayid, "userName":schedule.user.userName});
+        retrivedUserSchedules.forEach((schedule) =>
+        {
+            correctedUserSchedules.push({"scheduleid": schedule.scheduleid, "starttime": schedule.starttime, "endtime": schedule.endtime, "day": schedule.day.dayid, "userName": schedule.user.userName});
         });
 
         setUserSchedules(correctedUserSchedules);
@@ -129,7 +134,18 @@ export default function SchedulePage() {
 
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {if (studentIDParm !== null && studentIDParm !== undefined && Object.keys(studentIDParm).length !== 0) {getSchedules(studentIDParm); setCanEdit(false);} else {getUserInfo()}}, []);
+    useEffect(() =>
+    {
+        if (studentIDParm !== null && studentIDParm !== undefined && Object.keys(studentIDParm).length !== 0)
+        {
+            getSchedules(studentIDParm);
+            setCanEdit(false);
+        }
+        else
+        {
+            getUserInfo()
+        }
+    }, []);
 
 
     const [showAddDialog, setShowAddDialog] = useState(false);
@@ -143,18 +159,21 @@ export default function SchedulePage() {
 
     const [canEdit, setCanEdit] = useState(false);
 
-    const handleAddClickOpen = () => {
+    const handleAddClickOpen = () =>
+    {
         setShowAddDialog(true);
     };
-    const handleAddClose = () => {
+    const handleAddClose = () =>
+    {
         setShowAddDialog(false);
 
         setScheduleSelectedStartTime(null);
         setScheduleSelectedEndTime(null);
         setAddScheduleDay(null);
     };
-    const handleAddSave = () => {
-        if (addScheduleDay !== null && scheduleSelectedStartTime !== null && scheduleSelectedEndTime!== null)
+    const handleAddSave = () =>
+    {
+        if (addScheduleDay !== null && scheduleSelectedStartTime !== null && scheduleSelectedEndTime !== null)
         {
             setShowAddDialog(false);
             createSubmit();
@@ -170,7 +189,7 @@ export default function SchedulePage() {
     // submit new schedule
     function createSubmit()
     {
-        const scheduleToSubmit = {"starttime":scheduleSelectedStartTime, "endtime":scheduleSelectedEndTime, "day":{"dayid":addScheduleDay}, "user":{"userid":userID}};
+        const scheduleToSubmit = {"starttime": scheduleSelectedStartTime, "endtime": scheduleSelectedEndTime, "day": {"dayid": addScheduleDay}, "user": {"userid": userID}};
 
         submitSchedule(scheduleToSubmit);
     }
@@ -189,7 +208,8 @@ export default function SchedulePage() {
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(scheduleToSubmit)};
 
             await fetch(`http://localhost:8080/api/schedule`, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 201 || response.status === 200)
                     {
                         isok = true;
@@ -216,7 +236,8 @@ export default function SchedulePage() {
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setLoadingShow(false);
                     if (isok)
                     {
@@ -251,19 +272,23 @@ export default function SchedulePage() {
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const handleSort = (event, id) => {
+    const handleSort = (event, id) =>
+    {
         const isAsc = orderBy === id && order === 'asc';
-        if (id !== '') {
+        if (id !== '')
+        {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
     };
 
-    const handleChangePage = (event, newPage) => {
+    const handleChangePage = (event, newPage) =>
+    {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangeRowsPerPage = (event) =>
+    {
         setPage(0);
         setRowsPerPage(parseInt(event.target.value, 10));
     };
@@ -374,7 +399,8 @@ export default function SchedulePage() {
                     <DialogContent>
 
                         <TextField select label="Day" sx={{width: '100%', mt: 1}} value={addScheduleDay}
-                                   onChange={(event, newValue) => {
+                                   onChange={(event, newValue) =>
+                                   {
                                        setAddScheduleDay(newValue.props.value)
                                    }}>
                             <MenuItem value={'U'}>Sunday</MenuItem>
@@ -389,13 +415,15 @@ export default function SchedulePage() {
 
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                             <TimePicker sx={{mt: 2, mr: 1}} label="Start Time"
-                                        value={scheduleSelectedStartTime} onChange={(newValue) => {
+                                        value={scheduleSelectedStartTime} onChange={(newValue) =>
+                            {
                                 setScheduleSelectedStartTime(newValue)
                             }}/>
                         </LocalizationProvider>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                             <TimePicker sx={{mt: 2}} label="End Time" minTime={scheduleSelectedStartTime}
-                                        value={scheduleSelectedEndTime} onChange={(newValue) => {
+                                        value={scheduleSelectedEndTime} onChange={(newValue) =>
+                            {
                                 setScheduleSelectedEndTime(newValue)
                             }}/>
                         </LocalizationProvider>

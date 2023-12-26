@@ -45,8 +45,10 @@ export default function CoursesPage()
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -59,22 +61,30 @@ export default function CoursesPage()
     const [courses, setCourses] = useState([]);
 
     // get school and courses api
-    async function getSchoolCourses() {
-        try {
+    async function getSchoolCourses()
+    {
+        try
+        {
             setLoadingShow(true);
             let token = await UserProfile.getAuthToken();
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
             await fetch(`http://localhost:8080/api/school/${schoolIDParm}`, requestOptions)
-                .then(response => {
+                .then(response =>
+                {
                     return response.json()
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setSchool(data.transObject);
                     setCourses(data.transObject.courses)
-                }).then(() => {setLoadingShow(false);})
-        } catch (error)
+                }).then(() =>
+                {
+                    setLoadingShow(false);
+                })
+        }
+        catch (error)
         {
             setLoadingShow(false);
             setErrorMsg("No Courses Found");
@@ -84,8 +94,12 @@ export default function CoursesPage()
     }
 
     // get school and courses on load
-    useEffect(() => {
-        if (schoolIDParm !== null && schoolIDParm !== undefined && Object.keys(schoolIDParm).length !== 0) {getSchoolCourses()}
+    useEffect(() =>
+    {
+        if (schoolIDParm !== null && schoolIDParm !== undefined && Object.keys(schoolIDParm).length !== 0)
+        {
+            getSchoolCourses()
+        }
     }, [])
 
 
@@ -107,7 +121,10 @@ export default function CoursesPage()
     }
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {getUserInfo()}, []);
+    useEffect(() =>
+    {
+        getUserInfo()
+    }, []);
 
 
     const [showAddDialog, setShowAddDialog] = useState(false);
@@ -115,36 +132,42 @@ export default function CoursesPage()
     const [addCourseName, setAddCourseName] = useState(null);
 
 
-    const handleAddClickOpen = () => {
+    const handleAddClickOpen = () =>
+    {
         setShowAddDialog(true);
     };
-    const handleAddClose = () => {
+    const handleAddClose = () =>
+    {
         setShowAddDialog(false);
 
         setAddCourseID(null);
         setAddCourseName(null);
 
     };
-    const handleAddSave = () => {
+    const handleAddSave = () =>
+    {
         setShowAddDialog(false);
         createSubmit();
     };
 
 
-    async function createSubmit() {
+    async function createSubmit()
+    {
 
         // do course dto
-        const courseDto = {"courseid": addCourseID, "coursename": addCourseName, "school": {"schoolid":schoolIDParm}};
+        const courseDto = {"courseid": addCourseID, "coursename": addCourseName, "school": {"schoolid": schoolIDParm}};
         console.log(courseDto);
 
         await submitCourse(courseDto);
     }
 
-    async function submitCourse(courseDto) {
+    async function submitCourse(courseDto)
+    {
         let isok = false;
         let isBad = false;
 
-        try {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -152,38 +175,56 @@ export default function CoursesPage()
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(courseDto)};
 
             await fetch(`http://localhost:8080/api/course`, requestOptions)
-                .then(response => {
-                    if (response.status === 201 || response.status === 200) {
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
                         isok = true;
                         return response.json();
-                    } else if (response.status === 400) {
+                    }
+                    else if (response.status === 400)
+                    {
                         isBad = true;
-                    } else if (response.status === 401) {
+                    }
+                    else if (response.status === 401)
+                    {
                         setErrorMsg("you are not allowed to do this action");
                         setErrorShow(true);
-                    } else if (response.status === 404) {
+                    }
+                    else if (response.status === 404)
+                    {
                         setErrorMsg("the request was not found on the server, double check your connection");
                         setErrorShow(true);
-                    } else {
+                    }
+                    else
+                    {
                         setErrorMsg("an unknown error occurred, please check console");
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setLoadingShow(false);
-                    if (isok) {
+                    if (isok)
+                    {
                         // it is fine, go on
                         window.location.reload();
                         console.log(data);
-                    } else if (isBad) {
+                    }
+                    else if (isBad)
+                    {
                         setErrorMsg("the course code is already present");
                         setErrorShow(true);
-                    } else {
+                    }
+                    else
+                    {
                         console.log(data);
                     }
                 })
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);
             console.log(error);
@@ -204,24 +245,29 @@ export default function CoursesPage()
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const handleSort = (event, id) => {
+    const handleSort = (event, id) =>
+    {
         const isAsc = orderBy === id && order === 'asc';
-        if (id !== '') {
+        if (id !== '')
+        {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
     };
 
-    const handleChangePage = (event, newPage) => {
+    const handleChangePage = (event, newPage) =>
+    {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangeRowsPerPage = (event) =>
+    {
         setPage(0);
         setRowsPerPage(parseInt(event.target.value, 10));
     };
 
-    const handleFilterByName = (event) => {
+    const handleFilterByName = (event) =>
+    {
         setPage(0);
         setFilterName(event.target.value);
     };
@@ -235,18 +281,19 @@ export default function CoursesPage()
     const notFound = !dataFiltered.length && !!filterName;
 
     let navigate = useNavigate();
-    const goToSchools = () => {
-            let path = `/schools`;
-            navigate(path);
+    const goToSchools = () =>
+    {
+        let path = `/schools`;
+        navigate(path);
 
     }
 
-    const goToHome = () => {
-            let path = `/`;
-            navigate(path);
+    const goToHome = () =>
+    {
+        let path = `/`;
+        navigate(path);
 
     }
-
 
 
     return (

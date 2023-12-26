@@ -40,15 +40,18 @@ export default function NewBookingPage()
     const [shownSection, setShownSection] = useState(1);
     const [progPercent, setProgPercent] = useState(0);
     const [progColor, setProgColor] = useState("primary");
-    useEffect(() => {
+    useEffect(() =>
+    {
         (setProgPercent(((shownSection - 1) / 4) * 100))
     }, [shownSection]);
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -73,11 +76,16 @@ export default function NewBookingPage()
     }
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {getUserInfo()}, []);
+    useEffect(() =>
+    {
+        getUserInfo()
+    }, []);
 
     // get schools and courses
-    async function getAvlbSchools() {
-        try {
+    async function getAvlbSchools()
+    {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -85,30 +93,37 @@ export default function NewBookingPage()
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
             await fetch(`http://localhost:8080/api/school/schools`, requestOptions)
-                .then(response => {
+                .then(response =>
+                {
                     console.log(response);
                     return response.json()
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setSchools(data.transObject)
                 })
-                .then(() => {
+                .then(() =>
+                {
                     setLoadingShow(false)
                 });
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.log(error);
             setLoadingShow(false);
         }
     }
 
-    function handleSelectedSchool(school) {
+    function handleSelectedSchool(school)
+    {
         setLoadingShow(true);
         setSelectedSchool(school);
         setCourses(school.courses);
         setLoadingShow(false);
     }
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         getAvlbSchools()
     }, [])
 
@@ -120,15 +135,18 @@ export default function NewBookingPage()
     const [recivedSlotsDto, setRecivedSlotsDto] = useState([]);
 
     // getting slots api
-    async function getAvlbSlots() {
-        try {
+    async function getAvlbSlots()
+    {
+        try
+        {
             setLoadingShow(true);
             let token = await UserProfile.getAuthToken();
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
             await fetch(`http://localhost:8080/api/slot/course/${selectedCourse.courseid}?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
-                .then(response => {
+                .then(response =>
+                {
                     if (response.status == 200 || response.status === 201)
                     {
                         return response.json()
@@ -139,37 +157,46 @@ export default function NewBookingPage()
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     if (data !== null)
                     {
                         setRecivedSlotsDto(data.transObject)
                     }
                 })
-                .then(() => {
+                .then(() =>
+                {
                     setLoadingShow(false);
                 })
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.log(error);
             setLoadingShow(false);
         }
     }
 
-    useEffect(() => {
-        if (shownSection === 2) {
+    useEffect(() =>
+    {
+        if (shownSection === 2)
+        {
             getAvlbSlots()
         }
     }, [shownSection]);
 
     // get upoan date change
-    useEffect(() => {
-        if (shownSection === 2) {
+    useEffect(() =>
+    {
+        if (shownSection === 2)
+        {
             getAvlbSlots()
         }
     }, [bookingStartDate]);
 
     // parsing slots
-    function parseSlots() {
+    function parseSlots()
+    {
         setLoadingShow(true);
         const pastelColors = [
             '#ff9496',
@@ -196,7 +223,8 @@ export default function NewBookingPage()
 
         let parsedLeaders = [];
 
-        recivedSlotsDto.forEach((leader, index) => {
+        recivedSlotsDto.forEach((leader, index) =>
+        {
             const leaderColor = pastelColors[index];
 
             const leaderID = leader.leaderID;
@@ -205,31 +233,44 @@ export default function NewBookingPage()
             let leaderSlos = [];
 
             // loop throght leader slots and assign them the color
-            leader.slots.forEach((slot) => {
+            leader.slots.forEach((slot) =>
+            {
                 const slotid = slot.slotid;
 
                 const slotType = slot.slotType.typename;
 
                 let daysToAdd = 0;
 
-                if (slot.day.dayid === 'M') {
+                if (slot.day.dayid === 'M')
+                {
                     daysToAdd = 1;
-                } else if (slot.day.dayid === 'T') {
+                }
+                else if (slot.day.dayid === 'T')
+                {
                     daysToAdd = 2;
-                } else if (slot.day.dayid === 'W') {
+                }
+                else if (slot.day.dayid === 'W')
+                {
                     daysToAdd = 3;
-                } else if (slot.day.dayid === 'R') {
+                }
+                else if (slot.day.dayid === 'R')
+                {
                     daysToAdd = 4;
-                } else if (slot.day.dayid === 'F') {
+                }
+                else if (slot.day.dayid === 'F')
+                {
                     daysToAdd = 5;
-                } else if (slot.day.dayid === 'S') {
+                }
+                else if (slot.day.dayid === 'S')
+                {
                     daysToAdd = 6;
                 }
 
                 const startTime = moment(bookingStartDate.clone().add(daysToAdd, 'day').format('YYYY-MM-DD') + 'T' + moment(slot.starttime).format('HH:mm:ss'));
                 const endTime = moment(bookingStartDate.clone().add(daysToAdd, 'day').format('YYYY-MM-DD') + 'T' + moment(slot.endtime).format('HH:mm:ss'));
 
-                if (startTime > moment().startOf('day').add(1, 'day')) {
+                if (startTime > moment().startOf('day').add(1, 'day'))
+                {
                     // create new slot object with color
                     leaderSlos.push({"uid": slotid, "start": startTime, "end": endTime, "slotType": slotType, "color": leaderColor, "leaderName": leaderName});
                 }
@@ -253,12 +294,15 @@ export default function NewBookingPage()
     const [selectedLeaders, setSelectedLeaders] = useState([]);
 
     // add selcted leader slots to intrivals
-    function handleSlots() {
+    function handleSlots()
+    {
         setLoadingShow(true);
         let allSlots = [];
 
-        selectedLeaders.forEach((leader) => {
-            leader.slots.forEach((slot) => {
+        selectedLeaders.forEach((leader) =>
+        {
+            leader.slots.forEach((slot) =>
+            {
                 allSlots.push(slot);
             })
         })
@@ -267,8 +311,10 @@ export default function NewBookingPage()
         setLoadingShow(false);
     }
 
-    useEffect(() => {
-        if (selectedLeaders.length !== 0) {
+    useEffect(() =>
+    {
+        if (selectedLeaders.length !== 0)
+        {
             handleSlots()
         }
     }, [selectedLeaders]);
@@ -276,8 +322,10 @@ export default function NewBookingPage()
     // slots to be shown
     const [selectedIntervals, setSelectedIntervals] = useState([]);
 
-    useEffect(() => {
-        if (Object.keys(recivedSlotsDto).length !== 0) {
+    useEffect(() =>
+    {
+        if (Object.keys(recivedSlotsDto).length !== 0)
+        {
             parseSlots()
         }
     }, [recivedSlotsDto])
@@ -286,25 +334,32 @@ export default function NewBookingPage()
     const [selctedSlot, setSelctedSlot] = useState([]);
     const [slotConfirmShow, setSlotConfirmShow] = useState(false);
     const [slotToConfirm, setSlotToConfirm] = useState([]);
-    const handleSlotConfirmClose = () => {
+    const handleSlotConfirmClose = () =>
+    {
         setSlotConfirmShow(false);
         setSlotToConfirm([]);
     };
-    const handleSlotConfirm = () => {
+    const handleSlotConfirm = () =>
+    {
         setSlotConfirmShow(false);
         setSelctedSlot(slotToConfirm);
         setSlotToConfirm(null);
     };
-    const handleSlotSelect = (slot) => {
+    const handleSlotSelect = (slot) =>
+    {
         setSlotToConfirm(slot);
     };
-    useEffect(() => {
-        if (slotToConfirm !== null && slotToConfirm !== undefined && Object.keys(slotToConfirm).length !== 0) {
+    useEffect(() =>
+    {
+        if (slotToConfirm !== null && slotToConfirm !== undefined && Object.keys(slotToConfirm).length !== 0)
+        {
             setSlotConfirmShow(true)
         }
     }, [slotToConfirm]);
-    useEffect(() => {
-        if (selctedSlot !== null && selctedSlot !== undefined && Object.keys(selctedSlot).length !== 0) {
+    useEffect(() =>
+    {
+        if (selctedSlot !== null && selctedSlot !== undefined && Object.keys(selctedSlot).length !== 0)
+        {
             nextSection()
         }
     }, [selctedSlot]);
@@ -316,15 +371,18 @@ export default function NewBookingPage()
     const [allUsers, setAllUsers] = useState([]);
 
     // get all users api
-    async function getAllUsers() {
-        try {
+    async function getAllUsers()
+    {
+        try
+        {
             setLoadingShow(true);
             let token = await UserProfile.getAuthToken();
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
             await fetch(`http://localhost:8080/api/users/students`, requestOptions)
-                .then(response => {
+                .then(response =>
+                {
                     if (response.status === 200)
                     {
                         return response.json()
@@ -335,21 +393,27 @@ export default function NewBookingPage()
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setAllUsers(data)
                 })
-                .then(() => {
+                .then(() =>
+                {
                     setLoadingShow(false);
                 })
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.log(error);
             setLoadingShow(false);
         }
     }
 
-    useEffect(() => {
-        if (shownSection === 3) {
+    useEffect(() =>
+    {
+        if (shownSection === 3)
+        {
             getAllUsers()
         }
     }, [shownSection]);
@@ -362,18 +426,24 @@ export default function NewBookingPage()
 
 
     // submit function
-    async function createSubmit() {
+    async function createSubmit()
+    {
         // booking elements
         const bookingDate = moment(selctedSlot.start).toDate();
         const bookingNote = helpInText;
         let isOnline = false;
 
         // check if slot is online
-        if (selctedSlot.slotType === 'online') {
+        if (selctedSlot.slotType === 'online')
+        {
             isOnline = true;
-        } else if (selctedSlot.slotType === 'both') {
+        }
+        else if (selctedSlot.slotType === 'both')
+        {
             isOnline = bookingOnline;
-        } else {
+        }
+        else
+        {
             isOnline = false;
         }
 
@@ -383,7 +453,8 @@ export default function NewBookingPage()
         let members = [];
 
         // do members loop
-        groupMembers.forEach((member) => {
+        groupMembers.forEach((member) =>
+        {
             members.push({"student": {"userid": member.userID}});
         });
 
@@ -394,11 +465,13 @@ export default function NewBookingPage()
         await submitBooking(bookingDto);
     }
 
-    async function submitBooking(bookingDto) {
+    async function submitBooking(bookingDto)
+    {
         let isok = false;
         let isBad = false;
 
-        try {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -406,51 +479,73 @@ export default function NewBookingPage()
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(bookingDto)};
 
             await fetch(`http://localhost:8080/api/booking`, requestOptions)
-                .then(response => {
-                    if (response.status === 201 || response.status === 200) {
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
                         isok = true;
                         setProgPercent(100);
                         return response.json();
-                    } else if (response.status === 400) {
+                    }
+                    else if (response.status === 400)
+                    {
                         isBad = true;
                         return response.json();
-                    } else if (response.status === 401) {
+                    }
+                    else if (response.status === 401)
+                    {
                         setErrorMsg("you are not allowed to do this action");
                         setErrorShow(true);
-                    } else if (response.status === 404) {
+                    }
+                    else if (response.status === 404)
+                    {
                         setErrorMsg("the request was not found on the server, double check your connection");
                         setErrorShow(true);
-                    } else {
+                    }
+                    else
+                    {
                         setErrorMsg("an unknown error occurred, please check console");
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setLoadingShow(false);
-                    if (isok) {
+                    if (isok)
+                    {
                         // it is fine, go on
                         setMadeBooking(data.transObject);
                         setWarnings(data.warnings);
                         console.log(data);
-                    } else if (isBad) {
+                    }
+                    else if (isBad)
+                    {
                         // errors for booking
                         let errorString = "";
-                        data.error.forEach((errorItem) => {
-                            if (errorString === "") {
+                        data.error.forEach((errorItem) =>
+                        {
+                            if (errorString === "")
+                            {
                                 errorString = errorItem
-                            } else {
+                            }
+                            else
+                            {
                                 errorString = errorItem + "\n" + errorString
                             }
                         });
                         setErrorMsg(errorString);
                         setErrorShow(true);
                         console.log(data);
-                    } else {
+                    }
+                    else
+                    {
                         console.log(data);
                     }
                 })
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);
             console.log(error);
@@ -465,9 +560,11 @@ export default function NewBookingPage()
 
     const [showComplete, setShowComplete] = useState(false);
 
-    function showCompleation() {
+    function showCompleation()
+    {
         // set percentage to 100% - if warnings make it yellow
-        if (warnings !== undefined && warnings.length !== 0) {
+        if (warnings !== undefined && warnings.length !== 0)
+        {
             setProgColor("warning");
         }
         else
@@ -481,41 +578,57 @@ export default function NewBookingPage()
         setShowComplete(true);
     }
 
-    useEffect(() => {
-        if (madeBooking !== null) {
+    useEffect(() =>
+    {
+        if (madeBooking !== null)
+        {
             showCompleation()
         }
     }, [warnings]);
 
-    function nextSection() {
-        if (shownSection === 1) {
-            if (selectedSchool !== null && selectedCourse !== null && selectedSchool !== undefined && selectedCourse !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0) {
+    function nextSection()
+    {
+        if (shownSection === 1)
+        {
+            if (selectedSchool !== null && selectedCourse !== null && selectedSchool !== undefined && selectedCourse !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0)
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Select a School and a Course Please");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 2) {
-            if (selectedSchool !== null && selectedCourse !== null && selctedSlot !== null && selectedSchool !== undefined && selectedCourse !== undefined && selctedSlot !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(selctedSlot).length !== 0) {
+        if (shownSection === 2)
+        {
+            if (selectedSchool !== null && selectedCourse !== null && selctedSlot !== null && selectedSchool !== undefined && selectedCourse !== undefined && selctedSlot !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(selctedSlot).length !== 0)
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Select a Slot Please");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 3) {
-            if (selectedSchool !== null && selectedCourse !== null && selctedSlot !== null && helpInText !== null && selectedSchool !== undefined && selectedCourse !== undefined && selctedSlot !== undefined && helpInText !== undefined && helpInText !== "" && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(selctedSlot).length !== 0 && Object.keys(helpInText).length !== 0) {
+        if (shownSection === 3)
+        {
+            if (selectedSchool !== null && selectedCourse !== null && selctedSlot !== null && helpInText !== null && selectedSchool !== undefined && selectedCourse !== undefined && selctedSlot !== undefined && helpInText !== undefined && helpInText !== "" && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(selctedSlot).length !== 0 && Object.keys(helpInText).length !== 0)
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Please input the help area necessary");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 4) {
+        if (shownSection === 4)
+        {
             if (userRole === 'student' || userRole === 'leader')
             {
                 createSubmit();
@@ -529,19 +642,23 @@ export default function NewBookingPage()
 
     }
 
-    function prevSection() {
+    function prevSection()
+    {
         setShownSection((shownSection) - 1);
     }
 
     let navigate = useNavigate();
-    const goToBooking = () => {
-        if (madeBooking !== null) {
+    const goToBooking = () =>
+    {
+        if (madeBooking !== null)
+        {
             let path = `/viewBooking?bookingID=${madeBooking.bookingid}`;
             navigate(path);
         }
     }
 
-    const CustomPaper = (props) => {
+    const CustomPaper = (props) =>
+    {
         return <Paper elevation={8} {...props} />;
     };
 
@@ -625,13 +742,15 @@ export default function NewBookingPage()
                             PaperComponent={CustomPaper}
                             options={schools}
                             value={selectedSchool}
-                            onChange={(event, newValue) => {
+                            onChange={(event, newValue) =>
+                            {
                                 handleSelectedSchool(newValue)
                             }}
                             sx={{width: '100%', mt: 1}}
                             renderInput={(params) => <TextField {...params} label="School"/>}
                             getOptionLabel={(option) => option.schoolname}
-                            renderOption={(props, option) => {
+                            renderOption={(props, option) =>
+                            {
                                 return (
                                     <li {...props}>
                                         {option.schoolname}
@@ -647,13 +766,15 @@ export default function NewBookingPage()
                             PaperComponent={CustomPaper}
                             options={courses}
                             value={selectedCourse}
-                            onChange={(event, newValue) => {
+                            onChange={(event, newValue) =>
+                            {
                                 setSelectedCourse(newValue)
                             }}
                             sx={{width: '100%', mt: 1}}
                             renderInput={(params) => <TextField {...params} label="Course"/>}
                             getOptionLabel={(option) => option.courseid + " " + option.coursename}
-                            renderOption={(props, option) => {
+                            renderOption={(props, option) =>
+                            {
                                 return (
                                     <li {...props}>
                                         {option.courseid + " " + option.coursename}
@@ -686,21 +807,24 @@ export default function NewBookingPage()
                                 items={leaders}
                                 label="Leaders"
                                 selectAllLabel="All"
-                                leaders={(items) => {
+                                leaders={(items) =>
+                                {
                                     setSelectedLeaders(items)
                                 }}
                             />
 
                             <Box sx={{mt: 1, width: '100%', display: 'flex', justifyContent: 'space-between'}}>
                                 <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:arrow-ios-back-fill"/>}
-                                        onClick={() => {
+                                        onClick={() =>
+                                        {
                                             setBookingStartDate(bookingStartDate.clone().add(-7, 'day'))
                                         }}>
                                     Prev Week
                                 </Button>
 
                                 <Button variant="contained" color="inherit" endIcon={<Iconify icon="eva:arrow-ios-forward-fill"/>}
-                                        onClick={() => {
+                                        onClick={() =>
+                                        {
                                             setBookingStartDate(bookingStartDate.clone().add(7, 'day'))
                                         }}>
                                     Next Week
@@ -787,7 +911,8 @@ export default function NewBookingPage()
                             options={allUsers}
                             value={groupMembers}
                             getOptionLabel={(option) => option.userID + " | " + option.userName}
-                            onChange={(event, newValue) => {
+                            onChange={(event, newValue) =>
+                            {
                                 setGroupMembers(newValue)
                             }}
                             renderInput={(params) => <TextField {...params} label="Student ID/s - Optional"/>}
@@ -806,7 +931,8 @@ export default function NewBookingPage()
                                     selected={bookingOnline}
                                     sx={{width: '100%'}}
                                     color={"primary"}
-                                    onChange={() => {
+                                    onChange={() =>
+                                    {
                                         setBookingOnline(!bookingOnline)
                                     }}
                                 >

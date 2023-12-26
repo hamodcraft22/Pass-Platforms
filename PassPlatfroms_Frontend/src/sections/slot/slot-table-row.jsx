@@ -13,7 +13,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {Alert, FormHelperText, Snackbar, TextField, ToggleButton} from "@mui/material";
+import {Alert, FormHelperText, TextField, ToggleButton} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import MenuItem from "@mui/material/MenuItem";
 import PublicIcon from '@mui/icons-material/Public';
@@ -27,28 +27,35 @@ import UserProfile from "../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
-export default function SlotTableRow({slotID, day, startTime, endTime, note, type, canEdit}) {
+export default function SlotTableRow({slotID, day, startTime, endTime, note, type, canEdit})
+{
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
     };
 
     const [showViewDialog, setShowViewDialog] = useState(false);
-    const handleViewClickOpen = () => {
+    const handleViewClickOpen = () =>
+    {
         setShowViewDialog(true);
     };
-    const handleViewClose = () => {
+    const handleViewClose = () =>
+    {
         setShowViewDialog(false);
     };
 
-    const dayWord = (dayChar) => {
-        switch (dayChar) {
+    const dayWord = (dayChar) =>
+    {
+        switch (dayChar)
+        {
             case 'U':
                 return "Sunday";
             case 'M':
@@ -80,7 +87,8 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, typ
     const [slotSelectedStartTime, setSlotSelectedStartTime] = useState(null);
     const [slotSelectedEndTime, setSlotSelectedEndTime] = useState(null);
 
-    const handleEditClickOpen = () => {
+    const handleEditClickOpen = () =>
+    {
         setShowEditDialog(true);
 
         setEditSlotDay(day);
@@ -103,7 +111,8 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, typ
 
         setEditSlotNote(note);
     };
-    const handleEditClose = () => {
+    const handleEditClose = () =>
+    {
         setShowEditDialog(false);
 
         setEditSlotDay(null);
@@ -112,8 +121,9 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, typ
         setSlotSelectedEndTime(null);
         setEditSlotNote(null);
     };
-    const handleEditSave = () => {
-        if ( editSlotOnline !== false || editSlotPhysical !== false )
+    const handleEditSave = () =>
+    {
+        if (editSlotOnline !== false || editSlotPhysical !== false)
         {
             setShowEditDialog(false);
             editSubmit();
@@ -127,13 +137,16 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, typ
 
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const handleDeleteClickOpen = () => {
+    const handleDeleteClickOpen = () =>
+    {
         setShowDeleteDialog(true);
     };
-    const handleDeleteClose = () => {
+    const handleDeleteClose = () =>
+    {
         setShowDeleteDialog(false);
     };
-    const handleDeleteSave = () => {
+    const handleDeleteSave = () =>
+    {
         setShowDeleteDialog(false);
         deleteSlot();
     };
@@ -153,7 +166,18 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, typ
                 };
 
             await fetch(`http://localhost:8080/api/slot/${slotID}`, requestOptions)
-                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload()
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
         }
         catch (error)
         {
@@ -186,7 +210,7 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, typ
             slotType = 'P'
         }
 
-        const slotToSubmit = {"slotid":slotID, "note":editSlotNote, "slotType":{"typeid":slotType}};
+        const slotToSubmit = {"slotid": slotID, "note": editSlotNote, "slotType": {"typeid": slotType}};
 
         submitEditSlot(slotToSubmit);
     }
@@ -201,7 +225,8 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, typ
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(slotToSubmit)};
 
             await fetch(`http://localhost:8080/api/slot`, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 201 || response.status === 200)
                     {
                         window.location.reload();
@@ -311,12 +336,14 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, typ
                     <FormHelperText>Day is none-editable</FormHelperText>
 
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker readOnly sx={{mt: 2, mr: 1}} label="Start Time" value={moment(slotSelectedStartTime)} onChange={(newValue) => {
+                        <TimePicker readOnly sx={{mt: 2, mr: 1}} label="Start Time" value={moment(slotSelectedStartTime)} onChange={(newValue) =>
+                        {
                             setSlotSelectedStartTime(newValue)
                         }}/>
                     </LocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker readOnly sx={{mt: 2}} label="End Time"  value={moment(slotSelectedEndTime)} onChange={(newValue) => {
+                        <TimePicker readOnly sx={{mt: 2}} label="End Time" value={moment(slotSelectedEndTime)} onChange={(newValue) =>
+                        {
                             setSlotSelectedEndTime(newValue)
                         }}/>
                     </LocalizationProvider>
@@ -330,7 +357,8 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, typ
                         selected={editSlotOnline}
                         sx={{width: '100%'}}
                         color={"primary"}
-                        onChange={() => {
+                        onChange={() =>
+                        {
                             setEditSlotOnline(!editSlotOnline)
                         }}
                     >
@@ -343,7 +371,8 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, typ
                         selected={editSlotPhysical}
                         sx={{width: '100%'}}
                         color={"primary"}
-                        onChange={() => {
+                        onChange={() =>
+                        {
                             setEditSlotPhysical(!editSlotPhysical)
                         }}
                     >

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 
@@ -9,7 +8,8 @@ import Iconify from '../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function AuditsTableToolbar({filterName, onFilterName}) {
+export default function AuditsTableToolbar({filterName, onFilterName})
+{
     return (
         <Toolbar
             sx={{

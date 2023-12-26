@@ -13,35 +13,42 @@ import {useMsal} from '@azure/msal-react';
 import UserProfile from "../../../components/auth/UserInfo";
 
 
-export default function AccountPopover() {
+export default function AccountPopover()
+{
     const {instance} = useMsal();
 
     let activeAccount;
 
-    if (instance) {
+    if (instance)
+    {
         activeAccount = instance.getActiveAccount();
 
     }
 
     const [open, setOpen] = useState(null);
 
-    const handleOpen = (event) => {
+    const handleOpen = (event) =>
+    {
         setOpen(event.currentTarget);
     };
 
-    const handleClose = () => {
+    const handleClose = () =>
+    {
         setOpen(null);
     };
 
-    const handleLogoutRedirect = () => {
+    const handleLogoutRedirect = () =>
+    {
         instance.logoutRedirect({account: activeAccount}).catch((error) => console.log(error));
     };
 
 
     const [userName, setUserName] = useState("");
 
-    async function getUserName() {
-        await UserProfile.getUserName().then((data) => {
+    async function getUserName()
+    {
+        await UserProfile.getUserName().then((data) =>
+        {
             const words = data.trim().split(/\s+/);
             const firstName = words[0];
             const lastName = words[words.length - 1];
@@ -49,7 +56,8 @@ export default function AccountPopover() {
         })
     }
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         getUserName()
     }, [])
 

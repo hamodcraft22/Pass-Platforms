@@ -3,7 +3,8 @@ import {outlinedInputClasses} from '@mui/material/OutlinedInput';
 
 // ----------------------------------------------------------------------
 
-export function overrides(theme) {
+export function overrides(theme)
+{
     return {
         MuiCssBaseline: {
             styleOverrides: {

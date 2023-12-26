@@ -4,7 +4,8 @@ import {common, error, grey, info, primary, secondary, success, warning} from '.
 
 // ----------------------------------------------------------------------
 
-export function customShadows() {
+export function customShadows()
+{
     const transparent = alpha(grey[500], 0.16);
 
     return {

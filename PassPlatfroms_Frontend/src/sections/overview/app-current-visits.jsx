@@ -28,7 +28,8 @@ const StyledChart = styled(Chart)(({theme}) => ({
 
 // ----------------------------------------------------------------------
 
-export default function AppCurrentVisits({title, subheader, chart, ...other}) {
+export default function AppCurrentVisits({title, subheader, chart, ...other})
+{
     const theme = useTheme();
 
     const {colors, series, options} = chart;

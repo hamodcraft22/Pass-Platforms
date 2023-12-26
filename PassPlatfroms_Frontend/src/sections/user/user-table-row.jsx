@@ -17,50 +17,61 @@ import Iconify from '../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableRow({name, role, userid, loggedRole}) {
+export default function UserTableRow({name, role, userid, loggedRole})
+{
     const [open, setOpen] = useState(null);
 
-    const handleOpenMenu = (event) => {
+    const handleOpenMenu = (event) =>
+    {
         setOpen(event.currentTarget);
     };
 
-    const handleCloseMenu = () => {
+    const handleCloseMenu = () =>
+    {
         setOpen(null);
     };
 
 
     // naviagation links
     let navigate = useNavigate();
-    const goToSchedule = () => {
+    const goToSchedule = () =>
+    {
         let path = `/schedule?studentID=${userid}`;
         navigate(path);
     }
-    const goToSlots = () => {
+    const goToSlots = () =>
+    {
         let path = `/slot?leaderID=${userid}`;
         navigate(path);
     }
-    const goToCourses = () => {
+    const goToCourses = () =>
+    {
         let path = `/offeredCourses?leaderID=${userid}`;
         navigate(path);
     }
-    const goToTranscript = () => {
+    const goToTranscript = () =>
+    {
         let path = `/transcript?studentID=${userid}`;
         navigate(path);
     }
-    const goToBookings = () => {
+    const goToBookings = () =>
+    {
         let path = `/bookings?studentID=${userid}`;
         navigate(path);
     }
-    const goToRevisions = () => {
+    const goToRevisions = () =>
+    {
         let path = `/revisions?studentID=${userid}`;
         navigate(path);
     }
 
-    const goToLeaderBookings = () => {
+    const goToLeaderBookings = () =>
+    {
         let path = `/bookings?leaderID=${userid}`;
         navigate(path);
     }
-    const goToLeaderRevisions = () => {
+    const goToLeaderRevisions = () =>
+    {
         let path = `/revisions?leaderID=${userid}`;
         navigate(path);
     }
@@ -109,7 +120,7 @@ export default function UserTableRow({name, role, userid, loggedRole}) {
             >
                 {
                     (role === 'student' || role === 'leader') &&
-                    <MenuItem onClick={goToSchedule} >
+                    <MenuItem onClick={goToSchedule}>
                         <Iconify icon="eva:calendar-outline" sx={{mr: 2}}/>
                         Schedule
                     </MenuItem>
@@ -117,11 +128,11 @@ export default function UserTableRow({name, role, userid, loggedRole}) {
                 {
                     role === "leader" &&
                     <>
-                        <MenuItem onClick={goToSlots} >
+                        <MenuItem onClick={goToSlots}>
                             <Iconify icon="eva:clock-outline" sx={{mr: 2}}/>
                             Slots
                         </MenuItem>
-                        <MenuItem onClick={goToCourses} >
+                        <MenuItem onClick={goToCourses}>
                             <Iconify icon="eva:briefcase-outline" sx={{mr: 2}}/>
                             Courses
                         </MenuItem>
@@ -130,15 +141,15 @@ export default function UserTableRow({name, role, userid, loggedRole}) {
                 {
                     (role === "leader" || role === "student") && (loggedRole === 'manager' || loggedRole === 'admin') &&
                     <>
-                        <MenuItem onClick={goToTranscript} >
+                        <MenuItem onClick={goToTranscript}>
                             <Iconify icon="eva:briefcase-outline" sx={{mr: 2}}/>
                             Transcript
                         </MenuItem>
-                        <MenuItem onClick={goToBookings} >
+                        <MenuItem onClick={goToBookings}>
                             <Iconify icon="eva:book-open-fill" sx={{mr: 2}}/>
                             Bookings
                         </MenuItem>
-                        <MenuItem onClick={goToRevisions} >
+                        <MenuItem onClick={goToRevisions}>
                             <Iconify icon="eva:book-open-outline" sx={{mr: 2}}/>
                             Revisions
                         </MenuItem>
@@ -147,11 +158,11 @@ export default function UserTableRow({name, role, userid, loggedRole}) {
                 {
                     (role === "leader") && (loggedRole === 'manager' || loggedRole === 'admin') &&
                     <>
-                        <MenuItem onClick={goToLeaderBookings} >
+                        <MenuItem onClick={goToLeaderBookings}>
                             <Iconify icon="eva:clipboard-fill" sx={{mr: 2}}/>
                             L Bookings
                         </MenuItem>
-                        <MenuItem onClick={goToLeaderRevisions} >
+                        <MenuItem onClick={goToLeaderRevisions}>
                             <Iconify icon="eva:clipboard-outline" sx={{mr: 2}}/>
                             L Revisions
                         </MenuItem>

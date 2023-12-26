@@ -19,20 +19,7 @@ import {emptyRows, getComparator} from '../../../components/table/utils';
 
 import LogsTableRow from '../logs-table-row';
 import LogsTableToolbar from '../logs-table-toolbar';
-import Button from "@mui/material/Button";
-import Iconify from "../../../components/iconify";
-import {useSearchParams} from "react-router-dom";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import {Alert, Backdrop, CircularProgress, FormHelperText, Snackbar, TextField, ToggleButton} from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import DialogActions from "@mui/material/DialogActions";
-import PublicIcon from '@mui/icons-material/Public';
-import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
-import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
-import {TimePicker} from "@mui/x-date-pickers";
-import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
+import {Alert, Backdrop, CircularProgress, Snackbar} from "@mui/material";
 import UserProfile from "../../../components/auth/UserInfo";
 import {applyFilter} from "../filterUtil";
 import ExportToExcel from "../../../utils/exportExcel";
@@ -49,8 +36,10 @@ export default function LogsPage()
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -58,8 +47,10 @@ export default function LogsPage()
 
     const [successShow, setSuccessShow] = useState(false);
     const [successMsg, setSuccessMsg] = useState("");
-    const handleSuccessAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleSuccessAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setSuccessShow(false);
@@ -67,14 +58,15 @@ export default function LogsPage()
 
 
     // user logs
-    const [userLogs, setUserLogs]= useState([]);
+    const [userLogs, setUserLogs] = useState([]);
 
     function parseLogs(logsDto)
     {
         let parssedLogs = [];
 
-        logsDto.forEach((log) => {
-            parssedLogs.push({"logid":log.logid, "errormsg":log.errormsg, "datetime":log.datetime, "user":log.user.userid + " " + log.user.userName});
+        logsDto.forEach((log) =>
+        {
+            parssedLogs.push({"logid": log.logid, "errormsg": log.errormsg, "datetime": log.datetime, "user": log.user.userid + " " + log.user.userName});
         })
 
         setUserLogs(parssedLogs);
@@ -93,7 +85,8 @@ export default function LogsPage()
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
             await fetch(`http://localhost:8080/api/log`, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 201 || response.status === 200)
                     {
                         isok = true;
@@ -121,7 +114,8 @@ export default function LogsPage()
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setLoadingShow(false);
                     if (isok)
                     {
@@ -158,8 +152,10 @@ export default function LogsPage()
 
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {getUserInfo()}, []);
-
+    useEffect(() =>
+    {
+        getUserInfo()
+    }, []);
 
 
     const [page, setPage] = useState(0);
@@ -173,24 +169,29 @@ export default function LogsPage()
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
 
-    const handleSort = (event, id) => {
+    const handleSort = (event, id) =>
+    {
         const isAsc = orderBy === id && order === 'asc';
-        if (id !== '') {
+        if (id !== '')
+        {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
     };
 
-    const handleChangePage = (event, newPage) => {
+    const handleChangePage = (event, newPage) =>
+    {
         setPage(newPage);
     };
 
-    const handleFilterByName = (event) => {
+    const handleFilterByName = (event) =>
+    {
         setPage(0);
         setFilterName(event.target.value);
     };
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangeRowsPerPage = (event) =>
+    {
         setPage(0);
         setRowsPerPage(parseInt(event.target.value, 10));
     };

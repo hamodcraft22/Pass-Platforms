@@ -22,7 +22,6 @@ import TranscriptTableRow from '../transcript-table-row';
 import TranscriptTableToolbar from '../transcript-table-toolbar';
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {useSearchParams} from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -42,7 +41,8 @@ import ExportToExcel from "../../../utils/exportExcel";
 
 // ----------------------------------------------------------------------
 
-export default function TranscriptPage() {
+export default function TranscriptPage()
+{
 
     // this page is only for the managers / users of the transcript
 
@@ -51,8 +51,10 @@ export default function TranscriptPage() {
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -60,8 +62,10 @@ export default function TranscriptPage() {
 
     const [successShow, setSuccessShow] = useState(false);
     const [successMsg, setSuccessMsg] = useState("");
-    const handleSuccessAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleSuccessAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setSuccessShow(false);
@@ -95,7 +99,8 @@ export default function TranscriptPage() {
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
             await fetch(`http://localhost:8080/api/transcript/leader/${leaderID}`, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 201 || response.status === 200)
                     {
                         isok = true;
@@ -123,7 +128,8 @@ export default function TranscriptPage() {
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setLoadingShow(false);
                     if (isok)
                     {
@@ -142,24 +148,29 @@ export default function TranscriptPage() {
     }
 
 
-    const handleSort = (event, id) => {
+    const handleSort = (event, id) =>
+    {
         const isAsc = orderBy === id && order === 'asc';
-        if (id !== '') {
+        if (id !== '')
+        {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
     };
 
-    const handleChangePage = (event, newPage) => {
+    const handleChangePage = (event, newPage) =>
+    {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangeRowsPerPage = (event) =>
+    {
         setPage(0);
         setRowsPerPage(parseInt(event.target.value, 10));
     };
 
-    const handleFilterByName = (event) => {
+    const handleFilterByName = (event) =>
+    {
         setPage(0);
         setFilterName(event.target.value);
     };
@@ -176,15 +187,18 @@ export default function TranscriptPage() {
     const [showAddDialog, setShowAddDialog] = useState(false);
 
 
-    const handleAddClickOpen = () => {
+    const handleAddClickOpen = () =>
+    {
         setShowAddDialog(true);
     };
-    const handleAddClose = () => {
+    const handleAddClose = () =>
+    {
         setShowAddDialog(false);
 
         setCourses([]);
     };
-    const handleAddSave = () => {
+    const handleAddSave = () =>
+    {
         setShowAddDialog(false);
         submitTranscript();
     };
@@ -195,7 +209,6 @@ export default function TranscriptPage() {
 
     const [userID, setUserID] = useState("");
     const [userRole, setUserRole] = useState("");
-
 
 
     async function getUserInfo()
@@ -228,7 +241,7 @@ export default function TranscriptPage() {
         }
         else if (userRole === "student")
         {
-            if (studentIDParm !== null )
+            if (studentIDParm !== null)
             {
                 setErrorMsg("you are not allowed to access others Transcript");
                 setErrorShow(true);
@@ -241,7 +254,7 @@ export default function TranscriptPage() {
         }
         else if (userRole === "leader")
         {
-            if (studentIDParm !== null )
+            if (studentIDParm !== null)
             {
                 setErrorMsg("you are not allowed to access others Transcript");
                 setErrorShow(true);
@@ -261,20 +274,23 @@ export default function TranscriptPage() {
     }
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {getUserInfo()}, []);
-
-
-
+    useEffect(() =>
+    {
+        getUserInfo()
+    }, []);
 
 
     const [courses, setCourses] = useState([]);
 
     // transcript extract
-    const handleFileChange = async (e) => {
+    const handleFileChange = async (e) =>
+    {
         const file = e.target.files[0];
 
-        if (file) {
-            try {
+        if (file)
+        {
+            try
+            {
                 const pdfText = await extractTextFromPdf(file);
 
                 // Define your regular expression for course extraction
@@ -284,26 +300,34 @@ export default function TranscriptPage() {
 
                 let correctedCourses = [];
 
-                extractedCourses.forEach((course) => {
+                extractedCourses.forEach((course) =>
+                {
 
                     let courseCode = course.code + course.number;
                     let courseName = course.title
 
                     let courseGrade = '';
 
-                    if (course.grade.toLowerCase() === "comp") {
+                    if (course.grade.toLowerCase() === "comp")
+                    {
                         courseGrade = 'A';
-                    } else if (['a', 'b', 'c', 'd', 'f'].includes(course.grade.toLowerCase().charAt(0))) {
+                    }
+                    else if (['a', 'b', 'c', 'd', 'f'].includes(course.grade.toLowerCase().charAt(0)))
+                    {
                         courseGrade = course.grade;
-                    } else {
+                    }
+                    else
+                    {
                         courseGrade = 'E';
                     }
 
-                    correctedCourses.push({"courseid": courseCode, "title": courseName, "grade": courseGrade, "student":{"userid":userID}});
+                    correctedCourses.push({"courseid": courseCode, "title": courseName, "grade": courseGrade, "student": {"userid": userID}});
                 });
 
                 setCourses(correctedCourses);
-            } catch (error) {
+            }
+            catch (error)
+            {
                 console.error(error.message);
             }
         }
@@ -322,7 +346,8 @@ export default function TranscriptPage() {
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(courses)};
 
             await fetch(`http://localhost:8080/api/transcript/multi`, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 201 || response.status === 200)
                     {
                         isok = true;
@@ -344,7 +369,8 @@ export default function TranscriptPage() {
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setLoadingShow(false);
                     if (isok)
                     {
@@ -377,7 +403,8 @@ export default function TranscriptPage() {
         width: 1,
     });
 
-    const CustomPaper = (props) => {
+    const CustomPaper = (props) =>
+    {
         return <Paper elevation={8} {...props} />;
     };
 

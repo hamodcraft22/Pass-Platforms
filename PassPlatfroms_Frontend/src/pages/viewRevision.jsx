@@ -4,7 +4,8 @@ import {ViewRevisionView} from '../sections/viewRevision/view';
 
 // ----------------------------------------------------------------------
 
-export default function ViewRevisionPage() {
+export default function ViewRevisionPage()
+{
     return (
         <>
             <Helmet>

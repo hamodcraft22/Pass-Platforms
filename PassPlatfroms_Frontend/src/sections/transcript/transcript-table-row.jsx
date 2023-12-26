@@ -15,32 +15,40 @@ import UserProfile from "../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
-export default function TranscriptTableRow({transID, courseID, grade}) {
+export default function TranscriptTableRow({transID, courseID, grade})
+{
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
     };
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const handleDeleteClickOpen = () => {
+    const handleDeleteClickOpen = () =>
+    {
         setShowDeleteDialog(true);
     };
-    const handleDeleteClose = () => {
+    const handleDeleteClose = () =>
+    {
         setShowDeleteDialog(false);
     };
-    const handleDeleteSave = () => {
+    const handleDeleteSave = () =>
+    {
         deleteTranscript();
     };
 
     // delete api - add
-    async function deleteTranscript() {
-        try {
+    async function deleteTranscript()
+    {
+        try
+        {
             let token = await UserProfile.getAuthToken();
 
             const requestOptions =
@@ -50,8 +58,20 @@ export default function TranscriptTableRow({transID, courseID, grade}) {
                 };
 
             await fetch(`http://localhost:8080/api/transcript/${transID}`, requestOptions)
-                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
-        } catch (error)
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload()
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+        }
+        catch (error)
         {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);

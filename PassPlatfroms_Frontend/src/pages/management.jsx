@@ -4,7 +4,8 @@ import {ManagementView} from '../sections/management/view';
 
 // ----------------------------------------------------------------------
 
-export default function ManagementPage() {
+export default function ManagementPage()
+{
     return (
         <>
             <Helmet>

@@ -13,7 +13,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import {Alert, Autocomplete, TextField} from "@mui/material";
+import {Alert, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import moment from "moment/moment";
 import PublicRoundedIcon from "@mui/icons-material/PublicRounded";
@@ -25,13 +25,16 @@ import MenuItem from "@mui/material/MenuItem";
 
 // ----------------------------------------------------------------------
 
-export default function RevisionsTableRow({bookingID, subject, date, startTime, endTime, status, online, viewType, userType}) {
+export default function RevisionsTableRow({bookingID, subject, date, startTime, endTime, status, online, viewType, userType})
+{
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -41,13 +44,16 @@ export default function RevisionsTableRow({bookingID, subject, date, startTime, 
 
     const [editStatus, setEditStatus] = useState(null);
 
-    const handleEditClickOpen = () => {
+    const handleEditClickOpen = () =>
+    {
         setShowEditDialog(true);
     };
-    const handleEditClose = () => {
+    const handleEditClose = () =>
+    {
         setShowEditDialog(false);
     };
-    const handleEditSave = () => {
+    const handleEditSave = () =>
+    {
         if (editStatus !== null)
         {
             setShowEditDialog(false);
@@ -61,26 +67,32 @@ export default function RevisionsTableRow({bookingID, subject, date, startTime, 
     };
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const handleDeleteClickOpen = () => {
+    const handleDeleteClickOpen = () =>
+    {
         setShowDeleteDialog(true);
     };
-    const handleDeleteClose = () => {
+    const handleDeleteClose = () =>
+    {
         setShowDeleteDialog(false);
     };
-    const handleDeleteSave = () => {
+    const handleDeleteSave = () =>
+    {
         setShowDeleteDialog(false);
         deleteRevision()
     };
 
 
     const [showDeregisterDialog, setShowDeregisterDialog] = useState(false);
-    const handleDeregisterClickOpen = () => {
+    const handleDeregisterClickOpen = () =>
+    {
         setShowDeregisterDialog(true);
     };
-    const handleDeregisterClose = () => {
+    const handleDeregisterClose = () =>
+    {
         setShowDeregisterDialog(false);
     };
-    const handleDeregisterSave = () => {
+    const handleDeregisterSave = () =>
+    {
         setShowDeregisterDialog(false);
         deregisterRevision();
     };
@@ -88,7 +100,7 @@ export default function RevisionsTableRow({bookingID, subject, date, startTime, 
     // submit edit
     function editSubmit()
     {
-        const revisionToSubmit = {"bookingid":bookingID,  "bookingStatus":{"statusid":editStatus}};
+        const revisionToSubmit = {"bookingid": bookingID, "bookingStatus": {"statusid": editStatus}};
 
         submitEditRevision(revisionToSubmit);
     }
@@ -103,7 +115,8 @@ export default function RevisionsTableRow({bookingID, subject, date, startTime, 
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(revisionToSubmit)};
 
             await fetch(`http://localhost:8080/api/revision`, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 201 || response.status === 200)
                     {
                         window.location.reload();
@@ -135,8 +148,10 @@ export default function RevisionsTableRow({bookingID, subject, date, startTime, 
     }
 
     // delete api - add
-    async function deleteRevision() {
-        try {
+    async function deleteRevision()
+    {
+        try
+        {
             let token = await UserProfile.getAuthToken();
 
             const requestOptions =
@@ -146,8 +161,20 @@ export default function RevisionsTableRow({bookingID, subject, date, startTime, 
                 };
 
             await fetch(`http://localhost:8080/api/revision/${bookingID}`, requestOptions)
-                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
-        } catch (error)
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload()
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+        }
+        catch (error)
         {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);
@@ -159,8 +186,10 @@ export default function RevisionsTableRow({bookingID, subject, date, startTime, 
         }
     }
 
-    async function deregisterRevision() {
-        try {
+    async function deregisterRevision()
+    {
+        try
+        {
             let token = await UserProfile.getAuthToken();
 
             const requestOptions =
@@ -170,8 +199,20 @@ export default function RevisionsTableRow({bookingID, subject, date, startTime, 
                 };
 
             await fetch(`http://localhost:8080/api/revision/${bookingID}/member`, requestOptions)
-                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
-        } catch (error)
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload()
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+        }
+        catch (error)
         {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);
@@ -185,7 +226,8 @@ export default function RevisionsTableRow({bookingID, subject, date, startTime, 
 
     // go to courses
     let navigate = useNavigate();
-    const goToRevision = () => {
+    const goToRevision = () =>
+    {
         let path = `/viewRevision?revisionID=${bookingID}`;
         navigate(path);
     }
@@ -217,7 +259,10 @@ export default function RevisionsTableRow({bookingID, subject, date, startTime, 
                 </TableCell>
 
                 <TableCell align="right">
-                    <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={() => {goToRevision()}}><InfoIcon fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={() =>
+                    {
+                        goToRevision()
+                    }}><InfoIcon fontSize={"small"}/></Button>
                     {
                         (userType === 'admin' || userType === 'manager' || viewType === 'leaderRevisions') &&
                         <>
@@ -256,7 +301,10 @@ export default function RevisionsTableRow({bookingID, subject, date, startTime, 
                             </Alert>
                         }
 
-                        <TextField select label="Status" sx={{width: '100%', mt: 1}} value={editStatus} onChange={(event, newValue) => {setEditStatus(event.target.value)}}>
+                        <TextField select label="Status" sx={{width: '100%', mt: 1}} value={editStatus} onChange={(event, newValue) =>
+                        {
+                            setEditStatus(event.target.value)
+                        }}>
                             <MenuItem value={'F'}>Finished</MenuItem>
                             <MenuItem value={'C'}>Cancelled</MenuItem>
                         </TextField>

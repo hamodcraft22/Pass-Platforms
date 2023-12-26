@@ -3,23 +3,29 @@ import * as pdfjsWorker from 'pdfjs-dist/build/pdf.worker.mjs';
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-const extractTextFromPdf = (file) => {
-    return new Promise(async (resolve, reject) => {
-        if (!file || !file.type || file.type !== 'application/pdf') {
+const extractTextFromPdf = (file) =>
+{
+    return new Promise(async (resolve, reject) =>
+    {
+        if (!file || !file.type || file.type !== 'application/pdf')
+        {
             reject(new Error('Invalid or missing PDF file'));
         }
 
         const reader = new FileReader();
 
-        reader.onload = async (event) => {
+        reader.onload = async (event) =>
+        {
             const arrayBuffer = event.target.result;
 
-            try {
+            try
+            {
                 const loadingTask = pdfjs.getDocument({data: arrayBuffer});
                 const pdf = await loadingTask.promise;
                 let pdfText = '';
 
-                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++)
+                {
                     const page = await pdf.getPage(pageNum);
                     const content = await page.getTextContent();
                     const pageText = content.items.map((item) => item.str).join(' ');
@@ -27,7 +33,9 @@ const extractTextFromPdf = (file) => {
                 }
 
                 resolve(pdfText);
-            } catch (error) {
+            }
+            catch (error)
+            {
                 reject(new Error('Error parsing PDF: ' + error.message));
             }
         };

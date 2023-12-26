@@ -4,7 +4,8 @@ import {SlotView} from '../sections/slot/view';
 
 // ----------------------------------------------------------------------
 
-export default function SlotPage() {
+export default function SlotPage()
+{
     return (
         <>
             <Helmet>

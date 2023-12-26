@@ -24,13 +24,11 @@ import OfferedCoursesTableRow from '../offeredCourses-table-row';
 import OfferedCoursesTableToolbar from '../offeredCourses-table-toolbar';
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {useSearchParams} from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import MultiSelect from "../MultiSelect";
-import {it} from "date-fns/locale";
 import UserProfile from "../../../components/auth/UserInfo";
 import {Alert, Backdrop, CircularProgress, FormHelperText, Snackbar} from "@mui/material";
 import ExportToExcel from "../../../utils/exportExcel";
@@ -46,8 +44,10 @@ export default function OfferedCoursesPage()
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -55,8 +55,10 @@ export default function OfferedCoursesPage()
 
     const [successShow, setSuccessShow] = useState(false);
     const [successMsg, setSuccessMsg] = useState("");
-    const handleSuccessAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleSuccessAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setSuccessShow(false);
@@ -84,8 +86,10 @@ export default function OfferedCoursesPage()
     const [canEdit, setCanEdit] = useState(false);
 
     // get offered courses api
-    async function getLeaderCourses(leaderID) {
-        try {
+    async function getLeaderCourses(leaderID)
+    {
+        try
+        {
             setLoadingShow(true);
             let token = await UserProfile.getAuthToken();
 
@@ -110,8 +114,12 @@ export default function OfferedCoursesPage()
                         setErrorMsg("No Courses Found");
                         setErrorShow(true);
                     }
-                }).then(() => {setLoadingShow(false);})
-        } catch (error)
+                }).then(() =>
+                {
+                    setLoadingShow(false);
+                })
+        }
+        catch (error)
         {
             setLoadingShow(false);
             setErrorMsg("No Courses Found");
@@ -124,15 +132,18 @@ export default function OfferedCoursesPage()
     {
         let correctedOfferedCourses = [];
 
-        offeredCourses.forEach((offer) => {
-            correctedOfferedCourses.push({"offerid":offer.offerid, "courseid":offer.course.courseid, "coursename":offer.course.coursename, "userName":offer.leader.userName});
+        offeredCourses.forEach((offer) =>
+        {
+            correctedOfferedCourses.push({"offerid": offer.offerid, "courseid": offer.course.courseid, "coursename": offer.course.coursename, "userName": offer.leader.userName});
         });
 
         setOfferedCourses(correctedOfferedCourses);
     }
 
-    async function getCoursesAvlb(leaderID) {
-        try {
+    async function getCoursesAvlb(leaderID)
+    {
+        try
+        {
             setLoadingShow(true);
             let token = await UserProfile.getAuthToken();
 
@@ -156,8 +167,12 @@ export default function OfferedCoursesPage()
                     {
                         setCoursesAvlb(data.transObject)
                     }
-                }).then(() => {setLoadingShow(false);})
-        } catch (error)
+                }).then(() =>
+                {
+                    setLoadingShow(false);
+                })
+        }
+        catch (error)
         {
             setLoadingShow(false);
             setErrorMsg("No Courses Found");
@@ -182,26 +197,42 @@ export default function OfferedCoursesPage()
     }
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {if (leaderIDParm !== null && leaderIDParm !== undefined && Object.keys(leaderIDParm).length !== 0) {getLeaderCourses(leaderIDParm); setCanEdit(false);} else {getUserInfo()}}, [])
+    useEffect(() =>
+    {
+        if (leaderIDParm !== null && leaderIDParm !== undefined && Object.keys(leaderIDParm).length !== 0)
+        {
+            getLeaderCourses(leaderIDParm);
+            setCanEdit(false);
+        }
+        else
+        {
+            getUserInfo()
+        }
+    }, [])
 
-    const handleSort = (event, id) => {
+    const handleSort = (event, id) =>
+    {
         const isAsc = orderBy === id && order === 'asc';
-        if (id !== '') {
+        if (id !== '')
+        {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
     };
 
-    const handleChangePage = (event, newPage) => {
+    const handleChangePage = (event, newPage) =>
+    {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangeRowsPerPage = (event) =>
+    {
         setPage(0);
         setRowsPerPage(parseInt(event.target.value, 10));
     };
 
-    const handleFilterByName = (event) => {
+    const handleFilterByName = (event) =>
+    {
         setPage(0);
         setFilterName(event.target.value);
     };
@@ -217,7 +248,6 @@ export default function OfferedCoursesPage()
     const [showAddDialog, setShowAddDialog] = useState(false);
 
 
-
     const [coursesAvlb, setCoursesAvlb] = useState([]);
 
     const [coursesToAdd, setCoursesToAdd] = useState([]);
@@ -226,8 +256,9 @@ export default function OfferedCoursesPage()
     {
         let offeredCoursesList = [];
 
-        coursesToAdd.forEach((course) => {
-            offeredCoursesList.push({"leader":{"userid":userID}, "course":{"courseid":course.courseid}})
+        coursesToAdd.forEach((course) =>
+        {
+            offeredCoursesList.push({"leader": {"userid": userID}, "course": {"courseid": course.courseid}})
         })
 
         submitCourses(offeredCoursesList);
@@ -247,7 +278,8 @@ export default function OfferedCoursesPage()
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(offeredCoursesList)};
 
             await fetch(`http://localhost:8080/api/offeredcourse/multi`, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 201 || response.status === 200)
                     {
                         isok = true;
@@ -269,7 +301,8 @@ export default function OfferedCoursesPage()
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setLoadingShow(false);
                     if (isok)
                     {
@@ -291,13 +324,16 @@ export default function OfferedCoursesPage()
         }
     }
 
-    const handleAddClickOpen = () => {
+    const handleAddClickOpen = () =>
+    {
         setShowAddDialog(true);
     };
-    const handleAddClose = () => {
+    const handleAddClose = () =>
+    {
         setShowAddDialog(false);
     };
-    const handleAddSave = () => {
+    const handleAddSave = () =>
+    {
         setShowAddDialog(false);
         createSubmit();
     };
@@ -413,7 +449,10 @@ export default function OfferedCoursesPage()
                                 items={coursesAvlb}
                                 label="Courses"
                                 selectAllLabel="All"
-                                courses={(items) => {setCoursesToAdd(items)}}
+                                courses={(items) =>
+                                {
+                                    setCoursesToAdd(items)
+                                }}
                             />
                             <FormHelperText>Make sure you have uploaded your transcript, if not uploaded no courses with be allowed.</FormHelperText>
                         </div>

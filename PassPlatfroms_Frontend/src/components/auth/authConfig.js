@@ -24,11 +24,14 @@ export const msalConfig = {
     },
     system: {
         loggerOptions: {
-            loggerCallback: (level, message, containsPii) => {
-                if (containsPii) {
+            loggerCallback: (level, message, containsPii) =>
+            {
+                if (containsPii)
+                {
                     return;
                 }
-                switch (level) {
+                switch (level)
+                {
                     case LogLevel.Error:
                         console.error(message);
                         return;

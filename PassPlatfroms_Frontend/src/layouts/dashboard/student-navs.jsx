@@ -1,5 +1,3 @@
-import SvgColor from '../../components/svg-color';
-import AccountBalanceTwoToneIcon from "@mui/icons-material/AccountBalanceTwoTone";
 import EventNoteTwoToneIcon from "@mui/icons-material/EventNoteTwoTone";
 import DnsTwoToneIcon from "@mui/icons-material/DnsTwoTone";
 import EditCalendarTwoToneIcon from "@mui/icons-material/EditCalendarTwoTone";

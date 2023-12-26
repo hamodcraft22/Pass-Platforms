@@ -20,15 +20,18 @@ import moment from "moment/moment";
 
 // ----------------------------------------------------------------------
 
-export default function ViewRevisionPage() {
+export default function ViewRevisionPage()
+{
 
     const [loadingShow, setLoadingShow] = useState(false);
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -98,7 +101,10 @@ export default function ViewRevisionPage() {
                         parseRevision(data.transObject);
                     }
                 })
-                .then(() => {setLoadingShow(false);})
+                .then(() =>
+                {
+                    setLoadingShow(false);
+                })
         }
         catch (error)
         {
@@ -120,13 +126,20 @@ export default function ViewRevisionPage() {
         getRevision();
     }
 
-    useEffect(() => {if(revisionIDParm !== null && revisionIDParm !== undefined && revisionIDParm !== ""){getUserInfo()}}, []);
+    useEffect(() =>
+    {
+        if (revisionIDParm !== null && revisionIDParm !== undefined && revisionIDParm !== "")
+        {
+            getUserInfo()
+        }
+    }, []);
 
     const [userNote, setUserNote] = useState("");
 
     async function submitUserNote()
     {
-        try {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -173,15 +186,18 @@ export default function ViewRevisionPage() {
 
 
     let navigate = useNavigate();
-    const goToRevisions = () => {
+    const goToRevisions = () =>
+    {
         let path = `/revisions`;
         navigate(path);
     }
 
-    const goToHome = () => {
+    const goToHome = () =>
+    {
         let path = `/`;
         navigate(path);
     }
+
     return (
 
 
@@ -204,11 +220,12 @@ export default function ViewRevisionPage() {
                                 <CardContent>
                                     <Typography variant="h6">Revision Information</Typography>
 
-                                    <TextField label="Leader" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={revisionInfo.student.userid+" "+revisionInfo.student.userName}/>
+                                    <TextField label="Leader" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={revisionInfo.student.userid + " " + revisionInfo.student.userName}/>
 
-                                    <TextField label="Revision Date" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}}  defaultValue={revisionInfo.bookingDate}/>
+                                    <TextField label="Revision Date" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={revisionInfo.bookingDate}/>
 
-                                    <TextField label="Scheduled Time" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={`${moment(revisionInfo.starttime).format("hh:mm A")} - ${moment(revisionInfo.endtime).format("hh:mm A")}`}/>
+                                    <TextField label="Scheduled Time" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}}
+                                               defaultValue={`${moment(revisionInfo.starttime).format("hh:mm A")} - ${moment(revisionInfo.endtime).format("hh:mm A")}`}/>
 
                                     <TextField label="Revision Status" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={revisionInfo.bookingStatus.statusname}/>
 
@@ -244,7 +261,7 @@ export default function ViewRevisionPage() {
                                     {/* if student */}
                                     {
                                         userID !== revisionLeader &&
-                                        <Button variant="contained" startIcon={<EmailIcon/>} href={`mailto:${revisionLeader}@student.polytechnic.bh`}  sx={{m: 1}}>
+                                        <Button variant="contained" startIcon={<EmailIcon/>} href={`mailto:${revisionLeader}@student.polytechnic.bh`} sx={{m: 1}}>
                                             Email Leader
                                         </Button>
                                     }
@@ -265,7 +282,8 @@ export default function ViewRevisionPage() {
                                         revisionInfo &&
                                         <>
                                             {
-                                                revisionInfo.bookingNotes && revisionInfo.bookingNotes.map((note) => {
+                                                revisionInfo.bookingNotes && revisionInfo.bookingNotes.map((note) =>
+                                                {
 
                                                     const bkColor = note.user.role.rolename === 'student' ? '#fafff8' : '#fafff8';
 
@@ -301,9 +319,15 @@ export default function ViewRevisionPage() {
                                     <Divider/>
 
                                     <Typography variant="h6" sx={{mt: 2, mb: 2}}>Post a Note:</Typography>
-                                    <TextField fullWidth label="Note" variant="outlined" multiline minRows={2} value={userNote} onChange={(event) => {setUserNote(event.target.value)}}/>
+                                    <TextField fullWidth label="Note" variant="outlined" multiline minRows={2} value={userNote} onChange={(event) =>
+                                    {
+                                        setUserNote(event.target.value)
+                                    }}/>
                                     <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
-                                        <Button variant="contained" endIcon={<SendRoundedIcon/>} sx={{mt: 2}} onClick={() => {submitUserNote()}} disabled={userNote === null || userNote === "" || userNote === undefined}>
+                                        <Button variant="contained" endIcon={<SendRoundedIcon/>} sx={{mt: 2}} onClick={() =>
+                                        {
+                                            submitUserNote()
+                                        }} disabled={userNote === null || userNote === "" || userNote === undefined}>
                                             Submit
                                         </Button>
                                     </Box>

@@ -1,11 +1,6 @@
 import PropTypes from 'prop-types';
 
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-
-import Iconify from '../../components/iconify';
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {DatePicker} from "@mui/x-date-pickers";
@@ -14,7 +9,8 @@ import React from "react";
 
 // ----------------------------------------------------------------------
 
-export default function RevisionsTableToolbar({startDate, onDateStart, endDate, onDateEnd, onClearButton}) {
+export default function RevisionsTableToolbar({startDate, onDateStart, endDate, onDateEnd, onClearButton})
+{
     return (
         <Toolbar
             sx={{
@@ -27,13 +23,15 @@ export default function RevisionsTableToolbar({startDate, onDateStart, endDate, 
 
             <div>
                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                    <DatePicker label="From Date" value={startDate} onChange={(newValue) => {
+                    <DatePicker label="From Date" value={startDate} onChange={(newValue) =>
+                    {
                         onDateStart(newValue)
                     }}/>
                 </LocalizationProvider>
 
                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                    <DatePicker sx={{ml: 2}} label="To Date" minDate={startDate} value={endDate} onChange={(newValue) => {
+                    <DatePicker sx={{ml: 2}} label="To Date" minDate={startDate} value={endDate} onChange={(newValue) =>
+                    {
                         onDateEnd(newValue)
                     }}/>
                 </LocalizationProvider>

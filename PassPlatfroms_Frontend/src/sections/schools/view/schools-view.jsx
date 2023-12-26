@@ -38,8 +38,8 @@ import {useNavigate} from "react-router-dom";
 import ExportToExcel from "../../../utils/exportExcel";
 
 
-
-export default function SchoolsPage() {
+export default function SchoolsPage()
+{
 
     // this page is used by everyone, and editing is only allowed for admins/ managers
 
@@ -48,8 +48,10 @@ export default function SchoolsPage() {
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -57,8 +59,10 @@ export default function SchoolsPage() {
 
     const [successShow, setSuccessShow] = useState(false);
     const [successMsg, setSuccessMsg] = useState("");
-    const handleSuccessAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleSuccessAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setSuccessShow(false);
@@ -68,36 +72,42 @@ export default function SchoolsPage() {
     const [schools, setSchools] = useState([]);
 
     // get schools api
-    async function getSchools() {
-        try {
+    async function getSchools()
+    {
+        try
+        {
             setLoadingShow(true);
             let token = await UserProfile.getAuthToken();
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
             await fetch(`http://localhost:8080/api/school`, requestOptions)
-                .then(response => {
+                .then(response =>
+                {
                     return response.json()
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setSchools(data.transObject)
                 })
-                .then(() => {
+                .then(() =>
+                {
                     setLoadingShow(false)
                 })
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             setLoadingShow(false);
             console.log(error);
         }
     }
 
     // get all schools on load
-    useEffect(() => {
+    useEffect(() =>
+    {
         getSchools()
     }, [])
-
-
 
 
     // table vars
@@ -112,24 +122,29 @@ export default function SchoolsPage() {
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
     // table functions
-    const handleSort = (event, id) => {
+    const handleSort = (event, id) =>
+    {
         const isAsc = orderBy === id && order === 'asc';
-        if (id !== '') {
+        if (id !== '')
+        {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
     };
 
-    const handleChangePage = (event, newPage) => {
+    const handleChangePage = (event, newPage) =>
+    {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangeRowsPerPage = (event) =>
+    {
         setPage(0);
         setRowsPerPage(parseInt(event.target.value, 10));
     };
 
-    const handleFilterByName = (event) => {
+    const handleFilterByName = (event) =>
+    {
         setPage(0);
         setFilterName(event.target.value);
     };
@@ -158,28 +173,34 @@ export default function SchoolsPage() {
     }
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {getUserInfo()}, []);
+    useEffect(() =>
+    {
+        getUserInfo()
+    }, []);
 
 
     // excel extract
     const [schoolsUpload, setSchoolsUpload] = useState([]);
 
-    const handleFileChange = async (event) => {
+    const handleFileChange = async (event) =>
+    {
         const file = event.target.files[0];
 
         const workbook = await readFile(file);
         const sheetNames = workbook.SheetNames;
         let sheetsData = [];
 
-        sheetNames.forEach((sheetName) => {
+        sheetNames.forEach((sheetName) =>
+        {
             const sheet = workbook.Sheets[sheetName];
             const data = utils.sheet_to_json(sheet, {header: 1});
             const courses = data.slice(1);
 
             let formattedCourses = [];
 
-            courses.forEach((course) => {
-                formattedCourses.push({"courseid": sheetName + course[0], "coursename": course[1], "school":{"schoolid": sheetName}})
+            courses.forEach((course) =>
+            {
+                formattedCourses.push({"courseid": sheetName + course[0], "coursename": course[1], "school": {"schoolid": sheetName}})
             });
 
             sheetsData.push({"schoolid": sheetName, "schoolname": data[0][0], "courses": formattedCourses});
@@ -188,17 +209,21 @@ export default function SchoolsPage() {
         setSchoolsUpload(sheetsData);
     };
 
-    const readFile = (file) => {
-        return new Promise((resolve, reject) => {
+    const readFile = (file) =>
+    {
+        return new Promise((resolve, reject) =>
+        {
             const reader = new FileReader();
 
-            reader.onload = (e) => {
+            reader.onload = (e) =>
+            {
                 const data = new Uint8Array(e.target.result);
                 const workbook = read(data, {type: 'array'});
                 resolve(workbook);
             };
 
-            reader.onerror = (error) => {
+            reader.onerror = (error) =>
+            {
                 reject(error);
             };
 
@@ -207,13 +232,16 @@ export default function SchoolsPage() {
     };
 
     // upload school elements
-    const handleAddClickOpen = () => {
+    const handleAddClickOpen = () =>
+    {
         setShowAddDialog(true);
     };
-    const handleAddClose = () => {
+    const handleAddClose = () =>
+    {
         setShowAddDialog(false);
     };
-    const handleAddSave = () => {
+    const handleAddSave = () =>
+    {
         setShowAddDialog(false);
         submitBooking();
     };
@@ -224,7 +252,8 @@ export default function SchoolsPage() {
         let isok = false;
         let isBad = false;
 
-        try {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -232,31 +261,43 @@ export default function SchoolsPage() {
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(schoolsUpload)};
 
             await fetch(`http://localhost:8080/api/school/multi`, requestOptions)
-                .then(response => {
-                    if (response.status === 201 || response.status === 200) {
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
                         isok = true;
                         return response.json();
-                    } else if (response.status === 400) {
+                    }
+                    else if (response.status === 400)
+                    {
                         isBad = true;
                         return response.json();
-                    } else if (response.status === 401) {
+                    }
+                    else if (response.status === 401)
+                    {
                         setErrorMsg("you are not allowed to do this action");
                         setErrorShow(true);
-                    } else if (response.status === 404) {
+                    }
+                    else if (response.status === 404)
+                    {
                         setErrorMsg("the request was not found on the server, double check your connection");
                         setErrorShow(true);
-                    } else {
+                    }
+                    else
+                    {
                         setErrorMsg("an unknown error occurred, please check console");
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setLoadingShow(false);
                     if (isok)
                     {
                         // it is fine, go on
                         getSchools()
-                            .then(() => {
+                            .then(() =>
+                            {
                                 setSuccessMsg("Courses added, duplicates (if any) ignored");
                                 setSuccessShow(true);
                                 console.log(data);
@@ -274,7 +315,9 @@ export default function SchoolsPage() {
                     }
                 })
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);
             console.log(error);
@@ -283,12 +326,12 @@ export default function SchoolsPage() {
     }
 
 
-
     // naviagation links
     let navigate = useNavigate();
-    const goToNewSchool = () => {
-            let path = `/newSchool`;
-            navigate(path);
+    const goToNewSchool = () =>
+    {
+        let path = `/newSchool`;
+        navigate(path);
 
     }
 
@@ -305,7 +348,8 @@ export default function SchoolsPage() {
         width: 1,
     });
 
-    const CustomPaper = (props) => {
+    const CustomPaper = (props) =>
+    {
         return <Paper elevation={8} {...props} />;
     };
 
@@ -341,18 +385,18 @@ export default function SchoolsPage() {
                 <Typography variant="h4">Schools</Typography>
 
                 <div>
-                {
-                    (userRole === 'admin' || userRole === 'manager') &&
-                    <>
-                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} sx={{m: 1}} onClick={handleAddClickOpen}>
-                            Upload Schools
-                        </Button>
+                    {
+                        (userRole === 'admin' || userRole === 'manager') &&
+                        <>
+                            <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} sx={{m: 1}} onClick={handleAddClickOpen}>
+                                Upload Schools
+                            </Button>
 
-                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} sx={{m: 1}} onClick={goToNewSchool}>
-                            New School
-                        </Button>
-                    </>
-                }
+                            <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} sx={{m: 1}} onClick={goToNewSchool}>
+                                New School
+                            </Button>
+                        </>
+                    }
 
                     <ExportToExcel data={dataFiltered} filename="Schools List"/>
                 </div>

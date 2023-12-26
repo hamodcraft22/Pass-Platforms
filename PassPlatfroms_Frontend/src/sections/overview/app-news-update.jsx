@@ -16,7 +16,8 @@ import Scrollbar from '../../components/scrollbar';
 
 // ----------------------------------------------------------------------
 
-export default function AppNewsUpdate({title, subheader, list, ...other}) {
+export default function AppNewsUpdate({title, subheader, list, ...other})
+{
     return (
         <Card {...other}>
             <CardHeader title={title} subheader={subheader}/>
@@ -52,7 +53,8 @@ AppNewsUpdate.propTypes = {
 
 // ----------------------------------------------------------------------
 
-function NewsItem({news}) {
+function NewsItem({news})
+{
     const {image, title, description, postedAt} = news;
 
     return (

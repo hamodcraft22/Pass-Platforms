@@ -29,7 +29,8 @@ import moment from "moment";
 
 // ----------------------------------------------------------------------
 
-export default function ViewApplicationPage() {
+export default function ViewApplicationPage()
+{
 
     const queryParameters = new URLSearchParams(window.location.search)
     const studentIDParm = queryParameters.get("studentID");
@@ -39,14 +40,17 @@ export default function ViewApplicationPage() {
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
+    const handleAlertClose = (event, reason) =>
+    {
         setErrorShow(false);
     };
 
     const [successShow, setSuccessShow] = useState(false);
     const [successMsg, setSuccessMsg] = useState("");
-    const handleSuccessAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleSuccessAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setSuccessShow(false);
@@ -55,7 +59,8 @@ export default function ViewApplicationPage() {
 
     const [shownSection, setShownSection] = useState(1);
     const [progPercent, setProgPercent] = useState(0);
-    useEffect(() => {
+    useEffect(() =>
+    {
         (setProgPercent(((shownSection - 1) / 3) * 100))
     }, [shownSection]);
 
@@ -114,7 +119,10 @@ export default function ViewApplicationPage() {
                         setVeiwApplication(true);
                     }
                 })
-                .then(() => {setLoadingShow(false);})
+                .then(() =>
+                {
+                    setLoadingShow(false);
+                })
         }
         catch (error)
         {
@@ -170,14 +178,18 @@ export default function ViewApplicationPage() {
 
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {getUserInfo()}, []);
+    useEffect(() =>
+    {
+        getUserInfo()
+    }, []);
 
 
     // application add elements
     const [courses, setCourses] = useState([]);
     const [applicationNote, setApplicationNote] = useState("");
 
-    const CustomPaper = (props) => {
+    const CustomPaper = (props) =>
+    {
         return <Paper elevation={8} {...props} />;
     };
 
@@ -185,16 +197,18 @@ export default function ViewApplicationPage() {
     // submit function
     async function createSubmit()
     {
-        const applicationDto = {"note": applicationNote, "transcripts":courses};
+        const applicationDto = {"note": applicationNote, "transcripts": courses};
 
         console.log(applicationDto);
         submitApplication(applicationDto)
     }
 
-    async function submitApplication(applicationDto) {
+    async function submitApplication(applicationDto)
+    {
         let isok = false;
 
-        try {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -255,7 +269,8 @@ export default function ViewApplicationPage() {
 
     async function submitUserNote()
     {
-        try {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -301,41 +316,55 @@ export default function ViewApplicationPage() {
     }
 
 
-    function nextSection() {
-        if (shownSection === 1) {
-            if (courses !== null && courses !== undefined && Object.keys(courses).length !== 0) {
+    function nextSection()
+    {
+        if (shownSection === 1)
+        {
+            if (courses !== null && courses !== undefined && Object.keys(courses).length !== 0)
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Please Upload your transcript.");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 2) {
-            if (applicationNote !== null && applicationNote !== undefined && Object.keys(applicationNote).length !== 0) {
+        if (shownSection === 2)
+        {
+            if (applicationNote !== null && applicationNote !== undefined && Object.keys(applicationNote).length !== 0)
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Please type your note.");
                 setErrorShow(true);
             }
         }
 
 
-        if (shownSection === 3) {
+        if (shownSection === 3)
+        {
             createSubmit();
         }
 
     }
 
-    function prevSection() {
+    function prevSection()
+    {
         setShownSection((shownSection) - 1);
     }
 
-    const handleFileChange = async (e) => {
+    const handleFileChange = async (e) =>
+    {
         const file = e.target.files[0];
 
-        if (file) {
-            try {
+        if (file)
+        {
+            try
+            {
                 const pdfText = await extractTextFromPdf(file);
 
                 // Define your regular expression for course extraction
@@ -345,27 +374,35 @@ export default function ViewApplicationPage() {
 
                 let correctedCourses = [];
 
-                extractedCourses.forEach((course) => {
+                extractedCourses.forEach((course) =>
+                {
 
                     let courseCode = course.code + course.number;
                     let courseName = course.title
 
                     let courseGrade = '';
 
-                    if (course.grade.toLowerCase() === "comp") {
+                    if (course.grade.toLowerCase() === "comp")
+                    {
                         courseGrade = 'A';
-                    } else if (['a', 'b', 'c', 'd', 'f'].includes(course.grade.toLowerCase().charAt(0))) {
+                    }
+                    else if (['a', 'b', 'c', 'd', 'f'].includes(course.grade.toLowerCase().charAt(0)))
+                    {
                         courseGrade = course.grade
-                    } else {
+                    }
+                    else
+                    {
                         courseGrade = 'E';
                     }
 
-                    correctedCourses.push({"courseid": courseCode, "title": courseName, "grade": courseGrade, "student":{"userid":userID}});
+                    correctedCourses.push({"courseid": courseCode, "title": courseName, "grade": courseGrade, "student": {"userid": userID}});
                 });
 
                 setCourses(correctedCourses);
 
-            } catch (error) {
+            }
+            catch (error)
+            {
                 console.error(error.message);
             }
         }
@@ -443,7 +480,7 @@ export default function ViewApplicationPage() {
                                 {
                                     (userRole === "admin" || userRole === "manager") &&
                                     <Button variant="contained" startIcon={<EmailIcon/>} href={`mailto:${application.user.userid}@student.polytechnic.com`} sx={{mt: 2}}>
-                                    Email Student
+                                        Email Student
                                     </Button>
                                 }
 
@@ -469,36 +506,37 @@ export default function ViewApplicationPage() {
                                 {
                                     application &&
                                     <>
-                                    {
-                                        application.applicationNotes && application.applicationNotes.map((note) => {
+                                        {
+                                            application.applicationNotes && application.applicationNotes.map((note) =>
+                                            {
 
-                                            const bkColor = note.user.role.rolename === 'student' ? '#fafff8' : '#fafff8';
+                                                const bkColor = note.user.role.rolename === 'student' ? '#fafff8' : '#fafff8';
 
-                                            return (
-                                                <Card sx={{mb: 2, backgroundColor: bkColor}}>
-                                                    <Stack direction="row" alignItems="center" spacing={3} sx={{p: 3, pr: 0}}>
-                                                        <Box sx={{minWidth: 240, flexGrow: 1}}>
-                                                            <Link color="inherit" variant="subtitle2" underline="hover" noWrap>
-                                                                {note.user.userName}
-                                                            </Link>
+                                                return (
+                                                    <Card sx={{mb: 2, backgroundColor: bkColor}}>
+                                                        <Stack direction="row" alignItems="center" spacing={3} sx={{p: 3, pr: 0}}>
+                                                            <Box sx={{minWidth: 240, flexGrow: 1}}>
+                                                                <Link color="inherit" variant="subtitle2" underline="hover" noWrap>
+                                                                    {note.user.userName}
+                                                                </Link>
 
-                                                            <Typography variant="caption" sx={{color: 'text.secondary', ml: 2}} noWrap>
-                                                                {moment(note.datetime).format("hh:mm A | DD/MM/YYYY")}
+                                                                <Typography variant="caption" sx={{color: 'text.secondary', ml: 2}} noWrap>
+                                                                    {moment(note.datetime).format("hh:mm A | DD/MM/YYYY")}
+                                                                </Typography>
+
+                                                                <Typography variant="body2" sx={{color: 'text.secondary', mt: 1}} noWrap>
+                                                                    {note.notebody}
+                                                                </Typography>
+                                                            </Box>
+
+                                                            <Typography variant="caption" sx={{pr: 3, flexShrink: 0, color: 'text.secondary'}}>
+                                                                {note.user.role.rolename}
                                                             </Typography>
-
-                                                            <Typography variant="body2" sx={{color: 'text.secondary', mt: 1}} noWrap>
-                                                                {note.notebody}
-                                                            </Typography>
-                                                        </Box>
-
-                                                        <Typography variant="caption" sx={{pr: 3, flexShrink: 0, color: 'text.secondary'}}>
-                                                            {note.user.role.rolename}
-                                                        </Typography>
-                                                    </Stack>
-                                                </Card>
-                                            )
-                                        })
-                                    }
+                                                        </Stack>
+                                                    </Card>
+                                                )
+                                            })
+                                        }
                                     </>
                                 }
 
@@ -506,9 +544,15 @@ export default function ViewApplicationPage() {
                                 <Divider/>
 
                                 <Typography variant="h6" sx={{mt: 2, mb: 2}}>Post a Note:</Typography>
-                                <TextField fullWidth label="Note" variant="outlined" multiline minRows={2} value={userNote} onChange={(event) => {setUserNote(event.target.value)}}/>
+                                <TextField fullWidth label="Note" variant="outlined" multiline minRows={2} value={userNote} onChange={(event) =>
+                                {
+                                    setUserNote(event.target.value)
+                                }}/>
                                 <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
-                                    <Button variant="contained" endIcon={<SendRoundedIcon/>} sx={{mt: 2}} onClick={() => {submitUserNote()}} disabled={userNote === null || userNote === "" || userNote === undefined}>
+                                    <Button variant="contained" endIcon={<SendRoundedIcon/>} sx={{mt: 2}} onClick={() =>
+                                    {
+                                        submitUserNote()
+                                    }} disabled={userNote === null || userNote === "" || userNote === undefined}>
                                         Submit
                                     </Button>
                                 </Box>

@@ -15,8 +15,10 @@ export default function TableMainHead({
                                           orderBy,
                                           headLabel,
                                           onRequestSort,
-                                      }) {
-    const onSort = (property) => (event) => {
+                                      })
+{
+    const onSort = (property) => (event) =>
+    {
         onRequestSort(event, property);
     };
 

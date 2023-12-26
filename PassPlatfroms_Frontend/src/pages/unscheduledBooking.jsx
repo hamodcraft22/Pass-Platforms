@@ -4,7 +4,8 @@ import {UnscheduledBookingView} from '../sections/unscheduledBooking/view';
 
 // ----------------------------------------------------------------------
 
-export default function UnscheduledBookingPage() {
+export default function UnscheduledBookingPage()
+{
     return (
         <>
             <Helmet>

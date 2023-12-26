@@ -4,7 +4,8 @@ import {RevisionsView} from '../sections/revisions/view';
 
 // ----------------------------------------------------------------------
 
-export default function RevisionsPage() {
+export default function RevisionsPage()
+{
     return (
         <>
             <Helmet>

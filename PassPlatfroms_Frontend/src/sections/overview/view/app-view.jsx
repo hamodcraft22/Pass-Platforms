@@ -12,12 +12,15 @@ import {useEffect, useState} from "react";
 // ----------------------------------------------------------------------
 
 
-export default function AppView() {
+export default function AppView()
+{
 
     const [userName, setUserName] = useState("");
 
-    async function getUserName() {
-        await UserProfile.getUserName().then((data) => {
+    async function getUserName()
+    {
+        await UserProfile.getUserName().then((data) =>
+        {
             const words = data.trim().split(/\s+/);
             const firstName = words[0];
             const lastName = words[words.length - 1];
@@ -25,7 +28,8 @@ export default function AppView() {
         })
     }
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         getUserName()
     }, [])
 

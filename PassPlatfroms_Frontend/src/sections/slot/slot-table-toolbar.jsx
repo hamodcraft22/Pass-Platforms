@@ -1,15 +1,9 @@
-import PropTypes from 'prop-types';
-
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-
-import Iconify from '../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function SlotTableToolbar() {
+export default function SlotTableToolbar()
+{
     return (
         <Toolbar
             sx={{
@@ -24,5 +18,4 @@ export default function SlotTableToolbar() {
     );
 }
 
-SlotTableToolbar.propTypes = {
-};
+SlotTableToolbar.propTypes = {};

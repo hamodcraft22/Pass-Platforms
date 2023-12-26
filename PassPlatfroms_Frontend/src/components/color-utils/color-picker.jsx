@@ -10,16 +10,22 @@ import Iconify from '../iconify';
 // ----------------------------------------------------------------------
 
 const ColorPicker = forwardRef(
-    ({colors, selected, onSelectColor, limit = 'auto', sx, ...other}, ref) => {
+    ({colors, selected, onSelectColor, limit = 'auto', sx, ...other}, ref) =>
+    {
         const singleSelect = typeof selected === 'string';
 
         const handleSelect = useCallback(
-            (color) => {
-                if (singleSelect) {
-                    if (color !== selected) {
+            (color) =>
+            {
+                if (singleSelect)
+                {
+                    if (color !== selected)
+                    {
                         onSelectColor(color);
                     }
-                } else {
+                }
+                else
+                {
                     const newSelected = selected.includes(color)
                         ? selected.filter((value) => value !== color)
                         : [...selected, color];
@@ -45,7 +51,8 @@ const ColorPicker = forwardRef(
                 }}
                 {...other}
             >
-                {colors.map((color) => {
+                {colors.map((color) =>
+                {
                     const hasSelected = singleSelect ? selected === color : selected.includes(color);
 
                     return (
@@ -56,7 +63,8 @@ const ColorPicker = forwardRef(
                                 height: 36,
                                 borderRadius: '50%',
                             }}
-                            onClick={() => {
+                            onClick={() =>
+                            {
                                 handleSelect(color);
                             }}
                         >

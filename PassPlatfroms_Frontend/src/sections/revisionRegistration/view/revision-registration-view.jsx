@@ -5,13 +5,12 @@ import Typography from '@mui/material/Typography';
 
 import WeekCalendar from 'react-week-calendar';
 import moment from "moment";
-import RevisionSlot from "../RevisionSlot";
 import Toolbar from "@mui/material/Toolbar";
 import MultiSelect from "../MultiSelect";
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {Alert, Autocomplete, Backdrop, CircularProgress, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField} from "@mui/material";
+import {Alert, Autocomplete, Backdrop, CircularProgress, FormHelperText, Snackbar, TextField} from "@mui/material";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -22,8 +21,6 @@ import Box from "@mui/material/Box";
 import LinearProgress from '@mui/material/LinearProgress';
 import InputAdornment from "@mui/material/InputAdornment";
 import {AccountCircle} from "@mui/icons-material";
-import List from "@mui/material/List";
-import ListItemText from "@mui/material/ListItemText";
 import UserProfile from "../../../components/auth/UserInfo";
 import bookingSlot from "../../newBooking/bookingSlot";
 import {useNavigate} from "react-router-dom";
@@ -31,7 +28,8 @@ import {useNavigate} from "react-router-dom";
 
 // ----------------------------------------------------------------------
 
-export default function NewRegistrationPage() {
+export default function NewRegistrationPage()
+{
 
     // this page is open for everyone but submitting is only allowed for students / leaders
 
@@ -40,15 +38,18 @@ export default function NewRegistrationPage() {
     const [shownSection, setShownSection] = useState(1);
     const [progPercent, setProgPercent] = useState(0);
     const [progColor, setProgColor] = useState("primary");
-    useEffect(() => {
+    useEffect(() =>
+    {
         (setProgPercent(((shownSection - 1) / 3) * 100))
     }, [shownSection]);
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -72,8 +73,10 @@ export default function NewRegistrationPage() {
     }
 
     // get schools and courses
-    async function getRevSchools() {
-        try {
+    async function getRevSchools()
+    {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -81,22 +84,28 @@ export default function NewRegistrationPage() {
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
             await fetch(`http://localhost:8080/api/school/revisions`, requestOptions)
-                .then(response => {
+                .then(response =>
+                {
                     return response.json()
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setSchools(data.transObject)
                 })
-                .then(() => {
+                .then(() =>
+                {
                     setLoadingShow(false)
                 });
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.log(error);
             setLoadingShow(false);
         }
     }
 
-    function handleSelectedSchool(school) {
+    function handleSelectedSchool(school)
+    {
         setLoadingShow(true);
         setSelectedSchool(school);
         setCourses(school.courses);
@@ -104,7 +113,8 @@ export default function NewRegistrationPage() {
     }
 
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         getRevSchools()
     }, [])
 
@@ -154,7 +164,9 @@ export default function NewRegistrationPage() {
                     setLoadingShow(false);
                 })
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.log(error);
             setLoadingShow(false);
         }
@@ -188,7 +200,8 @@ export default function NewRegistrationPage() {
 
         let parsedLeaders = [];
 
-        recivedBookingsDto.forEach((leader, index) => {
+        recivedBookingsDto.forEach((leader, index) =>
+        {
             const leaderColor = pastelColors[index];
 
             const leaderID = leader.leaderID;
@@ -196,7 +209,8 @@ export default function NewRegistrationPage() {
 
             let leaderSlots = [];
 
-            leader.revisions.forEach((revision) => {
+            leader.revisions.forEach((revision) =>
+            {
                 const bookingid = revision.bookingid;
                 const online = revision.isonline;
 
@@ -205,7 +219,7 @@ export default function NewRegistrationPage() {
 
                 if (startTime > moment())
                 {
-                    leaderSlots.push({"uid":bookingid, "start":startTime, "end":endTime, "online":online, "color":leaderColor, "leaderName":leaderName});
+                    leaderSlots.push({"uid": bookingid, "start": startTime, "end": endTime, "online": online, "color": leaderColor, "leaderName": leaderName});
                 }
             });
 
@@ -219,12 +233,15 @@ export default function NewRegistrationPage() {
         setLoadingShow(false);
     }
 
-    function handleSlots() {
+    function handleSlots()
+    {
         setLoadingShow(true);
         let allSlots = [];
 
-        selectedLeaders.forEach((leader) => {
-            leader.revisions.forEach((slot) => {
+        selectedLeaders.forEach((leader) =>
+        {
+            leader.revisions.forEach((slot) =>
+            {
                 allSlots.push(slot);
             })
         })
@@ -233,28 +250,36 @@ export default function NewRegistrationPage() {
         setLoadingShow(false);
     }
 
-    useEffect(() => {
-        if (shownSection === 2) {
+    useEffect(() =>
+    {
+        if (shownSection === 2)
+        {
             getAvlbRevisions()
         }
     }, [shownSection]);
 
     // get upoan date change
-    useEffect(() => {
-        if (shownSection === 2) {
+    useEffect(() =>
+    {
+        if (shownSection === 2)
+        {
             getAvlbRevisions()
         }
     }, [bookingStartDate]);
 
 
-    useEffect(() => {
-        if (Object.keys(recivedBookingsDto).length !== 0) {
+    useEffect(() =>
+    {
+        if (Object.keys(recivedBookingsDto).length !== 0)
+        {
             parseRevisions()
         }
     }, [recivedBookingsDto])
 
-    useEffect(() => {
-        if (selectedLeaders.length !== 0) {
+    useEffect(() =>
+    {
+        if (selectedLeaders.length !== 0)
+        {
             handleSlots()
         }
     }, [selectedLeaders]);
@@ -264,36 +289,45 @@ export default function NewRegistrationPage() {
     const [selctedSlot, setSelctedSlot] = useState([]);
     const [slotConfirmShow, setSlotConfirmShow] = useState(false);
     const [slotToConfirm, setSlotToConfirm] = useState([]);
-    const handleSlotConfirmClose = () => {
+    const handleSlotConfirmClose = () =>
+    {
         setSlotConfirmShow(false);
         setSlotToConfirm([]);
     };
-    const handleSlotConfirm = () => {
+    const handleSlotConfirm = () =>
+    {
         setSlotConfirmShow(false);
         setSelctedSlot(slotToConfirm);
         setSlotToConfirm(null);
     };
-    const handleSlotSelect = (slot) => {
+    const handleSlotSelect = (slot) =>
+    {
         setSlotToConfirm(slot);
     };
-    useEffect(() => {
-        if (slotToConfirm !== null && slotToConfirm !== undefined && Object.keys(slotToConfirm).length !== 0) {
+    useEffect(() =>
+    {
+        if (slotToConfirm !== null && slotToConfirm !== undefined && Object.keys(slotToConfirm).length !== 0)
+        {
             setSlotConfirmShow(true)
         }
     }, [slotToConfirm]);
-    useEffect(() => {
-        if (selctedSlot !== null && selctedSlot !== undefined && Object.keys(selctedSlot).length !== 0) {
+    useEffect(() =>
+    {
+        if (selctedSlot !== null && selctedSlot !== undefined && Object.keys(selctedSlot).length !== 0)
+        {
             nextSection()
         }
     }, [selctedSlot]);
 
     const [showComplete, setShowComplete] = useState(false);
 
-    async function submitBooking() {
+    async function submitBooking()
+    {
         let isok = false;
         let isBad = false;
 
-        try {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -301,28 +335,40 @@ export default function NewRegistrationPage() {
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
             await fetch(`http://localhost:8080/api/revision/${selctedSlot.uid}/member`, requestOptions)
-                .then(response => {
-                    if (response.status === 201 || response.status === 200) {
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
                         isok = true;
                         setProgPercent(100);
                         return response.json();
-                    } else if (response.status === 400) {
+                    }
+                    else if (response.status === 400)
+                    {
                         isBad = true;
                         return response.json();
-                    } else if (response.status === 401) {
+                    }
+                    else if (response.status === 401)
+                    {
                         setErrorMsg("you are not allowed to do this action");
                         setErrorShow(true);
-                    } else if (response.status === 404) {
+                    }
+                    else if (response.status === 404)
+                    {
                         setErrorMsg("the request was not found on the server, double check your connection");
                         setErrorShow(true);
-                    } else {
+                    }
+                    else
+                    {
                         setErrorMsg("an unknown error occurred, please check console");
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setLoadingShow(false);
-                    if (isok) {
+                    if (isok)
+                    {
                         // it is fine, go on
                         setShowComplete(true);
                     }
@@ -344,12 +390,16 @@ export default function NewRegistrationPage() {
                         setErrorMsg(errorString);
                         setErrorShow(true);
                         console.log(data);
-                    } else {
+                    }
+                    else
+                    {
                         console.log(data);
                     }
                 })
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);
             console.log(error);
@@ -358,26 +408,36 @@ export default function NewRegistrationPage() {
     }
 
 
-    function nextSection() {
-        if (shownSection === 1) {
-            if (selectedSchool !== null && selectedCourse !== null && selectedSchool !== undefined && selectedCourse !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0) {
+    function nextSection()
+    {
+        if (shownSection === 1)
+        {
+            if (selectedSchool !== null && selectedCourse !== null && selectedSchool !== undefined && selectedCourse !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0)
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Select a School and a Course Please");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 2) {
-            if (selectedSchool !== null && selectedCourse !== null && selctedSlot !== null && selectedSchool !== undefined && selectedCourse !== undefined && selctedSlot !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(selctedSlot).length !== 0) {
+        if (shownSection === 2)
+        {
+            if (selectedSchool !== null && selectedCourse !== null && selctedSlot !== null && selectedSchool !== undefined && selectedCourse !== undefined && selctedSlot !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(selctedSlot).length !== 0)
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Select a Slot Please");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 3) {
+        if (shownSection === 3)
+        {
             if (userRole === 'student' || userRole === 'leader')
             {
                 submitBooking();
@@ -391,19 +451,23 @@ export default function NewRegistrationPage() {
 
     }
 
-    function prevSection() {
+    function prevSection()
+    {
         setShownSection((shownSection) - 1);
     }
 
     let navigate = useNavigate();
-    const goToRevision = () => {
-        if (showComplete !== false) {
+    const goToRevision = () =>
+    {
+        if (showComplete !== false)
+        {
             let path = `/viewRevision?revisionID=${selctedSlot.uid}`;
             navigate(path);
         }
     }
 
-    const CustomPaper = (props) => {
+    const CustomPaper = (props) =>
+    {
         return <Paper elevation={8} {...props} />;
     };
 
@@ -481,13 +545,15 @@ export default function NewRegistrationPage() {
                             PaperComponent={CustomPaper}
                             options={schools}
                             value={selectedSchool}
-                            onChange={(event, newValue) => {
+                            onChange={(event, newValue) =>
+                            {
                                 handleSelectedSchool(newValue)
                             }}
                             sx={{width: '100%', mt: 1}}
                             renderInput={(params) => <TextField {...params} label="School"/>}
                             getOptionLabel={(option) => option.schoolname}
-                            renderOption={(props, option) => {
+                            renderOption={(props, option) =>
+                            {
                                 return (
                                     <li {...props}>
                                         {option.schoolname}
@@ -503,13 +569,15 @@ export default function NewRegistrationPage() {
                             PaperComponent={CustomPaper}
                             options={courses}
                             value={selectedCourse}
-                            onChange={(event, newValue) => {
+                            onChange={(event, newValue) =>
+                            {
                                 setSelectedCourse(newValue)
                             }}
                             sx={{width: '100%', mt: 1}}
                             renderInput={(params) => <TextField {...params} label="Course"/>}
                             getOptionLabel={(option) => option.courseid + " " + option.coursename}
-                            renderOption={(props, option) => {
+                            renderOption={(props, option) =>
+                            {
                                 return (
                                     <li {...props}>
                                         {option.courseid + " " + option.coursename}
@@ -542,21 +610,24 @@ export default function NewRegistrationPage() {
                                 items={leaders}
                                 label="Leaders"
                                 selectAllLabel="All"
-                                leaders={(items) => {
+                                leaders={(items) =>
+                                {
                                     setSelectedLeaders(items)
                                 }}
                             />
 
                             <Box sx={{mt: 1, width: '100%', display: 'flex', justifyContent: 'space-between'}}>
                                 <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:arrow-ios-back-fill"/>}
-                                        onClick={() => {
+                                        onClick={() =>
+                                        {
                                             setBookingStartDate(bookingStartDate.clone().add(-7, 'day'))
                                         }}>
                                     Prev Week
                                 </Button>
 
                                 <Button variant="contained" color="inherit" endIcon={<Iconify icon="eva:arrow-ios-forward-fill"/>}
-                                        onClick={() => {
+                                        onClick={() =>
+                                        {
                                             setBookingStartDate(bookingStartDate.clone().add(7, 'day'))
                                         }}>
                                     Next Week
@@ -643,7 +714,6 @@ export default function NewRegistrationPage() {
                             startAdornment: (<InputAdornment position="start"><AccountCircle/></InputAdornment>),
                             readOnly: true
                         }} defaultValue={selctedSlot.leaderName}/>
-
 
 
                     </div>

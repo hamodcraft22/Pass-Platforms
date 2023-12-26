@@ -4,7 +4,8 @@ import {SchoolsView} from '../sections/schools/view';
 
 // ----------------------------------------------------------------------
 
-export default function SchoolsPage() {
+export default function SchoolsPage()
+{
     return (
         <>
             <Helmet>

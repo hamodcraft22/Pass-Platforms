@@ -20,7 +20,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import DeleteIcon from "@mui/icons-material/Delete";
-import moment from "moment/moment";
 import UserProfile from "../../../components/auth/UserInfo";
 import {useNavigate} from "react-router-dom";
 
@@ -35,15 +34,18 @@ export default function NewSchoolPage()
 
     const [shownSection, setShownSection] = useState(0);
     const [progPercent, setProgPercent] = useState(0);
-    useEffect(() => {
+    useEffect(() =>
+    {
         (setProgPercent(((shownSection - 1) / 3) * 100))
     }, [shownSection]);
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -71,7 +73,10 @@ export default function NewSchoolPage()
         }
     }
 
-    useEffect(() => {getUserInfo()}, []);
+    useEffect(() =>
+    {
+        getUserInfo()
+    }, []);
 
     const [schoolID, setSchoolID] = useState("");
     const [schoolName, setSchoolName] = useState("");
@@ -83,19 +88,23 @@ export default function NewSchoolPage()
     const [addCourseID, setAddCourseID] = useState(null);
     const [addCourseName, setAddCourseName] = useState(null);
 
-    const handleAddClickOpen = () => {
+    const handleAddClickOpen = () =>
+    {
         setShowAddDialog(true);
     };
-    const handleAddClose = () => {
+    const handleAddClose = () =>
+    {
         setShowAddDialog(false);
     };
 
-    function handleAddSave() {
-        if (addCourseID !== null && addCourseName !== null) {
+    function handleAddSave()
+    {
+        if (addCourseID !== null && addCourseName !== null)
+        {
             courses.push({
                 "courseid": addCourseID,
                 "coursename": addCourseName,
-                "school":{"schoolid":schoolID}
+                "school": {"schoolid": schoolID}
             });
 
             setAddCourseID(null);
@@ -103,14 +112,17 @@ export default function NewSchoolPage()
 
             // close dialog etc
             setShowAddDialog(false);
-        } else {
+        }
+        else
+        {
             setErrorMsg("Please Add all the course details");
             setErrorShow(true);
         }
     }
 
 
-    async function createSubmit() {
+    async function createSubmit()
+    {
 
         // do school dto
         const schoolDto = {"schoolid": schoolID, "schoolname": schoolName, "courses": courses};
@@ -119,11 +131,13 @@ export default function NewSchoolPage()
         await submitSchool(schoolDto);
     }
 
-    async function submitSchool(schoolDto) {
+    async function submitSchool(schoolDto)
+    {
         let isok = false;
         let isBad = false;
 
-        try {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -131,39 +145,57 @@ export default function NewSchoolPage()
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(schoolDto)};
 
             await fetch(`http://localhost:8080/api/school`, requestOptions)
-                .then(response => {
-                    if (response.status === 201 || response.status === 200) {
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
                         isok = true;
                         setProgPercent(100);
                         return response.json();
-                    } else if (response.status === 400) {
+                    }
+                    else if (response.status === 400)
+                    {
                         isBad = true;
-                    } else if (response.status === 401) {
+                    }
+                    else if (response.status === 401)
+                    {
                         setErrorMsg("you are not allowed to do this action");
                         setErrorShow(true);
-                    } else if (response.status === 404) {
+                    }
+                    else if (response.status === 404)
+                    {
                         setErrorMsg("the request was not found on the server, double check your connection");
                         setErrorShow(true);
-                    } else {
+                    }
+                    else
+                    {
                         setErrorMsg("an unknown error occurred, please check console");
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setLoadingShow(false);
-                    if (isok) {
+                    if (isok)
+                    {
                         // it is fine, go on
                         goToSchools();
                         console.log(data);
-                    } else if (isBad) {
+                    }
+                    else if (isBad)
+                    {
                         setErrorMsg("the school code is already present");
                         setErrorShow(true);
-                    } else {
+                    }
+                    else
+                    {
                         console.log(data);
                     }
                 })
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);
             console.log(error);
@@ -172,38 +204,48 @@ export default function NewSchoolPage()
     }
 
 
-    function nextSection() {
-        if (shownSection === 1) {
-            if (schoolID !== null && schoolName !== null && schoolID !== undefined && schoolName !== undefined && Object.keys(schoolID).length !== 0 && Object.keys(schoolName).length !== 0) {
+    function nextSection()
+    {
+        if (shownSection === 1)
+        {
+            if (schoolID !== null && schoolName !== null && schoolID !== undefined && schoolName !== undefined && Object.keys(schoolID).length !== 0 && Object.keys(schoolName).length !== 0)
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Add all school Information Please");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 2) {
+        if (shownSection === 2)
+        {
             setShownSection((shownSection) + 1);
         }
 
-        if (shownSection === 3) {
+        if (shownSection === 3)
+        {
             createSubmit();
         }
 
     }
 
     let navigate = useNavigate();
-    const goToSchools = () => {
+    const goToSchools = () =>
+    {
         let path = `/schools`;
         navigate(path);
 
     }
 
-    function prevSection() {
+    function prevSection()
+    {
         setShownSection((shownSection) - 1);
     }
 
-    const CustomPaper = (props) => {
+    const CustomPaper = (props) =>
+    {
         return <Paper elevation={8} {...props} />;
     };
 
@@ -256,13 +298,15 @@ export default function NewSchoolPage()
                 shownSection === 1 && <Card>
                     <div style={{padding: "15px"}}>
                         <Typography variant="h6">School ID:</Typography>
-                        <TextField fullWidth value={schoolID} onChange={(newValue) => {
+                        <TextField fullWidth value={schoolID} onChange={(newValue) =>
+                        {
                             setSchoolID(newValue.target.value)
                         }} label={"School Code"}> </TextField>
                         <FormHelperText>School Code (IT, WM, etc.).</FormHelperText>
 
                         <Typography variant="h6" sx={{mt: 3}}>School Name:</Typography>
-                        <TextField fullWidth value={schoolName} onChange={(newValue) => {
+                        <TextField fullWidth value={schoolName} onChange={(newValue) =>
+                        {
                             setSchoolName(newValue.target.value)
                         }} label={"School Name"}> </TextField>
                         <FormHelperText>School Name (Web Media, Information Com Technology, etc.).</FormHelperText>
@@ -302,7 +346,8 @@ export default function NewSchoolPage()
                                             >
                                                 <TableCell component="th" scope="row">{course.coursename}</TableCell>
                                                 <TableCell align="right">{course.courseid}</TableCell>
-                                                <TableCell align="right"> <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"} onClick={() => {
+                                                <TableCell align="right"> <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"} onClick={() =>
+                                                {
                                                     setCourses([...courses.slice(0, index), ...courses.slice(index + 1)])
                                                 }}><DeleteIcon fontSize={"small"}/></Button> </TableCell>
                                             </TableRow>

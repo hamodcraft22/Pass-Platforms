@@ -63,13 +63,15 @@ export const menuItem = (theme) => ({
 
 // ----------------------------------------------------------------------
 
-export function bgBlur(props) {
+export function bgBlur(props)
+{
     const color = props?.color || '#000000';
     const blur = props?.blur || 6;
     const opacity = props?.opacity || 0.8;
     const imgUrl = props?.imgUrl;
 
-    if (imgUrl) {
+    if (imgUrl)
+    {
         return {
             position: 'relative',
             backgroundImage: `url(${imgUrl})`,
@@ -97,14 +99,16 @@ export function bgBlur(props) {
 
 // ----------------------------------------------------------------------
 
-export function bgGradient(props) {
+export function bgGradient(props)
+{
     const direction = props?.direction || 'to bottom';
     const startColor = props?.startColor;
     const endColor = props?.endColor;
     const imgUrl = props?.imgUrl;
     const color = props?.color;
 
-    if (imgUrl) {
+    if (imgUrl)
+    {
         return {
             background: `linear-gradient(${direction}, ${startColor || color}, ${
                 endColor || color
@@ -122,7 +126,8 @@ export function bgGradient(props) {
 
 // ----------------------------------------------------------------------
 
-export function textGradient(value) {
+export function textGradient(value)
+{
     return {
         background: `-webkit-linear-gradient(${value})`,
         WebkitBackgroundClip: 'text',

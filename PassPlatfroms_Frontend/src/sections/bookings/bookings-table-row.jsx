@@ -13,7 +13,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import {Alert, Autocomplete, FormHelperText, TextField} from "@mui/material";
+import {Alert, FormHelperText, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import {DateTime} from 'luxon';
 import moment from "moment";
@@ -29,13 +29,16 @@ import {TimePicker} from "@mui/x-date-pickers";
 
 // ----------------------------------------------------------------------
 
-export default function BookingsTableRow({bookingID, subject, date, startTime, endTime, slotStartTime, slotEndTime, status, bookingType, online, viewType, userType}) {
+export default function BookingsTableRow({bookingID, subject, date, startTime, endTime, slotStartTime, slotEndTime, status, bookingType, online, viewType, userType})
+{
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -47,13 +50,16 @@ export default function BookingsTableRow({bookingID, subject, date, startTime, e
     const [bookingStartTime, setBookingStartTime] = useState(null);
     const [bookingEndTime, setBookingEndTime] = useState(null);
 
-    const handleEditClickOpen = () => {
+    const handleEditClickOpen = () =>
+    {
         setShowEditDialog(true);
     };
-    const handleEditClose = () => {
+    const handleEditClose = () =>
+    {
         setShowEditDialog(false);
     };
-    const handleEditSave = () => {
+    const handleEditSave = () =>
+    {
         if (editStatus !== null)
         {
             if (editStatus === 'F')
@@ -83,20 +89,25 @@ export default function BookingsTableRow({bookingID, subject, date, startTime, e
     };
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const handleDeleteClickOpen = () => {
+    const handleDeleteClickOpen = () =>
+    {
         setShowDeleteDialog(true);
     };
-    const handleDeleteClose = () => {
+    const handleDeleteClose = () =>
+    {
         setShowDeleteDialog(false);
     };
-    const handleDeleteSave = () => {
+    const handleDeleteSave = () =>
+    {
         setShowDeleteDialog(false);
         deleteBooking()
     };
 
     // delete api - add
-    async function deleteBooking() {
-        try {
+    async function deleteBooking()
+    {
+        try
+        {
             let token = await UserProfile.getAuthToken();
 
             const requestOptions =
@@ -106,8 +117,20 @@ export default function BookingsTableRow({bookingID, subject, date, startTime, e
                 };
 
             await fetch(`http://localhost:8080/api/booking/${bookingID}`, requestOptions)
-                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
-        } catch (error)
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload()
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+        }
+        catch (error)
         {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);
@@ -123,7 +146,7 @@ export default function BookingsTableRow({bookingID, subject, date, startTime, e
     // submit edit
     function editSubmit()
     {
-        const bookingToSubmit = {"bookingid":bookingID,  "bookingStatus":{"statusid":editStatus}, "starttime":bookingStartTime, "endtime":bookingEndTime};
+        const bookingToSubmit = {"bookingid": bookingID, "bookingStatus": {"statusid": editStatus}, "starttime": bookingStartTime, "endtime": bookingEndTime};
 
         submitEditBooking(bookingToSubmit);
     }
@@ -138,7 +161,8 @@ export default function BookingsTableRow({bookingID, subject, date, startTime, e
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(bookingToSubmit)};
 
             await fetch(`http://localhost:8080/api/booking`, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 201 || response.status === 200)
                     {
                         window.location.reload();
@@ -171,7 +195,8 @@ export default function BookingsTableRow({bookingID, subject, date, startTime, e
 
     // go to courses
     let navigate = useNavigate();
-    const goToBooking = () => {
+    const goToBooking = () =>
+    {
         let path = `/viewBooking?bookingID=${bookingID}`;
         navigate(path);
     }
@@ -246,7 +271,10 @@ export default function BookingsTableRow({bookingID, subject, date, startTime, e
 
                         {
                             viewType === 'leaderBookings' &&
-                            <TextField select label="Status" sx={{width: '100%', mt: 1}} value={editStatus} onChange={(event, newValue) => {setEditStatus(event.target.value)}}>
+                            <TextField select label="Status" sx={{width: '100%', mt: 1}} value={editStatus} onChange={(event, newValue) =>
+                            {
+                                setEditStatus(event.target.value)
+                            }}>
                                 <MenuItem value={'F'}>Finished</MenuItem>
                                 <MenuItem value={'C'}>Cancelled</MenuItem>
                                 <MenuItem value={'I'}>Ignored</MenuItem>
@@ -255,7 +283,10 @@ export default function BookingsTableRow({bookingID, subject, date, startTime, e
 
                         {
                             viewType === 'myBookings' &&
-                            <TextField select label="Status" sx={{width: '100%', mt: 1}} value={editStatus} onChange={(event, newValue) => {setEditStatus(event.target.value)}}>
+                            <TextField select label="Status" sx={{width: '100%', mt: 1}} value={editStatus} onChange={(event, newValue) =>
+                            {
+                                setEditStatus(event.target.value)
+                            }}>
                                 <MenuItem value={'S'}>Cancelled</MenuItem>
                             </TextField>
                         }
@@ -265,10 +296,16 @@ export default function BookingsTableRow({bookingID, subject, date, startTime, e
                             editStatus === 'F' &&
                             <>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <TimePicker sx={{mt: 1, mr: 1}} label="Start Time" value={bookingStartTime} onChange={(newValue) => {setBookingStartTime(newValue)}}/>
+                                    <TimePicker sx={{mt: 1, mr: 1}} label="Start Time" value={bookingStartTime} onChange={(newValue) =>
+                                    {
+                                        setBookingStartTime(newValue)
+                                    }}/>
                                 </LocalizationProvider>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <TimePicker sx={{mt: 1,}} label="End Time" minTime={bookingStartTime} value={bookingEndTime} onChange={(newValue) => {setBookingEndTime(newValue)}}/>
+                                    <TimePicker sx={{mt: 1,}} label="End Time" minTime={bookingStartTime} value={bookingEndTime} onChange={(newValue) =>
+                                    {
+                                        setBookingEndTime(newValue)
+                                    }}/>
                                 </LocalizationProvider>
                                 <FormHelperText>Select start and end time for the conducted session.</FormHelperText>
                             </>

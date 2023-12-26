@@ -30,8 +30,10 @@ export default function ScheduleTableRow({scheduleID, day, startTime, endTime, c
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -39,15 +41,19 @@ export default function ScheduleTableRow({scheduleID, day, startTime, endTime, c
 
 
     const [showViewDialog, setShowViewDialog] = useState(false);
-    const handleViewClickOpen = () => {
+    const handleViewClickOpen = () =>
+    {
         setShowViewDialog(true);
     };
-    const handleViewClose = () => {
+    const handleViewClose = () =>
+    {
         setShowViewDialog(false);
     };
 
-    const dayWord = (dayChar) => {
-        switch (dayChar) {
+    const dayWord = (dayChar) =>
+    {
+        switch (dayChar)
+        {
             case 'U':
                 return "Sunday";
             case 'M':
@@ -75,22 +81,25 @@ export default function ScheduleTableRow({scheduleID, day, startTime, endTime, c
     const [scheduleSelectedStartTime, setScheduleSelectedStartTime] = useState(null);
     const [scheduleSelectedEndTime, setScheduleSelectedEndTime] = useState(null);
 
-    const handleEditClickOpen = () => {
+    const handleEditClickOpen = () =>
+    {
         setShowEditDialog(true);
 
         setEditScheduleDay(day);
         setScheduleSelectedStartTime(startTime);
         setScheduleSelectedEndTime(endTime);
     };
-    const handleEditClose = () => {
+    const handleEditClose = () =>
+    {
         setShowEditDialog(false);
 
         setEditScheduleDay(null);
         setScheduleSelectedStartTime(null);
         setScheduleSelectedEndTime(null);
     };
-    const handleEditSave = () => {
-        if (editScheduleDay !== null && scheduleSelectedStartTime !== null && scheduleSelectedEndTime!== null)
+    const handleEditSave = () =>
+    {
+        if (editScheduleDay !== null && scheduleSelectedStartTime !== null && scheduleSelectedEndTime !== null)
         {
             setShowEditDialog(false);
             editSubmit();
@@ -104,13 +113,16 @@ export default function ScheduleTableRow({scheduleID, day, startTime, endTime, c
 
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const handleDeleteClickOpen = () => {
+    const handleDeleteClickOpen = () =>
+    {
         setShowDeleteDialog(true);
     };
-    const handleDeleteClose = () => {
+    const handleDeleteClose = () =>
+    {
         setShowDeleteDialog(false);
     };
-    const handleDeleteSave = () => {
+    const handleDeleteSave = () =>
+    {
         setShowDeleteDialog(false);
         deleteSchedule();
     };
@@ -130,7 +142,18 @@ export default function ScheduleTableRow({scheduleID, day, startTime, endTime, c
                 };
 
             await fetch(`http://localhost:8080/api/schedule/${scheduleID}`, requestOptions)
-                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload()
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
         }
         catch (error)
         {
@@ -148,7 +171,7 @@ export default function ScheduleTableRow({scheduleID, day, startTime, endTime, c
     // submit new schedule
     function editSubmit()
     {
-        const scheduleToSubmit = {"scheduleid":scheduleID,  "starttime": scheduleSelectedStartTime, "endtime": scheduleSelectedEndTime, "day":{"dayid":editScheduleDay}};
+        const scheduleToSubmit = {"scheduleid": scheduleID, "starttime": scheduleSelectedStartTime, "endtime": scheduleSelectedEndTime, "day": {"dayid": editScheduleDay}};
 
         submitEditSchedule(scheduleToSubmit);
     }
@@ -163,7 +186,8 @@ export default function ScheduleTableRow({scheduleID, day, startTime, endTime, c
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(scheduleToSubmit)};
 
             await fetch(`http://localhost:8080/api/schedule`, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 201 || response.status === 200)
                     {
                         window.location.reload();
@@ -257,7 +281,8 @@ export default function ScheduleTableRow({scheduleID, day, startTime, endTime, c
                         </Alert>
                     }
 
-                    <TextField select label="Day" sx={{width: '100%', mt: 1}} value={editScheduleDay} onChange={(event, newValue) => {
+                    <TextField select label="Day" sx={{width: '100%', mt: 1}} value={editScheduleDay} onChange={(event, newValue) =>
+                    {
                         setEditScheduleDay(newValue.props.value)
                     }}>
                         <MenuItem value={'U'}>Sunday</MenuItem>
@@ -271,12 +296,14 @@ export default function ScheduleTableRow({scheduleID, day, startTime, endTime, c
                     <FormHelperText>Which day is your session.</FormHelperText>
 
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker sx={{mt: 2, mr: 1}} label="Start Time" value={moment(scheduleSelectedStartTime)} onChange={(newValue) => {
+                        <TimePicker sx={{mt: 2, mr: 1}} label="Start Time" value={moment(scheduleSelectedStartTime)} onChange={(newValue) =>
+                        {
                             setScheduleSelectedStartTime(newValue)
                         }}/>
                     </LocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <TimePicker sx={{mt: 2}} label="End Time" minTime={moment(scheduleSelectedStartTime)} value={moment(scheduleSelectedEndTime)} onChange={(newValue) => {
+                        <TimePicker sx={{mt: 2}} label="End Time" minTime={moment(scheduleSelectedStartTime)} value={moment(scheduleSelectedEndTime)} onChange={(newValue) =>
+                        {
                             setScheduleSelectedEndTime(newValue)
                         }}/>
                     </LocalizationProvider>

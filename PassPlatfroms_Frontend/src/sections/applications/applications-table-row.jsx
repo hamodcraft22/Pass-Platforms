@@ -13,7 +13,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import {Alert, Autocomplete, TextField} from "@mui/material";
+import {Alert, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import moment from "moment";
 import {useNavigate} from "react-router-dom";
@@ -23,13 +23,16 @@ import MenuItem from "@mui/material/MenuItem";
 
 // ----------------------------------------------------------------------
 
-export default function ApplicationsTableRow({aplicID, studentID, student, date, status}) {
+export default function ApplicationsTableRow({aplicID, studentID, student, date, status})
+{
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -39,13 +42,16 @@ export default function ApplicationsTableRow({aplicID, studentID, student, date,
 
     const [editStatus, setEditStatus] = useState(null);
 
-    const handleEditClickOpen = () => {
+    const handleEditClickOpen = () =>
+    {
         setShowEditDialog(true);
     };
-    const handleEditClose = () => {
+    const handleEditClose = () =>
+    {
         setShowEditDialog(false);
     };
-    const handleEditSave = () => {
+    const handleEditSave = () =>
+    {
         if (editStatus !== null)
         {
             setShowEditDialog(false);
@@ -59,21 +65,26 @@ export default function ApplicationsTableRow({aplicID, studentID, student, date,
     };
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const handleDeleteClickOpen = () => {
+    const handleDeleteClickOpen = () =>
+    {
         setShowDeleteDialog(true);
     };
-    const handleDeleteClose = () => {
+    const handleDeleteClose = () =>
+    {
         setShowDeleteDialog(false);
     };
-    const handleDeleteSave = () => {
+    const handleDeleteSave = () =>
+    {
         setShowDeleteDialog(false);
         deleteApplication();
     };
 
 
     // delete api - add
-    async function deleteApplication() {
-        try {
+    async function deleteApplication()
+    {
+        try
+        {
             let token = await UserProfile.getAuthToken();
 
             const requestOptions =
@@ -83,8 +94,20 @@ export default function ApplicationsTableRow({aplicID, studentID, student, date,
                 };
 
             await fetch(`http://localhost:8080/api/application/${aplicID}`, requestOptions)
-                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
-        } catch (error)
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload()
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+        }
+        catch (error)
         {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);
@@ -100,7 +123,7 @@ export default function ApplicationsTableRow({aplicID, studentID, student, date,
     // submit new application
     function editSubmit()
     {
-        const applicationToSubmit = {"applicationid":aplicID,  "applicationStatus":{"statusid":editStatus}};
+        const applicationToSubmit = {"applicationid": aplicID, "applicationStatus": {"statusid": editStatus}};
 
         submitEditApplication(applicationToSubmit);
     }
@@ -115,7 +138,8 @@ export default function ApplicationsTableRow({aplicID, studentID, student, date,
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(applicationToSubmit)};
 
             await fetch(`http://localhost:8080/api/application`, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 201 || response.status === 200)
                     {
                         window.location.reload();
@@ -149,7 +173,8 @@ export default function ApplicationsTableRow({aplicID, studentID, student, date,
 
     // go to courses
     let navigate = useNavigate();
-    const goToView = () => {
+    const goToView = () =>
+    {
         let path = `/viewApplication?studentID=${studentID}`;
         navigate(path);
     }
@@ -197,7 +222,10 @@ export default function ApplicationsTableRow({aplicID, studentID, student, date,
                             </Alert>
                         }
 
-                        <TextField select label="Status" sx={{width: '100%', mt: 1}} value={editStatus} onChange={(event, newValue) => {setEditStatus(newValue.props.value)}}>
+                        <TextField select label="Status" sx={{width: '100%', mt: 1}} value={editStatus} onChange={(event, newValue) =>
+                        {
+                            setEditStatus(newValue.props.value)
+                        }}>
                             <MenuItem value={'R'}>Reviewed</MenuItem>
                             <MenuItem value={'I'}>Interviewed</MenuItem>
                             <MenuItem value={'A'}>Accepted</MenuItem>

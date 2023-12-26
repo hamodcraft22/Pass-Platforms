@@ -26,7 +26,6 @@ import TableBody from "@mui/material/TableBody";
 import {styled} from "@mui/material/styles";
 import {read, utils} from 'xlsx';
 import Grid from "@mui/material/Unstable_Grid2";
-import ApexChart from 'react-apexcharts';
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
@@ -37,21 +36,25 @@ import UserProfile from "../../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
-export default function ManagementPage() {
+export default function ManagementPage()
+{
 
     const [loadingShow, setLoadingShow] = useState(false);
 
     const [shownSection, setShownSection] = useState(1);
     const [progPercent, setProgPercent] = useState(0);
-    useEffect(() => {
+    useEffect(() =>
+    {
         (setProgPercent(((shownSection - 1) / 5) * 100))
     }, [shownSection]);
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -59,40 +62,52 @@ export default function ManagementPage() {
 
     const [successShow, setSuccessShow] = useState(false);
     const [successMsg, setSuccessMsg] = useState("");
-    const handleSuccessAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleSuccessAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setSuccessShow(false);
     };
 
-    function nextSection() {
-        if (shownSection === 1) {
+    function nextSection()
+    {
+        if (shownSection === 1)
+        {
             if (midRevWeekStart !== null && midRevWeekEnd !== null && midWeekStart !== null && midWeekEnd !== null &&
                 midRevWeekStart !== undefined && midRevWeekEnd !== undefined && midWeekStart !== undefined && midWeekEnd !== undefined &&
-                Object.keys(midRevWeekStart).length !== 0 && Object.keys(midRevWeekEnd).length !== 0 && Object.keys(midWeekStart).length !== 0 && Object.keys(midWeekEnd).length !== 0) {
+                Object.keys(midRevWeekStart).length !== 0 && Object.keys(midRevWeekEnd).length !== 0 && Object.keys(midWeekStart).length !== 0 && Object.keys(midWeekEnd).length !== 0)
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Please fill all date details");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 2) {
+        if (shownSection === 2)
+        {
             if (midRevWeekStart !== null && midRevWeekEnd !== null && midWeekStart !== null && midWeekEnd !== null &&
                 midRevWeekStart !== undefined && midRevWeekEnd !== undefined && midWeekStart !== undefined && midWeekEnd !== undefined &&
                 Object.keys(midRevWeekStart).length !== 0 && Object.keys(midRevWeekEnd).length !== 0 && Object.keys(midWeekStart).length !== 0 && Object.keys(midWeekEnd).length !== 0 &&
                 finRevWeekStart !== null && finRevWeekEnd !== null && finWeekStart !== null && finWeekEnd !== null &&
                 finRevWeekStart !== undefined && finRevWeekEnd !== undefined && finWeekStart !== undefined && finWeekEnd !== undefined &&
-                Object.keys(finRevWeekStart).length !== 0 && Object.keys(finRevWeekEnd).length !== 0 && Object.keys(finWeekStart).length !== 0 && Object.keys(finWeekEnd).length !== 0) {
+                Object.keys(finRevWeekStart).length !== 0 && Object.keys(finRevWeekEnd).length !== 0 && Object.keys(finWeekStart).length !== 0 && Object.keys(finWeekEnd).length !== 0)
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Please fill all date details");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 3) {
+        if (shownSection === 3)
+        {
             if (midRevWeekStart !== null && midRevWeekEnd !== null && midWeekStart !== null && midWeekEnd !== null &&
                 midRevWeekStart !== undefined && midRevWeekEnd !== undefined && midWeekStart !== undefined && midWeekEnd !== undefined &&
                 Object.keys(midRevWeekStart).length !== 0 && Object.keys(midRevWeekEnd).length !== 0 && Object.keys(midWeekStart).length !== 0 && Object.keys(midWeekEnd).length !== 0 &&
@@ -100,15 +115,19 @@ export default function ManagementPage() {
                 finRevWeekStart !== undefined && finRevWeekEnd !== undefined && finWeekStart !== undefined && finWeekEnd !== undefined &&
                 Object.keys(finRevWeekStart).length !== 0 && Object.keys(finRevWeekEnd).length !== 0 && Object.keys(finWeekStart).length !== 0 && Object.keys(finWeekEnd).length !== 0 &&
                 schoolsUpload !== null && schoolsUpload !== undefined && Object.keys(schoolsUpload).length !== 0
-            ) {
+            )
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Please upload course info");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 4) {
+        if (shownSection === 4)
+        {
             if (midRevWeekStart !== null && midRevWeekEnd !== null && midWeekStart !== null && midWeekEnd !== null &&
                 midRevWeekStart !== undefined && midRevWeekEnd !== undefined && midWeekStart !== undefined && midWeekEnd !== undefined &&
                 Object.keys(midRevWeekStart).length !== 0 && Object.keys(midRevWeekEnd).length !== 0 && Object.keys(midWeekStart).length !== 0 && Object.keys(midWeekEnd).length !== 0 &&
@@ -117,20 +136,25 @@ export default function ManagementPage() {
                 Object.keys(finRevWeekStart).length !== 0 && Object.keys(finRevWeekEnd).length !== 0 && Object.keys(finWeekStart).length !== 0 && Object.keys(finWeekEnd).length !== 0 &&
                 schoolsUpload !== null && schoolsUpload !== undefined && Object.keys(schoolsUpload).length !== 0 &&
                 leadersUpload !== null && leadersUpload !== undefined && Object.keys(leadersUpload).length !== 0
-            ) {
+            )
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Please upload leaders info");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 5) {
+        if (shownSection === 5)
+        {
             createSubmit();
         }
     }
 
-    function prevSection() {
+    function prevSection()
+    {
         setShownSection((shownSection) - 1);
     }
 
@@ -232,8 +256,9 @@ export default function ManagementPage() {
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch("http://localhost:8080/api/metadata",requestOptions)
-                .then((response) => {
+            await fetch("http://localhost:8080/api/metadata", requestOptions)
+                .then((response) =>
+                {
                     if (response.status === 200)
                     {
                         return response.json();
@@ -244,7 +269,8 @@ export default function ManagementPage() {
                         return null;
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     if (data !== null)
                     {
                         parseMetadata(data);
@@ -268,7 +294,18 @@ export default function ManagementPage() {
     async function createEdit(online, system)
     {
         setLoadingShow(true);
-        const metaData = {"mrwstart":midRevWeekStartEdit, "mrwend":midRevWeekEndEdit, "mwstart":midWeekStartEdit, "mwend":midWeekEndEdit, "frwstart":finRevWeekStartEdit, "frwend":finRevWeekEndEdit, "fwstart":finWeekStartEdit, "fwend":finWeekEndEdit, "enabled":system, "booking":online};
+        const metaData = {
+            "mrwstart": midRevWeekStartEdit,
+            "mrwend": midRevWeekEndEdit,
+            "mwstart": midWeekStartEdit,
+            "mwend": midWeekEndEdit,
+            "frwstart": finRevWeekStartEdit,
+            "frwend": finRevWeekEndEdit,
+            "fwstart": finWeekStartEdit,
+            "fwend": finWeekEndEdit,
+            "enabled": system,
+            "booking": online
+        };
 
         let metaSubmit = await submitSetupData(metaData);
 
@@ -288,7 +325,18 @@ export default function ManagementPage() {
     async function createSubmit()
     {
         setLoadingShow(true);
-        const metaData = {"mrwstart":midRevWeekStart, "mrwend":midRevWeekEnd, "mwstart":midWeekStart, "mwend":midWeekEnd, "frwstart":finRevWeekStart, "frwend":finRevWeekEnd, "fwstart":finWeekStart, "fwend":finWeekEnd, "enabled":false, "booking":false};
+        const metaData = {
+            "mrwstart": midRevWeekStart,
+            "mrwend": midRevWeekEnd,
+            "mwstart": midWeekStart,
+            "mwend": midWeekEnd,
+            "frwstart": finRevWeekStart,
+            "frwend": finRevWeekEnd,
+            "fwstart": finWeekStart,
+            "fwend": finWeekEnd,
+            "enabled": false,
+            "booking": false
+        };
 
         let metaSubmit = await submitSetupData(metaData);
         let schoolsSubmit = await submitSchools();
@@ -317,8 +365,9 @@ export default function ManagementPage() {
 
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(meteDataDto)};
 
-            return await fetch("http://localhost:8080/api/metadata",requestOptions)
-                .then((response) => {
+            return await fetch("http://localhost:8080/api/metadata", requestOptions)
+                .then((response) =>
+                {
                     if (response.status === 200 || response.status === 201)
                     {
                         return true;
@@ -349,7 +398,8 @@ export default function ManagementPage() {
     async function submitSchools()
     {
 
-        try {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -357,8 +407,10 @@ export default function ManagementPage() {
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(schoolsUpload)};
 
             return await fetch(`http://localhost:8080/api/school/multi`, requestOptions)
-                .then(response => {
-                    if (response.status === 201 || response.status === 200) {
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
                         return true;
                     }
                     else
@@ -369,7 +421,9 @@ export default function ManagementPage() {
                     }
                 });
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);
             console.log(error);
@@ -381,7 +435,8 @@ export default function ManagementPage() {
 
     async function submitLeaders()
     {
-        try {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -389,8 +444,10 @@ export default function ManagementPage() {
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(leadersUpload)};
 
             return await fetch(`http://localhost:8080/api/user/leaderify`, requestOptions)
-                .then(response => {
-                    if (response.status === 201 || response.status === 200) {
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
                         return true;
                     }
                     else
@@ -401,7 +458,9 @@ export default function ManagementPage() {
                     }
                 });
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);
             console.log(error);
@@ -412,7 +471,8 @@ export default function ManagementPage() {
 
     async function resetAll()
     {
-        try {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -420,8 +480,10 @@ export default function ManagementPage() {
             const requestOptions = {method: "DELETE", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(leadersUpload)};
 
             return await fetch(`http://localhost:8080/api/metadata`, requestOptions)
-                .then(response => {
-                    if (response.status === 201 || response.status === 200) {
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
                         window.location.reload()
                     }
                     else
@@ -432,7 +494,9 @@ export default function ManagementPage() {
                     }
                 });
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);
             console.log(error);
@@ -462,27 +526,32 @@ export default function ManagementPage() {
     }
 
 
-    useEffect(() => {getUserInfo()}, []);
-
+    useEffect(() =>
+    {
+        getUserInfo()
+    }, []);
 
 
     // file extracters
-    const handleSchoolsFileChange = async (event) => {
+    const handleSchoolsFileChange = async (event) =>
+    {
         const file = event.target.files[0];
 
         const workbook = await readFile(file);
         const sheetNames = workbook.SheetNames;
         let sheetsData = [];
 
-        sheetNames.forEach((sheetName) => {
+        sheetNames.forEach((sheetName) =>
+        {
             const sheet = workbook.Sheets[sheetName];
             const data = utils.sheet_to_json(sheet, {header: 1});
             const courses = data.slice(1);
 
             let formattedCourses = [];
 
-            courses.forEach((course) => {
-                formattedCourses.push({"courseid": sheetName + course[0], "coursename": course[1], "school":{"schoolid": sheetName}})
+            courses.forEach((course) =>
+            {
+                formattedCourses.push({"courseid": sheetName + course[0], "coursename": course[1], "school": {"schoolid": sheetName}})
             });
 
             sheetsData.push({"schoolid": sheetName, "schoolname": data[0][0], "courses": formattedCourses});
@@ -492,38 +561,45 @@ export default function ManagementPage() {
     };
 
 
-    const handleLeadersFileChange = async (event) => {
+    const handleLeadersFileChange = async (event) =>
+    {
         const file = event.target.files[0];
 
         const workbook = await readFile(file);
         const sheetNames = workbook.SheetNames;
         let sheetsData = [];
 
-        sheetNames.forEach((sheetName) => {
+        sheetNames.forEach((sheetName) =>
+        {
             const sheet = workbook.Sheets[sheetName];
             const data = utils.sheet_to_json(sheet, {header: 1});
 
-            data.forEach((leader) => {
+            data.forEach((leader) =>
+            {
                 sheetsData.push(leader[0])
             });
         });
 
 
-            setLeadersUpload(sheetsData);
+        setLeadersUpload(sheetsData);
 
     };
 
-    const readFile = (file) => {
-        return new Promise((resolve, reject) => {
+    const readFile = (file) =>
+    {
+        return new Promise((resolve, reject) =>
+        {
             const reader = new FileReader();
 
-            reader.onload = (e) => {
+            reader.onload = (e) =>
+            {
                 const data = new Uint8Array(e.target.result);
                 const workbook = read(data, {type: 'array'});
                 resolve(workbook);
             };
 
-            reader.onerror = (error) => {
+            reader.onerror = (error) =>
+            {
                 reject(error);
             };
 
@@ -533,11 +609,14 @@ export default function ManagementPage() {
 
     const [getWidth, setGetWidth] = useState("xl");
 
-    useEffect(() => {
-        if (setupMode) {
+    useEffect(() =>
+    {
+        if (setupMode)
+        {
             setGetWidth("lg")
         }
-        if (viewEditMode) {
+        if (viewEditMode)
+        {
             setGetWidth("xl")
         }
     }, [setupMode, viewEditMode])
@@ -546,13 +625,15 @@ export default function ManagementPage() {
     // update dates dialog
     const [updateDateShow, setUpdateDateShow] = useState(false);
 
-    function handleUpdateDateConfirm() {
+    function handleUpdateDateConfirm()
+    {
         createEdit(bookingEnable, systemEnable);
 
         setUpdateDateShow(false);
     }
 
-    async function handleAssignLeadersConfirm() {
+    async function handleAssignLeadersConfirm()
+    {
         if (leadersUpload.length !== 0)
         {
             if (await submitLeaders())
@@ -578,7 +659,8 @@ export default function ManagementPage() {
 
     const [enableSysShow, setEnableSysShow] = useState(false);
 
-    function handleEnableSysConfirm() {
+    function handleEnableSysConfirm()
+    {
         createEdit(bookingEnable, true);
 
         setEnableSysShow(false);
@@ -586,28 +668,32 @@ export default function ManagementPage() {
 
     const [disableSysShow, setDisableSysShow] = useState(false);
 
-    function handleDisableSysConfirm() {
+    function handleDisableSysConfirm()
+    {
         createEdit(false, false);
         setDisableSysShow(false);
     }
 
     const [enableBookingShow, setEnableBookingShow] = useState(false);
 
-    function handleEnableBookingConfirm() {
+    function handleEnableBookingConfirm()
+    {
         createEdit(true, true);
         setEnableBookingShow(false);
     }
 
     const [disableBookingShow, setDisableBookingShow] = useState(false);
 
-    function handleDisableBookingConfirm() {
+    function handleDisableBookingConfirm()
+    {
         createEdit(false, systemEnable);
         setDisableBookingShow(false);
     }
 
     const [resetSysShow, setResetSysShow] = useState(false);
 
-    function handleResetSysConfirm() {
+    function handleResetSysConfirm()
+    {
         resetAll();
 
         setResetSysShow(false);
@@ -626,7 +712,8 @@ export default function ManagementPage() {
         width: 1,
     });
 
-    const getChartOptions = (color) => {
+    const getChartOptions = (color) =>
+    {
         return {
             chart: {
                 toolbar: {
@@ -690,7 +777,8 @@ export default function ManagementPage() {
     ];
 
 
-    const CustomPaper = (props) => {
+    const CustomPaper = (props) =>
+    {
         return <Paper elevation={8} {...props} />;
     };
 
@@ -762,14 +850,16 @@ export default function ManagementPage() {
 
                                 <Typography variant="button">Revision Week:</Typography>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Midterm Revision Week Start" value={midRevWeekStart} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Midterm Revision Week Start" value={midRevWeekStart} onChange={(newValue) =>
+                                    {
                                         setMidRevWeekStart(newValue)
                                     }}/>
                                 </LocalizationProvider>
                                 <FormHelperText>When does the midterm revision Week Starts.</FormHelperText>
 
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Midterm Revision Week End" minDate={midRevWeekStart} value={midRevWeekEnd} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Midterm Revision Week End" minDate={midRevWeekStart} value={midRevWeekEnd} onChange={(newValue) =>
+                                    {
                                         setMidRevWeekEnd(newValue)
                                     }}/>
                                 </LocalizationProvider>
@@ -777,14 +867,16 @@ export default function ManagementPage() {
 
                                 <Typography variant="button">Exam Week:</Typography>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Midterm Week Start" minDate={midRevWeekEnd} value={midWeekStart} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Midterm Week Start" minDate={midRevWeekEnd} value={midWeekStart} onChange={(newValue) =>
+                                    {
                                         setMidWeekStart(newValue)
                                     }}/>
                                 </LocalizationProvider>
                                 <FormHelperText>When does the midterm exam Week Start.</FormHelperText>
 
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Midterm Week End" minDate={midWeekStart} value={midWeekEnd} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Midterm Week End" minDate={midWeekStart} value={midWeekEnd} onChange={(newValue) =>
+                                    {
                                         setMidWeekEnd(newValue)
                                     }}/>
                                 </LocalizationProvider>
@@ -804,14 +896,16 @@ export default function ManagementPage() {
 
                                 <Typography variant="button">Revision / Break Week:</Typography>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Final Break Week Start" minDate={midWeekEnd} value={finRevWeekStart} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Final Break Week Start" minDate={midWeekEnd} value={finRevWeekStart} onChange={(newValue) =>
+                                    {
                                         setFinRevWeekStart(newValue)
                                     }}/>
                                 </LocalizationProvider>
                                 <FormHelperText>When does the final revision / break Week Starts.</FormHelperText>
 
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Final Break Week End" minDate={finRevWeekStart} value={finRevWeekEnd} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Final Break Week End" minDate={finRevWeekStart} value={finRevWeekEnd} onChange={(newValue) =>
+                                    {
                                         setFinRevWeekEnd(newValue)
                                     }}/>
                                 </LocalizationProvider>
@@ -819,14 +913,16 @@ export default function ManagementPage() {
 
                                 <Typography variant="button">Exam Week:</Typography>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Final Week Start" minDate={finRevWeekEnd} value={finWeekStart} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Final Week Start" minDate={finRevWeekEnd} value={finWeekStart} onChange={(newValue) =>
+                                    {
                                         setFinWeekStart(newValue)
                                     }}/>
                                 </LocalizationProvider>
                                 <FormHelperText>When does the midterm exam Week Start.</FormHelperText>
 
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Final Week End" minDate={finWeekStart} value={finWeekEnd} onChange={(newValue) => {
+                                    <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Final Week End" minDate={finWeekStart} value={finWeekEnd} onChange={(newValue) =>
+                                    {
                                         setFinWeekEnd(newValue)
                                     }}/>
                                 </LocalizationProvider>
@@ -1017,7 +1113,6 @@ export default function ManagementPage() {
                     <Grid container spacing={3}>
 
 
-
                         {/* mid dates card */}
                         <Grid xs={12} md={6} lg={4}>
                             <Card
@@ -1034,38 +1129,44 @@ export default function ManagementPage() {
 
                                     <Typography variant="button">Revision Week:</Typography>
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Midterm Revision Week Start" value={midRevWeekStartEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Midterm Revision Week Start" value={midRevWeekStartEdit} onChange={(newValue) =>
+                                        {
                                             setMidRevWeekStartEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>
 
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2, mb: 3}} format={"DD/MM/YYYY"} label="Midterm Revision Week End" minDate={midRevWeekStartEdit} value={midRevWeekEndEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2, mb: 3}} format={"DD/MM/YYYY"} label="Midterm Revision Week End" minDate={midRevWeekStartEdit} value={midRevWeekEndEdit} onChange={(newValue) =>
+                                        {
                                             setMidRevWeekEndEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>
 
                                     <Typography variant="button">Exam Week:</Typography>
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Midterm Week Start" minDate={midRevWeekEndEdit} value={midWeekStartEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Midterm Week Start" minDate={midRevWeekEndEdit} value={midWeekStartEdit} onChange={(newValue) =>
+                                        {
                                             setMidWeekStartEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>
 
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Midterm Week End" minDate={midWeekStartEdit} value={midWeekEndEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Midterm Week End" minDate={midWeekStartEdit} value={midWeekEndEdit} onChange={(newValue) =>
+                                        {
                                             setMidWeekEndEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>
 
                                     <Button sx={{mt: 2}} variant={"contained"}
-                                            disabled={midRevWeekStartEdit === midRevWeekStart && midRevWeekEndEdit === midRevWeekEnd && midWeekStart === midWeekStartEdit && midWeekEnd === midWeekEndEdit} onClick={() => {
+                                            disabled={midRevWeekStartEdit === midRevWeekStart && midRevWeekEndEdit === midRevWeekEnd && midWeekStart === midWeekStartEdit && midWeekEnd === midWeekEndEdit} onClick={() =>
+                                    {
                                         setUpdateDateShow(true)
                                     }}>Update</Button>
 
                                     <Button sx={{mt: 2, ml: 1}} variant={"contained"} color={"warning"}
                                             disabled={midRevWeekStartEdit === midRevWeekStart && midRevWeekEndEdit === midRevWeekEnd && midWeekStart === midWeekStartEdit && midWeekEnd === midWeekEndEdit}
-                                            onClick={() => {
+                                            onClick={() =>
+                                            {
                                                 setMidRevWeekStartEdit(midRevWeekStart);
                                                 setMidRevWeekEndEdit(midRevWeekEnd);
                                                 setMidWeekStartEdit(midWeekStart);
@@ -1092,38 +1193,44 @@ export default function ManagementPage() {
 
                                     <Typography variant="button">Break Week:</Typography>
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Final Break Week Start" value={finRevWeekStartEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Final Break Week Start" value={finRevWeekStartEdit} onChange={(newValue) =>
+                                        {
                                             setFinRevWeekStartEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>
 
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2, mb: 3}} format={"DD/MM/YYYY"} label="Final Break  Week End" minDate={finRevWeekStartEdit} value={finRevWeekEndEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2, mb: 3}} format={"DD/MM/YYYY"} label="Final Break  Week End" minDate={finRevWeekStartEdit} value={finRevWeekEndEdit} onChange={(newValue) =>
+                                        {
                                             setFinRevWeekEndEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>
 
                                     <Typography variant="button">Exam Week:</Typography>
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Final Week Start" minDate={finRevWeekEndEdit} value={finWeekStartEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Final Week Start" minDate={finRevWeekEndEdit} value={finWeekStartEdit} onChange={(newValue) =>
+                                        {
                                             setFinWeekStartEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>
 
                                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Final Week End" minDate={finWeekStartEdit} value={finWeekEndEdit} onChange={(newValue) => {
+                                        <DatePicker sx={{width: "100%", mt: 2}} format={"DD/MM/YYYY"} label="Final Week End" minDate={finWeekStartEdit} value={finWeekEndEdit} onChange={(newValue) =>
+                                        {
                                             setFinWeekEndEdit(newValue)
                                         }}/>
                                     </LocalizationProvider>
 
                                     <Button sx={{mt: 2}} variant={"contained"}
-                                            disabled={finRevWeekStartEdit === finRevWeekStart && finRevWeekEndEdit === finRevWeekEnd && finWeekStart === finWeekStartEdit && finWeekEnd === finWeekEndEdit} onClick={() => {
+                                            disabled={finRevWeekStartEdit === finRevWeekStart && finRevWeekEndEdit === finRevWeekEnd && finWeekStart === finWeekStartEdit && finWeekEnd === finWeekEndEdit} onClick={() =>
+                                    {
                                         setUpdateDateShow(true)
                                     }}>Update</Button>
 
                                     <Button sx={{mt: 2, ml: 1}} variant={"contained"} color={"warning"}
                                             disabled={finRevWeekStartEdit === finRevWeekStart && finRevWeekEndEdit === finRevWeekEnd && finWeekStart === finWeekStartEdit && finWeekEnd === finWeekEndEdit}
-                                            onClick={() => {
+                                            onClick={() =>
+                                            {
                                                 setFinRevWeekStartEdit(finRevWeekStart);
                                                 setFinRevWeekEndEdit(finRevWeekEnd);
                                                 setFinWeekStartEdit(finWeekStart);
@@ -1149,7 +1256,8 @@ export default function ManagementPage() {
                                         System Settings:
                                     </Typography>
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"success"} onClick={() => {
+                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"success"} onClick={() =>
+                                    {
                                         setAssignLeadersShow(true)
                                     }}>Assign Leader/s</Button>
                                     <FormHelperText>Assign student id's as pass leaders.</FormHelperText>
@@ -1157,14 +1265,16 @@ export default function ManagementPage() {
                                     {
                                         systemEnable ?
                                             (<>
-                                                <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"} onClick={() => {
+                                                <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"} onClick={() =>
+                                                {
                                                     setDisableSysShow(true)
                                                 }}>Disable System</Button>
                                                 <FormHelperText>Disable all users (other than you).</FormHelperText>
                                             </>)
                                             :
                                             (<>
-                                                <Button sx={{mt: 2}} variant={"contained"} fullWidth onClick={() => {
+                                                <Button sx={{mt: 2}} variant={"contained"} fullWidth onClick={() =>
+                                                {
                                                     setEnableSysShow(true)
                                                 }}>Enable System</Button>
                                                 <FormHelperText>Make the system enabled for leaders and tutors.</FormHelperText>
@@ -1174,21 +1284,24 @@ export default function ManagementPage() {
                                     {
                                         bookingEnable ?
                                             (<>
-                                                <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"} onClick={() => {
+                                                <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"warning"} onClick={() =>
+                                                {
                                                     setDisableBookingShow(true)
                                                 }}>Disable Booking</Button>
                                                 <FormHelperText>Stop new Bookings.</FormHelperText>
                                             </>)
                                             :
                                             (<>
-                                                <Button sx={{mt: 2}} variant={"contained"} fullWidth onClick={() => {
+                                                <Button sx={{mt: 2}} variant={"contained"} fullWidth onClick={() =>
+                                                {
                                                     setEnableBookingShow(true)
                                                 }}>Enable Booking</Button>
                                                 <FormHelperText>Allow Bookings for students.</FormHelperText>
                                             </>)
                                     }
 
-                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"error"} onClick={() => {
+                                    <Button sx={{mt: 2}} variant={"contained"} fullWidth color={"error"} onClick={() =>
+                                    {
                                         setResetSysShow(true)
                                     }}>Reset System</Button>
                                     <FormHelperText>Clear all information and data (start new semester).</FormHelperText>
@@ -1204,7 +1317,8 @@ export default function ManagementPage() {
             {/* confirm dialog - dates */}
             <Dialog
                 open={updateDateShow}
-                onClose={() => {
+                onClose={() =>
+                {
                     setUpdateDateShow(false)
                 }}
             >
@@ -1217,7 +1331,8 @@ export default function ManagementPage() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => {
+                    <Button onClick={() =>
+                    {
                         setUpdateDateShow(false)
                     }}>Cancel</Button>
                     <Button onClick={handleUpdateDateConfirm} autoFocus color={"error"}>
@@ -1230,7 +1345,8 @@ export default function ManagementPage() {
             {/* add dialog - leaders */}
             <Dialog
                 open={assignLeadersShow}
-                onClose={() => {
+                onClose={() =>
+                {
                     setAssignLeadersShow(false)
                 }}
             >
@@ -1249,7 +1365,8 @@ export default function ManagementPage() {
                         sx={{width: '100%', mt: 3}}
                         options={[]}
                         value={leadersUpload}
-                        onChange={(event, newValue) => {
+                        onChange={(event, newValue) =>
+                        {
                             setLeadersUpload(newValue)
                         }}
                         renderInput={(params) => <TextField {...params} label="Student ID/s"/>}
@@ -1267,7 +1384,8 @@ export default function ManagementPage() {
 
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => {
+                    <Button onClick={() =>
+                    {
                         setAssignLeadersShow(false)
                     }}>Cancel</Button>
                     <Button onClick={handleAssignLeadersConfirm} autoFocus color={"error"}>
@@ -1280,7 +1398,8 @@ export default function ManagementPage() {
             {/* confirm dialog - enable system */}
             <Dialog
                 open={enableSysShow}
-                onClose={() => {
+                onClose={() =>
+                {
                     setEnableSysShow(false)
                 }}
             >
@@ -1293,7 +1412,8 @@ export default function ManagementPage() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => {
+                    <Button onClick={() =>
+                    {
                         setEnableSysShow(false)
                     }}>Cancel</Button>
                     <Button onClick={handleEnableSysConfirm} autoFocus color={"error"}>
@@ -1305,7 +1425,8 @@ export default function ManagementPage() {
             {/* confirm dialog - disable system */}
             <Dialog
                 open={disableSysShow}
-                onClose={() => {
+                onClose={() =>
+                {
                     setDisableSysShow(false)
                 }}
             >
@@ -1318,7 +1439,8 @@ export default function ManagementPage() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => {
+                    <Button onClick={() =>
+                    {
                         setDisableSysShow(false)
                     }}>Cancel</Button>
                     <Button onClick={handleDisableSysConfirm} autoFocus color={"error"}>
@@ -1331,7 +1453,8 @@ export default function ManagementPage() {
             {/* confirm dialog - enable booking */}
             <Dialog
                 open={enableBookingShow}
-                onClose={() => {
+                onClose={() =>
+                {
                     setEnableBookingShow(false)
                 }}
             >
@@ -1344,7 +1467,8 @@ export default function ManagementPage() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => {
+                    <Button onClick={() =>
+                    {
                         setEnableBookingShow(false)
                     }}>Cancel</Button>
                     <Button onClick={handleEnableBookingConfirm} autoFocus color={"error"}>
@@ -1356,7 +1480,8 @@ export default function ManagementPage() {
             {/* confirm dialog - disable booking */}
             <Dialog
                 open={disableBookingShow}
-                onClose={() => {
+                onClose={() =>
+                {
                     setDisableBookingShow(false)
                 }}
             >
@@ -1369,7 +1494,8 @@ export default function ManagementPage() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => {
+                    <Button onClick={() =>
+                    {
                         setDisableBookingShow(false)
                     }}>Cancel</Button>
                     <Button onClick={handleDisableBookingConfirm} autoFocus color={"error"}>
@@ -1382,7 +1508,8 @@ export default function ManagementPage() {
             {/* confirm dialog - reset system */}
             <Dialog
                 open={resetSysShow}
-                onClose={() => {
+                onClose={() =>
+                {
                     setResetSysShow(false)
                 }}
             >
@@ -1397,7 +1524,8 @@ export default function ManagementPage() {
                     <FormHelperText>** this process may take some time **</FormHelperText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => {
+                    <Button onClick={() =>
+                    {
                         setResetSysShow(false)
                     }}>Cancel</Button>
                     <Button onClick={handleResetSysConfirm} autoFocus color={"error"}>

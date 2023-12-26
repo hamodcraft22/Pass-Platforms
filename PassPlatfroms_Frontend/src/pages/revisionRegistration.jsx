@@ -4,7 +4,8 @@ import {RevisionRegistrationView} from '../sections/revisionRegistration/view';
 
 // ----------------------------------------------------------------------
 
-export default function RevisionRegistrationPage() {
+export default function RevisionRegistrationPage()
+{
     return (
         <>
             <Helmet>

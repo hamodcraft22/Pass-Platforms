@@ -10,8 +10,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
 import Scrollbar from '../../../components/scrollbar';
-
-import TableNoData from '../../../components/table/table-no-data';
 import TableMainHead from '../../../components/table/table-head';
 import TableEmptyRows from '../../../components/table/table-empty-rows';
 
@@ -30,7 +28,8 @@ import ExportToExcel from "../../../utils/exportExcel";
 
 // ----------------------------------------------------------------------
 
-export default function RevisionsPage() {
+export default function RevisionsPage()
+{
 
     // this page is available for everyone other than tutors
 
@@ -43,12 +42,10 @@ export default function RevisionsPage() {
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
+    const handleAlertClose = (event, reason) =>
+    {
         setErrorShow(false);
     };
-
-
-
 
 
     // fake revisions
@@ -69,8 +66,17 @@ export default function RevisionsPage() {
     {
         let parssedRevisions = [];
 
-        revisionsDto.forEach((booking) => {
-            parssedRevisions.push({"bookingid":booking.bookingid, "bookingDate": booking.bookingDate, "starttime":booking.starttime,  "endtime":booking.endtime, "status":booking.bookingStatus.statusname, "subject":booking.course.courseid + " " + booking.course.coursename, "online":booking.isonline});
+        revisionsDto.forEach((booking) =>
+        {
+            parssedRevisions.push({
+                "bookingid": booking.bookingid,
+                "bookingDate": booking.bookingDate,
+                "starttime": booking.starttime,
+                "endtime": booking.endtime,
+                "status": booking.bookingStatus.statusname,
+                "subject": booking.course.courseid + " " + booking.course.coursename,
+                "online": booking.isonline
+            });
         });
 
         console.log(parssedRevisions);
@@ -104,7 +110,8 @@ export default function RevisionsPage() {
             }
 
             await fetch(urlPath, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 200)
                     {
                         isok = true;
@@ -127,7 +134,8 @@ export default function RevisionsPage() {
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     if (isok)
                     {
                         parseRevisions(data.transObject);
@@ -203,7 +211,10 @@ export default function RevisionsPage() {
         getRevisions(userID, bookingType);
     }
 
-    useEffect(() => {getUserInfo()}, []);
+    useEffect(() =>
+    {
+        getUserInfo()
+    }, []);
 
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
@@ -217,29 +228,35 @@ export default function RevisionsPage() {
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const handleStartDate = (dateValue) => {
+    const handleStartDate = (dateValue) =>
+    {
         setPage(0);
         setStartDate(dateValue);
     };
 
-    const handleEndDate = (dateValue) => {
+    const handleEndDate = (dateValue) =>
+    {
         setPage(0);
         setEndDate(dateValue);
     };
 
-    const handleSort = (event, id) => {
+    const handleSort = (event, id) =>
+    {
         const isAsc = orderBy === id && order === 'asc';
-        if (id !== '') {
+        if (id !== '')
+        {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
     };
 
-    const handleChangePage = (event, newPage) => {
+    const handleChangePage = (event, newPage) =>
+    {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangeRowsPerPage = (event) =>
+    {
         setPage(0);
         setRowsPerPage(parseInt(event.target.value, 10));
     };
@@ -253,7 +270,8 @@ export default function RevisionsPage() {
     });
 
     let navigate = useNavigate();
-    const goToNewRevision = () => {
+    const goToNewRevision = () =>
+    {
         let path = `/newRevision`;
         navigate(path);
     }
@@ -284,7 +302,10 @@ export default function RevisionsPage() {
                     {/* only show if a leader */}
                     {
                         userRole === 'leader' &&
-                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} onClick={() => {goToNewRevision()}}>
+                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} onClick={() =>
+                        {
+                            goToNewRevision()
+                        }}>
                             New Revision
                         </Button>
                     }
@@ -297,8 +318,14 @@ export default function RevisionsPage() {
             {
                 userRole === 'leader' &&
                 <Card sx={{mb: 2, p: 2, display: 'flex', justifyContent: 'space-around'}}>
-                    <Button variant="contained" disabled={typeSelection === 'myRevisions'} onClick={() => {changeType("myRevisions")}}>My Revisions</Button>
-                    <Button variant="contained" disabled={typeSelection === 'leaderRevisions'} onClick={() => {changeType("leaderRevisions")}}>Offered Revisions</Button>
+                    <Button variant="contained" disabled={typeSelection === 'myRevisions'} onClick={() =>
+                    {
+                        changeType("myRevisions")
+                    }}>My Revisions</Button>
+                    <Button variant="contained" disabled={typeSelection === 'leaderRevisions'} onClick={() =>
+                    {
+                        changeType("leaderRevisions")
+                    }}>Offered Revisions</Button>
                 </Card>
             }
 
@@ -309,7 +336,8 @@ export default function RevisionsPage() {
                     onDateStart={handleStartDate}
                     endDate={endDate}
                     onDateEnd={handleEndDate}
-                    onClearButton={() => {
+                    onClearButton={() =>
+                    {
                         handleStartDate(null);
                         handleEndDate(null);
                     }}

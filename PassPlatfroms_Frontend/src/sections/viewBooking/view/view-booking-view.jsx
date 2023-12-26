@@ -20,15 +20,18 @@ import moment from "moment";
 
 // ----------------------------------------------------------------------
 
-export default function ViewBookingPage() {
+export default function ViewBookingPage()
+{
 
     const [loadingShow, setLoadingShow] = useState(false);
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -100,7 +103,10 @@ export default function ViewBookingPage() {
                         parseBooking(data.transObject);
                     }
                 })
-                .then(() => {setLoadingShow(false);})
+                .then(() =>
+                {
+                    setLoadingShow(false);
+                })
         }
         catch (error)
         {
@@ -122,13 +128,20 @@ export default function ViewBookingPage() {
         getBooking();
     }
 
-    useEffect(() => {if(bookingIDParm !== null && bookingIDParm !== undefined && bookingIDParm !== ""){getUserInfo()}}, []);
+    useEffect(() =>
+    {
+        if (bookingIDParm !== null && bookingIDParm !== undefined && bookingIDParm !== "")
+        {
+            getUserInfo()
+        }
+    }, []);
 
     const [userNote, setUserNote] = useState("");
 
     async function submitUserNote()
     {
-        try {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -175,12 +188,14 @@ export default function ViewBookingPage() {
 
 
     let navigate = useNavigate();
-    const goToBookings = () => {
+    const goToBookings = () =>
+    {
         let path = `/bookings`;
         navigate(path);
     }
 
-    const goToHome = () => {
+    const goToHome = () =>
+    {
         let path = `/`;
         navigate(path);
     }
@@ -223,19 +238,21 @@ export default function ViewBookingPage() {
                                 <CardContent>
                                     <Typography variant="h6">Booking Information</Typography>
 
-                                    <TextField label="Student" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={bookingInfo.student.userid+" "+bookingInfo.student.userName}/>
+                                    <TextField label="Student" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={bookingInfo.student.userid + " " + bookingInfo.student.userName}/>
 
-                                    <TextField label="Leader" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={bookingInfo.slot.leader.userid+" "+bookingInfo.slot.leader.userName}/>
+                                    <TextField label="Leader" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={bookingInfo.slot.leader.userid + " " + bookingInfo.slot.leader.userName}/>
 
                                     <TextField label="Booked Date" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={moment(bookingInfo.datebooked).format("hh:mm A | DD/MM/YYYY")}/>
 
                                     <TextField label="Booking Date" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={bookingInfo.bookingDate}/>
 
-                                    <TextField label="Scheduled Time" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={`${moment(bookingInfo.slot.starttime).format("hh:mm A")} - ${moment(bookingInfo.slot.endtime).format("hh:mm A")}`}/>
+                                    <TextField label="Scheduled Time" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}}
+                                               defaultValue={`${moment(bookingInfo.slot.starttime).format("hh:mm A")} - ${moment(bookingInfo.slot.endtime).format("hh:mm A")}`}/>
 
                                     {
                                         bookingInfo.starttime &&
-                                        <TextField label="Conducted Time" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={`${moment(bookingInfo.starttime).format("hh:mm A")} - ${moment(bookingInfo.endtime).format("hh:mm A")}`}/>
+                                        <TextField label="Conducted Time" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}}
+                                                   defaultValue={`${moment(bookingInfo.starttime).format("hh:mm A")} - ${moment(bookingInfo.endtime).format("hh:mm A")}`}/>
                                     }
 
                                     <TextField label="Booked Status" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={bookingInfo.bookingStatus.statusname}/>
@@ -297,8 +314,6 @@ export default function ViewBookingPage() {
                                     }
 
 
-
-
                                 </CardContent>
                             </Card>
                         </Grid>
@@ -314,7 +329,8 @@ export default function ViewBookingPage() {
                                         bookingInfo &&
                                         <>
                                             {
-                                                bookingInfo.bookingNotes && bookingInfo.bookingNotes.map((note) => {
+                                                bookingInfo.bookingNotes && bookingInfo.bookingNotes.map((note) =>
+                                                {
 
                                                     const bkColor = note.user.role.rolename === 'student' ? '#fafff8' : '#fafff8';
 
@@ -349,9 +365,15 @@ export default function ViewBookingPage() {
                                     <Divider/>
 
                                     <Typography variant="h6" sx={{mt: 2, mb: 2}}>Post a Note:</Typography>
-                                    <TextField fullWidth label="Note" variant="outlined" multiline minRows={2} value={userNote} onChange={(event) => {setUserNote(event.target.value)}}/>
+                                    <TextField fullWidth label="Note" variant="outlined" multiline minRows={2} value={userNote} onChange={(event) =>
+                                    {
+                                        setUserNote(event.target.value)
+                                    }}/>
                                     <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
-                                        <Button variant="contained" endIcon={<SendRoundedIcon/>} sx={{mt: 2}} onClick={() => {submitUserNote()}} disabled={userNote === null || userNote === "" || userNote === undefined}>
+                                        <Button variant="contained" endIcon={<SendRoundedIcon/>} sx={{mt: 2}} onClick={() =>
+                                        {
+                                            submitUserNote()
+                                        }} disabled={userNote === null || userNote === "" || userNote === undefined}>
                                             Submit
                                         </Button>
                                     </Box>

@@ -12,8 +12,10 @@ const propTypes = {
 };
 
 
-class bookingSlot extends React.PureComponent {
-    render() {
+class bookingSlot extends React.PureComponent
+{
+    render()
+    {
         const {
             start,
             end,

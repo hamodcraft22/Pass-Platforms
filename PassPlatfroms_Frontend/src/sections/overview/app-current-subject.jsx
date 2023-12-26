@@ -26,7 +26,8 @@ const StyledChart = styled(Chart)(({theme}) => ({
 
 // ----------------------------------------------------------------------
 
-export default function AppCurrentSubject({title, subheader, chart, ...other}) {
+export default function AppCurrentSubject({title, subheader, chart, ...other})
+{
     const theme = useTheme();
 
     const {series, colors, categories, options} = chart;

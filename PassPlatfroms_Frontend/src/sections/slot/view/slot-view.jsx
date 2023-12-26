@@ -10,18 +10,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
 import Scrollbar from '../../../components/scrollbar';
-
-import TableNoData from '../../../components/table/table-no-data';
 import TableMainHead from '../../../components/table/table-head';
 import TableEmptyRows from '../../../components/table/table-empty-rows';
-import {emptyRows, getComparator} from '../../../components/table/utils';
+import {emptyRows} from '../../../components/table/utils';
 
 
 import SlotTableRow from '../slot-table-row';
 import SlotTableToolbar from '../slot-table-toolbar';
 import Button from "@mui/material/Button";
 import Iconify from "../../../components/iconify";
-import {useSearchParams} from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -51,8 +48,10 @@ export default function SlotPage()
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -60,8 +59,10 @@ export default function SlotPage()
 
     const [successShow, setSuccessShow] = useState(false);
     const [successMsg, setSuccessMsg] = useState("");
-    const handleSuccessAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleSuccessAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setSuccessShow(false);
@@ -72,7 +73,7 @@ export default function SlotPage()
     // api related items
 
     // user slots
-    const [userSlots, setUserSlots]= useState([]);
+    const [userSlots, setUserSlots] = useState([]);
 
     const [userID, setUserID] = useState("");
     const [userRole, setUserRole] = useState("");
@@ -95,7 +96,10 @@ export default function SlotPage()
                 .then((data) =>
                 {
                     parseUserSlots(data.transObject);
-                }).then(() => {setLoadingShow(false);})
+                }).then(() =>
+                {
+                    setLoadingShow(false);
+                })
         }
         catch (error)
         {
@@ -110,8 +114,9 @@ export default function SlotPage()
     {
         let correctedUserSlots = [];
 
-        retrivedUserSlots.forEach((slot) => {
-            correctedUserSlots.push({"slotid":slot.slotid, "starttime":slot.starttime, "endtime":slot.endtime, "note":slot.note, "type":slot.slotType.typename, "day":slot.day.dayid, "userName":slot.leader.userName});
+        retrivedUserSlots.forEach((slot) =>
+        {
+            correctedUserSlots.push({"slotid": slot.slotid, "starttime": slot.starttime, "endtime": slot.endtime, "note": slot.note, "type": slot.slotType.typename, "day": slot.day.dayid, "userName": slot.leader.userName});
         });
 
         setUserSlots(correctedUserSlots);
@@ -133,8 +138,18 @@ export default function SlotPage()
 
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {if (leaderIDParm !== null && leaderIDParm !== undefined && Object.keys(leaderIDParm).length !== 0) {getSlots(leaderIDParm);  setCanEdit(false);} else {getUserInfo()}}, [])
-
+    useEffect(() =>
+    {
+        if (leaderIDParm !== null && leaderIDParm !== undefined && Object.keys(leaderIDParm).length !== 0)
+        {
+            getSlots(leaderIDParm);
+            setCanEdit(false);
+        }
+        else
+        {
+            getUserInfo()
+        }
+    }, [])
 
 
     const [showAddDialog, setShowAddDialog] = useState(false);
@@ -150,10 +165,12 @@ export default function SlotPage()
     const [slotSelectedStartTime, setSlotSelectedStartTime] = useState(null);
     const [slotSelectedEndTime, setSlotSelectedEndTime] = useState(null);
 
-    const handleAddClickOpen = () => {
+    const handleAddClickOpen = () =>
+    {
         setShowAddDialog(true);
     };
-    const handleAddClose = () => {
+    const handleAddClose = () =>
+    {
         setShowAddDialog(false);
 
         setSlotSelectedStartTime(null);
@@ -163,7 +180,8 @@ export default function SlotPage()
         setAddSlotOnline(false);
         setAddSlotPhysical(false);
     };
-    const handleAddSave = () => {
+    const handleAddSave = () =>
+    {
         if (slotSelectedStartTime !== null && slotSelectedEndTime !== null && addSlotDay !== null && (addSlotOnline !== false || addSlotPhysical !== false))
         {
             setShowAddDialog(false);
@@ -195,7 +213,7 @@ export default function SlotPage()
             slotType = 'P'
         }
 
-        const slotToSubmit = {"starttime":slotSelectedStartTime, "endtime":slotSelectedEndTime, "note":addSlotNote, "slotType":{"typeid":slotType}, "day":{"dayid":addSlotDay}, "leader":{"userid":userID}};
+        const slotToSubmit = {"starttime": slotSelectedStartTime, "endtime": slotSelectedEndTime, "note": addSlotNote, "slotType": {"typeid": slotType}, "day": {"dayid": addSlotDay}, "leader": {"userid": userID}};
 
         submitSlot(slotToSubmit);
     }
@@ -214,7 +232,8 @@ export default function SlotPage()
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(slotToSubmit)};
 
             await fetch(`http://localhost:8080/api/slot`, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 201 || response.status === 200)
                     {
                         isok = true;
@@ -241,7 +260,8 @@ export default function SlotPage()
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setLoadingShow(false);
                     if (isok)
                     {
@@ -280,24 +300,26 @@ export default function SlotPage()
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
 
-    const handleSort = (event, id) => {
+    const handleSort = (event, id) =>
+    {
         const isAsc = orderBy === id && order === 'asc';
-        if (id !== '') {
+        if (id !== '')
+        {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
     };
 
-    const handleChangePage = (event, newPage) => {
+    const handleChangePage = (event, newPage) =>
+    {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangeRowsPerPage = (event) =>
+    {
         setPage(0);
         setRowsPerPage(parseInt(event.target.value, 10));
     };
-
-
 
 
     return (
@@ -411,7 +433,8 @@ export default function SlotPage()
                     <DialogContent>
 
                         <TextField select label="Day" sx={{width: '100%', mt: 1}} value={addSlotDay}
-                                   onChange={(event, newValue) => {
+                                   onChange={(event, newValue) =>
+                                   {
                                        setAddSlotDay(newValue.props.value)
                                    }}>
                             <MenuItem value={'U'}>Sunday</MenuItem>
@@ -425,13 +448,15 @@ export default function SlotPage()
                         <FormHelperText>Day of which you will offer a slot.</FormHelperText>
 
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <TimePicker sx={{mt: 2, mr: 1}} label="Start Time" value={slotSelectedStartTime} onChange={(newValue) => {
+                            <TimePicker sx={{mt: 2, mr: 1}} label="Start Time" value={slotSelectedStartTime} onChange={(newValue) =>
+                            {
                                 setSlotSelectedStartTime(newValue)
                             }}/>
                         </LocalizationProvider>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                             <TimePicker sx={{mt: 2}} label="End Time" minTime={slotSelectedStartTime}
-                                        value={slotSelectedEndTime} onChange={(newValue) => {
+                                        value={slotSelectedEndTime} onChange={(newValue) =>
+                            {
                                 setSlotSelectedEndTime(newValue)
                             }}/>
                         </LocalizationProvider>
@@ -447,7 +472,8 @@ export default function SlotPage()
                             selected={addSlotOnline}
                             sx={{width: '100%'}}
                             color={"primary"}
-                            onChange={() => {
+                            onChange={() =>
+                            {
                                 setAddSlotOnline(!addSlotOnline)
                             }}
                         >
@@ -460,7 +486,8 @@ export default function SlotPage()
                             selected={addSlotPhysical}
                             sx={{width: '100%'}}
                             color={"primary"}
-                            onChange={() => {
+                            onChange={() =>
+                            {
                                 setAddSlotPhysical(!addSlotPhysical)
                             }}
                         >

@@ -6,7 +6,8 @@ import {alpha} from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
-export default function ColorPreview({colors, limit = 3, sx}) {
+export default function ColorPreview({colors, limit = 3, sx})
+{
     const renderColors = colors.slice(0, limit);
 
     const remainingColor = colors.length - limit;

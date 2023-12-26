@@ -4,7 +4,8 @@ import {ProfileView} from '../sections/profile/view';
 
 // ----------------------------------------------------------------------
 
-export default function ProfilePage() {
+export default function ProfilePage()
+{
     return (
         <>
             <Helmet>

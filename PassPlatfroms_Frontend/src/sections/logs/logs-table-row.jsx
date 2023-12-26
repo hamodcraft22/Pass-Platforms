@@ -7,54 +7,55 @@ import Button from "@mui/material/Button";
 
 
 import InfoIcon from '@mui/icons-material/Info';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {Alert, FormHelperText, Snackbar, TextField, ToggleButton} from "@mui/material";
+import {Alert, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
-import MenuItem from "@mui/material/MenuItem";
-import PublicIcon from '@mui/icons-material/Public';
-import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
-import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
-import {TimePicker} from "@mui/x-date-pickers";
-import DeskRoundedIcon from "@mui/icons-material/DeskRounded";
 import moment from "moment";
 import UserProfile from "../../components/auth/UserInfo";
 
 
 // ----------------------------------------------------------------------
 
-export default function LogsTableRow({logID, user, dateTime, logErrorMsg}) {
+export default function LogsTableRow({logID, user, dateTime, logErrorMsg})
+{
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
     };
 
     const [showViewDialog, setShowViewDialog] = useState(false);
-    const handleViewClickOpen = () => {
+    const handleViewClickOpen = () =>
+    {
         setShowViewDialog(true);
     };
-    const handleViewClose = () => {
+    const handleViewClose = () =>
+    {
         setShowViewDialog(false);
     };
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const handleDeleteClickOpen = () => {
+    const handleDeleteClickOpen = () =>
+    {
         setShowDeleteDialog(true);
     };
-    const handleDeleteClose = () => {
+    const handleDeleteClose = () =>
+    {
         setShowDeleteDialog(false);
     };
-    const handleDeleteSave = () => {
+    const handleDeleteSave = () =>
+    {
         setShowDeleteDialog(false);
         deleteLog();
     };
@@ -74,7 +75,18 @@ export default function LogsTableRow({logID, user, dateTime, logErrorMsg}) {
                 };
 
             await fetch(`http://localhost:8080/api/log/${logID}`, requestOptions)
-                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload()
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
         }
         catch (error)
         {
@@ -104,8 +116,8 @@ export default function LogsTableRow({logID, user, dateTime, logErrorMsg}) {
                     <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon
                         fontSize={"small"}/></Button>
 
-                            <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
-                                    onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
+                            onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
 
                 </TableCell>
 

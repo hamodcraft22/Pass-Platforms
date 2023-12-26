@@ -13,7 +13,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import {Alert, Autocomplete, TextField} from "@mui/material";
+import {Alert, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import moment from "moment";
 import UserProfile from "../../components/auth/UserInfo";
@@ -21,23 +21,28 @@ import MenuItem from "@mui/material/MenuItem";
 
 // ----------------------------------------------------------------------
 
-export default function RecommendationsTableRow({recID, dateTime, note, recStatus, studentID, studentName, tutorID, tutorName, userRole}) {
+export default function RecommendationsTableRow({recID, dateTime, note, recStatus, studentID, studentName, tutorID, tutorName, userRole})
+{
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
     };
 
     const [showViewDialog, setShowViewDialog] = useState(false);
-    const handleViewClickOpen = () => {
+    const handleViewClickOpen = () =>
+    {
         setShowViewDialog(true);
     };
-    const handleViewClose = () => {
+    const handleViewClose = () =>
+    {
         setShowViewDialog(false);
     };
 
@@ -46,13 +51,16 @@ export default function RecommendationsTableRow({recID, dateTime, note, recStatu
 
     const [editStatus, setEditStatus] = useState(null);
 
-    const handleEditClickOpen = () => {
+    const handleEditClickOpen = () =>
+    {
         setShowEditDialog(true);
     };
-    const handleEditClose = () => {
+    const handleEditClose = () =>
+    {
         setShowEditDialog(false);
     };
-    const handleEditSave = () => {
+    const handleEditSave = () =>
+    {
         if (editStatus !== null)
         {
             setShowEditDialog(false);
@@ -70,7 +78,7 @@ export default function RecommendationsTableRow({recID, dateTime, note, recStatu
     // submit new recommendation
     function editSubmit()
     {
-        const recommendationToSubmit = {"recid":recID,  "recStatus":{"statusid":editStatus}};
+        const recommendationToSubmit = {"recid": recID, "recStatus": {"statusid": editStatus}};
 
         submitEditRecommendation(recommendationToSubmit);
     }
@@ -85,7 +93,8 @@ export default function RecommendationsTableRow({recID, dateTime, note, recStatu
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(recommendationToSubmit)};
 
             await fetch(`http://localhost:8080/api/recommendation`, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 201 || response.status === 200)
                     {
                         window.location.reload();
@@ -117,13 +126,16 @@ export default function RecommendationsTableRow({recID, dateTime, note, recStatu
 
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const handleDeleteClickOpen = () => {
+    const handleDeleteClickOpen = () =>
+    {
         setShowDeleteDialog(true);
     };
-    const handleDeleteClose = () => {
+    const handleDeleteClose = () =>
+    {
         setShowDeleteDialog(false);
     };
-    const handleDeleteSave = () => {
+    const handleDeleteSave = () =>
+    {
         setShowDeleteDialog(false);
         deleteRecm();
     };
@@ -142,7 +154,18 @@ export default function RecommendationsTableRow({recID, dateTime, note, recStatu
                 };
 
             await fetch(`http://localhost:8080/api/recommendation/${recID}`, requestOptions)
-                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload()
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
         }
         catch (error)
         {
@@ -171,7 +194,8 @@ export default function RecommendationsTableRow({recID, dateTime, note, recStatu
 
                 <TableCell>{moment(dateTime).format("hh:mm A - DD/MM/YYYY")}</TableCell>
 
-                <TableCell><Label color={(recStatus === 'rejected' && 'error') || (recStatus === 'accepted' && 'success') || (recStatus === 'interviewed' && 'info') || (recStatus === 'reviewed' && 'secondary') || 'primary'}>{recStatus}</Label></TableCell>
+                <TableCell><Label
+                    color={(recStatus === 'rejected' && 'error') || (recStatus === 'accepted' && 'success') || (recStatus === 'interviewed' && 'info') || (recStatus === 'reviewed' && 'secondary') || 'primary'}>{recStatus}</Label></TableCell>
 
                 <TableCell align="right">
                     <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon fontSize={"small"}/></Button>
@@ -227,7 +251,10 @@ export default function RecommendationsTableRow({recID, dateTime, note, recStatu
                             </Alert>
                         }
 
-                        <TextField select label="Status" sx={{width: '100%', mt: 1}} value={editStatus} onChange={(event, newValue) => {setEditStatus(newValue.props.value)}}>
+                        <TextField select label="Status" sx={{width: '100%', mt: 1}} value={editStatus} onChange={(event, newValue) =>
+                        {
+                            setEditStatus(newValue.props.value)
+                        }}>
                             <MenuItem value={'R'}>Reviewed</MenuItem>
                             <MenuItem value={'I'}>Interviewed</MenuItem>
                             <MenuItem value={'A'}>Accepted</MenuItem>

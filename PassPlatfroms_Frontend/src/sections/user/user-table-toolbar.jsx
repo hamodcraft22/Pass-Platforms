@@ -8,7 +8,8 @@ import Iconify from '../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableToolbar({filterName, onFilterName}) {
+export default function UserTableToolbar({filterName, onFilterName})
+{
     return (
         <Toolbar
             sx={{

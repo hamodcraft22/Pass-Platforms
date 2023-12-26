@@ -10,7 +10,8 @@ import Chart, {useChart} from '../../components/chart';
 
 // ----------------------------------------------------------------------
 
-export default function AppConversionRates({title, subheader, chart, ...other}) {
+export default function AppConversionRates({title, subheader, chart, ...other})
+{
     const {colors, series, options} = chart;
 
     const chartSeries = series.map((i) => i.value);

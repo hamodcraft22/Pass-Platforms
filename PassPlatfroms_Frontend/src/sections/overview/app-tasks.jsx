@@ -14,10 +14,12 @@ import Iconify from '../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function AnalyticsTasks({title, subheader, list, ...other}) {
+export default function AnalyticsTasks({title, subheader, list, ...other})
+{
     const [selected, setSelected] = useState(['2']);
 
-    const handleClickComplete = (taskId) => {
+    const handleClickComplete = (taskId) =>
+    {
         const tasksCompleted = selected.includes(taskId)
             ? selected.filter((value) => value !== taskId)
             : [...selected, taskId];
@@ -49,33 +51,40 @@ AnalyticsTasks.propTypes = {
 
 // ----------------------------------------------------------------------
 
-function TaskItem({task, checked, onChange}) {
+function TaskItem({task, checked, onChange})
+{
     const [open, setOpen] = useState(null);
 
-    const handleOpenMenu = (event) => {
+    const handleOpenMenu = (event) =>
+    {
         setOpen(event.currentTarget);
     };
 
-    const handleCloseMenu = () => {
+    const handleCloseMenu = () =>
+    {
         setOpen(null);
     };
 
-    const handleMarkComplete = () => {
+    const handleMarkComplete = () =>
+    {
         handleCloseMenu();
         console.info('MARK COMPLETE', task.id);
     };
 
-    const handleShare = () => {
+    const handleShare = () =>
+    {
         handleCloseMenu();
         console.info('SHARE', task.id);
     };
 
-    const handleEdit = () => {
+    const handleEdit = () =>
+    {
         handleCloseMenu();
         console.info('EDIT', task.id);
     };
 
-    const handleDelete = () => {
+    const handleDelete = () =>
+    {
         handleCloseMenu();
         console.info('DELETE', task.id);
     };

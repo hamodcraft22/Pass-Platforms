@@ -10,19 +10,22 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {Alert, Snackbar, TextField} from "@mui/material";
+import {Alert, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import UserProfile from "../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
-export default function CoursesTableRow({courseID, courseName, role}) {
+export default function CoursesTableRow({courseID, courseName, role})
+{
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -31,22 +34,26 @@ export default function CoursesTableRow({courseID, courseName, role}) {
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [editCourseName, setEditCourseName] = useState(null);
 
-    const handleEditClickOpen = () => {
+    const handleEditClickOpen = () =>
+    {
         setEditCourseName(courseName);
 
         setShowEditDialog(true);
     };
-    const handleEditClose = () => {
+    const handleEditClose = () =>
+    {
         setShowEditDialog(false);
 
         setEditCourseName(null);
     };
-    const handleEditSave = () => {
+    const handleEditSave = () =>
+    {
         if (editCourseName !== null && editCourseName !== undefined && Object.keys(editCourseName).length !== 0)
         {
             editCourse();
         }
-        else {
+        else
+        {
             setErrorMsg("Please add school name");
             setErrorShow(true);
         }
@@ -54,19 +61,24 @@ export default function CoursesTableRow({courseID, courseName, role}) {
 
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const handleDeleteClickOpen = () => {
+    const handleDeleteClickOpen = () =>
+    {
         setShowDeleteDialog(true);
     };
-    const handleDeleteClose = () => {
+    const handleDeleteClose = () =>
+    {
         setShowDeleteDialog(false);
     };
-    const handleDeleteSave = () => {
+    const handleDeleteSave = () =>
+    {
         deleteCourse();
     };
 
     // edit schools api
-    async function editCourse() {
-        try {
+    async function editCourse()
+    {
+        try
+        {
             let token = await UserProfile.getAuthToken();
 
             const requestOptions =
@@ -77,19 +89,34 @@ export default function CoursesTableRow({courseID, courseName, role}) {
                 };
 
             await fetch(`http://localhost:8080/api/course`, requestOptions)
-                .then(response => {
-                    if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload()
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
                 });
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.log(error)
-        } finally {
+        }
+        finally
+        {
             setShowEditDialog(false);
         }
     }
 
     // delete api - add
-    async function deleteCourse() {
-        try {
+    async function deleteCourse()
+    {
+        try
+        {
             let token = await UserProfile.getAuthToken();
 
             const requestOptions =
@@ -99,8 +126,20 @@ export default function CoursesTableRow({courseID, courseName, role}) {
                 };
 
             await fetch(`http://localhost:8080/api/course/${courseID}`, requestOptions)
-                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
-        } catch (error)
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload()
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+        }
+        catch (error)
         {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);

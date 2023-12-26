@@ -9,7 +9,8 @@ import Header from './header';
 
 // ----------------------------------------------------------------------
 
-export default function DashboardLayout({children}) {
+export default function DashboardLayout({children})
+{
     const [openNav, setOpenNav] = useState(false);
 
     return (

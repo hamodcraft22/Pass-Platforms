@@ -14,7 +14,8 @@ import {fDateTime} from '../../utils/format-time';
 
 // ----------------------------------------------------------------------
 
-export default function AnalyticsOrderTimeline({title, subheader, list, ...other}) {
+export default function AnalyticsOrderTimeline({title, subheader, list, ...other})
+{
     return (
         <Card {...other}>
             <CardHeader title={title} subheader={subheader}/>
@@ -45,7 +46,8 @@ AnalyticsOrderTimeline.propTypes = {
 
 // ----------------------------------------------------------------------
 
-function OrderItem({item, lastTimeline}) {
+function OrderItem({item, lastTimeline})
+{
     const {type, title, time} = item;
     return (
         <TimelineItem>

@@ -35,15 +35,18 @@ export default function NewRevisionPage()
     const [shownSection, setShownSection] = useState(1);
     const [progPercent, setProgPercent] = useState(0);
     const [progColor, setProgColor] = useState("primary");
-    useEffect(() => {
+    useEffect(() =>
+    {
         (setProgPercent(((shownSection - 1) / 4) * 100))
     }, [shownSection]);
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -59,8 +62,10 @@ export default function NewRevisionPage()
     const [userRole, setUserRole] = useState("");
 
     // get schools and courses
-    async function getAllSchools() {
-        try {
+    async function getAllSchools()
+    {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -68,22 +73,28 @@ export default function NewRevisionPage()
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
             await fetch(`http://localhost:8080/api/school`, requestOptions)
-                .then(response => {
+                .then(response =>
+                {
                     return response.json()
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setSchools(data.transObject)
                 })
-                .then(() => {
+                .then(() =>
+                {
                     setLoadingShow(false)
                 });
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.log(error);
             setLoadingShow(false);
         }
     }
 
-    function handleSelectedSchool(school) {
+    function handleSelectedSchool(school)
+    {
         setLoadingShow(true);
         setSelectedSchool(school);
         setCourses(school.courses);
@@ -112,7 +123,10 @@ export default function NewRevisionPage()
     }
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {getUserInfo()}, []);
+    useEffect(() =>
+    {
+        getUserInfo()
+    }, []);
 
 
     const [revWeekSelectedDate, setRevWeekSelectedDate] = useState(null);
@@ -125,7 +139,8 @@ export default function NewRevisionPage()
 
 
     // submit function
-    async function createSubmit() {
+    async function createSubmit()
+    {
         // booking elements
         const bookingDate = moment(revWeekSelectedDate).toDate();
         const bookingNote = revisionNote;
@@ -145,7 +160,7 @@ export default function NewRevisionPage()
         const courseID = selectedCourse.courseid;
 
         // do booking dto
-        const revisionDto = {"bookingDate": bookingDate, "note": bookingNote, "starttime":startTime, "endtime":endTime, "bookinglimit": bookingLimit, "isonline": isOnline, "course": {"courseid": courseID}};
+        const revisionDto = {"bookingDate": bookingDate, "note": bookingNote, "starttime": startTime, "endtime": endTime, "bookinglimit": bookingLimit, "isonline": isOnline, "course": {"courseid": courseID}};
         console.log(revisionDto);
 
         await submitBooking(revisionDto);
@@ -156,7 +171,8 @@ export default function NewRevisionPage()
         let isok = false;
         let isBad = false;
 
-        try {
+        try
+        {
             setLoadingShow(true);
 
             let token = await UserProfile.getAuthToken();
@@ -164,50 +180,72 @@ export default function NewRevisionPage()
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(revisionDto)};
 
             await fetch(`http://localhost:8080/api/revision`, requestOptions)
-                .then(response => {
-                    if (response.status === 201 || response.status === 200) {
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
                         isok = true;
                         setProgPercent(100);
                         return response.json();
-                    } else if (response.status === 400) {
+                    }
+                    else if (response.status === 400)
+                    {
                         isBad = true;
                         return response.json();
-                    } else if (response.status === 401) {
+                    }
+                    else if (response.status === 401)
+                    {
                         setErrorMsg("you are not allowed to do this action");
                         setErrorShow(true);
-                    } else if (response.status === 404) {
+                    }
+                    else if (response.status === 404)
+                    {
                         setErrorMsg("the request was not found on the server, double check your connection");
                         setErrorShow(true);
-                    } else {
+                    }
+                    else
+                    {
                         setErrorMsg("an unknown error occurred, please check console");
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setLoadingShow(false);
-                    if (isok) {
+                    if (isok)
+                    {
                         // it is fine, go on
                         setMadeRevision(data.transObject);
                         console.log(data);
-                    } else if (isBad) {
+                    }
+                    else if (isBad)
+                    {
                         // errors for booking
                         let errorString = "";
-                        data.error.forEach((errorItem) => {
-                            if (errorString === "") {
+                        data.error.forEach((errorItem) =>
+                        {
+                            if (errorString === "")
+                            {
                                 errorString = errorItem
-                            } else {
+                            }
+                            else
+                            {
                                 errorString = errorItem + "\n" + errorString
                             }
                         });
                         setErrorMsg(errorString);
                         setErrorShow(true);
                         console.log(data);
-                    } else {
+                    }
+                    else
+                    {
                         console.log(data);
                     }
                 })
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);
             console.log(error);
@@ -228,30 +266,43 @@ export default function NewRevisionPage()
         setShowComplete(true);
     }
 
-    useEffect(() => {
-        if (madeRevision !== null) {showCompleation()}}, [madeRevision]);
+    useEffect(() =>
+    {
+        if (madeRevision !== null)
+        {
+            showCompleation()
+        }
+    }, [madeRevision]);
 
 
     let navigate = useNavigate();
-    const goToRevision = () => {
-        if (madeRevision !== null) {
+    const goToRevision = () =>
+    {
+        if (madeRevision !== null)
+        {
             let path = `/viewRevision?revisionID=${madeRevision.bookingid}`;
             navigate(path);
         }
     }
 
 
-    function nextSection() {
-        if (shownSection === 1) {
-            if (selectedSchool !== null && selectedCourse !== null && selectedSchool !== undefined && selectedCourse !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0) {
+    function nextSection()
+    {
+        if (shownSection === 1)
+        {
+            if (selectedSchool !== null && selectedCourse !== null && selectedSchool !== undefined && selectedCourse !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0)
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Select a School and a Course Please");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 2) {
+        if (shownSection === 2)
+        {
             if (selectedSchool !== null &&
                 selectedCourse !== null &&
                 revWeekSelectedStartTime !== null &&
@@ -267,15 +318,19 @@ export default function NewRevisionPage()
                 Object.keys(revWeekSelectedStartTime).length !== 0 &&
                 Object.keys(revWeekSelectedEndTime).length !== 0 &&
                 Object.keys(revWeekSelectedDate).length !== 0
-            ) {
+            )
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Please specify a valid start time, end time, and date");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 3) {
+        if (shownSection === 3)
+        {
             if (selectedSchool !== null &&
                 selectedCourse !== null &&
                 revisionType !== null &&
@@ -297,25 +352,31 @@ export default function NewRevisionPage()
                 Object.keys(revWeekSelectedEndTime).length !== 0 &&
                 Object.keys(revWeekSelectedDate).length !== 0 &&
                 Object.keys(revisionNote).length !== 0
-            ) {
+            )
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Please select the session type and add note");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 4) {
+        if (shownSection === 4)
+        {
             createSubmit();
         }
 
     }
 
-    function prevSection() {
+    function prevSection()
+    {
         setShownSection((shownSection) - 1);
     }
 
-    const CustomPaper = (props) => {
+    const CustomPaper = (props) =>
+    {
         return <Paper elevation={8} {...props} />;
     };
 
@@ -397,13 +458,15 @@ export default function NewRevisionPage()
                             PaperComponent={CustomPaper}
                             options={schools}
                             value={selectedSchool}
-                            onChange={(event, newValue) => {
+                            onChange={(event, newValue) =>
+                            {
                                 handleSelectedSchool(newValue)
                             }}
                             sx={{width: '100%', mt: 1}}
                             renderInput={(params) => <TextField {...params} label="School"/>}
                             getOptionLabel={(option) => option.schoolname}
-                            renderOption={(props, option) => {
+                            renderOption={(props, option) =>
+                            {
                                 return (
                                     <li {...props}>
                                         {option.schoolname}
@@ -419,13 +482,15 @@ export default function NewRevisionPage()
                             PaperComponent={CustomPaper}
                             options={courses}
                             value={selectedCourse}
-                            onChange={(event, newValue) => {
+                            onChange={(event, newValue) =>
+                            {
                                 setSelectedCourse(newValue)
                             }}
                             sx={{width: '100%', mt: 1}}
                             renderInput={(params) => <TextField {...params} label="Course"/>}
                             getOptionLabel={(option) => option.courseid + " " + option.coursename}
-                            renderOption={(props, option) => {
+                            renderOption={(props, option) =>
+                            {
                                 return (
                                     <li {...props}>
                                         {option.courseid + " " + option.coursename}
@@ -445,7 +510,8 @@ export default function NewRevisionPage()
                         <Typography variant="h6">Select Date:</Typography>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                             <DatePicker sx={{width: "100%", mt: 1}} label="Revision Date" format={"DD/MM/YYYY"}
-                                        value={revWeekSelectedDate} onChange={(newValue) => {
+                                        value={revWeekSelectedDate} onChange={(newValue) =>
+                            {
                                 setRevWeekSelectedDate(newValue)
                             }}/>
                         </LocalizationProvider>
@@ -453,13 +519,15 @@ export default function NewRevisionPage()
 
                         <Typography variant="h6" sx={{mt: 3}}>Select Time:</Typography>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <TimePicker sx={{mt: 1, mr: 1}} label="Start Time" value={revWeekSelectedStartTime} onChange={(newValue) => {
+                            <TimePicker sx={{mt: 1, mr: 1}} label="Start Time" value={revWeekSelectedStartTime} onChange={(newValue) =>
+                            {
                                 setRevWeekSelectedStartTime(newValue)
                             }}/>
                         </LocalizationProvider>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                             <TimePicker sx={{mt: 1,}} label="End Time" minTime={revWeekSelectedStartTime}
-                                        value={revWeekSelectedEndTime} onChange={(newValue) => {
+                                        value={revWeekSelectedEndTime} onChange={(newValue) =>
+                            {
                                 setRevWeekSelectedEndTime(newValue)
                             }}/>
                         </LocalizationProvider>
@@ -474,7 +542,8 @@ export default function NewRevisionPage()
                     <div style={{padding: "15px"}}>
                         <Typography variant="h6">Session Type:</Typography>
                         <FormControl>
-                            <RadioGroup row value={revisionType} onChange={(event, newValue) => {
+                            <RadioGroup row value={revisionType} onChange={(event, newValue) =>
+                            {
                                 setRevisionType(newValue)
                             }}>
                                 <FormControlLabel value="physical" control={<Radio/>} label="Physical"/>

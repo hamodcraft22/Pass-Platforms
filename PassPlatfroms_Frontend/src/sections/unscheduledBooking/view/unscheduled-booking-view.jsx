@@ -20,19 +20,23 @@ import {DatePicker, TimePicker} from "@mui/x-date-pickers";
 
 // ----------------------------------------------------------------------
 
-export default function UnscheduledBookingPage() {
+export default function UnscheduledBookingPage()
+{
 
     const [shownSection, setShownSection] = useState(1);
     const [progPercent, setProgPercent] = useState(0);
-    useEffect(() => {
+    useEffect(() =>
+    {
         (setProgPercent(((shownSection - 1) / 4) * 100))
     }, [shownSection]);
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -66,35 +70,49 @@ export default function UnscheduledBookingPage() {
     const [helpInText, setHelpInText] = useState("");
 
 
-    function nextSection() {
-        if (shownSection === 1) {
-            if (selectedSchool !== null && selectedCourse !== null && selectedSchool !== undefined && selectedCourse !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0) {
+    function nextSection()
+    {
+        if (shownSection === 1)
+        {
+            if (selectedSchool !== null && selectedCourse !== null && selectedSchool !== undefined && selectedCourse !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0)
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Select a School and a Course Please");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 2) {
-            if (selectedSchool !== null && selectedCourse !== null && sessionDate !== null && startTime !== null && endTime !== null && selectedSchool !== undefined && selectedCourse !== undefined && sessionDate !== undefined && startTime !== undefined && endTime !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(sessionDate).length !== 0 && Object.keys(startTime).length !== 0 && Object.keys(endTime).length !== 0) {
+        if (shownSection === 2)
+        {
+            if (selectedSchool !== null && selectedCourse !== null && sessionDate !== null && startTime !== null && endTime !== null && selectedSchool !== undefined && selectedCourse !== undefined && sessionDate !== undefined && startTime !== undefined && endTime !== undefined && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(sessionDate).length !== 0 && Object.keys(startTime).length !== 0 && Object.keys(endTime).length !== 0)
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Please add in the session time details");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 3) {
-            if (selectedSchool !== null && selectedCourse !== null && sessionDate !== null && startTime !== null && endTime !== null && helpInText !== null && selectedSchool !== undefined && selectedCourse !== undefined && sessionDate !== undefined && startTime !== undefined && endTime !== undefined && helpInText !== undefined && helpInText !== "" && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(sessionDate).length !== 0 && Object.keys(startTime).length !== 0 && Object.keys(endTime).length !== 0 && Object.keys(helpInText).length !== 0) {
+        if (shownSection === 3)
+        {
+            if (selectedSchool !== null && selectedCourse !== null && sessionDate !== null && startTime !== null && endTime !== null && helpInText !== null && selectedSchool !== undefined && selectedCourse !== undefined && sessionDate !== undefined && startTime !== undefined && endTime !== undefined && helpInText !== undefined && helpInText !== "" && Object.keys(selectedSchool).length !== 0 && Object.keys(selectedCourse).length !== 0 && Object.keys(sessionDate).length !== 0 && Object.keys(startTime).length !== 0 && Object.keys(endTime).length !== 0 && Object.keys(helpInText).length !== 0)
+            {
                 setShownSection((shownSection) + 1);
-            } else {
+            }
+            else
+            {
                 setErrorMsg("Please input the help area necessary");
                 setErrorShow(true);
             }
         }
 
-        if (shownSection === 4) {
+        if (shownSection === 4)
+        {
             alert("call api and show results based on api return");
             setProgPercent(100);
             // change color of progress to red if it is error etc
@@ -102,12 +120,14 @@ export default function UnscheduledBookingPage() {
 
     }
 
-    function prevSection() {
+    function prevSection()
+    {
         setShownSection((shownSection) - 1);
     }
 
 
-    const CustomPaper = (props) => {
+    const CustomPaper = (props) =>
+    {
         return <Paper elevation={8} {...props} />;
     };
 
@@ -160,13 +180,15 @@ export default function UnscheduledBookingPage() {
                             PaperComponent={CustomPaper}
                             options={schools}
                             value={selectedSchool}
-                            onChange={(event, newValue) => {
+                            onChange={(event, newValue) =>
+                            {
                                 setSelectedSchool(newValue)
                             }}
                             sx={{width: '100%', mt: 1}}
                             renderInput={(params) => <TextField {...params} label="School"/>}
                             getOptionLabel={(option) => option.schoolName}
-                            renderOption={(props, option) => {
+                            renderOption={(props, option) =>
+                            {
                                 return (
                                     <li {...props}>
                                         {option.schoolName}
@@ -182,13 +204,15 @@ export default function UnscheduledBookingPage() {
                             PaperComponent={CustomPaper}
                             options={courses}
                             value={selectedCourse}
-                            onChange={(event, newValue) => {
+                            onChange={(event, newValue) =>
+                            {
                                 setSelectedCourse(newValue)
                             }}
                             sx={{width: '100%', mt: 1}}
                             renderInput={(params) => <TextField {...params} label="Course"/>}
                             getOptionLabel={(option) => option.courseName}
-                            renderOption={(props, option) => {
+                            renderOption={(props, option) =>
+                            {
                                 return (
                                     <li {...props}>
                                         {option.courseName}
@@ -208,7 +232,8 @@ export default function UnscheduledBookingPage() {
                         <Typography variant="h6" sx={{mb: 1}}>Select Session Time:</Typography>
 
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Session Date" value={sessionDate} onChange={(value) => {
+                            <DatePicker sx={{width: "100%", mt: 1}} format={"DD/MM/YYYY"} label="Session Date" value={sessionDate} onChange={(value) =>
+                            {
                                 setSessionDate(value)
                             }}/>
                         </LocalizationProvider>
@@ -216,12 +241,14 @@ export default function UnscheduledBookingPage() {
 
                         <Typography variant="h6" sx={{mt: 3}}>Select Time:</Typography>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <TimePicker sx={{mt: 1, width: "100%"}} label="Start Time" value={startTime} onChange={(value) => {
+                            <TimePicker sx={{mt: 1, width: "100%"}} label="Start Time" value={startTime} onChange={(value) =>
+                            {
                                 setStartTime(value)
                             }}/>
                         </LocalizationProvider>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <TimePicker sx={{mt: 1, width: "100%"}} label="End Time" value={endTime} onChange={(value) => {
+                            <TimePicker sx={{mt: 1, width: "100%"}} label="End Time" value={endTime} onChange={(value) =>
+                            {
                                 setEndTime(value)
                             }}/>
                         </LocalizationProvider>
@@ -244,7 +271,8 @@ export default function UnscheduledBookingPage() {
                             sx={{width: '100%', mt: 1}}
                             options={[]}
                             value={groupMembers}
-                            onChange={(event, newValue) => {
+                            onChange={(event, newValue) =>
+                            {
                                 setGroupMembers(newValue)
                             }}
                             renderInput={(params) => <TextField {...params} label="Student ID/s - Optional"/>}
@@ -260,7 +288,8 @@ export default function UnscheduledBookingPage() {
                             selected={bookingOnline}
                             sx={{width: '100%'}}
                             color={"primary"}
-                            onChange={() => {
+                            onChange={() =>
+                            {
                                 setBookingOnline(!bookingOnline)
                             }}
                         >

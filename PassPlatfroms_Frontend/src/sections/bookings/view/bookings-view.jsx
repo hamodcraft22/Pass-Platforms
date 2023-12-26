@@ -42,7 +42,8 @@ export default function RecommendationsPage()
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
+    const handleAlertClose = (event, reason) =>
+    {
         setErrorShow(false);
     };
 
@@ -67,8 +68,20 @@ export default function RecommendationsPage()
     {
         let parssedBookings = [];
 
-        bookingsDto.forEach((booking) => {
-            parssedBookings.push({"bookingid":booking.bookingid, "bookingDate": booking.bookingDate, "slotstarttime":booking.slot.starttime, "slotendtime": booking.slot.endtime, "realstarttime":booking.starttime,  "realendtime":booking.endtime, "status":booking.bookingStatus.statusname, "bookingType":booking.bookingType.typename, "subject":booking.course.courseid + " " + booking.course.coursename, "online":booking.isonline});
+        bookingsDto.forEach((booking) =>
+        {
+            parssedBookings.push({
+                "bookingid": booking.bookingid,
+                "bookingDate": booking.bookingDate,
+                "slotstarttime": booking.slot.starttime,
+                "slotendtime": booking.slot.endtime,
+                "realstarttime": booking.starttime,
+                "realendtime": booking.endtime,
+                "status": booking.bookingStatus.statusname,
+                "bookingType": booking.bookingType.typename,
+                "subject": booking.course.courseid + " " + booking.course.coursename,
+                "online": booking.isonline
+            });
         });
 
         setBookings(parssedBookings);
@@ -103,7 +116,8 @@ export default function RecommendationsPage()
             }
 
             await fetch(urlPath, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 200)
                     {
                         isok = true;
@@ -126,7 +140,8 @@ export default function RecommendationsPage()
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     if (isok)
                     {
                         parseBookings(data.transObject);
@@ -208,7 +223,10 @@ export default function RecommendationsPage()
         getBookings(userID, bookingType);
     }
 
-    useEffect(() => {getUserInfo()}, []);
+    useEffect(() =>
+    {
+        getUserInfo()
+    }, []);
 
 
     const [startDate, setStartDate] = useState(null);
@@ -222,29 +240,35 @@ export default function RecommendationsPage()
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const handleStartDate = (dateValue) => {
+    const handleStartDate = (dateValue) =>
+    {
         setPage(0);
         setStartDate(dateValue);
     };
 
-    const handleEndDate = (dateValue) => {
+    const handleEndDate = (dateValue) =>
+    {
         setPage(0);
         setEndDate(dateValue);
     };
 
-    const handleSort = (event, id) => {
+    const handleSort = (event, id) =>
+    {
         const isAsc = orderBy === id && order === 'asc';
-        if (id !== '') {
+        if (id !== '')
+        {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
     };
 
-    const handleChangePage = (event, newPage) => {
+    const handleChangePage = (event, newPage) =>
+    {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangeRowsPerPage = (event) =>
+    {
         setPage(0);
         setRowsPerPage(parseInt(event.target.value, 10));
     };
@@ -258,7 +282,8 @@ export default function RecommendationsPage()
 
     // go to courses
     let navigate = useNavigate();
-    const goToNewBooking = () => {
+    const goToNewBooking = () =>
+    {
         let path = `/newBooking`;
         navigate(path);
     }
@@ -289,7 +314,10 @@ export default function RecommendationsPage()
                 <div>
                     {
                         (userRole === 'leader' || userRole === 'student') &&
-                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} onClick={() => {goToNewBooking()}}>
+                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} onClick={() =>
+                        {
+                            goToNewBooking()
+                        }}>
                             New Booking
                         </Button>
                     }
@@ -304,11 +332,20 @@ export default function RecommendationsPage()
             {
                 (userRole === 'leader' || userRole === 'student') &&
                 <Card sx={{mb: 2, p: 2, display: 'flex', justifyContent: 'space-around'}}>
-                    <Button variant="contained" disabled={typeSelection === 'myBookings'} onClick={() => {changeType("myBookings")}}>My Bookings</Button>
-                    <Button variant="contained" disabled={typeSelection === 'memberBookings'} onClick={() => {changeType("memberBookings")}}>Member Bookings</Button>
+                    <Button variant="contained" disabled={typeSelection === 'myBookings'} onClick={() =>
+                    {
+                        changeType("myBookings")
+                    }}>My Bookings</Button>
+                    <Button variant="contained" disabled={typeSelection === 'memberBookings'} onClick={() =>
+                    {
+                        changeType("memberBookings")
+                    }}>Member Bookings</Button>
                     {
                         userRole === 'leader' &&
-                        <Button variant="contained" disabled={typeSelection === 'leaderBookings'} onClick={() => {changeType("leaderBookings")}}>Offered Bookings</Button>
+                        <Button variant="contained" disabled={typeSelection === 'leaderBookings'} onClick={() =>
+                        {
+                            changeType("leaderBookings")
+                        }}>Offered Bookings</Button>
                     }
                 </Card>
             }
@@ -320,7 +357,8 @@ export default function RecommendationsPage()
                     onDateStart={handleStartDate}
                     endDate={endDate}
                     onDateEnd={handleEndDate}
-                    onClearButton={() => {
+                    onClearButton={() =>
+                    {
                         handleStartDate(null);
                         handleEndDate(null);
                     }}

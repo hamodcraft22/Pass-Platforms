@@ -4,7 +4,8 @@ import {TranscriptView} from '../sections/transcript/view';
 
 // ----------------------------------------------------------------------
 
-export default function TranscriptPage() {
+export default function TranscriptPage()
+{
     return (
         <>
             <Helmet>

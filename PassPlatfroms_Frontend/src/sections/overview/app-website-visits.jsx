@@ -8,7 +8,8 @@ import Chart, {useChart} from '../../components/chart';
 
 // ----------------------------------------------------------------------
 
-export default function AppWebsiteVisits({title, subheader, chart, ...other}) {
+export default function AppWebsiteVisits({title, subheader, chart, ...other})
+{
     const {labels, colors, series, options} = chart;
 
     const chartOptions = useChart({
@@ -29,8 +30,10 @@ export default function AppWebsiteVisits({title, subheader, chart, ...other}) {
             shared: true,
             intersect: false,
             y: {
-                formatter: (value) => {
-                    if (typeof value !== 'undefined') {
+                formatter: (value) =>
+                {
+                    if (typeof value !== 'undefined')
+                    {
                         return `${value.toFixed(0)} visits`;
                     }
                     return value;

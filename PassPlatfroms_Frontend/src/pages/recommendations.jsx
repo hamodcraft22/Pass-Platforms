@@ -4,7 +4,8 @@ import {RecommendationsView} from '../sections/recommendations/view';
 
 // ----------------------------------------------------------------------
 
-export default function RecommendationsPage() {
+export default function RecommendationsPage()
+{
     return (
         <>
             <Helmet>

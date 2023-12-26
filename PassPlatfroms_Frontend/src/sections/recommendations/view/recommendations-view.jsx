@@ -34,15 +34,18 @@ import ExportToExcel from "../../../utils/exportExcel";
 
 // ----------------------------------------------------------------------
 
-export default function RecommendationsPage() {
+export default function RecommendationsPage()
+{
 
     const [loadingShow, setLoadingShow] = useState(false);
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -50,8 +53,10 @@ export default function RecommendationsPage() {
 
     const [successShow, setSuccessShow] = useState(false);
     const [successMsg, setSuccessMsg] = useState("");
-    const handleSuccessAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleSuccessAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setSuccessShow(false);
@@ -66,25 +71,32 @@ export default function RecommendationsPage() {
     const [allUsers, setAllUsers] = useState([]);
 
     // get all users api
-    async function getAllUsers() {
-        try {
+    async function getAllUsers()
+    {
+        try
+        {
             setLoadingShow(true);
             let token = await UserProfile.getAuthToken();
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
             await fetch(`http://localhost:8080/api/users/students`, requestOptions)
-                .then(response => {
+                .then(response =>
+                {
                     return response.json()
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setAllUsers(data)
                 })
-                .then(() => {
+                .then(() =>
+                {
                     setLoadingShow(false);
                 })
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.log(error);
             setLoadingShow(false);
         }
@@ -109,7 +121,10 @@ export default function RecommendationsPage() {
                 .then((data) =>
                 {
                     parseRecommendations(data.transObject);
-                }).then(() => {setLoadingShow(false);})
+                }).then(() =>
+                {
+                    setLoadingShow(false);
+                })
         }
         catch (error)
         {
@@ -138,7 +153,10 @@ export default function RecommendationsPage() {
                 .then((data) =>
                 {
                     parseRecommendations(data.transObject);
-                }).then(() => {setLoadingShow(false);})
+                }).then(() =>
+                {
+                    setLoadingShow(false);
+                })
         }
         catch (error)
         {
@@ -153,8 +171,18 @@ export default function RecommendationsPage() {
     {
         let correctedRecommendations = [];
 
-        retrivedRecommendations.forEach((recm) => {
-            correctedRecommendations.push({"recid":recm.recid, "datetime": recm.datetime, "note":recm.note, "recStatus":recm.recStatus.statusname, "studentid":recm.student.userid, "studentname":recm.student.userName, "tutorid":recm.tutor.userid, "tutorname":recm.tutor.userName});
+        retrivedRecommendations.forEach((recm) =>
+        {
+            correctedRecommendations.push({
+                "recid": recm.recid,
+                "datetime": recm.datetime,
+                "note": recm.note,
+                "recStatus": recm.recStatus.statusname,
+                "studentid": recm.student.userid,
+                "studentname": recm.student.userName,
+                "tutorid": recm.tutor.userid,
+                "tutorname": recm.tutor.userName
+            });
         });
 
         setRecommendations(correctedRecommendations);
@@ -187,7 +215,10 @@ export default function RecommendationsPage() {
 
 
     // get school and courses on load - if not leader and there is param
-    useEffect(() => {getUserInfo()}, []);
+    useEffect(() =>
+    {
+        getUserInfo()
+    }, []);
 
 
     const [showAddDialog, setShowAddDialog] = useState(false);
@@ -195,16 +226,19 @@ export default function RecommendationsPage() {
     const [studentToRecommend, setStudentToRecommend] = useState(null);
     const [recmText, setRecmText] = useState("");
 
-    const handleAddClickOpen = () => {
+    const handleAddClickOpen = () =>
+    {
         setShowAddDialog(true);
     };
-    const handleAddClose = () => {
+    const handleAddClose = () =>
+    {
         setShowAddDialog(false);
 
         setStudentToRecommend(null);
         setRecmText("");
     };
-    const handleAddSave = () => {
+    const handleAddSave = () =>
+    {
         if (studentToRecommend !== null && recmText !== "null")
         {
             setShowAddDialog(false);
@@ -220,7 +254,7 @@ export default function RecommendationsPage() {
 
     function createSubmit()
     {
-        const recmToSubmit = {"datetime":moment(), "note":recmText, "student":{"userid":studentToRecommend.userID}, "tutor":{"userid":userID}};
+        const recmToSubmit = {"datetime": moment(), "note": recmText, "student": {"userid": studentToRecommend.userID}, "tutor": {"userid": userID}};
 
         console.log(recmToSubmit);
 
@@ -241,7 +275,8 @@ export default function RecommendationsPage() {
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(recmToSubmit)};
 
             await fetch(`http://localhost:8080/api/recommendation`, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 201 || response.status === 200)
                     {
                         isok = true;
@@ -253,7 +288,8 @@ export default function RecommendationsPage() {
                         setErrorShow(true);
                     }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setLoadingShow(false);
                     if (isok)
                     {
@@ -289,24 +325,29 @@ export default function RecommendationsPage() {
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const handleSort = (event, id) => {
+    const handleSort = (event, id) =>
+    {
         const isAsc = orderBy === id && order === 'asc';
-        if (id !== '') {
+        if (id !== '')
+        {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
     };
 
-    const handleChangePage = (event, newPage) => {
+    const handleChangePage = (event, newPage) =>
+    {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangeRowsPerPage = (event) =>
+    {
         setPage(0);
         setRowsPerPage(parseInt(event.target.value, 10));
     };
 
-    const handleFilterByName = (event) => {
+    const handleFilterByName = (event) =>
+    {
         setPage(0);
         setFilterName(event.target.value);
     };
@@ -318,7 +359,6 @@ export default function RecommendationsPage() {
     });
 
     const notFound = !dataFiltered.length && !!filterName;
-
 
 
     return (
@@ -437,13 +477,19 @@ export default function RecommendationsPage() {
                                 options={allUsers}
                                 getOptionLabel={(option) => option.userID + " | " + option.userName}
                                 value={studentToRecommend}
-                                onChange={(event, newValue) => {setStudentToRecommend(newValue)}}
+                                onChange={(event, newValue) =>
+                                {
+                                    setStudentToRecommend(newValue)
+                                }}
                                 sx={{width: '100%', mt: 1}}
                                 renderInput={(params) => <TextField {...params} label="Student"/>}
                             />
                             <FormHelperText>Student you want to recommend. please note that the student may already be a pass leader</FormHelperText>
 
-                            <TextField label="Note" multiline rows={2} fullWidth sx={{mt: 2}} value={recmText} onChange={(event) => {setRecmText(event.target.value)}}/>
+                            <TextField label="Note" multiline rows={2} fullWidth sx={{mt: 2}} value={recmText} onChange={(event) =>
+                            {
+                                setRecmText(event.target.value)
+                            }}/>
                             <FormHelperText>why you think this student is fit?.</FormHelperText>
                         </div>
                     </DialogContent>

@@ -71,7 +71,8 @@ const NOTIFICATIONS = [
     },
 ];
 
-export default function NotificationsPopover() {
+export default function NotificationsPopover()
+{
     const [notifications, setNotifications] = useState([]);
 
     async function getNotification()
@@ -83,14 +84,19 @@ export default function NotificationsPopover() {
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
             await fetch("http://localhost:8080/api/notification", requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 200)
                     {
                         return response.json();
                     }
-                    else {return null}
+                    else
+                    {
+                        return null
+                    }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     if (data !== null)
                     {
                         setNotifications(data.transObject);
@@ -103,17 +109,22 @@ export default function NotificationsPopover() {
         }
     }
 
-    useState(() => {getNotification()}, []);
+    useState(() =>
+    {
+        getNotification()
+    }, []);
 
     const totalUnRead = notifications.filter((item) => item.seen === false).length;
 
     const [open, setOpen] = useState(null);
 
-    const handleOpen = (event) => {
+    const handleOpen = (event) =>
+    {
         setOpen(event.currentTarget);
     };
 
-    const handleClose = () => {
+    const handleClose = () =>
+    {
         setOpen(null);
     };
 
@@ -126,14 +137,19 @@ export default function NotificationsPopover() {
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
             await fetch(`http://localhost:8080/api/notification/${notficID}`, requestOptions)
-                .then((response) => {
+                .then((response) =>
+                {
                     if (response.status === 200)
                     {
                         return response.json();
                     }
-                    else {return null}
+                    else
+                    {
+                        return null
+                    }
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     if (data !== null)
                     {
                         getNotification();
@@ -177,7 +193,10 @@ export default function NotificationsPopover() {
                     </Box>
 
                     <Tooltip title=" Refresh">
-                        <IconButton color="primary" onClick={() => {getNotification()}}>
+                        <IconButton color="primary" onClick={() =>
+                        {
+                            getNotification()
+                        }}>
                             <ReplayCircleFilledRoundedIcon/>
                         </IconButton>
                     </Tooltip>
@@ -196,7 +215,10 @@ export default function NotificationsPopover() {
                         }
                     >
                         {notifications.filter((item) => item.seen === false).map((notification) => (
-                            <NotificationItem key={notification.notficid} notification={notification} onReadNotifc={() => {setNotficationRead(notification.notficid)}}/>
+                            <NotificationItem key={notification.notficid} notification={notification} onReadNotifc={() =>
+                            {
+                                setNotficationRead(notification.notficid)
+                            }}/>
                         ))}
                     </List>
 
@@ -233,7 +255,8 @@ NotificationItem.propTypes = {
     }),
 };
 
-function NotificationItem({notification, onReadNotifc}) {
+function NotificationItem({notification, onReadNotifc})
+{
     const {title} = renderContent(notification);
 
     return (
@@ -271,7 +294,8 @@ function NotificationItem({notification, onReadNotifc}) {
 
 // ----------------------------------------------------------------------
 
-function renderContent(notification) {
+function renderContent(notification)
+{
     const title = (
         <Typography variant="subtitle2">
             {notification.entity}

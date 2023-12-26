@@ -4,7 +4,8 @@ import {ScheduleView} from '../sections/schedule/view';
 
 // ----------------------------------------------------------------------
 
-export default function SchedulePage() {
+export default function SchedulePage()
+{
     return (
         <>
             <Helmet>

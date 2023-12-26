@@ -12,20 +12,23 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {Alert, Snackbar, TextField} from "@mui/material";
+import {Alert, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import UserProfile from "../../components/auth/UserInfo";
 
 // ----------------------------------------------------------------------
 
-export default function SchoolsTableRow({schoolID, schoolName, role}) {
+export default function SchoolsTableRow({schoolID, schoolName, role})
+{
 
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -34,17 +37,20 @@ export default function SchoolsTableRow({schoolID, schoolName, role}) {
 
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [editSchoolName, setEditSchoolName] = useState(null);
-    const handleEditClickOpen = () => {
+    const handleEditClickOpen = () =>
+    {
         setEditSchoolName(schoolName);
 
         setShowEditDialog(true);
     };
-    const handleEditClose = () => {
+    const handleEditClose = () =>
+    {
         setShowEditDialog(false);
 
         setEditSchoolName(null);
     };
-    const handleEditSave = () => {
+    const handleEditSave = () =>
+    {
         if (editSchoolName !== null && editSchoolName !== undefined && Object.keys(editSchoolName).length !== 0)
         {
             editSchool();
@@ -58,26 +64,32 @@ export default function SchoolsTableRow({schoolID, schoolName, role}) {
 
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const handleDeleteClickOpen = () => {
+    const handleDeleteClickOpen = () =>
+    {
         setShowDeleteDialog(true);
     };
-    const handleDeleteClose = () => {
+    const handleDeleteClose = () =>
+    {
         setShowDeleteDialog(false);
     };
-    const handleDeleteSave = () => {
+    const handleDeleteSave = () =>
+    {
         deleteSchool();
     };
 
     // go to courses
     let navigate = useNavigate();
-    const goToCourse = () => {
+    const goToCourse = () =>
+    {
         let path = `/courses?schoolID=${schoolID}`;
         navigate(path);
     }
 
     // edit schools api
-    async function editSchool() {
-        try {
+    async function editSchool()
+    {
+        try
+        {
             let token = await UserProfile.getAuthToken();
 
             const requestOptions =
@@ -88,19 +100,34 @@ export default function SchoolsTableRow({schoolID, schoolName, role}) {
                 };
 
             await fetch(`http://localhost:8080/api/school`, requestOptions)
-                .then(response => {
-                    if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload()
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
                 });
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.log(error)
-        } finally {
+        }
+        finally
+        {
             setShowEditDialog(false);
         }
     }
 
     // delete api - add
-    async function deleteSchool() {
-        try {
+    async function deleteSchool()
+    {
+        try
+        {
             let token = await UserProfile.getAuthToken();
 
             const requestOptions =
@@ -110,8 +137,20 @@ export default function SchoolsTableRow({schoolID, schoolName, role}) {
                 };
 
             await fetch(`http://localhost:8080/api/school/${schoolID}`, requestOptions)
-                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
-        } catch (error)
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload()
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+        }
+        catch (error)
         {
             setErrorMsg("an unknown error occurred, please check console");
             setErrorShow(true);

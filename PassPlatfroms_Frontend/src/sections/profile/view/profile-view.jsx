@@ -22,7 +22,8 @@ import TableBody from "@mui/material/TableBody";
 // ----------------------------------------------------------------------
 
 
-export default function ProfileView() {
+export default function ProfileView()
+{
 
     const queryParameters = new URLSearchParams(window.location.search)
     const leaderIDParm = queryParameters.get("userID");
@@ -36,7 +37,8 @@ export default function ProfileView() {
 
     const [courses, setCourses] = useState([]);
 
-    const CustomPaper = (props) => {
+    const CustomPaper = (props) =>
+    {
         return <Paper elevation={8} {...props} />;
     };
 

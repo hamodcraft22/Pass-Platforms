@@ -7,20 +7,13 @@ import Button from "@mui/material/Button";
 
 
 import InfoIcon from '@mui/icons-material/Info';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {Alert, FormHelperText, Snackbar, TextField, ToggleButton} from "@mui/material";
+import {Alert, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
-import MenuItem from "@mui/material/MenuItem";
-import PublicIcon from '@mui/icons-material/Public';
-import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
-import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
-import {TimePicker} from "@mui/x-date-pickers";
-import DeskRoundedIcon from "@mui/icons-material/DeskRounded";
 import moment from "moment";
 import UserProfile from "../../components/auth/UserInfo";
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
@@ -29,35 +22,43 @@ import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 
 // ----------------------------------------------------------------------
 
-export default function AuditsTableRow({audID, changeType, entity, dateTime, user}) {
+export default function AuditsTableRow({audID, changeType, entity, dateTime, user})
+{
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
     };
 
     const [showViewDialog, setShowViewDialog] = useState(false);
-    const handleViewClickOpen = () => {
+    const handleViewClickOpen = () =>
+    {
         setShowViewDialog(true);
     };
-    const handleViewClose = () => {
+    const handleViewClose = () =>
+    {
         setShowViewDialog(false);
     };
 
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const handleDeleteClickOpen = () => {
+    const handleDeleteClickOpen = () =>
+    {
         setShowDeleteDialog(true);
     };
-    const handleDeleteClose = () => {
+    const handleDeleteClose = () =>
+    {
         setShowDeleteDialog(false);
     };
-    const handleDeleteSave = () => {
+    const handleDeleteSave = () =>
+    {
         setShowDeleteDialog(false);
         deleteAudit();
     };
@@ -75,7 +76,18 @@ export default function AuditsTableRow({audID, changeType, entity, dateTime, use
                 };
 
             await fetch(`http://localhost:8080/api/audit/${audID}`, requestOptions)
-                .then(response => {if (response.status === 201 || response.status === 200){window.location.reload()}else{setErrorMsg("an unknown error occurred, please check console");setErrorShow(true);}})
+                .then(response =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        window.location.reload()
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
         }
         catch (error)
         {
@@ -108,8 +120,8 @@ export default function AuditsTableRow({audID, changeType, entity, dateTime, use
                     <Button variant="contained" sx={{ml: 1}} size={"small"} onClick={handleViewClickOpen}><InfoIcon
                         fontSize={"small"}/></Button>
 
-                            <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
-                                    onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"error"}
+                            onClick={handleDeleteClickOpen}><DeleteIcon fontSize={"small"}/></Button>
 
 
                 </TableCell>
@@ -129,8 +141,8 @@ export default function AuditsTableRow({audID, changeType, entity, dateTime, use
                         <TextField label="User" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={user}/>
                         <TextField label="Entity" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={entity}/>
                         <TextField label="Date & Time" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} defaultValue={moment(dateTime).format("hh:mm A | DD/MM/YYYY")}/>
-                        <TextField label="Old Value" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} />
-                        <TextField label="New Value" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}} />
+                        <TextField label="Old Value" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}}/>
+                        <TextField label="New Value" variant="standard" fullWidth sx={{mb: 1, mt: 2}} InputProps={{readOnly: true}}/>
                     </DialogContentText>
                 </DialogContent>
             </Dialog>

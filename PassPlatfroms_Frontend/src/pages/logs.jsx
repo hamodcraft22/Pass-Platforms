@@ -4,7 +4,8 @@ import {LogsView} from '../sections/logs/view';
 
 // ----------------------------------------------------------------------
 
-export default function LogsPage() {
+export default function LogsPage()
+{
     return (
         <>
             <Helmet>

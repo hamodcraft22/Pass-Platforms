@@ -4,7 +4,8 @@ import {NewRevisionView} from '../sections/newRevision/view';
 
 // ----------------------------------------------------------------------
 
-export default function NewBookingPage() {
+export default function NewBookingPage()
+{
     return (
         <>
             <Helmet>

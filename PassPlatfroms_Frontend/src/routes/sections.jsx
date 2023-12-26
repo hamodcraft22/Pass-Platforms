@@ -32,7 +32,8 @@ export const AuditsPage = lazy(() => import('../pages/audits'));
 
 // ----------------------------------------------------------------------
 
-export default function Router() {
+export default function Router()
+{
     const routes = useRoutes([
         {
             element: (

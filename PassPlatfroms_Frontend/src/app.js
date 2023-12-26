@@ -21,7 +21,8 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 // ----------------------------------------------------------------------
 
 
-const MainContent = () => {
+const MainContent = () =>
+{
 
 
     const {instance} = useMsal();
@@ -30,21 +31,26 @@ const MainContent = () => {
     const [allowLoad, setAllowLoad] = useState(false)
     const [sysDisable, setSysDisable] = useState(false);
 
-    async function getToken() {
+    async function getToken()
+    {
         const accessTokenRequest = {
             scopes: ['87cabde3-68c8-4d9a-ba69-e0b05316e1f2/.default'],
             account: activeAccount,
         };
 
-        if (activeAccount) {
+        if (activeAccount)
+        {
             let token = await instance.initialize()
-                .then(() => {
+                .then(() =>
+                {
                     return instance.acquireTokenSilent(accessTokenRequest)
                 })
-                .then((token) => {
+                .then((token) =>
+                {
                     return `Bearer ${token.accessToken}`
                 })
-                .then((barerToken) => {
+                .then((barerToken) =>
+                {
                     UserProfile.setUserID(activeAccount.idTokenClaims.preferred_username.split('@')[0]);
                     UserProfile.setUserName(activeAccount.idTokenClaims.name);
                     UserProfile.setAuthToken(barerToken);
@@ -55,8 +61,10 @@ const MainContent = () => {
             const sysEnabled = await isDisabled();
 
             await logUser(token)
-                .then((role) => {
-                    UserProfile.setUserRole(role).then(() => {
+                .then((role) =>
+                {
+                    UserProfile.setUserRole(role).then(() =>
+                    {
                         if ((role === 'admin' || role === 'manager') && !sysEnabled)
                         {
                             setAllowLoad(true);
@@ -77,55 +85,69 @@ const MainContent = () => {
         }
     }
 
-    async function logUser(barerToken) {
-        try {
+    async function logUser(barerToken)
+    {
+        try
+        {
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': barerToken}};
 
             let role = await fetch(`http://localhost:8080/api/user/userlog`, requestOptions)
-                .then(response => {
+                .then(response =>
+                {
                     return response.json()
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     return data.transObject.role.rolename
                 });
 
             return role;
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.log(error)
         }
     }
 
     async function isDisabled()
     {
-        try {
+        try
+        {
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json'}};
 
             let enable = await fetch(`http://localhost:8080/api/metadata/disabled`, requestOptions)
-                .then(response => {
+                .then(response =>
+                {
                     return response.json()
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     return data;
                 });
 
             return enable;
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.log(error);
         }
     }
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         getToken()
     }, [activeAccount])
 
 
-    const handleLoginRedirect = () => {
+    const handleLoginRedirect = () =>
+    {
         instance.loginRedirect(loginRequest).catch((error) => console.log(error));
     };
 
-    const handleLogoutRedirect = () => {
+    const handleLogoutRedirect = () =>
+    {
         instance.logoutRedirect({account: activeAccount}).catch((error) => console.log(error));
     };
 
@@ -134,7 +156,10 @@ const MainContent = () => {
     return (
         <>
             <AuthenticatedTemplate>
-                {allowLoad ? (<Router/>) : <Backdrop sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}} open={true}>{sysDisable ? (<><p>The system is being setup and is disabled, check back later</p> <Button sx={{ml: 2}} onClick={handleLogoutRedirect} variant={"contained"} endIcon={<LogoutRoundedIcon/>}>Logout</Button> </>) : (<CircularProgress color="inherit"/>)}</Backdrop>}
+                {allowLoad ? (<Router/>) :
+                    <Backdrop sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}} open={true}>{sysDisable ? (<><p>The system is being setup and is disabled, check back later</p> <Button sx={{ml: 2}} onClick={handleLogoutRedirect}
+                                                                                                                                                                                                       variant={"contained"} endIcon={
+                        <LogoutRoundedIcon/>}>Logout</Button> </>) : (<CircularProgress color="inherit"/>)}</Backdrop>}
             </AuthenticatedTemplate>
             <UnauthenticatedTemplate>
                 <Box sx={{
@@ -175,7 +200,8 @@ const MainContent = () => {
     );
 };
 
-const App = ({instance}) => {
+const App = ({instance}) =>
+{
     return (
         <MsalProvider instance={instance}>
             <ThemeProvider>

@@ -19,7 +19,8 @@ import NotificationsPopover from './common/notifications-popover';
 
 // ----------------------------------------------------------------------
 
-export default function Header({onOpenNav}) {
+export default function Header({onOpenNav})
+{
     const theme = useTheme();
 
     const lgUp = useResponsive('up', 'lg');

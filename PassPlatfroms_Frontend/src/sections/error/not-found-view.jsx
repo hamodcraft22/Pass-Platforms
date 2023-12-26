@@ -9,7 +9,8 @@ import Logo from '../../components/logo';
 
 // ----------------------------------------------------------------------
 
-export default function NotFoundView() {
+export default function NotFoundView()
+{
     const renderHeader = (
         <Box
             component="header"

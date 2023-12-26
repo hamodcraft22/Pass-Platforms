@@ -24,15 +24,18 @@ import {Alert, Backdrop, CircularProgress, Snackbar} from "@mui/material";
 
 // ----------------------------------------------------------------------
 
-export default function UserPage() {
+export default function UserPage()
+{
 
     const [loadingShow, setLoadingShow] = useState(false);
 
     // alerts elements
     const [errorShow, setErrorShow] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
+    const handleAlertClose = (event, reason) =>
+    {
+        if (reason === 'clickaway')
+        {
             return;
         }
         setErrorShow(false);
@@ -65,36 +68,48 @@ export default function UserPage() {
         await setUserRole(userRole);
     }
 
-    useEffect(() => {getUserInfo()}, []);
+    useEffect(() =>
+    {
+        getUserInfo()
+    }, []);
 
     // get users api
-    async function getAllUsers() {
-        try {
+    async function getAllUsers()
+    {
+        try
+        {
             setLoadingShow(true);
             let token = await UserProfile.getAuthToken();
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
             await fetch(`http://localhost:8080/api/user`, requestOptions)
-                .then(response => {
+                .then(response =>
+                {
                     return response.json()
                 })
-                .then((data) => {
+                .then((data) =>
+                {
                     setUsers(data.transObject)
                 })
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.log(error)
         }
-        finally {
+        finally
+        {
             setLoadingShow(false);
         }
     }
 
-    function parseUsers() {
+    function parseUsers()
+    {
         let parsedUsers = [];
 
-        users.forEach((user) => {
+        users.forEach((user) =>
+        {
             parsedUsers.push({"userid": user.userid, "userName": user.userName, "roleName": user.role.rolename})
         });
 
@@ -102,35 +117,43 @@ export default function UserPage() {
     }
 
     // get all schools on load
-    useEffect(() => {
+    useEffect(() =>
+    {
         getAllUsers()
     }, []);
 
     // parse users
-    useEffect(() => {
-        if (Object.keys(users).length !== 0) {
+    useEffect(() =>
+    {
+        if (Object.keys(users).length !== 0)
+        {
             parseUsers()
         }
     }, [users]);
 
-    const handleSort = (event, id) => {
+    const handleSort = (event, id) =>
+    {
         const isAsc = orderBy === id && order === 'asc';
-        if (id !== '') {
+        if (id !== '')
+        {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(id);
         }
     };
 
-    const handleChangePage = (event, newPage) => {
+    const handleChangePage = (event, newPage) =>
+    {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangeRowsPerPage = (event) =>
+    {
         setPage(0);
         setRowsPerPage(parseInt(event.target.value, 10));
     };
 
-    const handleFilter = (event) => {
+    const handleFilter = (event) =>
+    {
         setPage(0);
         setFilterName(event.target.value);
     };

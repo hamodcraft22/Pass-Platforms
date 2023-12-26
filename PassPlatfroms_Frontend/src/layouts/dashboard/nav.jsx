@@ -27,23 +27,30 @@ import tutorNavs from "./tutor-navs";
 
 // ----------------------------------------------------------------------
 
-export default function Nav({openNav, onCloseNav}) {
+export default function Nav({openNav, onCloseNav})
+{
     const pathname = usePathname();
 
     const upLg = useResponsive('up', 'lg');
 
     const [userRole, setUserRole] = useState("");
 
-    async function getUserInfo() {
+    async function getUserInfo()
+    {
         let userRole = await UserProfile.getUserRole();
 
         await setUserRole(userRole);
     }
 
-    useEffect(() => {getUserInfo()},[]);
+    useEffect(() =>
+    {
+        getUserInfo()
+    }, []);
 
-    useEffect(() => {
-        if (openNav) {
+    useEffect(() =>
+    {
+        if (openNav)
+        {
             onCloseNav();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -71,7 +78,7 @@ export default function Nav({openNav, onCloseNav}) {
     // admin menu
     const adminMenu = (
         <Stack component="nav" spacing={0.5} sx={{px: 2}}>
-            {adminNav.slice(0,4).map((item) => (
+            {adminNav.slice(0, 4).map((item) => (
                 <NavItem key={item.title} item={item}/>
             ))}
             <Divider sx={{mt: 2, mb: 2}}/>
@@ -84,7 +91,7 @@ export default function Nav({openNav, onCloseNav}) {
     // leaders menu
     const leaderMenu = (
         <Stack component="nav" spacing={0.5} sx={{px: 2}}>
-            {leaderNav.slice(0,6).map((item) => (
+            {leaderNav.slice(0, 6).map((item) => (
                 <NavItem key={item.title} item={item}/>
             ))}
             <Divider sx={{mt: 2, mb: 2}}/>
@@ -201,19 +208,23 @@ Nav.propTypes = {
 
 // ----------------------------------------------------------------------
 
-function NavItem({item}) {
+function NavItem({item})
+{
     const pathname = usePathname();
 
     let active;
 
     // custom paths and active sessions
-    if (item.path === "/schools" && pathname === "/courses") {
+    if (item.path === "/schools" && pathname === "/courses")
+    {
         active = true;
     }
-    else if (item.path === "/bookings" && pathname === "/viewBooking") {
+    else if (item.path === "/bookings" && pathname === "/viewBooking")
+    {
         active = true;
     }
-    else if (item.path === "/revisions" && pathname === "/viewRevision") {
+    else if (item.path === "/revisions" && pathname === "/viewRevision")
+    {
         active = true;
     }
     else

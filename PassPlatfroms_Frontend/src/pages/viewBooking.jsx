@@ -4,7 +4,8 @@ import {ViewBookingView} from '../sections/viewBooking/view';
 
 // ----------------------------------------------------------------------
 
-export default function ViewBookingPage() {
+export default function ViewBookingPage()
+{
     return (
         <>
             <Helmet>

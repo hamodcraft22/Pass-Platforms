@@ -10,8 +10,10 @@ const propTypes = {
 };
 
 
-class revisionSlot extends React.PureComponent {
-    render() {
+class revisionSlot extends React.PureComponent
+{
+    render()
+    {
         const {
             start,
             end,

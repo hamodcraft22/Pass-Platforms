@@ -6,7 +6,8 @@ import {useResponsive} from '../../hooks/use-responsive';
 
 // ----------------------------------------------------------------------
 
-export default function useChart(options) {
+export default function useChart(options)
+{
     const theme = useTheme();
 
     const smUp = useResponsive('up', 'sm');

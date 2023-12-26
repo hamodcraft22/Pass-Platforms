@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 
@@ -9,7 +8,8 @@ import Iconify from '../../components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function SchoolsTableToolbar({filterName, onFilterName}) {
+export default function SchoolsTableToolbar({filterName, onFilterName})
+{
     return (
         <Toolbar
             sx={{
@@ -20,19 +20,19 @@ export default function SchoolsTableToolbar({filterName, onFilterName}) {
             }}
         >
 
-                <OutlinedInput
-                    value={filterName}
-                    onChange={onFilterName}
-                    placeholder="Search Schoools..."
-                    startAdornment={
-                        <InputAdornment position="start">
-                            <Iconify
-                                icon="eva:search-fill"
-                                sx={{color: 'text.disabled', width: 20, height: 20}}
-                            />
-                        </InputAdornment>
-                    }
-                />
+            <OutlinedInput
+                value={filterName}
+                onChange={onFilterName}
+                placeholder="Search Schoools..."
+                startAdornment={
+                    <InputAdornment position="start">
+                        <Iconify
+                            icon="eva:search-fill"
+                            sx={{color: 'text.disabled', width: 20, height: 20}}
+                        />
+                    </InputAdornment>
+                }
+            />
 
         </Toolbar>
     );

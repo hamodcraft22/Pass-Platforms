@@ -4,7 +4,8 @@ import {ApplicationsView} from '../sections/applications/view';
 
 // ----------------------------------------------------------------------
 
-export default function ApplicationsPage() {
+export default function ApplicationsPage()
+{
     return (
         <>
             <Helmet>
