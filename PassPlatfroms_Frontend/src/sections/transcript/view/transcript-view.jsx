@@ -199,8 +199,16 @@ export default function TranscriptPage()
     };
     const handleAddSave = () =>
     {
-        setShowAddDialog(false);
-        submitTranscript();
+        if (courses !== null && Object.keys(courses).length !== 0)
+        {
+            setShowAddDialog(false);
+            submitTranscript();
+        }
+        else
+        {
+            setErrorMsg("no transcripts found");
+            setErrorShow(true);
+        }
     };
 
 

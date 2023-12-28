@@ -86,11 +86,23 @@ export default function UserPage()
             await fetch(`https://zift.ddnsfree.com:5679/api/user`, requestOptions)
                 .then(response =>
                 {
-                    return response.json()
+                    if (response.status === 200 || response.status === 201)
+                    {
+                        return response.json()
+                    }
+                    else
+                    {
+                        setErrorMsg("No Users Found, Check Connection");
+                        setErrorMsg(true);
+                        return null;
+                    }
                 })
                 .then((data) =>
                 {
-                    setUsers(data.transObject)
+                    if (data !== null)
+                    {
+                        setUsers(data.transObject)
+                    }
                 })
 
         }

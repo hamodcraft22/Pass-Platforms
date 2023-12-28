@@ -100,6 +100,7 @@ export default function ViewBookingPage()
                 {
                     if (isok)
                     {
+                        console.log(data.transObject);
                         parseBooking(data.transObject);
                     }
                 })
@@ -241,6 +242,8 @@ export default function ViewBookingPage()
                                     <TextField label="Student" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={bookingInfo.student.userid + " " + bookingInfo.student.userName}/>
 
                                     <TextField label="Leader" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={bookingInfo.slot.leader.userid + " " + bookingInfo.slot.leader.userName}/>
+
+                                    <TextField label="Subject" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={bookingInfo.course.courseid + " " + bookingInfo.course.coursename}/>
 
                                     <TextField label="Booked Date" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={moment(bookingInfo.datebooked).format("hh:mm A | DD/MM/YYYY")}/>
 

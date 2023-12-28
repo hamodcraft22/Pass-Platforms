@@ -91,11 +91,23 @@ export default function SlotPage()
             await fetch(`https://zift.ddnsfree.com:5679/api/slot/leader/${leaderID}`, requestOptions)
                 .then(response =>
                 {
-                    return response.json()
+                    if (response.status === 200 || response.status === 201)
+                    {
+                        return response.json();
+                    }
+                    else
+                    {
+                        setErrorMsg("No Slots Found");
+                        setErrorShow(true);
+                        return null;
+                    }
                 })
                 .then((data) =>
                 {
-                    parseUserSlots(data.transObject);
+                    if (data !== null)
+                    {
+                        parseUserSlots(data.transObject);
+                    }
                 }).then(() =>
                 {
                     setLoadingShow(false);

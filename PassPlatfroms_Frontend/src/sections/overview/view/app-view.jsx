@@ -5,10 +5,11 @@ import AppCurrentVisits from '../app-current-visits';
 import AppWidgetSummary from '../app-widget-summary';
 
 import UserProfile from "../../../components/auth/UserInfo";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import ImageGallery from "react-image-gallery";
+import {Backdrop, CircularProgress} from "@mui/material";
 
 
 // ----------------------------------------------------------------------
@@ -128,6 +129,15 @@ export default function AppView()
     return (
 
         <Container maxWidth="xl">
+
+            {/* loading */}
+            <Backdrop
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={loadingShow}
+            >
+                <CircularProgress color="inherit"/>
+            </Backdrop>
+
             <Typography variant="h4" sx={{mb: 5}}>
                 Hi, Welcome Back {userName} 👋🏼
             </Typography>
@@ -173,7 +183,7 @@ export default function AppView()
                 <Grid xs={12} md={6} lg={8}>
                     <Card>
                         <Box>
-                            <ImageGallery items={images} autoPlay={true} slideDuration={5000} showPlayButton={false} showFullscreenButton={false} showNav={false}/>
+                            <ImageGallery items={images} autoPlay={true} slideDuration={5000} showPlayButton={false} showFullscreenButton={false}/>
                         </Box>
                     </Card>
                 </Grid>

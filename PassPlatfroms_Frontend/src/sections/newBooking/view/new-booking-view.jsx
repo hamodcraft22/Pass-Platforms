@@ -95,12 +95,23 @@ export default function NewBookingPage()
             await fetch(`https://zift.ddnsfree.com:5679/api/school/schools`, requestOptions)
                 .then(response =>
                 {
-                    console.log(response);
-                    return response.json()
+                    if (response.status === 200 || response.status === 200)
+                    {
+                        return response.json();
+                    }
+                    else
+                    {
+                        setErrorMsg("No Schools Found");
+                        setErrorShow(true);
+                        return null;
+                    }
                 })
                 .then((data) =>
                 {
-                    setSchools(data.transObject)
+                    if (data !== null)
+                    {
+                        setSchools(data.transObject);
+                    }
                 })
                 .then(() =>
                 {
@@ -147,14 +158,15 @@ export default function NewBookingPage()
             await fetch(`https://zift.ddnsfree.com:5679/api/slot/course/${selectedCourse.courseid}?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
                 .then(response =>
                 {
-                    if (response.status == 200 || response.status === 201)
+                    if (response.status === 200 || response.status === 201)
                     {
                         return response.json()
                     }
                     else
                     {
-                        setErrorMsg("no slots, try another week");
+                        setErrorMsg("No Slots found, try another week");
                         setErrorShow(true);
+                        return null;
                     }
                 })
                 .then((data) =>
@@ -198,6 +210,9 @@ export default function NewBookingPage()
     function parseSlots()
     {
         setLoadingShow(true);
+
+        setLeaders([]);
+
         const pastelColors = [
             '#ff9496',
             '#f494ff',
@@ -283,7 +298,17 @@ export default function NewBookingPage()
             }
         });
 
-        setLeaders(parsedLeaders);
+
+        if (Object.keys(parsedLeaders).length !== 0)
+        {
+            setLeaders(parsedLeaders);
+        }
+        else
+        {
+            setErrorMsg("no slots, try another week");
+            setErrorShow(true);
+        }
+
         setLoadingShow(false);
     }
 

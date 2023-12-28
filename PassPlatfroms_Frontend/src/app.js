@@ -94,11 +94,21 @@ const MainContent = () =>
             let role = await fetch(`https://zift.ddnsfree.com:5679/api/user/userlog`, requestOptions)
                 .then(response =>
                 {
-                    return response.json()
+                    if (response.status === 200 || response.status === 200)
+                    {
+                        return response.json();
+                    }
                 })
                 .then((data) =>
                 {
-                    return data.transObject.role.rolename
+                    if (data !== null)
+                    {
+                        return data.transObject.role.rolename
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 });
 
             return role;
@@ -119,7 +129,10 @@ const MainContent = () =>
             let enable = await fetch(`https://zift.ddnsfree.com:5679/api/metadata/disabled`, requestOptions)
                 .then(response =>
                 {
-                    return response.json()
+                    if (response.status === 200 || response.status === 200)
+                    {
+                        return response.json();
+                    }
                 })
                 .then((data) =>
                 {

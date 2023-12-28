@@ -84,11 +84,23 @@ export default function SchoolsPage()
             await fetch(`https://zift.ddnsfree.com:5679/api/school`, requestOptions)
                 .then(response =>
                 {
-                    return response.json()
+                    if (response.status === 200 || response.status === 200)
+                    {
+                        return response.json();
+                    }
+                    else
+                    {
+                        setErrorMsg("No Schools Found");
+                        setErrorShow(true);
+                        return null;
+                    }
                 })
                 .then((data) =>
                 {
-                    setSchools(data.transObject)
+                    if (data !== null)
+                    {
+                        setSchools(data.transObject);
+                    }
                 })
                 .then(() =>
                 {
@@ -242,8 +254,16 @@ export default function SchoolsPage()
     };
     const handleAddSave = () =>
     {
-        setShowAddDialog(false);
-        submitBooking();
+        if (Object.keys(schoolsUpload).length !== 0)
+        {
+            setShowAddDialog(false);
+            submitBooking();
+        }
+        else
+        {
+            setErrorMsg("No Schools Uploaded");
+            setErrorShow(true);
+        }
     };
 
 

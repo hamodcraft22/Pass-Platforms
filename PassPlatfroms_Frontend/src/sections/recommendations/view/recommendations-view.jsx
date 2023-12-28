@@ -116,7 +116,16 @@ export default function RecommendationsPage()
             await fetch(`https://zift.ddnsfree.com:5679/api/recommendation`, requestOptions)
                 .then(response =>
                 {
-                    return response.json()
+                    if (response.status === 200 || response.status === 200)
+                    {
+                        return response.json();
+                    }
+                    else
+                    {
+                        setErrorMsg("No Recommendations Found");
+                        setErrorShow(true);
+                        return null;
+                    }
                 })
                 .then((data) =>
                 {
@@ -148,11 +157,23 @@ export default function RecommendationsPage()
             await fetch(`https://zift.ddnsfree.com:5679/api/recommendation/tutor/${tutorID}`, requestOptions)
                 .then(response =>
                 {
-                    return response.json()
+                    if (response.status === 200 || response.status === 200)
+                    {
+                        return response.json();
+                    }
+                    else
+                    {
+                        setErrorMsg("You dont have any recommendations");
+                        setErrorShow(true);
+                        return null;
+                    }
                 })
                 .then((data) =>
                 {
-                    parseRecommendations(data.transObject);
+                    if (data !== null)
+                    {
+                        parseRecommendations(data.transObject);
+                    }
                 }).then(() =>
                 {
                     setLoadingShow(false);
@@ -294,7 +315,7 @@ export default function RecommendationsPage()
                     if (isok)
                     {
                         // refresh transcript
-                        setSuccessMsg("Schedules added");
+                        setSuccessMsg("Recommendation added");
                         setSuccessShow(true);
                         getTutorRecommendations(userID);
 

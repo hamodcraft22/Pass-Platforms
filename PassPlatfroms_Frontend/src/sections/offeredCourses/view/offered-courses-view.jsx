@@ -334,8 +334,16 @@ export default function OfferedCoursesPage()
     };
     const handleAddSave = () =>
     {
-        setShowAddDialog(false);
-        createSubmit();
+        if (coursesToAdd !== null && Object.keys(coursesToAdd) !== 0)
+        {
+            setShowAddDialog(false);
+            createSubmit();
+        }
+        else
+        {
+            setErrorMsg("No Courses added");
+            setErrorShow(true);
+        }
     };
 
 

@@ -73,12 +73,24 @@ export default function CoursesPage()
             await fetch(`https://zift.ddnsfree.com:5679/api/school/${schoolIDParm}`, requestOptions)
                 .then(response =>
                 {
-                    return response.json()
+                    if (response.status === 200 || response.status === 200)
+                    {
+                        return response.json();
+                    }
+                    else
+                    {
+                        setErrorMsg("No Courses Found");
+                        setErrorShow(true);
+                        return null;
+                    }
                 })
                 .then((data) =>
                 {
-                    setSchool(data.transObject);
-                    setCourses(data.transObject.courses)
+                    if (data !== null)
+                    {
+                        setSchool(data.transObject);
+                        setCourses(data.transObject.courses);
+                    }
                 }).then(() =>
                 {
                     setLoadingShow(false);
@@ -146,8 +158,16 @@ export default function CoursesPage()
     };
     const handleAddSave = () =>
     {
-        setShowAddDialog(false);
-        createSubmit();
+        if (addCourseID !== null && addCourseID !== "" && addCourseName !== null && addCourseName !== "")
+        {
+            setShowAddDialog(false);
+            createSubmit();
+        }
+        else
+        {
+            setErrorMsg("Please fill in all information");
+            setErrorShow(true);
+        }
     };
 
 

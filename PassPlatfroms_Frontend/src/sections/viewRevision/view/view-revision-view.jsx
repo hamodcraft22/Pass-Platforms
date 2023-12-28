@@ -4,7 +4,7 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
-import {CardActions, CardContent, Divider, FormHelperText, ListItem, ListItemIcon, TextField} from "@mui/material";
+import {Alert, Backdrop, CardActions, CardContent, CircularProgress, Divider, FormHelperText, ListItem, ListItemIcon, Snackbar, TextField} from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
 import EmailIcon from '@mui/icons-material/Email';
@@ -203,6 +203,22 @@ export default function ViewRevisionPage()
 
         <Container>
 
+            {/* loading */}
+            <Backdrop
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={loadingShow}
+            >
+                <CircularProgress color="inherit"/>
+            </Backdrop>
+
+            {/* alerts */}
+            <Snackbar open={errorShow} autoHideDuration={6000} onClose={handleAlertClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleAlertClose} severity="error" sx={{width: '100%', whiteSpace: 'pre-line'}}>
+                    {errorMsg}
+                </Alert>
+            </Snackbar>
+
             {
                 revisionIDParm !== null && revisionIDParm !== undefined && revisionIDParm !== "" && revisionInfo !== null &&
                 <>
@@ -221,6 +237,8 @@ export default function ViewRevisionPage()
                                     <Typography variant="h6">Revision Information</Typography>
 
                                     <TextField label="Leader" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={revisionInfo.student.userid + " " + revisionInfo.student.userName}/>
+
+                                    <TextField label="Subject" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={revisionInfo.course.courseid + " " + revisionInfo.course.coursename}/>
 
                                     <TextField label="Revision Date" variant="standard" fullWidth sx={{mt: 2}} InputProps={{readOnly: true}} defaultValue={revisionInfo.bookingDate}/>
 

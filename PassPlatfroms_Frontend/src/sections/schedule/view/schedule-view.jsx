@@ -87,11 +87,23 @@ export default function SchedulePage()
             await fetch(`https://zift.ddnsfree.com:5679/api/schedule/student/${studentID}`, requestOptions)
                 .then(response =>
                 {
-                    return response.json()
+                    if (response.status === 200 || response.status === 200)
+                    {
+                        return response.json();
+                    }
+                    else
+                    {
+                        setErrorMsg("No Schedules Found");
+                        setErrorShow(true);
+                        return null;
+                    }
                 })
                 .then((data) =>
                 {
-                    parseUserSchedules(data.transObject);
+                    if (data !== null)
+                    {
+                        parseUserSchedules(data.transObject);
+                    }
                 }).then(() =>
                 {
                     setLoadingShow(false);
