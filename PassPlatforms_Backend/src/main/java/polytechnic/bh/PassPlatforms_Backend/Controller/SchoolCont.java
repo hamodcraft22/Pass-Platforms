@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.SchoolDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
+import polytechnic.bh.PassPlatforms_Backend.Service.AuditServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.LogServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.SchoolServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
@@ -32,6 +33,9 @@ public class SchoolCont
 
     @Autowired
     private LogServ logServ;
+
+    @Autowired
+    private AuditServ auditServ;
 
     // get all schools -- tested | added
     @GetMapping("")
@@ -321,6 +325,8 @@ public class SchoolCont
                 {
                     if (schoolServ.deleteSchool(schoolID))
                     {
+                        auditServ.createAudit('D',"School",null,null,userID);
+
                         return new ResponseEntity<>(null, HttpStatus.OK);
                     }
                     else

@@ -35,6 +35,7 @@ public class RecommendationServ
     @Autowired
     private NotificationRepo notificationRepo;
 
+    // get all recommendations - admin / manager
     public List<RecommendationDao> getAllRecommendations()
     {
         List<RecommendationDao> recommendations = new ArrayList<>();
@@ -47,6 +48,7 @@ public class RecommendationServ
         return recommendations;
     }
 
+    // get the recommendations of a tutor
     public List<RecommendationDao> getTutorRecommendations(String tutorID)
     {
         List<RecommendationDao> recommendations = new ArrayList<>();
@@ -59,6 +61,7 @@ public class RecommendationServ
         return recommendations;
     }
 
+    // get the details for a single recommendations
     public RecommendationDao getRecommendationDetails(int recID)
     {
         Optional<Recommendation> retrievedRecommendation = recommendationRepo.findById(recID);
@@ -66,6 +69,7 @@ public class RecommendationServ
         return retrievedRecommendation.map(RecommendationDao::new).orElse(null);
     }
 
+    // create a recommendation - tutor only
     public RecommendationDao createRecommendation(Instant datetime, String note, String tutorID, String studentID)
     {
         Recommendation newRecommendation = new Recommendation();
@@ -91,6 +95,7 @@ public class RecommendationServ
         return new RecommendationDao(savedRec);
     }
 
+    // edit recommendation - status only
     public RecommendationDao editRecommendation(RecommendationDao updatedRecommendation)
     {
         Optional<Recommendation> retrievedRecommendation = recommendationRepo.findById(updatedRecommendation.getRecid());
@@ -119,6 +124,7 @@ public class RecommendationServ
         }
     }
 
+    // delete recommendation - not really used that much
     public boolean deleteRecommendation(int recID)
     {
         recommendationRepo.deleteById(recID);

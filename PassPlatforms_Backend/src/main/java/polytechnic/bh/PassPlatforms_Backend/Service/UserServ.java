@@ -112,6 +112,7 @@ public class UserServ
         return leaders;
     }
 
+    // make a user (or a set of user) into pass leaders - used with upload functions
     public List<UserDao> makeLeaders(List<String> users)
     {
         List<UserDao> newLeaders = new ArrayList<>();

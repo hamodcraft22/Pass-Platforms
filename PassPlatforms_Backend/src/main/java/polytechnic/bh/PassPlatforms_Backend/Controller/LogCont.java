@@ -26,6 +26,7 @@ public class LogCont
     @Autowired
     private UserServ userServ;
 
+    // get all of the logs / admin
     @GetMapping("")
     public ResponseEntity<GenericDto<List<LogDao>>> getAllLogs(
             @RequestHeader(value = "Authorization") String requestKey)
@@ -62,6 +63,7 @@ public class LogCont
 
     }
 
+    // get a single log details
     @GetMapping("/{logID}")
     public ResponseEntity<GenericDto<LogDao>> getLogDetails(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -99,6 +101,7 @@ public class LogCont
 
     }
 
+    // delete a log
     @DeleteMapping("/{logID}")
     public ResponseEntity<GenericDto<LogDao>> deleteLog(
             @RequestHeader(value = "Authorization") String requestKey,

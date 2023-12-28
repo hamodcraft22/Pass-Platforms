@@ -27,6 +27,9 @@ public class MailServ
     @Autowired
     private JavaMailSender mailSender;
 
+    // async method to send invite emails upon booking
+    // handles group sends as well
+    // used when access to Microsoft is not available
     @Async
     public void sendInvite(BookingDao bookingDao)
     {
@@ -139,6 +142,7 @@ public class MailServ
         }
     }
 
+    // format the date of the booking into email / ics accepted formt
     private static String formatDate(Date date)
     {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
@@ -146,6 +150,7 @@ public class MailServ
         return sdf.format(date);
     }
 
+    // merge the date and the time from the booking and the slot time for email service
     private static String getDateTime(Instant time, Date date)
     {
         SimpleDateFormat dateF = new SimpleDateFormat("yyyyMMdd'T'");

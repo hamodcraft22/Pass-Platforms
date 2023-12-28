@@ -164,21 +164,21 @@ const MainContent = () =>
         instance.logoutRedirect({account: activeAccount}).catch((error) => console.log(error));
     };
 
-    // auto logout after 10 minutes -- //comment out for demo
-    useEffect(() =>
-    {
-        if (allowLoad)
-        {
-            const timer = setTimeout(() => {
-                // Call your function here
-                handleLogoutRedirect();
-            }, 10 * 60 * 1000); // 10 minutes in milliseconds
-
-            return () => {
-                clearTimeout(timer); // Clean up the timer on unmounting the component
-            };
-        }
-    }, [allowLoad]);
+    // // auto logout after 10 minutes -- //comment out for demo
+    // useEffect(() =>
+    // {
+    //     if (allowLoad)
+    //     {
+    //         const timer = setTimeout(() => {
+    //             // Call your function here
+    //             handleLogoutRedirect();
+    //         }, 10 * 60 * 1000); // 10 minutes in milliseconds
+    //
+    //         return () => {
+    //             clearTimeout(timer); // Clean up the timer on unmounting the component
+    //         };
+    //     }
+    // }, [allowLoad]);
 
     useScrollToTop();
 

@@ -29,6 +29,7 @@ public class CourseServ
     @Autowired
     private OfferedCourseServ offeredCourseServ;
 
+    // get all the courses - used for revision / showing
     public List<CourseDao> getAllCourses()
     {
         List<CourseDao> courses = new ArrayList<>();
@@ -41,6 +42,7 @@ public class CourseServ
         return courses;
     }
 
+    // get courses that have a revison in them
     public List<CourseDao> getRevCourses()
     {
         List<CourseDao> courses = new ArrayList<>();
@@ -53,6 +55,7 @@ public class CourseServ
         return courses;
     }
 
+    // get courses which are being offered by leaders
     public List<CourseDao> getAvlbCourses()
     {
         List<CourseDao> courses = new ArrayList<>();
@@ -65,6 +68,7 @@ public class CourseServ
         return courses;
     }
 
+    // get the courses that a leader can teach (via their transcript and the courses in the db)
     public List<CourseDao> getLeaderPossibleCourses(String leaderID)
     {
         List<String> Grades = List.of("A+", "A", "A-", "B+");
@@ -106,6 +110,7 @@ public class CourseServ
         return leaderCourses;
     }
 
+    // get a single course information
     public CourseDao getCourseDetails(String courseID)
     {
         Optional<Course> retrievedCourse = courseRepo.findById(courseID);
@@ -113,6 +118,7 @@ public class CourseServ
         return retrievedCourse.map(CourseDao::new).orElse(null);
     }
 
+    // create a new single course
     public CourseDao createCourse(String courseID, String courseName, String schoolID)
     {
         Course newCourse = new Course();
@@ -124,6 +130,7 @@ public class CourseServ
         return new CourseDao(courseRepo.save(newCourse));
     }
 
+    // add a list of courses - used via upload method
     public List<CourseDao> createMultiCourse(List<CourseDao> courses)
     {
         List<CourseDao> addedCourses = new ArrayList<>();
@@ -146,6 +153,7 @@ public class CourseServ
         return addedCourses;
     }
 
+    // edit course information - name only
     public CourseDao editCourse(CourseDao updatedCourse)
     {
         Optional<Course> retrievedCourse = courseRepo.findById(updatedCourse.getCourseid());
@@ -163,6 +171,7 @@ public class CourseServ
         }
     }
 
+    // delete a course - shall not be used that much
     public boolean deleteCourse(String courseID)
     {
         courseRepo.deleteById(courseID);

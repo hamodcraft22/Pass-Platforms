@@ -77,6 +77,7 @@ public class TranscriptCont
         }
     }
 
+    // get the transcript of a leader (or student as well)
     @GetMapping("/leader/{leaderID}")
     public ResponseEntity<GenericDto<List<TranscriptDao>>> getLeaderTranscripts(
             @RequestHeader(value = "Authorization") String requestKey,

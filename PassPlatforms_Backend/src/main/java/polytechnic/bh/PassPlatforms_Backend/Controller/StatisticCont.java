@@ -23,6 +23,7 @@ public class StatisticCont<T>
     @Autowired
     private LogServ logServ;
 
+    // get the latest statistic api
     @GetMapping("")
     public ResponseEntity<GenericDto<StatisticDao>> getLatest(
             @RequestHeader(value = "Authorization") String requestKey

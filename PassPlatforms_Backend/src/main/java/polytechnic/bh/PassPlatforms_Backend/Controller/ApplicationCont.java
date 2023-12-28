@@ -38,6 +38,7 @@ public class ApplicationCont
     @Autowired
     private LogServ logServ;
 
+    // get all of the applications - admin / manager actions
     @GetMapping("")
     public ResponseEntity<GenericDto<List<ApplicationDao>>> getAllApplications(
             @RequestHeader(value = "Authorization") String requestKey)
@@ -84,6 +85,7 @@ public class ApplicationCont
         }
     }
 
+    // get a single application and its information
     @GetMapping("/{applicationID}")
     public ResponseEntity<GenericDto<ApplicationDao>> getApplication(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -390,6 +392,7 @@ public class ApplicationCont
         }
     }
 
+    // delete an application - manager acrions
     @DeleteMapping("/{applicationID}")
     public ResponseEntity<GenericDto<ApplicationDao>> deleteApplication(
             @RequestHeader(value = "Authorization") String requestKey,

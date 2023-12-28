@@ -83,6 +83,7 @@ public class ApplicationServ
         return retrivedApplication.map(ApplicationDao::new).orElse(null);
     }
 
+    // create new application (by student)
     public ApplicationDao createApplication(String studentID, String applicationNote)
     {
         Application newapplicationton = new Application();
@@ -107,6 +108,7 @@ public class ApplicationServ
         return new ApplicationDao(createdApplication);
     }
 
+    // update an application
     public ApplicationDao updateApplication(int applicationID, char statusID, boolean studentRequest)
     {
         Optional<Application> applicationToUpdate = applicationRepo.findById(applicationID);
@@ -148,12 +150,14 @@ public class ApplicationServ
         }
     }
 
+    // delete application by application id
     public boolean deleteApplication(int applicationID)
     {
         applicationRepo.deleteById(applicationID);
         return true;
     }
 
+    // check if a student / user has an application
     public boolean checkApplication(int applicationID)
     {
         return applicationRepo.existsById(applicationID);

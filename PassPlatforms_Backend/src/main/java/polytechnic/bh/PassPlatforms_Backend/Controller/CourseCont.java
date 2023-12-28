@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dao.CourseDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
+import polytechnic.bh.PassPlatforms_Backend.Service.AuditServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.CourseServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.LogServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
@@ -31,6 +32,9 @@ public class CourseCont
 
     @Autowired
     private LogServ logServ;
+
+    @Autowired
+    private AuditServ auditServ;
 
     // get all courses - not needed
     @GetMapping("")
@@ -289,6 +293,9 @@ public class CourseCont
                 {
                     if (courseServ.deleteCourse(courseID))
                     {
+                        // audit on delete of course
+                        auditServ.createAudit('D',"Course",null,null,userID);
+
                         return new ResponseEntity<>(null, HttpStatus.OK);
                     }
                     else

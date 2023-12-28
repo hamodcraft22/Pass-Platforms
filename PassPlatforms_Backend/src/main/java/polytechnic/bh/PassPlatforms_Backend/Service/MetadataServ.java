@@ -66,6 +66,8 @@ public class MetadataServ
 
     }
 
+    // reset the whole system (delete everything other than the managers and admins accounts)
+    // resets the whole system for a new semaster
     public boolean resetSystem()
     {
         try

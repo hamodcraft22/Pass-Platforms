@@ -59,6 +59,7 @@ public class MetadataController
         }
     }
 
+    // get the system status (disabled/booking) - to stop users from making changes while setting up
     @GetMapping("/disabled")
     public ResponseEntity<Boolean> getSysDisable()
     {
@@ -67,7 +68,7 @@ public class MetadataController
         return new ResponseEntity<>(metadata, HttpStatus.OK);
     }
 
-    // Update metadata
+    // Update metadata (date / status (disabled / booking))
     @PutMapping("")
     public ResponseEntity<MetadataDao> updateMetadata(
             @RequestHeader(value = "Authorization") String requestKey,
@@ -107,7 +108,7 @@ public class MetadataController
 
     }
 
-    // reset database
+    // reset database - dangerous method deletes everything other than admins and managers
     @DeleteMapping("")
     public ResponseEntity<MetadataDao> resetSystem(
             @RequestHeader(value = "Authorization") String requestKey)

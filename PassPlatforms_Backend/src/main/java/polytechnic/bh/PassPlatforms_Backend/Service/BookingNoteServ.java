@@ -36,6 +36,7 @@ public class BookingNoteServ
     @Autowired
     private NotificationRepo notificationRepo;
 
+    // get all of the booking notes - not needed
     public List<BookingNoteDao> getAllBookingNotes()
     {
         List<BookingNoteDao> bookingNotes = new ArrayList<>();
@@ -48,6 +49,7 @@ public class BookingNoteServ
         return bookingNotes;
     }
 
+    // get a single booking notes
     public List<BookingNoteDao> getBookingNotes(int bookingID)
     {
         List<BookingNoteDao> bookingNotes = new ArrayList<>();
@@ -60,6 +62,7 @@ public class BookingNoteServ
         return bookingNotes;
     }
 
+    // get a single booking note info - not needed
     public BookingNoteDao getBookingNoteDetails(int noteID)
     {
         Optional<BookingNote> retrievedBookingNote = bookingNoteRepo.findById(noteID);
@@ -67,6 +70,7 @@ public class BookingNoteServ
         return retrievedBookingNote.map(BookingNoteDao::new).orElse(null);
     }
 
+    // create a new booking by a user
     public BookingNoteDao createBookingNote(int bookingID, String bookingNote, String userID)
     {
         BookingNote newBookingNote = new BookingNote();
@@ -123,6 +127,7 @@ public class BookingNoteServ
         return new BookingNoteDao(addedBookingNote);
     }
 
+    // delete a booking by id - not allowed for now
     public boolean deleteBookingNote(int noteID)
     {
         bookingNoteRepo.deleteById(noteID);

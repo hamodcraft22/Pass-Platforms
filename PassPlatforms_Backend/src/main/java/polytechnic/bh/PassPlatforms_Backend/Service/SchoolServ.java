@@ -22,6 +22,7 @@ public class SchoolServ
     @Autowired
     private CourseServ courseServ;
 
+    // get all of the schools
     public List<SchoolDao> getAllSchools()
     {
         List<SchoolDao> schools = new ArrayList<>();
@@ -34,6 +35,7 @@ public class SchoolServ
         return schools;
     }
 
+    // get the revision schools - schoole that have revision offered
     public List<SchoolDao> getAllRevSchools()
     {
         List<SchoolDao> schools = new ArrayList<>();
@@ -76,6 +78,7 @@ public class SchoolServ
         return schools;
     }
 
+    // get school which are being offered by leaders
     public List<SchoolDao> getAllAvlbSchools()
     {
         List<SchoolDao> schools = new ArrayList<>();
@@ -118,6 +121,7 @@ public class SchoolServ
         return schools;
     }
 
+    // get a single school information - not really needed
     public SchoolDao getSchoolDetails(String schoolID)
     {
         Optional<School> retrievedSchool = schoolRepo.findById(schoolID);
@@ -125,6 +129,7 @@ public class SchoolServ
         return retrievedSchool.map(SchoolDao::new).orElse(null);
     }
 
+    // create a single school
     public SchoolDao createSchool(String schoolID, String schoolName, List<CourseDao> courses)
     {
         School newSchool = new School();
@@ -151,6 +156,7 @@ public class SchoolServ
         return new SchoolDao(schoolRepo.save(newSchool));
     }
 
+    // create multi schools - used by uplaod function
     public List<SchoolDao> createMultiSchool(List<SchoolDao> schools)
     {
         List<SchoolDao> addedSchools = new ArrayList<>();
@@ -192,6 +198,7 @@ public class SchoolServ
         return addedSchools;
     }
 
+    // edit school information - name only
     public SchoolDao editSchool(SchoolDao updatedSchool)
     {
         Optional<School> retrievedSchool = schoolRepo.findById(updatedSchool.getSchoolid());
@@ -208,6 +215,7 @@ public class SchoolServ
         }
     }
 
+    // delete a school - audited function
     public boolean deleteSchool(String schoolID)
     {
         schoolRepo.deleteById(schoolID);

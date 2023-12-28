@@ -29,6 +29,7 @@ public class NotificationCont
     @Autowired
     private LogServ logServ;
 
+    // get all of the notification for the logged in user
     @GetMapping("")
     public ResponseEntity<GenericDto<List<NotificationDao>>> getUserNotifications(
             @RequestHeader(value = "Authorization") String requestKey)
@@ -68,7 +69,7 @@ public class NotificationCont
         }
     }
 
-    // tested
+    // set the notification and seen
     @GetMapping("/{notficID}")
     public ResponseEntity<GenericDto<NotificationDao>> getNotificationDetails(
             @RequestHeader(value = "Authorization") String requestKey,

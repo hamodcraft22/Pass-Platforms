@@ -9,6 +9,7 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
 import polytechnic.bh.PassPlatforms_Backend.Entity.User;
 import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
+import polytechnic.bh.PassPlatforms_Backend.Service.AuditServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.LogServ;
 import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
@@ -35,6 +36,9 @@ public class UserCont
 
     @Autowired
     private LogServ logServ;
+
+    @Autowired
+    private AuditServ auditServ;
 
     // get all saved users -- tested | added
     @GetMapping("")
@@ -194,6 +198,7 @@ public class UserCont
                 {
                     List<UserDao> newLeaders = userServ.makeLeaders(studentIDs);
 
+                    auditServ.createAudit('U',"User",null,null,userID);
                     return new ResponseEntity<>(new GenericDto<>(null, newLeaders, null, null), HttpStatus.OK);
                 }
                 else

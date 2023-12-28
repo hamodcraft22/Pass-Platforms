@@ -61,6 +61,7 @@ public class ScheduleServ
         return retrievedSchedule.map(ScheduleDao::new).orElse(null);
     }
 
+    // create a new schedule entry - by students / leaders
     public ScheduleDao createSchedule(Instant startTime, Instant endTime, char dayID, String userID)
     {
         Schedule newSchedule = new Schedule();
@@ -73,6 +74,7 @@ public class ScheduleServ
         return new ScheduleDao(scheduleRepo.save(newSchedule));
     }
 
+    // edit a schedule
     public ScheduleDao editSchedule(ScheduleDao updatedSchedule)
     {
         Optional<Schedule> retrievedSchedule = scheduleRepo.findById(updatedSchedule.getScheduleid());
@@ -92,6 +94,7 @@ public class ScheduleServ
         }
     }
 
+    // delete a schedule entry
     public boolean deleteSchedule(int scheduleID)
     {
         scheduleRepo.deleteById(scheduleID);

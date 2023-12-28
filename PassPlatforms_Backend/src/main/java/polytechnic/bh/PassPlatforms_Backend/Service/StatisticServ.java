@@ -14,6 +14,7 @@ public class StatisticServ
     @Autowired
     private StatisticRepo statisticRepo;
 
+    // get the latest stat from the db
     public StatisticDao getLatest()
     {
         Optional<Statistic> retrivedStat = statisticRepo.getLatest();

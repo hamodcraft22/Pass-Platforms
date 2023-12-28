@@ -64,6 +64,7 @@ public class OfferedCourseServ
         return offeredCourses;
     }
 
+    // get an offered course details - not really needed
     public OfferedCourseDao getOfferedCourseDetails(int offerID)
     {
         Optional<OfferedCourse> retrievedOfferedCourse = offeredCourseRepo.findById(offerID);
@@ -71,6 +72,7 @@ public class OfferedCourseServ
         return retrievedOfferedCourse.map(OfferedCourseDao::new).orElse(null);
     }
 
+    // create a single course offer
     public OfferedCourseDao createOfferedCourse(String leaderID, String courseID)
     {
         OfferedCourse newOfferedCourse = new OfferedCourse();

@@ -15,6 +15,7 @@ public class MailCont
     @Autowired
     private MailServ mailServ;
 
+    // test api - send an invite email based on booking DAO
     @PostMapping
     public ResponseEntity<?> sendInvite(
             @RequestBody BookingDao bookingDao)

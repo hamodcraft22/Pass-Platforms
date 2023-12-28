@@ -8,10 +8,7 @@ import polytechnic.bh.PassPlatforms_Backend.Dao.BookingDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.BookingMemberDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.UserDao;
 import polytechnic.bh.PassPlatforms_Backend.Dto.GenericDto;
-import polytechnic.bh.PassPlatforms_Backend.Service.BookingMemberServ;
-import polytechnic.bh.PassPlatforms_Backend.Service.BookingServ;
-import polytechnic.bh.PassPlatforms_Backend.Service.LogServ;
-import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
+import polytechnic.bh.PassPlatforms_Backend.Service.*;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -36,6 +33,9 @@ public class BookingCont
 
     @Autowired
     private LogServ logServ;
+
+    @Autowired
+    private AuditServ auditServ;
 
     // get all bookings - only managers
     @GetMapping("")
@@ -760,6 +760,8 @@ public class BookingCont
                 {
                     if (bookingServ.deleteBooking(bookingID))
                     {
+                        // delete audit
+                        auditServ.createAudit('D',"Booking",null,null,userID);
                         return new ResponseEntity<>(null, HttpStatus.OK);
                     }
                     else
