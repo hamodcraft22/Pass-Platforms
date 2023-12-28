@@ -96,8 +96,11 @@ export default function AppView()
         }
         catch (error)
         {
-            setLoadingShow(false);
             console.log(error);
+        }
+        finally
+        {
+            setLoadingShow(false);
         }
     }
 
