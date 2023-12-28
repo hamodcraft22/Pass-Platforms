@@ -522,7 +522,7 @@ export default function NewRevisionPage()
                         <Typography variant="h6">Select Date:</Typography>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                             <DatePicker sx={{width: "100%", mt: 1}} label="Revision Date" format={"DD/MM/YYYY"}
-                                        value={revWeekSelectedDate} onChange={(newValue) =>
+                                        minDate={moment()} value={revWeekSelectedDate} onChange={(newValue) =>
                             {
                                 setRevWeekSelectedDate(newValue)
                             }}/>
