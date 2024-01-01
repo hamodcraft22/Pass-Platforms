@@ -332,7 +332,15 @@ export default function TranscriptPage()
                     correctedCourses.push({"courseid": courseCode, "title": courseName, "grade": courseGrade, "student": {"userid": userID}});
                 });
 
-                setCourses(correctedCourses);
+                if (correctedCourses.length !== 0)
+                {
+                    setCourses(correctedCourses);
+                }
+                else
+                {
+                    setErrorMsg("No Schedules found, make sure you exported with 'Save to PDF option'");
+                    setErrorShow(true);
+                }
             }
             catch (error)
             {

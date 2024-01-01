@@ -337,7 +337,17 @@ export default function SchedulePage()
                 const courseRegex = /\b([MTWRFSU])\s+(\d{1,2}:\d{2}\s+[AP]M)\s+-\s+(\d{1,2}:\d{2}\s+[AP]M)/gm;
 
                 const extractedSchedules = extractScheduleFromText(pdfText, courseRegex);
-                setUploadSchedules(extractedSchedules);
+
+                if (extractedSchedules.length !== 0)
+                {
+                    setUploadSchedules(extractedSchedules);
+                }
+                else
+                {
+                    setErrorMsg("No Schedules found, make sure you exported with 'Save to PDF option'");
+                    setErrorShow(true);
+                }
+
             } catch (error) {
                 console.error(error.message);
             }

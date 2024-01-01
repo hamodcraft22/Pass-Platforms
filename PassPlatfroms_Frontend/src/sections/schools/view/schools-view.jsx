@@ -218,7 +218,15 @@ export default function SchoolsPage()
             sheetsData.push({"schoolid": sheetName, "schoolname": data[0][0], "courses": formattedCourses});
         });
 
-        setSchoolsUpload(sheetsData);
+        if (sheetsData.length !== 0)
+        {
+            setSchoolsUpload(sheetsData);
+        }
+        else
+        {
+            setErrorMsg("No Data Can be extracted, ensure that file mathces template");
+            setErrorShow(true);
+        }
     };
 
     const readFile = (file) =>
