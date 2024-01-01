@@ -186,7 +186,7 @@ export default function AppView()
                 <Grid xs={12} md={6} lg={8}>
                     <Card>
                         <Box>
-                            <ImageGallery items={images} autoPlay={true} slideDuration={5000} showPlayButton={false} showFullscreenButton={false}/>
+                            <ImageGallery items={images} autoPlay={true} showPlayButton={false} slideInterval={10000} showFullscreenButton={false}/>
                         </Box>
                     </Card>
                 </Grid>

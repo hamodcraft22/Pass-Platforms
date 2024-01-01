@@ -308,7 +308,7 @@ export default function RecommendationsPage()
 
 
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4"> Student Name - Bookings</Typography>
+                <Typography variant="h4">Bookings</Typography>
 
                 {/* only show if a student */}
                 <div>

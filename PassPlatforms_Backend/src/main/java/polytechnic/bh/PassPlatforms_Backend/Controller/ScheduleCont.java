@@ -221,6 +221,44 @@ public class ScheduleCont
         }
     }
 
+    // create multi schedule -- added | tested
+    @PostMapping("/multi")
+    public ResponseEntity<GenericDto<List<ScheduleDao>>> createMultiSchedule(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestBody List<ScheduleDao> scheduleDao)
+    {
+        String userID = isValidToken(requestKey);
+
+        try
+        {
+            if (userID != null)
+            {
+                //token is valid, get user and role
+                UserDao user = userServ.getUser(userID);
+
+                if (user.getRole().getRoleid() == ROLE_STUDENT || user.getRole().getRoleid() == ROLE_LEADER)
+                {
+                    List<ScheduleDao> createdSchedules = scheduleServ.createMultiSchedule(scheduleDao);
+
+                    return new ResponseEntity<>(new GenericDto<>(null, createdSchedules, null, null), HttpStatus.CREATED);
+                }
+                else
+                {
+                    return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                }
+            }
+            else
+            {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        }
+        catch (Exception ex)
+        {
+            logServ.createLog(ex.getMessage(), userID);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     // edit schedule -- added | tested
     @PutMapping("")
     public ResponseEntity<GenericDto<ScheduleDao>> editSchedule(

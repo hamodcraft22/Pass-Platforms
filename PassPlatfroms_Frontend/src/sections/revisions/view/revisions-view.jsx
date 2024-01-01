@@ -296,7 +296,7 @@ export default function RevisionsPage()
 
 
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4"> Student Name - Revisions</Typography>
+                <Typography variant="h4">Revisions</Typography>
 
                 <div>
                     {/* only show if a leader */}

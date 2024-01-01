@@ -29,6 +29,15 @@ import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {TimePicker} from "@mui/x-date-pickers";
 import UserProfile from "../../../components/auth/UserInfo";
 import ExportToExcel from "../../../utils/exportExcel";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import extractTextFromPdf from "../extractTextFromPdf";
+import extractScheduleFromText from "../extractScheduleFromText";
+import {styled} from "@mui/material/styles";
+import Paper from "@mui/material/Paper";
+import moment from "moment";
 
 // ----------------------------------------------------------------------
 
@@ -197,6 +206,144 @@ export default function SchedulePage()
         }
     };
 
+    const [showUploadDialog, setShowUploadDialog] = useState(false);
+    const [uploadSchedules, setUploadSchedules] = useState([]);
+
+
+    // submit multi schedule
+    function createMultiSubmit()
+    {
+        let scheduleToSubmit = [];
+
+        uploadSchedules.forEach((schedule) => {
+            scheduleToSubmit.push({"starttime": getTimeMoment(schedule.start), "endtime": getTimeMoment(schedule.end), "day": {"dayid": schedule.day}, "user": {"userid": userID}});
+        });
+
+        submitMultiSchedule(scheduleToSubmit);
+    }
+
+    // add schedule api
+    async function submitMultiSchedule(scheduleToSubmit)
+    {
+        let isok = false;
+
+        try
+        {
+            setLoadingShow(true);
+
+            let token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(scheduleToSubmit)};
+
+            await fetch(`https://backend.zift.ddnsfree.com/api/schedule/multi`, requestOptions)
+                .then((response) =>
+                {
+                    if (response.status === 201 || response.status === 200)
+                    {
+                        isok = true;
+                        return response.json();
+                    }
+                    else if (response.status === 400)
+                    {
+                        setErrorMsg("Schedule clashes with another schedule time");
+                        setErrorShow(true);
+                    }
+                    else if (response.status === 401)
+                    {
+                        setErrorMsg("you are not allowed to do this action");
+                        setErrorShow(true);
+                    }
+                    else if (response.status === 404)
+                    {
+                        setErrorMsg("the request was not found on the server, double check your connection");
+                        setErrorShow(true);
+                    }
+                    else
+                    {
+                        setErrorMsg("an unknown error occurred, please check console");
+                        setErrorShow(true);
+                    }
+                })
+                .then((data) =>
+                {
+                    setLoadingShow(false);
+                    if (isok)
+                    {
+                        // refresh transcript
+                        setSuccessMsg("Schedules added, clashes (if any) ignored");
+                        setSuccessShow(true);
+                        getSchedules(userID);
+
+                        // clear all the things in add
+                        setUploadSchedules([]);
+                    }
+                });
+
+        }
+        catch (error)
+        {
+            setErrorMsg("an unknown error occurred, please check console");
+            setErrorShow(true);
+            console.log(error);
+            setLoadingShow(false);
+        }
+    }
+
+
+    const handleUploadClickOpen = () =>
+    {
+        setShowUploadDialog(true);
+    };
+    const handleUploadClose = () =>
+    {
+        setShowUploadDialog(false);
+
+        setUploadSchedules([]);
+    };
+    const handleUplaodSave = () =>
+    {
+        if (uploadSchedules !== null && Object.keys(uploadSchedules).length !== 0)
+        {
+            setShowUploadDialog(false);
+            createMultiSubmit();
+        }
+        else
+        {
+            setErrorMsg("no Schedules found");
+            setErrorShow(true);
+        }
+    };
+
+    function getTimeMoment(theTime)
+    {
+        // Get today's date
+        const today = moment().format('YYYY-MM-DD');
+
+        // Combine date and time into a Moment object
+        // Log the resulting Moment object
+        return moment(`${today} ${theTime}`, 'YYYY-MM-DD h:mm A')
+    }
+
+
+    // extract schedules
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+
+        if (file) {
+            try {
+                const pdfText = await extractTextFromPdf(file);
+
+                // Define your regular expression for course extraction
+                const courseRegex = /\b([MTWRFSU])\s+(\d{1,2}:\d{2}\s+[AP]M)\s+-\s+(\d{1,2}:\d{2}\s+[AP]M)/gm;
+
+                const extractedSchedules = extractScheduleFromText(pdfText, courseRegex);
+                setUploadSchedules(extractedSchedules);
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+    };
+
 
     // submit new schedule
     function createSubmit()
@@ -206,7 +353,7 @@ export default function SchedulePage()
         submitSchedule(scheduleToSubmit);
     }
 
-    // add offered courses api
+    // add schedule api
     async function submitSchedule(scheduleToSubmit)
     {
         let isok = false;
@@ -305,6 +452,45 @@ export default function SchedulePage()
         setRowsPerPage(parseInt(event.target.value, 10));
     };
 
+    const VisuallyHiddenInput = styled('input')({
+        clip: 'rect(0 0 0 0)',
+        clipPath: 'inset(50%)',
+        height: 1,
+        overflow: 'hidden',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        whiteSpace: 'nowrap',
+        width: 1,
+    });
+
+    const CustomPaper = (props) =>
+    {
+        return <Paper elevation={8} {...props} />;
+    };
+
+    const dayWord = (dayChar) =>
+    {
+        switch (dayChar)
+        {
+            case 'U':
+                return "Sunday";
+            case 'M':
+                return "Monday";
+            case 'T':
+                return "Tuesday";
+            case 'W':
+                return "Wednesday";
+            case 'R':
+                return "Thursday";
+            case 'F':
+                return "Friday";
+            case 'S':
+                return "Saturday";
+            default:
+                return "huh?"
+        }
+    }
 
     return (
         <Container>
@@ -337,10 +523,18 @@ export default function SchedulePage()
                 <div>
                     {
                         studentIDParm === null && (userRole === "leader" || userRole === "student") &&
-                        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
-                                onClick={handleAddClickOpen}>
-                            Add Schedule Schedule
-                        </Button>
+                        <>
+                            <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>}
+                                    onClick={handleAddClickOpen}>
+                                Add Schedule
+                            </Button>
+
+                            <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill"/>} sx={{m: 1}}
+                                    onClick={handleUploadClickOpen}>
+                                Upload Schedule
+                            </Button>
+                        </>
+
                     }
 
                     <ExportToExcel data={userSchedules} filename="Schedule List"/>
@@ -445,6 +639,59 @@ export default function SchedulePage()
                     <DialogActions>
                         <Button onClick={handleAddClose}>Cancel</Button>
                         <Button onClick={handleAddSave} autoFocus>
+                            Save
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+
+
+                {/* Upload dialog */}
+                <Dialog
+                    open={showUploadDialog}
+                    onClose={handleUploadClose}
+                >
+                    <DialogTitle>
+                        Upload Schedule File
+                    </DialogTitle>
+                    <DialogContent>
+                        <Button component="label" variant="contained" startIcon={<CloudUploadIcon/>} fullWidth>
+                            Upload file
+                            <VisuallyHiddenInput type="file" onChange={handleFileChange} accept=".pdf"/>
+                        </Button>
+
+
+                        {
+                            Object.keys(uploadSchedules).length !== 0 &&
+                            <TableContainer component={CustomPaper} sx={{mt: 3}}>
+                                <Table aria-label="simple table" sx={{minWidth: "200px"}}>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Day</TableCell>
+                                            <TableCell align="center">Start Time</TableCell>
+                                            <TableCell align="center">End Time</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {uploadSchedules.map((schedule, index) => (
+                                            <TableRow
+                                                key={index}
+                                                sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                            >
+                                                <TableCell component="th" scope="row">
+                                                    {dayWord(schedule.day)}
+                                                </TableCell>
+                                                <TableCell align="center">{schedule.start}</TableCell>
+                                                <TableCell align="center">{schedule.end}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        }
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleUploadClose}>Cancel</Button>
+                        <Button onClick={handleUplaodSave} autoFocus>
                             Save
                         </Button>
                     </DialogActions>

@@ -74,6 +74,26 @@ public class ScheduleServ
         return new ScheduleDao(scheduleRepo.save(newSchedule));
     }
 
+    // create a new schedule entry - by students / leaders
+    public List<ScheduleDao> createMultiSchedule(List<ScheduleDao> schedules)
+    {
+        List<ScheduleDao> newSchedules = new ArrayList<>();
+
+        for (ScheduleDao schedule : schedules)
+        {
+            try
+            {
+                newSchedules.add(createSchedule(schedule.getStarttime(), schedule.getEndtime(), schedule.getDay().getDayid(), schedule.getUser().getUserid()));
+            }
+            catch (Exception ex)
+            {
+                System.out.println("skipping dup schedule");
+            }
+        }
+
+        return newSchedules;
+    }
+
     // edit a schedule
     public ScheduleDao editSchedule(ScheduleDao updatedSchedule)
     {
