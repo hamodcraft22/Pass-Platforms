@@ -71,7 +71,7 @@ export default function ViewBookingPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/booking/${bookingIDParm}`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/booking/${bookingIDParm}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200)
@@ -149,7 +149,7 @@ export default function ViewBookingPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: userNote};
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/bookingnote/${bookingInfo.bookingid}`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/bookingnote/${bookingInfo.bookingid}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

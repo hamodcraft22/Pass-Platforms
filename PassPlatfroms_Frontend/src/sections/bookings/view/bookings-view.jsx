@@ -104,15 +104,15 @@ export default function RecommendationsPage()
 
             if (bookingType === "myBookings")
             {
-                urlPath = `https://zift.ddnsfree.com:5679/api/booking/student/${userID}`
+                urlPath = `https://backend.zift.ddnsfree.com/api/booking/student/${userID}`
             }
             else if (bookingType === "memberBookings")
             {
-                urlPath = `https://zift.ddnsfree.com:5679/api/booking/member/${userID}`
+                urlPath = `https://backend.zift.ddnsfree.com/api/booking/member/${userID}`
             }
             else if (bookingType === "leaderBookings")
             {
-                urlPath = `https://zift.ddnsfree.com:5679/api/booking/leader/${userID}`
+                urlPath = `https://backend.zift.ddnsfree.com/api/booking/leader/${userID}`
             }
 
             await fetch(urlPath, requestOptions)

@@ -89,7 +89,7 @@ export default function ViewApplicationPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/application/student/${studentID}`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/application/student/${studentID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200)
@@ -215,7 +215,7 @@ export default function ViewApplicationPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(applicationDto)};
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/application`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/application`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -277,7 +277,7 @@ export default function ViewApplicationPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: userNote};
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/applicationNote/${application.applicationid}`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/applicationNote/${application.applicationid}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

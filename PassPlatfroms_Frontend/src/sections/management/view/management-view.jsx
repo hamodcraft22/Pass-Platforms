@@ -256,7 +256,7 @@ export default function ManagementPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch("https://zift.ddnsfree.com:5679/api/metadata", requestOptions)
+            await fetch("https://backend.zift.ddnsfree.com/api/metadata", requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 200)
@@ -365,7 +365,7 @@ export default function ManagementPage()
 
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(meteDataDto)};
 
-            return await fetch("https://zift.ddnsfree.com:5679/api/metadata", requestOptions)
+            return await fetch("https://backend.zift.ddnsfree.com/api/metadata", requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 200 || response.status === 201)
@@ -406,7 +406,7 @@ export default function ManagementPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(schoolsUpload)};
 
-            return await fetch(`https://zift.ddnsfree.com:5679/api/school/multi`, requestOptions)
+            return await fetch(`https://backend.zift.ddnsfree.com/api/school/multi`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -443,7 +443,7 @@ export default function ManagementPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(leadersUpload)};
 
-            return await fetch(`https://zift.ddnsfree.com:5679/api/user/leaderify`, requestOptions)
+            return await fetch(`https://backend.zift.ddnsfree.com/api/user/leaderify`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -479,7 +479,7 @@ export default function ManagementPage()
 
             const requestOptions = {method: "DELETE", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(leadersUpload)};
 
-            return await fetch(`https://zift.ddnsfree.com:5679/api/metadata`, requestOptions)
+            return await fetch(`https://backend.zift.ddnsfree.com/api/metadata`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

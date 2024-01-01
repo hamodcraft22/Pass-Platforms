@@ -72,7 +72,7 @@ export default function NewRevisionPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/school`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/school`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200 || response.status === 200)
@@ -191,7 +191,7 @@ export default function NewRevisionPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(revisionDto)};
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/revision`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/revision`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

@@ -141,7 +141,7 @@ export default function ScheduleTableRow({scheduleID, day, startTime, endTime, c
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/schedule/${scheduleID}`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/schedule/${scheduleID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -185,7 +185,7 @@ export default function ScheduleTableRow({scheduleID, day, startTime, endTime, c
 
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(scheduleToSubmit)};
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/schedule`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/schedule`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)

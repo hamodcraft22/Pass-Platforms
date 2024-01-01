@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.util.Optional;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.*;
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.refreshUsers;
 
 @Service
 public class MetadataServ
@@ -85,6 +86,9 @@ public class MetadataServ
 
             // delete metadata
             metadataRepo.deleteAll();
+
+            // refresh users
+            refreshUsers();
 
             return true;
         }

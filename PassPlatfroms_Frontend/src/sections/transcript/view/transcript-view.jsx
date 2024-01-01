@@ -98,7 +98,7 @@ export default function TranscriptPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/transcript/leader/${leaderID}`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/transcript/leader/${leaderID}`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -353,7 +353,7 @@ export default function TranscriptPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(courses)};
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/transcript/multi`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/transcript/multi`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)

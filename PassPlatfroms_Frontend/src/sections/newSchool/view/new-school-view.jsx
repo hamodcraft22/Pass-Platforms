@@ -144,7 +144,7 @@ export default function NewSchoolPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(schoolDto)};
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/school`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/school`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

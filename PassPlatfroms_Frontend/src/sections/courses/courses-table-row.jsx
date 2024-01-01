@@ -88,7 +88,7 @@ export default function CoursesTableRow({courseID, courseName, role})
                     body: JSON.stringify({"courseid": courseID, "coursename": editCourseName})
                 };
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/course`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/course`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -125,7 +125,7 @@ export default function CoursesTableRow({courseID, courseName, role})
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/course/${courseID}`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/course/${courseID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

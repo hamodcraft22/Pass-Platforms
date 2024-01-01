@@ -165,7 +165,7 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, typ
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/slot/${slotID}`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/slot/${slotID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -224,7 +224,7 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, typ
 
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(slotToSubmit)};
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/slot`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/slot`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)

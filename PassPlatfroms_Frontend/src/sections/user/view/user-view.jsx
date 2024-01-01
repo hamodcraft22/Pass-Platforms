@@ -83,7 +83,7 @@ export default function UserPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://zift.ddnsfree.com:5679/api/user`, requestOptions)
+            await fetch(`https://backend.zift.ddnsfree.com/api/user`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200 || response.status === 201)

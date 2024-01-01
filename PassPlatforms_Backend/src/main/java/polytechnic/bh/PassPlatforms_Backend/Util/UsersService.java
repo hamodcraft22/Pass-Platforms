@@ -50,6 +50,7 @@ public class UsersService
 
     public static void refreshUsers() throws JSONException
     {
+        System.out.println("Fetching Users");
         String url = "https://graph.microsoft.com/v1.0/users";
         String token = getToken();
 
