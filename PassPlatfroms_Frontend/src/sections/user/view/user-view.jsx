@@ -22,6 +22,7 @@ import UserTableToolbar from '../user-table-toolbar';
 import UserProfile from "../../../components/auth/UserInfo";
 import {Alert, Backdrop, CircularProgress, Snackbar} from "@mui/material";
 import {object} from "prop-types";
+import ExportToExcel from "../../../utils/exportExcel";
 
 // ----------------------------------------------------------------------
 
@@ -223,6 +224,11 @@ export default function UserPage()
 
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Users</Typography>
+
+                {
+                    (schoolIDParm !== null || courseIDParm !== null) &&
+                    <ExportToExcel data={dataFiltered} filename="Leaders List"/>
+                }
             </Stack>
 
             <Card>
