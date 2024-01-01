@@ -15,6 +15,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import {Alert, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import UserProfile from "../../components/auth/UserInfo";
+import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 
 // ----------------------------------------------------------------------
 
@@ -82,6 +83,12 @@ export default function SchoolsTableRow({schoolID, schoolName, role})
     const goToCourse = () =>
     {
         let path = `/courses?schoolID=${schoolID}`;
+        navigate(path);
+    }
+
+    const goToUsers = () =>
+    {
+        let path = `/user?schoolID=${schoolID}`;
         navigate(path);
     }
 
@@ -172,6 +179,9 @@ export default function SchoolsTableRow({schoolID, schoolName, role})
                 <TableCell>{schoolName}</TableCell>
 
                 <TableCell align={"right"}>
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"primary"}
+                            onClick={goToUsers}><SupervisedUserCircleIcon fontSize={"small"}/></Button>
+
                     <Button variant="contained" sx={{ml: 1}} size={"small"} color={"success"}
                             onClick={goToCourse}><ListAltIcon fontSize={"small"}/></Button>
 

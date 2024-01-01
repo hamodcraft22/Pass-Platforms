@@ -13,6 +13,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import {Alert, TextField} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import UserProfile from "../../components/auth/UserInfo";
+import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
+import {useNavigate} from "react-router-dom";
 
 // ----------------------------------------------------------------------
 
@@ -152,6 +154,14 @@ export default function CoursesTableRow({courseID, courseName, role})
     }
 
 
+    let navigate = useNavigate();
+    const goToUsers = () =>
+    {
+        let path = `/user?courseID=${courseID}`;
+        navigate(path);
+    }
+
+
     return (
         <>
 
@@ -164,6 +174,10 @@ export default function CoursesTableRow({courseID, courseName, role})
                 <TableCell>{courseName}</TableCell>
 
                 <TableCell align={"right"}>
+
+                    <Button variant="contained" sx={{ml: 1}} size={"small"} color={"primary"}
+                            onClick={goToUsers}><SupervisedUserCircleIcon fontSize={"small"}/></Button>
+
                     {
                         (role === 'admin' || role === 'manager') &&
                         <>

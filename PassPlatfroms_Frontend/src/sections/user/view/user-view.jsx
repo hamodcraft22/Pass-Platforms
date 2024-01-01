@@ -21,11 +21,15 @@ import UserTableRow from '../user-table-row';
 import UserTableToolbar from '../user-table-toolbar';
 import UserProfile from "../../../components/auth/UserInfo";
 import {Alert, Backdrop, CircularProgress, Snackbar} from "@mui/material";
+import {object} from "prop-types";
 
 // ----------------------------------------------------------------------
 
 export default function UserPage()
 {
+    const queryParameters = new URLSearchParams(window.location.search);
+    const schoolIDParm = queryParameters.get("schoolID");
+    const courseIDParm = queryParameters.get("courseID");
 
     const [loadingShow, setLoadingShow] = useState(false);
 
@@ -83,7 +87,18 @@ export default function UserPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/user`, requestOptions)
+            let url = "https://backend.zift.ddnsfree.com/api/user";
+
+            if (schoolIDParm !== null)
+            {
+                url = `https://backend.zift.ddnsfree.com/api/user/school/${schoolIDParm}`
+            }
+            else if (courseIDParm !== null)
+            {
+                url = `https://backend.zift.ddnsfree.com/api/user/course/${courseIDParm}`
+            }
+
+            await fetch(url, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200 || response.status === 201)
@@ -92,8 +107,8 @@ export default function UserPage()
                     }
                     else
                     {
-                        setErrorMsg("No Users Found, Check Connection");
-                        setErrorMsg(true);
+                        setErrorMsg("No Users Found");
+                        setErrorShow(true);
                         return null;
                     }
                 })
@@ -101,7 +116,15 @@ export default function UserPage()
                 {
                     if (data !== null)
                     {
-                        setUsers(data.transObject)
+                        if (Object.keys(data.transObject).length !== 0)
+                        {
+                            setUsers(data.transObject)
+                        }
+                        else
+                        {
+                            setErrorMsg("No Users Found");
+                            setErrorShow(true);
+                        }
                     }
                 })
 
