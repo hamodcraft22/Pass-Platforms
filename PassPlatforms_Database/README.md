@@ -17,6 +17,11 @@ grant sysdba to pp_admin
 
 * run the SQL script `PassPlatformsDB.sql` to construct the DB
 
+## System Mnager & Admin
+* to add a manager to the admin, use the following command (replace `USER_ID` with actual login id used for moodle/ssb/etc), (`ROLE_ID`: 4 for manager, 5 for admin)
+```
+insert into user values ('USER_ID',ROLE_ID)
+```
 
 ## Statistic Trigger
 * the database caches in the statistics of the platform every night using a procedure, to setup the time procedure please run the following script as a sys admin 
