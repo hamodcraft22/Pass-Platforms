@@ -92,7 +92,7 @@ export default function RecommendationsTableRow({recID, dateTime, note, recStatu
 
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(recommendationToSubmit)};
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/recommendation`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/recommendation`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -153,7 +153,7 @@ export default function RecommendationsTableRow({recID, dateTime, note, recStatu
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/recommendation/${recID}`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/recommendation/${recID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

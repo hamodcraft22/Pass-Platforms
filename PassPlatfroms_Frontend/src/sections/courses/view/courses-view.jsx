@@ -70,7 +70,7 @@ export default function CoursesPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/school/${schoolIDParm}`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/school/${schoolIDParm}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200 || response.status === 200)
@@ -194,7 +194,7 @@ export default function CoursesPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(courseDto)};
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/course`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/course`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

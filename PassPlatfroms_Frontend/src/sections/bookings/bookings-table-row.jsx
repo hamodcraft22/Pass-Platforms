@@ -116,7 +116,7 @@ export default function BookingsTableRow({bookingID, subject, date, startTime, e
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/booking/${bookingID}`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/booking/${bookingID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -160,7 +160,7 @@ export default function BookingsTableRow({bookingID, subject, date, startTime, e
 
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(bookingToSubmit)};
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/booking`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/booking`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)

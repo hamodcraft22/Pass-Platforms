@@ -75,7 +75,7 @@ export default function AuditsTableRow({audID, changeType, entity, dateTime, use
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/audit/${audID}`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/audit/${audID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

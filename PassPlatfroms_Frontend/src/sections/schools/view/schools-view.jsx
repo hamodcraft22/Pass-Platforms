@@ -81,7 +81,7 @@ export default function SchoolsPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/school`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/school`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200 || response.status === 200)
@@ -288,7 +288,7 @@ export default function SchoolsPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(schoolsUpload)};
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/school/multi`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/school/multi`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

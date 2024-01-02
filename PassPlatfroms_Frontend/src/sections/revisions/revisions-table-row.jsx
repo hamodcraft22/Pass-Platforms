@@ -114,7 +114,7 @@ export default function RevisionsTableRow({bookingID, subject, date, startTime, 
 
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(revisionToSubmit)};
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/revision`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/revision`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -160,7 +160,7 @@ export default function RevisionsTableRow({bookingID, subject, date, startTime, 
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/revision/${bookingID}`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/revision/${bookingID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -198,7 +198,7 @@ export default function RevisionsTableRow({bookingID, subject, date, startTime, 
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/revision/${bookingID}/member`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/revision/${bookingID}/member`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

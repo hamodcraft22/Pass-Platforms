@@ -91,7 +91,7 @@ const MainContent = () =>
         {
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': barerToken}};
 
-            let role = await fetch(`https://backend.zift.ddnsfree.com/api/user/userlog`, requestOptions)
+            let role = await fetch(`https://URL_CHANGE_PLACEHOLDER/api/user/userlog`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200 || response.status === 200)
@@ -126,7 +126,7 @@ const MainContent = () =>
         {
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json'}};
 
-            let enable = await fetch(`https://backend.zift.ddnsfree.com/api/metadata/disabled`, requestOptions)
+            let enable = await fetch(`https://URL_CHANGE_PLACEHOLDER/api/metadata/disabled`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200 || response.status === 200)

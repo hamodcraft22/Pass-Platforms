@@ -74,7 +74,7 @@ export default function LogsTableRow({logID, user, dateTime, logErrorMsg})
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/log/${logID}`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/log/${logID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

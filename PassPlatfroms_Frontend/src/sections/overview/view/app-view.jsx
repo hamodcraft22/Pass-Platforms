@@ -73,7 +73,7 @@ export default function AppView()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/Stat`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/Stat`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200)

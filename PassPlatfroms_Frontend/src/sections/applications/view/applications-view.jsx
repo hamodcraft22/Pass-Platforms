@@ -78,7 +78,7 @@ export default function ApplicationsPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/application`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/application`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200)

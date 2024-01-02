@@ -102,11 +102,11 @@ export default function RevisionsPage()
 
             if (revisionType === "myRevisions")
             {
-                urlPath = `https://backend.zift.ddnsfree.com/api/revision/student/${userID}`
+                urlPath = `https://URL_CHANGE_PLACEHOLDER/api/revision/student/${userID}`
             }
             else if (revisionType === "leaderRevisions")
             {
-                urlPath = `https://backend.zift.ddnsfree.com/api/revision/leader/${userID}`
+                urlPath = `https://URL_CHANGE_PLACEHOLDER/api/revision/leader/${userID}`
             }
 
             await fetch(urlPath, requestOptions)

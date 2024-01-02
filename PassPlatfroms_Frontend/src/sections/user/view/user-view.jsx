@@ -88,15 +88,15 @@ export default function UserPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            let url = "https://backend.zift.ddnsfree.com/api/user";
+            let url = "https://URL_CHANGE_PLACEHOLDER/api/user";
 
             if (schoolIDParm !== null)
             {
-                url = `https://backend.zift.ddnsfree.com/api/user/school/${schoolIDParm}`
+                url = `https://URL_CHANGE_PLACEHOLDER/api/user/school/${schoolIDParm}`
             }
             else if (courseIDParm !== null)
             {
-                url = `https://backend.zift.ddnsfree.com/api/user/course/${courseIDParm}`
+                url = `https://URL_CHANGE_PLACEHOLDER/api/user/course/${courseIDParm}`
             }
 
             await fetch(url, requestOptions)

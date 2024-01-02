@@ -83,7 +83,7 @@ export default function NotificationsPopover()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch("https://backend.zift.ddnsfree.com/api/notification", requestOptions)
+            await fetch("https://URL_CHANGE_PLACEHOLDER/api/notification", requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 200)
@@ -136,7 +136,7 @@ export default function NotificationsPopover()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch(`https://backend.zift.ddnsfree.com/api/notification/${notficID}`, requestOptions)
+            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/notification/${notficID}`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 200)
