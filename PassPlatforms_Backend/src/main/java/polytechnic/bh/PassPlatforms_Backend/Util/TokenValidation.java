@@ -18,7 +18,7 @@ import java.util.Date;
 @Slf4j
 public class TokenValidation
 {
-    private static final String JWK_PROVIDER_URL = "https://login.microsoftonline.com/040cb881-0963-47cf-89ce-b06f6e0256a3/discovery/v2.0/keys";
+    private static final String JWK_PROVIDER_URL = "https://login.microsoftonline.com/TANENT_ID/discovery/v2.0/keys";
 
     public static String isValidToken(String token)
     {

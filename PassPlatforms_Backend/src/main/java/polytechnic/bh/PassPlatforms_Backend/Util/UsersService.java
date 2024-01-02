@@ -112,13 +112,13 @@ public class UsersService
     {
         try
         {
-            String url = "https://login.microsoftonline.com/040cb881-0963-47cf-89ce-b06f6e0256a3/oauth2/v2.0/token";
+            String url = "https://login.microsoftonline.com/TANENT_ID/oauth2/v2.0/token";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             MultiValueMap<String, String> inputMap = new LinkedMultiValueMap<>();
             inputMap.add("grant_type", "client_credentials");
-            inputMap.add("client_id", "c4d3583d-9ca5-4403-a22f-4985ad2dfbf1");
-            inputMap.add("client_secret", "e0o8Q~Dtb.6mNHQiPZ.EQc~MhD36U.NU4gd9zdd8");
+            inputMap.add("client_id", "CLIENT_ID");
+            inputMap.add("client_secret", "CLIENT_SECRET");
             inputMap.add("scope", "https://graph.microsoft.com/.default");
             HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(inputMap, headers);
             RestTemplate template = new RestTemplate();
