@@ -15,10 +15,12 @@ import java.net.URL;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
 
+import static polytechnic.bh.PassPlatforms_Backend.Constant.AuthConstant.TENANT_ID;
+
 @Slf4j
 public class TokenValidation
 {
-    private static final String JWK_PROVIDER_URL = "https://login.microsoftonline.com/TANENT_ID/discovery/v2.0/keys";
+    private static final String JWK_PROVIDER_URL = "https://login.microsoftonline.com/" + TENANT_ID + "/discovery/v2.0/keys";
 
     public static String isValidToken(String token)
     {

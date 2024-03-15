@@ -144,7 +144,7 @@ export default function NewSchoolPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(schoolDto)};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/school`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/school`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

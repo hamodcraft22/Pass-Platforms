@@ -57,7 +57,7 @@ export default function TranscriptTableRow({transID, courseID, grade})
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/transcript/${transID}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/transcript/${transID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

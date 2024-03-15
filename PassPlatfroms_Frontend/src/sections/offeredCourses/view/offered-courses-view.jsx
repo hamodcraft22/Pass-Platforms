@@ -95,7 +95,7 @@ export default function OfferedCoursesPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/offeredcourse/leader/${leaderID}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/offeredcourse/leader/${leaderID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200)
@@ -149,7 +149,7 @@ export default function OfferedCoursesPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/course/leader/${leaderID}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/course/leader/${leaderID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200)
@@ -277,7 +277,7 @@ export default function OfferedCoursesPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(offeredCoursesList)};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/offeredcourse/multi`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/offeredcourse/multi`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)

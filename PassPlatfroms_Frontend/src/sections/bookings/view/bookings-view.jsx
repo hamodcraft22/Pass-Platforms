@@ -104,15 +104,15 @@ export default function RecommendationsPage()
 
             if (bookingType === "myBookings")
             {
-                urlPath = `https://URL_CHANGE_PLACEHOLDER/api/booking/student/${userID}`
+                urlPath = `${process.env.REACT_APP_BACKEND_URL}/api/booking/student/${userID}`
             }
             else if (bookingType === "memberBookings")
             {
-                urlPath = `https://URL_CHANGE_PLACEHOLDER/api/booking/member/${userID}`
+                urlPath = `${process.env.REACT_APP_BACKEND_URL}/api/booking/member/${userID}`
             }
             else if (bookingType === "leaderBookings")
             {
-                urlPath = `https://URL_CHANGE_PLACEHOLDER/api/booking/leader/${userID}`
+                urlPath = `${process.env.REACT_APP_BACKEND_URL}/api/booking/leader/${userID}`
             }
 
             await fetch(urlPath, requestOptions)

@@ -93,7 +93,7 @@ export default function ApplicationsTableRow({aplicID, studentID, student, date,
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/application/${aplicID}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/application/${aplicID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -137,7 +137,7 @@ export default function ApplicationsTableRow({aplicID, studentID, student, date,
 
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(applicationToSubmit)};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/application`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/application`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)

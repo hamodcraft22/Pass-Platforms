@@ -92,7 +92,7 @@ export default function NewBookingPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/school/schools`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/school/schools`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200 || response.status === 200)
@@ -155,7 +155,7 @@ export default function NewBookingPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/slot/course/${selectedCourse.courseid}?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/slot/course/${selectedCourse.courseid}?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200 || response.status === 201)
@@ -405,7 +405,7 @@ export default function NewBookingPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/users/students`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/users/students`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200)
@@ -503,7 +503,7 @@ export default function NewBookingPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(bookingDto)};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/booking`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/booking`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

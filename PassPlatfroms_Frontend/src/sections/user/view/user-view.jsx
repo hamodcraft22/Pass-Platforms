@@ -88,15 +88,15 @@ export default function UserPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            let url = "https://URL_CHANGE_PLACEHOLDER/api/user";
+            let url = "${.env.BACKEND_URL}/api/user";
 
             if (schoolIDParm !== null)
             {
-                url = `https://URL_CHANGE_PLACEHOLDER/api/user/school/${schoolIDParm}`
+                url = `${process.env.REACT_APP_BACKEND_URL}/api/user/school/${schoolIDParm}`
             }
             else if (courseIDParm !== null)
             {
-                url = `https://URL_CHANGE_PLACEHOLDER/api/user/course/${courseIDParm}`
+                url = `${process.env.REACT_APP_BACKEND_URL}/api/user/course/${courseIDParm}`
             }
 
             await fetch(url, requestOptions)

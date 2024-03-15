@@ -75,7 +75,7 @@ export default function AuditsTableRow({audID, changeType, entity, dateTime, use
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/audit/${audID}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/audit/${audID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

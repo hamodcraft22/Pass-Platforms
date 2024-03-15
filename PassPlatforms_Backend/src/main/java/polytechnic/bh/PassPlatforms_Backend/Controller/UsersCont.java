@@ -6,9 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import polytechnic.bh.PassPlatforms_Backend.Dto.UserInfoDto;
 import polytechnic.bh.PassPlatforms_Backend.Service.LogServ;
+import polytechnic.bh.PassPlatforms_Backend.Util.UsersService;
 
 import java.util.List;
 
+import static polytechnic.bh.PassPlatforms_Backend.Constant.AuthConstant.TENANT_ID;
+import static polytechnic.bh.PassPlatforms_Backend.Constant.ManagerConst.MANGER_ID;
 import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.*;
 
@@ -124,5 +127,11 @@ public class UsersCont
             logServ.createLog(ex.getMessage(), userID);
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/test")
+    public void testZift()
+    {
+        System.out.println(TENANT_ID);
     }
 }

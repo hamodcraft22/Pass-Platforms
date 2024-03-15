@@ -256,7 +256,7 @@ export default function ManagementPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch("https://URL_CHANGE_PLACEHOLDER/api/metadata", requestOptions)
+            await fetch("${process.env.REACT_APP_BACKEND_URL}/api/metadata", requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 200)
@@ -365,7 +365,7 @@ export default function ManagementPage()
 
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(meteDataDto)};
 
-            return await fetch("https://URL_CHANGE_PLACEHOLDER/api/metadata", requestOptions)
+            return await fetch("${process.env.REACT_APP_BACKEND_URL}/api/metadata", requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 200 || response.status === 201)
@@ -406,7 +406,7 @@ export default function ManagementPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(schoolsUpload)};
 
-            return await fetch(`https://URL_CHANGE_PLACEHOLDER/api/school/multi`, requestOptions)
+            return await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/school/multi`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -443,7 +443,7 @@ export default function ManagementPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(leadersUpload)};
 
-            return await fetch(`https://URL_CHANGE_PLACEHOLDER/api/user/leaderify`, requestOptions)
+            return await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/leaderify`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -479,7 +479,7 @@ export default function ManagementPage()
 
             const requestOptions = {method: "DELETE", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(leadersUpload)};
 
-            return await fetch(`https://URL_CHANGE_PLACEHOLDER/api/metadata`, requestOptions)
+            return await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/metadata`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

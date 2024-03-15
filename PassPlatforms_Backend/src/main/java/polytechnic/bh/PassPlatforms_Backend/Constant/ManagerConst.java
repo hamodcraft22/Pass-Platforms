@@ -1,6 +1,9 @@
 package polytechnic.bh.PassPlatforms_Backend.Constant;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public final class ManagerConst
 {
-    public static final String MANGER_ID = "MANAGER_ID";
+    @Value("${PP_MANAGER_ID}")
+    public static String MANGER_ID;
 }

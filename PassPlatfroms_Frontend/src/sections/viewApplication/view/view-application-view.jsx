@@ -89,7 +89,7 @@ export default function ViewApplicationPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/application/student/${studentID}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/application/student/${studentID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200)
@@ -215,7 +215,7 @@ export default function ViewApplicationPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(applicationDto)};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/application`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/application`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -277,7 +277,7 @@ export default function ViewApplicationPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: userNote};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/applicationNote/${application.applicationid}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/applicationNote/${application.applicationid}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

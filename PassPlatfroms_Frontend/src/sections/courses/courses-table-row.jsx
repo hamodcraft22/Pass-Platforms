@@ -90,7 +90,7 @@ export default function CoursesTableRow({courseID, courseName, role})
                     body: JSON.stringify({"courseid": courseID, "coursename": editCourseName})
                 };
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/course`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/course`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -127,7 +127,7 @@ export default function CoursesTableRow({courseID, courseName, role})
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/course/${courseID}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/course/${courseID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

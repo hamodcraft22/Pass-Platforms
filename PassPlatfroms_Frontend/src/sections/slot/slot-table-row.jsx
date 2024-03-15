@@ -165,7 +165,7 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, typ
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/slot/${slotID}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/slot/${slotID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -224,7 +224,7 @@ export default function SlotTableRow({slotID, day, startTime, endTime, note, typ
 
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(slotToSubmit)};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/slot`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/slot`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)

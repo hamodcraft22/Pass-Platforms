@@ -93,7 +93,7 @@ export default function SchedulePage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/schedule/student/${studentID}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/schedule/student/${studentID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200 || response.status === 200)
@@ -235,7 +235,7 @@ export default function SchedulePage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(scheduleToSubmit)};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/schedule/multi`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/schedule/multi`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -376,7 +376,7 @@ export default function SchedulePage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(scheduleToSubmit)};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/schedule`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/schedule`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 201 || response.status === 200)

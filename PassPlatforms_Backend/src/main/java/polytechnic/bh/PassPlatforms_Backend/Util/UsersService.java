@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static polytechnic.bh.PassPlatforms_Backend.Constant.AuthConstant.*;
+
 public class UsersService
 {
     public static Map<String, String> allAzureAdUsers = new HashMap<>();
@@ -112,13 +114,13 @@ public class UsersService
     {
         try
         {
-            String url = "https://login.microsoftonline.com/TANENT_ID/oauth2/v2.0/token";
+            String url = "https://login.microsoftonline.com/" + TENANT_ID + "/oauth2/v2.0/token";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             MultiValueMap<String, String> inputMap = new LinkedMultiValueMap<>();
             inputMap.add("grant_type", "client_credentials");
-            inputMap.add("client_id", "CLIENT_ID");
-            inputMap.add("client_secret", "CLIENT_SECRET");
+            inputMap.add("client_id", CLIENT_ID);
+            inputMap.add("client_secret", CLIENT_SECRET);
             inputMap.add("scope", "https://graph.microsoft.com/.default");
             HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(inputMap, headers);
             RestTemplate template = new RestTemplate();

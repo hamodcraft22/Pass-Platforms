@@ -83,7 +83,7 @@ export default function NewRegistrationPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/school/revisions`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/school/revisions`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200 || response.status === 200)
@@ -154,7 +154,7 @@ export default function NewRegistrationPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/revision/course/${selectedCourse.courseid}?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/revision/course/${selectedCourse.courseid}?weekStart=${bookingStartDate.format("MM/DD/YYYY")}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200)
@@ -360,7 +360,7 @@ export default function NewRegistrationPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/revision/${selctedSlot.uid}/member`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/revision/${selctedSlot.uid}/member`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

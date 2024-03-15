@@ -69,7 +69,7 @@ export default function ViewRevisionPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/revision/${revisionIDParm}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/revision/${revisionIDParm}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200)
@@ -146,7 +146,7 @@ export default function ViewRevisionPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: userNote};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/bookingnote/${revisionInfo.bookingid}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/bookingnote/${revisionInfo.bookingid}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

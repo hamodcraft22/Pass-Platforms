@@ -106,7 +106,7 @@ export default function SchoolsTableRow({schoolID, schoolName, role})
                     body: JSON.stringify({"schoolid": schoolID, "schoolname": editSchoolName})
                 };
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/school`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/school`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
@@ -143,7 +143,7 @@ export default function SchoolsTableRow({schoolID, schoolName, role})
                     headers: {'Content-Type': 'application/json', 'Authorization': token}
                 };
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/school/${schoolID}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/school/${schoolID}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)

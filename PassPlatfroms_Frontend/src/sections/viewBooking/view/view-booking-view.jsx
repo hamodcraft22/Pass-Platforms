@@ -71,7 +71,7 @@ export default function ViewBookingPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/booking/${bookingIDParm}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/booking/${bookingIDParm}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 200)
@@ -149,7 +149,7 @@ export default function ViewBookingPage()
 
             const requestOptions = {method: "POST", headers: {'Content-Type': 'application/json', "Authorization": token}, body: userNote};
 
-            await fetch(`https://URL_CHANGE_PLACEHOLDER/api/bookingnote/${bookingInfo.bookingid}`, requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/bookingnote/${bookingInfo.bookingid}`, requestOptions)
                 .then(response =>
                 {
                     if (response.status === 201 || response.status === 200)
