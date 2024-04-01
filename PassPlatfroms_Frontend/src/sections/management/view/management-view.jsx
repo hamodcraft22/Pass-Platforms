@@ -256,7 +256,7 @@ export default function ManagementPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch("${process.env.REACT_APP_BACKEND_URL}/api/metadata", requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/metadata`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 200)
@@ -365,7 +365,7 @@ export default function ManagementPage()
 
             const requestOptions = {method: "PUT", headers: {'Content-Type': 'application/json', "Authorization": token}, body: JSON.stringify(meteDataDto)};
 
-            return await fetch("${process.env.REACT_APP_BACKEND_URL}/api/metadata", requestOptions)
+            return await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/metadata`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 200 || response.status === 201)

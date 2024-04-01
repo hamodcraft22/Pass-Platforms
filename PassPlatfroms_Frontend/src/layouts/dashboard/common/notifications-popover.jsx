@@ -83,7 +83,7 @@ export default function NotificationsPopover()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', "Authorization": token}};
 
-            await fetch("${process.env.REACT_APP_BACKEND_URL}/api/notification", requestOptions)
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/notification`, requestOptions)
                 .then((response) =>
                 {
                     if (response.status === 200)

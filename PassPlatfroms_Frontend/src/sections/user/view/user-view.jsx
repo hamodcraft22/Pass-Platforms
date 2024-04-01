@@ -88,7 +88,7 @@ export default function UserPage()
 
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
-            let url = "${.env.BACKEND_URL}/api/user";
+            let url = `${process.env.REACT_APP_BACKEND_URL}/api/user`;
 
             if (schoolIDParm !== null)
             {
