@@ -42,7 +42,7 @@ public class MailServ
             message.addHeaderLine("method=REQUEST");
             message.addHeaderLine("charset=UTF-8");
             message.addHeaderLine("component=VEVENT");
-            message.setFrom(new InternetAddress("mohammed.adel.j22@hotmail.com"));
+            message.setFrom(new InternetAddress("mohammed.adel.j22@hotmail.com")); // TODO - MAKE ENV VAR
 
             // send it to the leader
             message.addRecipient(Message.RecipientType.TO, new InternetAddress("202002789@student.polytechnic.bh"));
