@@ -129,9 +129,4 @@ public class UsersCont
         }
     }
 
-    @GetMapping("/test")
-    public void testZift()
-    {
-        System.out.println(TENANT_ID);
-    }
 }
