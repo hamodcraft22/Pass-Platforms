@@ -27,8 +27,8 @@ export const ManagementPage = lazy(() => import('../pages/management'));
 export const LogsPage = lazy(() => import('../pages/logs'));
 export const AuditsPage = lazy(() => import('../pages/audits'));
 
-// export const ProfilePage = lazy(() => import('../pages/profile'));
-// export const UnscheduledBookingPage = lazy(() => import('../pages/unscheduledBooking'));
+export const ProfilePage = lazy(() => import('../pages/profile'));
+export const UnscheduledBookingPage = lazy(() => import('../pages/unscheduledBooking'));
 
 // ----------------------------------------------------------------------
 
@@ -66,8 +66,8 @@ export default function Router()
                 {path: 'management', element: <ManagementPage/>},
                 {path: 'logs', element: <LogsPage/>},
                 {path: 'audits', element: <AuditsPage/>},
-                // {path: 'profile', element: <ProfilePage/>},
-                // {path: 'unscheduledBooking', element: <UnscheduledBookingPage/>},
+                {path: 'profile', element: <ProfilePage/>},
+                {path: 'unscheduledBooking', element: <UnscheduledBookingPage/>},
             ],
         },
         {

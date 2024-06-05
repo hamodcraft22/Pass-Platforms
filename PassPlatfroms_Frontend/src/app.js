@@ -28,13 +28,13 @@ const MainContent = () =>
     const {instance} = useMsal();
     const activeAccount = instance.getActiveAccount();
 
-    const [allowLoad, setAllowLoad] = useState(false)
+    const [allowLoad, setAllowLoad] = useState(false);
     const [sysDisable, setSysDisable] = useState(false);
 
     async function getToken()
     {
         const accessTokenRequest = {
-            scopes: ['87cabde3-68c8-4d9a-ba69-e0b05316e1f2/.default'],
+            scopes: ['87cabde3-68c8-4d9a-ba69-e0b05316e1f2/.default'], // TODO ENV?
             account: activeAccount,
         };
 
@@ -151,7 +151,7 @@ const MainContent = () =>
     useEffect(() =>
     {
         getToken()
-    }, [activeAccount])
+    }, [activeAccount]);
 
 
     const handleLoginRedirect = () =>

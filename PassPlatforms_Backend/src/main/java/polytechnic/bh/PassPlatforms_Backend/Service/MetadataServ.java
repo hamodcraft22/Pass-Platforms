@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.MetadataDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Metadata;
-import polytechnic.bh.PassPlatforms_Backend.Repository.MetadataRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.SchoolRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.StatisticRepo;
-import polytechnic.bh.PassPlatforms_Backend.Repository.UserRepo;
+import polytechnic.bh.PassPlatforms_Backend.Repository.*;
 
 import java.sql.Date;
 import java.util.Optional;
@@ -30,6 +27,8 @@ public class MetadataServ
 
     @Autowired
     private StatisticRepo statisticRepo;
+    @Autowired
+    private NotificationRepo notificationRepo;
 
     // Get metadata
     public MetadataDao getMetadata()
@@ -73,6 +72,9 @@ public class MetadataServ
     {
         try
         {
+            // DELETE ALL notifications
+            notificationRepo.deleteAll();
+
             // delete all users - automatically deletes everything
             userRepo.deleteAllByRole_Roleid(ROLE_STUDENT);
             userRepo.deleteAllByRole_Roleid(ROLE_LEADER);
