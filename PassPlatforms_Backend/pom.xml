@@ -12,7 +12,7 @@
     <artifactId>PassPlatforms_Backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>PassPlatforms_Backend</name>
-    <description>Pass Leader&apos;s platfrom backend services</description>
+    <description>Pass Leader&apos;s platform backend services</description>
     <properties>
         <java.version>17</java.version>
     </properties>

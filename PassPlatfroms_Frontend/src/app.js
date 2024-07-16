@@ -34,7 +34,7 @@ const MainContent = () =>
     async function getToken()
     {
         const accessTokenRequest = {
-            scopes: ['87cabde3-68c8-4d9a-ba69-e0b05316e1f2/.default'], // TODO ENV?
+            scopes: [`${process.env.REACT_APP_CLIENT_ID}/.default`], // TODO ENV?
             account: activeAccount,
         };
 
