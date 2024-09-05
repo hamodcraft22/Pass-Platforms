@@ -19,12 +19,12 @@ public interface UserRepo extends JpaRepository<User, String>
 
     // get users based on school id
     @Transactional
-    @Query(value = "select * from pp_user WHERE userid in (select UNIQUE(LEADERID) from pp_offeredcourse where courseid in (select courseid from pp_course where schoolid = :schoolID))", nativeQuery = true)
+    @Query(value = "select * from pp_user WHERE userid in (select DISTINCT(LEADERID) from pp_offeredcourse where courseid in (select courseid from pp_course where schoolid = :schoolID))", nativeQuery = true)
     List<User> getSchoolLeaders(String schoolID);
 
     // get users based on course id
     @Transactional
-    @Query(value = "select * from pp_user WHERE userid in (select UNIQUE(LEADERID) from pp_offeredcourse where courseid = :courseID)", nativeQuery = true)
+    @Query(value = "select * from pp_user WHERE userid in (select DISTINCT(LEADERID) from pp_offeredcourse where courseid = :courseID)", nativeQuery = true)
     List<User> getCourseLeaders(String courseID);
 
     // delete all user for rest
