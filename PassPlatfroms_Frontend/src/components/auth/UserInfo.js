@@ -5,7 +5,6 @@ const UserProfile = (function UserProfile()
 {
     const key = "Zift";
 
-
     let userID = "";
     let userName = "";
     let userRole = "";
@@ -103,9 +102,11 @@ const UserProfile = (function UserProfile()
 
     const getAuthToken = async function getAuthToken()
     {
+        console.log("get token has been called");
 
         if (authToken === "")
         {
+            console.log("no auth token is present so create one")
             await getInfo().then(() =>
             {
                 return authToken
@@ -113,6 +114,7 @@ const UserProfile = (function UserProfile()
         }
         else
         {
+            console.log("auth token taken from cookie")
             return authToken;
         }
     };

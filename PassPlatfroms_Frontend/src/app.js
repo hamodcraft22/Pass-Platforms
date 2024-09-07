@@ -33,55 +33,61 @@ const MainContent = () =>
 
     async function getToken()
     {
-        const accessTokenRequest = {
-            scopes: [`${process.env.REACT_APP_CLIENT_ID}/.default`], // TODO ENV?
-            account: activeAccount,
-        };
+        try {
+            const accessTokenRequest = {
+                scopes: [`${process.env.REACT_APP_CLIENT_ID}/.default`], // TODO ENV?
+                account: activeAccount,
+            };
 
-        if (activeAccount)
-        {
-            let token = await instance.initialize()
-                .then(() =>
-                {
-                    return instance.acquireTokenSilent(accessTokenRequest)
-                })
-                .then((token) =>
-                {
-                    return `Bearer ${token.accessToken}`
-                })
-                .then((barerToken) =>
-                {
-                    UserProfile.setUserID(activeAccount.idTokenClaims.preferred_username.split('@')[0]);
-                    UserProfile.setUserName(activeAccount.idTokenClaims.name);
-                    UserProfile.setAuthToken(barerToken);
-                    UserProfile.setExpTime(activeAccount.idTokenClaims.exp);
-                    return barerToken;
-                });
-
-            const sysEnabled = await isDisabled();
-
-            await logUser(token)
-                .then((role) =>
-                {
-                    UserProfile.setUserRole(role).then(() =>
+            if (activeAccount)
+            {
+                let token = await instance.initialize()
+                    .then(() =>
                     {
-                        if ((role === 'admin' || role === 'manager') && !sysEnabled)
+                        return instance.acquireTokenSilent(accessTokenRequest)
+                    })
+                    .then((token) =>
+                    {
+                        return `Bearer ${token.accessToken}`
+                    })
+                    .then((barerToken) =>
+                    {
+                        UserProfile.setUserID(activeAccount.idTokenClaims.preferred_username.split('@')[0]);
+                        UserProfile.setUserName(activeAccount.idTokenClaims.name);
+                        UserProfile.setAuthToken(barerToken);
+                        UserProfile.setExpTime(activeAccount.idTokenClaims.exp);
+                        return barerToken;
+                    });
+
+                const sysEnabled = await isDisabled();
+
+                await logUser(token)
+                    .then((role) =>
+                    {
+                        UserProfile.setUserRole(role).then(() =>
                         {
-                            setAllowLoad(true);
-                        }
-                        else
-                        {
-                            if (sysEnabled)
+                            if ((role === 'admin' || role === 'manager') && !sysEnabled)
                             {
                                 setAllowLoad(true);
                             }
                             else
                             {
-                                setSysDisable(true);
+                                if (sysEnabled)
+                                {
+                                    setAllowLoad(true);
+                                }
+                                else
+                                {
+                                    setSysDisable(true);
+                                }
                             }
-                        }
-                    })
-                });
+                        })
+                    });
+            }
+        }
+        catch (e)
+        {
+            instance.loginRedirect(loginRequest).catch((error) => console.log(error));
         }
     }
 
