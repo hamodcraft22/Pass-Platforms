@@ -24,6 +24,7 @@ import {AccountCircle} from "@mui/icons-material";
 import UserProfile from "../../../components/auth/UserInfo";
 import bookingSlot from "../../newBooking/bookingSlot";
 import {useNavigate} from "react-router-dom";
+import revisionSlot from "../RevisionSlot";
 
 
 // ----------------------------------------------------------------------
@@ -127,7 +128,8 @@ export default function NewRegistrationPage()
 
     useEffect(() =>
     {
-        getRevSchools()
+        getRevSchools();
+        getUserInfo();
     }, [])
 
 
@@ -271,6 +273,8 @@ export default function NewRegistrationPage()
                 allSlots.push(slot);
             })
         })
+
+        console.log(allSlots);
 
         setSelectedIntervals(allSlots);
         setLoadingShow(false);
@@ -674,7 +678,7 @@ export default function NewRegistrationPage()
                             useModal={false}
                             selectedIntervals={selectedIntervals}
                             onEventClick={handleSlotSelect}
-                            eventComponent={bookingSlot}
+                            eventComponent={revisionSlot}
                             eventSpacing={0}
                         />
                     </div>

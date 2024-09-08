@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Box from "@mui/material/Box";
 import PublicIcon from '@mui/icons-material/Public';
+import DeskRoundedIcon from "@mui/icons-material/DeskRounded";
+
 
 const propTypes = {
     start: PropTypes.object.isRequired,
@@ -34,7 +36,7 @@ class revisionSlot extends React.PureComponent
                         justifyContent: 'center',
                     }}
                 >
-                    {online && <PublicIcon></PublicIcon>}
+                    {online ? (<PublicIcon></PublicIcon>) : (<DeskRoundedIcon></DeskRoundedIcon>)}
                     <span style={{
                         fontSize: "0.7em",
                         textAlign: "center"
