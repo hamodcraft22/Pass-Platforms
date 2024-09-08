@@ -17,6 +17,15 @@ public interface SlotRepo extends JpaRepository<Slot, Integer>
 
     // check if leader already has a slot within this time range
     @Transactional
-    @Query(value = "select count(*) from pp_slot where leaderid = :leaderID and dayid = :dayID and ( (to_char(starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:startTime, 'HH24:MI:SS') and to_char(endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:startTime, 'HH24:MI:SS')) or (to_char(starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:endTime, 'HH24:MI:SS') and to_char(endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:endTime, 'HH24:MI:SS')) or (to_char(starttime, 'HH24:MI:SS') >= to_char(:startTime, 'HH24:MI:SS') and to_char(endtime, 'HH24:MI:SS') <= to_char(:endTime, 'HH24:MI:SS')) ) ", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM pp_slot " +
+            "WHERE leaderid = :leaderID " +
+            "AND dayid = :dayID " +
+            "AND ( " +
+            "  (CAST(starttime AS time) + INTERVAL '5' minute < CAST(:startTime AS time) AND CAST(endtime AS time) - INTERVAL '5' minute > CAST(:startTime AS time)) " +
+            "  OR " +
+            "  (CAST(starttime AS time) + INTERVAL '5' minute < CAST(:endTime AS time) AND CAST(endtime AS time) - INTERVAL '5' minute > CAST(:endTime AS time)) " +
+            "  OR " +
+            "  (CAST(starttime AS time) >= CAST(:startTime AS time) AND CAST(endtime AS time) <= CAST(:endTime AS time)) " +
+            ")", nativeQuery = true)
     int sameSlotTimeFind(String leaderID, char dayID, Timestamp startTime, Timestamp endTime);
 }

@@ -19,7 +19,12 @@ public interface BookingRepo extends JpaRepository<Booking, Integer>
 
     // get a course booking within a range
     @Transactional
-    @Query(value = "select * from pp_booking WHERE typeid = 'R' and statusid = 'A' and COURSEID = :courseID and trunc(bookingdate) <= trunc(:endDate) and trunc(bookingdate) >= trunc(:startDate)", nativeQuery = true)
+    @Query(value = "SELECT * FROM pp_booking " +
+            "WHERE typeid = 'R' " +
+            "AND statusid = 'A' " +
+            "AND courseid = :courseID " +
+            "AND CAST(bookingdate AS date) <= CAST(:endDate AS date)" +
+            "AND CAST(bookingdate AS date) >= CAST(:startDate AS date)", nativeQuery = true)
     List<Booking> findAllCourseRevisions(String courseID, Date startDate, Date endDate);
 
     @Transactional
@@ -43,22 +48,57 @@ public interface BookingRepo extends JpaRepository<Booking, Integer>
     List<Booking> findAllLeaderRevisions(String leaderID);
 
     @Transactional
-    @Query(value = "select count(*) from pp_booking where slotid = :slotID and statusid = 'A' and trunc(bookingdate) = trunc(:bookingdate)", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM pp_booking " +
+            "WHERE slotid = :slotID " +
+            "AND statusid = 'A' " +
+            "AND CAST(bookingdate AS date) = CAST(:bookingdate AS date)", nativeQuery = true)
     int activeUnderSlot(int slotID, Date bookingdate);
 
     // check if student has any active bookings at this time slot
     @Transactional
-    @Query(value = "select count(*) from pp_booking b join pp_slot s on b.slotid = s.slotid where b.studentid = :studentID and trunc(b.bookingdate) = trunc(:bookingDate) and b.statusid = 'A' and ( (to_char(s.starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:startTime, 'HH24:MI:SS') and to_char(s.endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:startTime, 'HH24:MI:SS')) or (to_char(s.starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:endTime, 'HH24:MI:SS') and to_char(s.endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:endTime, 'HH24:MI:SS')) or (to_char(s.starttime, 'HH24:MI:SS') >= to_char(:startTime, 'HH24:MI:SS') and to_char(s.endtime, 'HH24:MI:SS') <= to_char(:endTime, 'HH24:MI:SS')) )", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM pp_booking b " +
+            "JOIN pp_slot s ON b.slotid = s.slotid " +
+            "WHERE b.studentid = :studentID " +
+            "AND CAST(b.bookingdate AS date) = CAST(:bookingDate AS date) " +
+            "AND b.statusid = 'A' " +
+            "AND ( " +
+            "  (CAST(s.starttime AS time) + INTERVAL '5' minute < CAST(:startTime AS time) " +
+            "   AND CAST(s.endtime AS time) - INTERVAL '5' minute > CAST(:startTime AS time)) " +
+            "  OR " +
+            "  (CAST(s.starttime AS time) + INTERVAL '5' minute < CAST(:endTime AS time) " +
+            "   AND CAST(s.endtime AS time) - INTERVAL '5' minute > CAST(:endTime AS time)) " +
+            "  OR " +
+            "  (CAST(s.starttime AS time) >= CAST(:startTime AS time) AND CAST(s.endtime AS time) <= CAST(:endTime AS time)) " +
+            ")", nativeQuery = true)
     int sameTimeSessionsFind(String studentID, Date bookingDate, Timestamp startTime, Timestamp endTime);
 
     // fair booking - check if student booked with this leader this week
     @Transactional
-    @Query(value = "select count(*) from pp_booking b join pp_slot s on s.slotid = b.slotid where b.studentid = :studentID and b.statusid in ('A','F') and s.leaderid = :leaderID and ( trunc(b.bookingdate) <= trunc(:weekEnd) and trunc(b.bookingdate) >= trunc(:weekStart) ) ", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM pp_booking b " +
+            "JOIN pp_slot s ON s.slotid = b.slotid " +
+            "WHERE b.studentid = :studentID " +
+            "AND b.statusid IN ('A', 'F') " +
+            "AND s.leaderid = :leaderID " +
+            "AND (CAST(b.bookingdate AS date) <= CAST(:weekEnd AS date) " +
+            "AND CAST(b.bookingdate AS date) >= CAST(:weekStart AS date))", nativeQuery = true)
     int sameLeaderBookingFind(String studentID, String leaderID, Date weekStart, Date weekEnd);
 
     // check if leader has revision at the same time
     @Transactional
-    @Query(value = "select count(*) from pp_booking b where b.studentid = :leaderID and trunc(b.bookingdate) = trunc(:revisionDate) and b.statusid = 'A' and b.typeid = 'R' and ( (to_char(b.starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:startTime, 'HH24:MI:SS') and to_char(b.endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:startTime, 'HH24:MI:SS')) or (to_char(b.starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:endTime, 'HH24:MI:SS') and to_char(b.endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:endTime, 'HH24:MI:SS')) or (to_char(b.starttime, 'HH24:MI:SS') >= to_char(:startTime, 'HH24:MI:SS') and to_char(b.endtime, 'HH24:MI:SS') <= to_char(:endTime, 'HH24:MI:SS')) )", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM pp_booking b " +
+            "WHERE b.studentid = :leaderID " +
+            "AND CAST(b.bookingdate AS date) = CAST(:revisionDate AS date) " +
+            "AND b.statusid = 'A' " +
+            "AND b.typeid = 'R' " +
+            "AND ( " +
+            "  (CAST(b.starttime AS time) + INTERVAL '5' minute < CAST(:startTime AS time) " +
+            "   AND CAST(b.endtime AS time) - INTERVAL '5' minute > CAST(:startTime AS time)) " +
+            "  OR " +
+            "  (CAST(b.starttime AS time) + INTERVAL '5' minute < CAST(:endTime AS time) " +
+            "   AND CAST(b.endtime AS time) - INTERVAL '5' minute > CAST(:endTime AS time)) " +
+            "  OR " +
+            "  (CAST(b.starttime AS time) >= CAST(:startTime AS time) AND CAST(b.endtime AS time) <= CAST(:endTime AS time)) " +
+            ")", nativeQuery = true)
     int sameLeaderRevisionTimeFind(String leaderID, Date revisionDate, Timestamp startTime, Timestamp endTime);
 
 }

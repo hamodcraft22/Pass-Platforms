@@ -20,7 +20,21 @@ public interface BookingMemberRepo extends JpaRepository<BookingMember, Integer>
 
     // check if user is a part of any active booking / revision at a given time allocation
     @Transactional
-    @Query(value = " SELECT count(*) FROM pp_bookingmember m JOIN pp_booking b on b.bookingid = m.bookingid join pp_slot s on b.slotid = s.slotid where m.studentid = :studentID and trunc(b.bookingdate) = trunc(:bookingDate) and b.statusid = 'A' and ( (to_char(s.starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:startTime, 'HH24:MI:SS') and to_char(s.endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:startTime, 'HH24:MI:SS')) or (to_char(s.starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:endTime, 'HH24:MI:SS') and to_char(s.endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:endTime, 'HH24:MI:SS')) or (to_char(s.starttime, 'HH24:MI:SS') >= to_char(:startTime, 'HH24:MI:SS') and to_char(s.endtime, 'HH24:MI:SS') <= to_char(:endTime, 'HH24:MI:SS')) ) ", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM pp_bookingmember m " +
+            "JOIN pp_booking b ON b.bookingid = m.bookingid " +
+            "JOIN pp_slot s ON b.slotid = s.slotid " +
+            "WHERE m.studentid = :studentID " +
+            "AND CAST(b.bookingdate AS date) = CAST(:bookingDate AS date) " +
+            "AND b.statusid = 'A' " +
+            "AND ( " +
+            "  (CAST(s.starttime AS time) + INTERVAL '5' minute < CAST(:startTime AS time) " +
+            "   AND CAST(s.starttime AS time) - INTERVAL '5' minute > CAST(:startTime AS time)) " +
+            "  OR " +
+            "  (CAST(s.starttime AS time) + INTERVAL '5' minute < CAST(:endTime AS time) " +
+            "   AND CAST(s.endtime AS time) - INTERVAL '5' minute > CAST(:endTime AS time)) " +
+            "  OR " +
+            "  (CAST(s.starttime AS time) >= CAST(:startTime AS time) AND CAST(s.endtime AS time) <= CAST(:endTime AS time)) " +
+            ")", nativeQuery = true)
     int sameTimeMemberSessionsFind(String studentID, Date bookingDate, Timestamp startTime, Timestamp endTime);
 
     // delete by student user id and booking id

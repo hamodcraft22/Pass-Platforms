@@ -13,6 +13,17 @@ public interface ScheduleRepo extends JpaRepository<Schedule, Integer>
     List<Schedule> findAllByUser_Userid(String userID);
 
     @Transactional
-    @Query(value = "SELECT count(*) FROM pp_schedule WHERE userid = :userID and dayid = :dayID and ( (to_char(starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:startTime, 'HH24:MI:SS') and to_char(endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:startTime, 'HH24:MI:SS')) or (to_char(starttime + INTERVAL '5' MINUTE, 'HH24:MI:SS') < to_char(:endTime, 'HH24:MI:SS') and to_char(endtime - INTERVAL '5' MINUTE, 'HH24:MI:SS') > to_char(:endTime, 'HH24:MI:SS')) or (to_char(starttime, 'HH24:MI:SS') >= to_char(:startTime, 'HH24:MI:SS') and to_char(endtime, 'HH24:MI:SS') <= to_char(:endTime, 'HH24:MI:SS')) )", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM pp_schedule " +
+            "WHERE userid = :userID " +
+            "AND dayid = :dayID " +
+            "AND ( " +
+            "  (CAST(starttime AS time) + INTERVAL '5' minute < CAST(:startTime AS time) " +
+            "   AND CAST(endtime AS time) - INTERVAL '5' minute > CAST(:startTime AS time)) " +
+            "  OR " +
+            "  (CAST(starttime AS time) + INTERVAL '5' minute < CAST(:endTime AS time) " +
+            "   AND CAST(endtime AS time) - INTERVAL '5' minute > CAST(:endTime AS time)) " +
+            "  OR " +
+            "  (CAST(starttime AS time) >= CAST(:startTime AS time) AND CAST(endtime AS time) <= CAST(:endTime AS time)) " +
+            ")", nativeQuery = true)
     int sameTimeClassesFind(String userID, char dayID, Timestamp startTime, Timestamp endTime);
 }
