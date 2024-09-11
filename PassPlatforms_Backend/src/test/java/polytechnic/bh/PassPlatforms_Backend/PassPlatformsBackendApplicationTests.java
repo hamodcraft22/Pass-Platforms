@@ -7,9 +7,4 @@ import org.springframework.boot.test.context.SpringBootTest;
 class PassPlatformsBackendApplicationTests
 {
 
-    @Test
-    void contextLoads()
-    {
-    }
-
 }
