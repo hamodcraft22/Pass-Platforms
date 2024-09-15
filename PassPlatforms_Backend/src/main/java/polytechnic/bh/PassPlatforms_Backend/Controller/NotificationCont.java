@@ -13,6 +13,7 @@ import polytechnic.bh.PassPlatforms_Backend.Service.UserServ;
 
 import java.util.List;
 
+import static polytechnic.bh.PassPlatforms_Backend.Constant.RoleConstant.ROLE_ADMIN;
 import static polytechnic.bh.PassPlatforms_Backend.Util.TokenValidation.isValidToken;
 
 @CrossOrigin(origins = "*")
@@ -28,6 +29,8 @@ public class NotificationCont
 
     @Autowired
     private LogServ logServ;
+
+    private static String globalNotification;
 
     // get all of the notification for the logged in user
     @GetMapping("")
@@ -102,6 +105,95 @@ public class NotificationCont
         {
             logServ.createLog(ex.getMessage(), userID);
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // get global notification of the platform
+    @GetMapping("/global")
+    public ResponseEntity<String> getGlobalNotification(
+            @RequestHeader(value = "Authorization") String requestKey
+    )
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            if (globalNotification != null)
+            {
+                return new ResponseEntity<>(globalNotification, HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    // set global notification of the platform TODO - add admin auth
+    @PostMapping("/global")
+    public ResponseEntity<String> setGlobalNotification(
+            @RequestHeader(value = "Authorization") String requestKey,
+            @RequestBody String notificationInput
+    )
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            UserDao user = userServ.getUser(userID);
+
+            if (user != null && user.getRole().getRoleid() == ROLE_ADMIN)
+            {
+                globalNotification = notificationInput;
+                return new ResponseEntity<>(globalNotification, HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    // delete global notification of the platform TODO - add admin auth
+    @DeleteMapping("/global")
+    public ResponseEntity<?> deleteGlobalNotification(
+            @RequestHeader(value = "Authorization") String requestKey
+    )
+    {
+        String userID = isValidToken(requestKey);
+
+        if (userID != null)
+        {
+            UserDao user = userServ.getUser(userID);
+
+            if (user != null && user.getRole().getRoleid() == ROLE_ADMIN)
+            {
+                if (globalNotification != null)
+                {
+                    globalNotification = null;
+                    return new ResponseEntity<>(HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
+            }
+            else
+            {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }
+        else
+        {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 }
