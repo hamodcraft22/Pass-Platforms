@@ -55,9 +55,12 @@ public class UsersService
         System.out.println("Fetching Users");
         String url = "https://graph.microsoft.com/v1.0/users";
         String token = getToken();
+        boolean done = false;
 
         if (token != null)
         {
+            allAzureStudents.clear();
+
             HttpHeaders headers = new HttpHeaders();
 
             headers.setBearerAuth(token);
@@ -66,46 +69,66 @@ public class UsersService
 
             RestTemplate template = new RestTemplate();
 
-            ResponseEntity<String> response = template.exchange(url, HttpMethod.GET, entity, String.class);
-
-            JSONObject myjson = new JSONObject(response.getBody());
-
-            try
+            do
             {
-                // Create an ObjectMapper instance
-                ObjectMapper objectMapper = new ObjectMapper();
+                ResponseEntity<String> response = template.exchange(url, HttpMethod.GET, entity, String.class);
 
-                // Convert the JSON string to a List of Map objects
-                List<Map<String, Object>> userList = objectMapper.readValue(myjson.get("value").toString(), new TypeReference<>()
+                JSONObject myjson = new JSONObject(response.getBody());
+
+                try
                 {
-                });
+                    // Create an ObjectMapper instance
+                    ObjectMapper objectMapper = new ObjectMapper();
 
-                // Create a Map to store the key-value pairs
-                Map<String, String> resultMap = new HashMap<>();
+                    // Convert the JSON string to a List of Map objects
+                    List<Map<String, Object>> userList = objectMapper.readValue(myjson.get("value").toString(), new TypeReference<>() {});
 
-                allAzureStudents.clear();
-
-                // Iterate over the user list and extract the desired fields
-                for (Map<String, Object> user : userList)
-                {
-                    String userID = ((String) user.get("userPrincipalName")).substring(0, ((String) user.get("userPrincipalName")).indexOf("@"));
-                    String displayName = (String) user.get("displayName");
-
-                    resultMap.put(userID, displayName);
-
-
-                    if (userID.charAt(0) == '2')
+                    // check if there is another set of users
+                    try
                     {
-                        allAzureStudents.add(new UserInfoDto(userID, displayName));
-                    }
-                }
+                        String nextLink = myjson.get("@odata.nextLink").toString();
 
-                allAzureAdUsers = resultMap;
+                        if (nextLink != null && !nextLink.isBlank())
+                        {
+                            url = nextLink;
+                        }
+                        else
+                        {
+                            done = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        done = true;
+                    }
+
+                    // Create a Map to store the key-value pairs
+                    Map<String, String> resultMap = new HashMap<>();
+
+                    // Iterate over the user list and extract the desired fields
+                    for (Map<String, Object> user : userList)
+                    {
+                        String userID = ((String) user.get("userPrincipalName")).substring(0, ((String) user.get("userPrincipalName")).indexOf("@"));
+                        String displayName = (String) user.get("displayName");
+
+                        resultMap.put(userID, displayName);
+
+                        System.out.println("uid: "+userID + " name: "+displayName);
+
+                        if (userID.charAt(0) == '2')
+                        {
+                            allAzureStudents.add(new UserInfoDto(userID, displayName));
+                        }
+                    }
+
+                    allAzureAdUsers.putAll(resultMap);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            while (!done);
 
         }
     }
