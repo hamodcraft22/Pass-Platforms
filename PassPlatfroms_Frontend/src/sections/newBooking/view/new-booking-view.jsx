@@ -27,6 +27,7 @@ import ListItemText from "@mui/material/ListItemText";
 import PublicIcon from '@mui/icons-material/Public';
 import UserProfile from "../../../components/auth/UserInfo";
 import {useNavigate} from 'react-router-dom';
+import {createFilterOptions} from "@mui/material/Autocomplete";
 
 
 // ----------------------------------------------------------------------
@@ -687,6 +688,13 @@ export default function NewBookingPage()
         return <Paper elevation={8} {...props} />;
     };
 
+    const OPTIONS_LIMIT = 30;
+    const defaultFilterOptions = createFilterOptions();
+
+    const filterOptions = (options, state) => {
+        return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
+    };
+
     return (
 
 
@@ -930,6 +938,7 @@ export default function NewBookingPage()
                         <Typography variant="h6">Group Session? Add Others:</Typography>
 
                         <Autocomplete
+                            filterOptions={filterOptions}
                             PaperComponent={CustomPaper}
                             multiple
                             sx={{width: '100%', mt: 1}}

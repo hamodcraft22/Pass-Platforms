@@ -30,6 +30,7 @@ import {Alert, Autocomplete, Backdrop, CircularProgress, FormHelperText, Snackba
 import UserProfile from "../../../components/auth/UserInfo";
 import moment from "moment";
 import ExportToExcel from "../../../utils/exportExcel";
+import {createFilterOptions} from "@mui/material/Autocomplete";
 
 
 // ----------------------------------------------------------------------
@@ -381,6 +382,12 @@ export default function RecommendationsPage()
 
     const notFound = !dataFiltered.length && !!filterName;
 
+    const OPTIONS_LIMIT = 30;
+    const defaultFilterOptions = createFilterOptions();
+
+    const filterOptions = (options, state) => {
+        return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
+    };
 
     return (
         <Container>
@@ -495,6 +502,7 @@ export default function RecommendationsPage()
                     <DialogContent>
                         <div style={{marginTop: "5px"}}>
                             <Autocomplete
+                                filterOptions={filterOptions}
                                 options={allUsers}
                                 getOptionLabel={(option) => option.userID + " | " + option.userName}
                                 value={studentToRecommend}

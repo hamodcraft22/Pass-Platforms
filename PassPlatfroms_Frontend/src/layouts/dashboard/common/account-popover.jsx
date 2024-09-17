@@ -39,7 +39,8 @@ export default function AccountPopover()
 
     const handleLogoutRedirect = () =>
     {
-        instance.logoutRedirect({account: activeAccount}).catch((error) => console.log(error));
+        // instance.logoutRedirect({account: activeAccount}).catch((error) => console.log(error));
+        instance.logoutRedirect({onRedirectNavigate: (url) => {return false;}}).catch((error) => console.log(error));
     };
 
 
