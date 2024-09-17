@@ -32,7 +32,7 @@ public class UsersService
                 refreshUsers();
             }
 
-            String userName = allAzureAdUsers.get(userID);
+            String userName = allAzureAdUsers.get(userID.toLowerCase());
 
             if (userName != null && userName.length() > 0)
             {
@@ -108,12 +108,10 @@ public class UsersService
                     // Iterate over the user list and extract the desired fields
                     for (Map<String, Object> user : userList)
                     {
-                        String userID = ((String) user.get("userPrincipalName")).substring(0, ((String) user.get("userPrincipalName")).indexOf("@"));
+                        String userID = ((String) user.get("userPrincipalName")).substring(0, ((String) user.get("userPrincipalName")).indexOf("@")).toLowerCase();
                         String displayName = (String) user.get("displayName");
 
                         resultMap.put(userID, displayName);
-
-                        System.out.println("uid: "+userID + " name: "+displayName);
 
                         if (userID.charAt(0) == '2')
                         {
