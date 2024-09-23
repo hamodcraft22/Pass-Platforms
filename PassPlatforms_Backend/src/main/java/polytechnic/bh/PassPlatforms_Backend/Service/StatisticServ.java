@@ -1,6 +1,7 @@
 package polytechnic.bh.PassPlatforms_Backend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.StatisticDao;
 import polytechnic.bh.PassPlatforms_Backend.Entity.Statistic;
@@ -20,5 +21,13 @@ public class StatisticServ
         Optional<Statistic> retrivedStat = statisticRepo.getLatest();
 
         return retrivedStat.map(StatisticDao::new).orElse(null);
+    }
+
+    // call the stats refresh daily at 8
+    @Scheduled(cron = "0 0 20 * * *")
+    public void refreshStats()
+    {
+        System.out.println("called refresh");
+        statisticRepo.callStats();
     }
 }

@@ -2,7 +2,7 @@ import './global.css';
 
 import {AuthenticatedTemplate, MsalProvider, UnauthenticatedTemplate, useMsal} from '@azure/msal-react';
 
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 
 
 import {useScrollToTop} from './hooks/use-scroll-to-top';
@@ -12,7 +12,7 @@ import ThemeProvider from './theme';
 import {loginRequest} from './components/auth/authConfig';
 import Button from "@mui/material/Button";
 import UserProfile from "./components/auth/UserInfo";
-import {Backdrop, CircularProgress} from "@mui/material";
+import {Alert, Backdrop, CircularProgress, Snackbar} from "@mui/material";
 import Box from "@mui/material/Box";
 import LoginIcon from '@mui/icons-material/Login';
 import Paper from "@mui/material/Paper";
@@ -48,6 +48,7 @@ const MainContent = () =>
                     })
                     .then((token) =>
                     {
+                        console.log(token.accessToken);
                         return `Bearer ${token.accessToken}`
                     })
                     .then((barerToken) =>
@@ -60,6 +61,8 @@ const MainContent = () =>
                     });
 
                 const sysEnabled = await isDisabled();
+
+                getGloablNote(token);
 
                 await logUser(token)
                     .then((role) =>
@@ -156,7 +159,10 @@ const MainContent = () =>
 
     useEffect(() =>
     {
-        getToken()
+        if (activeAccount !== null && activeAccount !== undefined)
+        {
+            getToken();
+        }
     }, [activeAccount]);
 
 
@@ -188,8 +194,51 @@ const MainContent = () =>
 
     useScrollToTop();
 
+    const [showGlobalMsg, setShowGlobalMsg] = useState(false);
+    const [globalMsg, setGlobalMsg] = useState("");
+
+    // get global message
+    async function getGloablNote(barerToken)
+    {
+        try
+        {
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': barerToken}};
+
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/notification/global`, requestOptions)
+                .then(response => {
+                    if (response.status === 200)
+                    {
+                        return response.json();
+                    }
+                    else
+                    {
+                        setShowGlobalMsg(false);
+                        return null;
+                    }
+                }).then(data => {
+                    if (data !== null)
+                    {
+                        setGlobalMsg(data);
+                        setShowGlobalMsg(true);
+                    }
+                })
+        }
+        catch (e)
+        {
+            console.log(e);
+            setShowGlobalMsg(false);
+        }
+    }
+
     return (
         <>
+            {/* global notification */}
+            <Snackbar open={showGlobalMsg} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
+                <Alert severity="info" sx={{width: '100%', whiteSpace: 'pre-line', boxShadow: 3}} >
+                    {globalMsg}
+                </Alert>
+            </Snackbar>
+
             <AuthenticatedTemplate>
                 {allowLoad ? (<Router/>) :
                     <Backdrop sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}} open={true}>{sysDisable ? (<><p>The system is being setup and is disabled, check back later</p> <Button sx={{ml: 2}} onClick={handleLogoutRedirect}

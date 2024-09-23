@@ -48,4 +48,12 @@ public class StatisticCont<T>
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
+
+    // manually updated the stats for the day
+    @PostMapping("")
+    public ResponseEntity<?> updateStats()
+    {
+        statisticServ.refreshStats();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
