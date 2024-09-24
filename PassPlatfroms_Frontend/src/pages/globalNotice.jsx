@@ -1,18 +1,18 @@
 import {Helmet} from 'react-helmet-async';
 
-import ProfileView from '../sections/profile/view/profile-view';
+import GlobalNotice from '../sections/globalNotice/view/global-notice';
 
 // ----------------------------------------------------------------------
 
-export default function ProfilePage()
+export default function NoticePage()
 {
     return (
         <>
             <Helmet>
-                <title> Profile </title>
+                <title> Global Notice </title>
             </Helmet>
 
-            <ProfileView/>
+            <GlobalNotice/>
         </>
     );
 }
