@@ -52,7 +52,7 @@ public class UsersService
 
     public static void refreshUsers() throws JSONException
     {
-        System.out.println("Fetching Users");
+        System.out.println("Fetching Users"); // TODO - remove
         String url = "https://graph.microsoft.com/v1.0/users";
         String token = getToken();
         boolean done = false;

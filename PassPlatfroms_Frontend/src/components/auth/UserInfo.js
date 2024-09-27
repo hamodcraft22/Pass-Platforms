@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import * as CryptoJS from 'crypto-js';
+import {getActiveUserToken} from "./authUtils";
 
 const UserProfile = (function UserProfile()
 {
@@ -8,9 +9,6 @@ const UserProfile = (function UserProfile()
     let userID = "";
     let userName = "";
     let userRole = "";
-
-    let expTime = "";
-    let authToken = "";
 
     const getUserID = async function getUserID()
     {
@@ -78,52 +76,35 @@ const UserProfile = (function UserProfile()
         await setInfo();
     };
 
-    const getExpTime = async function getExpTime()
-    {
-
-        if (expTime === "")
-        {
-            await getInfo().then(() =>
-            {
-                return expTime
-            });
-        }
-        else
-        {
-            return expTime;
-        }
-    };
-
-    const setExpTime = async function setExpTime(r_ExpTime)
-    {
-        expTime = await r_ExpTime;
-        await setInfo();
-    };
-
     const getAuthToken = async function getAuthToken()
     {
-        console.log("get token has been called");
+        // call the microsoft function which gets the token
+        return await getActiveUserToken().then((data) => {console.log(data); return "Bearer " + data});
 
-        if (authToken === "")
-        {
-            console.log("no auth token is present so create one")
-            await getInfo().then(() =>
-            {
-                return authToken
-            });
-        }
-        else
-        {
-            console.log("auth token taken from cookie")
-            return authToken;
-        }
+        // TODO - on error, logout and ask user to re login
+
+        // if (authToken === "")
+        // {
+        //     console.log("auth token taken from cookie");
+        //     await getInfo().then(() =>
+        //     {
+        //         return authToken
+        //     });
+        // }
+        // else
+        // {
+        //     console.log("auth token taken from variable");
+        //     console.log("auth token expires at: " + expTime);
+        //     console.log("auth token expires at: " + moment(expTime).format("H:mm a D/M/YYYY"));
+        //     return authToken;
+        // }
     };
 
-    const setAuthToken = async function setExpTime(r_authToken)
-    {
-        authToken = await r_authToken;
-        await setInfo();
-    };
+    // const setAuthToken = async function setExpTime(r_authToken)
+    // {
+    //     authToken = await r_authToken;
+    //     await setInfo();
+    // };
 
     async function getInfo()
     {
@@ -138,30 +119,20 @@ const UserProfile = (function UserProfile()
 
             if (parsedData !== null)
             {
-                expTime = await parsedData.expires;
-
-                // check date, if expired
-                if (Date.now() >= parsedData.expTime)
-                {
-                    // logout
-                }
-                else
-                {
-                    // get the info and parse it
-                    userID = parsedData.userID;
-                    userName = parsedData.userName;
-                    userRole = parsedData.userRole;
-                    authToken = parsedData.authToken;
-                }
+                userID = parsedData.userID;
+                userName = parsedData.userName;
+                userRole = parsedData.userRole;
             }
             else
             {
                 // logout
+                console.log("no token information")
             }
         }
         else
         {
             // logout
+            console.log("no cookie information");
         }
 
 
@@ -169,10 +140,10 @@ const UserProfile = (function UserProfile()
 
     async function setInfo()
     {
-        if (userID !== "" && userName !== "" && userRole !== "" && expTime !== "" && authToken !== "")
+        if (userID !== "" && userName !== "" && userRole !== "")
         {
-            const data = {"userID": userID, "userName": userName, "userRole": userRole, "authToken": authToken};
-            await Cookies.set("ID_INF", CryptoJS.AES.encrypt(JSON.stringify(data), key).toString(), {expires: expTime});
+            const data = {"userID": userID, "userName": userName, "userRole": userRole};
+            await Cookies.set("ID_INF", CryptoJS.AES.encrypt(JSON.stringify(data), key).toString());
         }
     }
 
@@ -180,8 +151,7 @@ const UserProfile = (function UserProfile()
         getUserID, setUserID,
         getUserName, setUserName,
         getUserRole, setUserRole,
-        getExpTime, setExpTime,
-        getAuthToken, setAuthToken
+        getAuthToken
     }
 
 })();

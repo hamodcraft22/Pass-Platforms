@@ -1,4 +1,4 @@
-import {Suspense} from 'react';
+import {Suspense, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from 'react-router-dom';
 import {HelmetProvider} from 'react-helmet-async';
@@ -19,7 +19,7 @@ const msalInstance = new PublicClientApplication(msalConfig);
 // Default to using the first account if no account is active on page load
 if (!msalInstance.getActiveAccount() && msalInstance.getAllAccounts().length > 0) {
     // Account selection logic is app dependent. Adjust as needed for different use cases.
-    msalInstance.setActiveAccount(msalInstance.getActiveAccount()[0]);
+    msalInstance.setActiveAccount(msalInstance.getActiveAccount()[0]); // TODO - error handling if account is diff
 }
 
 // Listen for sign-in event and set active account
@@ -39,7 +39,7 @@ root.render(
                 <DevSupport ComponentPreviews={ComponentPreviews}
                             useInitialHook={useInitial}
                 >
-                    <App instance={msalInstance}/>
+                    <App instance={msalInstance} />
                 </DevSupport>
             </Suspense>
         </BrowserRouter>

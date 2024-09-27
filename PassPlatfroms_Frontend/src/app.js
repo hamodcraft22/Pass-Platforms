@@ -23,46 +23,30 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 
 const MainContent = () =>
 {
-
-
     const {instance} = useMsal();
     const activeAccount = instance.getActiveAccount();
 
-    const [allowLoad, setAllowLoad] = useState(false);
-    const [sysDisable, setSysDisable] = useState(false);
+    const [allowLoad, setAllowLoad] = useState(false); // boolean to save loading state - after first logan
+    const [sysDisable, setSysDisable] = useState(false); // boolean to save if the platform is disabled
 
+    // acquire token and process user information (login only)
     async function getToken()
     {
-        try {
-            const accessTokenRequest = {
-                scopes: [`${process.env.REACT_APP_CLIENT_ID}/.default`], // TODO ENV?
-                account: activeAccount,
-            };
-
+        try
+        {
             if (activeAccount)
             {
-                let token = await instance.initialize()
-                    .then(() =>
-                    {
-                        return instance.acquireTokenSilent(accessTokenRequest)
-                    })
-                    .then((token) =>
-                    {
-                        console.log(token.accessToken);
-                        return `Bearer ${token.accessToken}`
-                    })
+                console.log("getting user token");
+
+                let token = await UserProfile.getAuthToken()
                     .then((barerToken) =>
                     {
                         UserProfile.setUserID(activeAccount.idTokenClaims.preferred_username.split('@')[0]);
                         UserProfile.setUserName(activeAccount.idTokenClaims.name);
-                        UserProfile.setAuthToken(barerToken);
-                        UserProfile.setExpTime(activeAccount.idTokenClaims.exp);
                         return barerToken;
                     });
 
                 const sysEnabled = await isDisabled();
-
-                getGloablNote(token);
 
                 await logUser(token)
                     .then((role) =>
@@ -94,6 +78,7 @@ const MainContent = () =>
         }
     }
 
+    // get user from database and retrieve role
     async function logUser(barerToken)
     {
         try
@@ -129,16 +114,16 @@ const MainContent = () =>
         }
     }
 
+    // fetch if the system is disabled
     async function isDisabled()
     {
         try
         {
             const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json'}};
 
-            let enable = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/metadata/disabled`, requestOptions)
-                .then(response =>
-                {
-                    if (response.status === 200 || response.status === 200)
+            return await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/metadata/disabled`, requestOptions)
+                .then(response => {
+                    if (response.status === 200)
                     {
                         return response.json();
                     }
@@ -147,8 +132,6 @@ const MainContent = () =>
                 {
                     return data;
                 });
-
-            return enable;
 
         }
         catch (error)
@@ -159,7 +142,7 @@ const MainContent = () =>
 
     useEffect(() =>
     {
-        if (activeAccount !== null && activeAccount !== undefined)
+        if (activeAccount !== null && activeAccount !== undefined && !allowLoad)
         {
             getToken();
         }
@@ -198,11 +181,13 @@ const MainContent = () =>
     const [globalMsg, setGlobalMsg] = useState("");
 
     // get global message
-    async function getGloablNote(barerToken)
+    async function getGlobalNote()
     {
         try
         {
-            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': barerToken}};
+            const token = await UserProfile.getAuthToken();
+
+            const requestOptions = {method: "GET", headers: {'Content-Type': 'application/json', 'Authorization': token}};
 
             await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/notification/global`, requestOptions)
                 .then(response => {
@@ -229,6 +214,17 @@ const MainContent = () =>
             setShowGlobalMsg(false);
         }
     }
+
+    // check the messages everytime smm changes
+    useEffect(() => {
+        if (activeAccount !== null && activeAccount !== undefined && allowLoad)
+        {
+            getGlobalNote();
+        }
+    }, [activeAccount]);
+
+    // get global notification first time app loads
+    useEffect(() => {if (allowLoad) {getGlobalNote()}}, [allowLoad])
 
     return (
         <>
@@ -284,12 +280,12 @@ const MainContent = () =>
     );
 };
 
-const App = ({instance}) =>
+const App = ({instance, onLogin}) =>
 {
     return (
         <MsalProvider instance={instance}>
             <ThemeProvider>
-                <MainContent/>
+                <MainContent onLogin={onLogin}/>
             </ThemeProvider>
         </MsalProvider>
     );
