@@ -185,7 +185,7 @@ code {
 
 
 .image-gallery-image {
-    height: 490px;
+    height: 100%;
 }
 
 .image-gallery-slide .image-gallery-image {

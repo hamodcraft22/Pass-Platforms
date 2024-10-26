@@ -113,19 +113,37 @@ export default function AppView()
 
     const images = [
         {
-            original: "/assets/images/Business24.png",
+            original: "/assets/images/Business 1.png",
         },
         {
-            original: "/assets/images/Engineering23.png",
+            original: "/assets/images/Business 2.png",
         },
         {
-            original: "/assets/images/ICT13.png",
+            original: "/assets/images/Creative Media.png",
         },
         {
-            original: "/assets/images/ICT23.png",
+            original: "/assets/images/Engineering 1.png",
         },
         {
-            original: "/assets/images/WebMedia.png",
+            original: "/assets/images/Engineering 2.png",
+        },
+        {
+            original: "/assets/images/Foundation.png",
+        },
+        {
+            original: "/assets/images/ICT 1.png",
+        },
+        {
+            original: "/assets/images/ICT 2.png",
+        },
+        {
+            original: "/assets/images/ICT 3.png",
+        },
+        {
+            original: "/assets/images/Logistics 1.png",
+        },
+        {
+            original: "/assets/images/Logistics 2.png",
         },
     ];
 
