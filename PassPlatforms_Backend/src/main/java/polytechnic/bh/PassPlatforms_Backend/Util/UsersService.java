@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.AuthConstant.*;
 
@@ -22,6 +23,8 @@ public class UsersService
     public static Map<String, String> allAzureAdUsers = new HashMap<>();
 
     public static List<UserInfoDto> allAzureStudents = new ArrayList<>();
+
+    public static Logger logger = Logger.getLogger(UsersService.class.getName());
 
     public static String getAzureAdName(String userID)
     {
@@ -52,7 +55,7 @@ public class UsersService
 
     public static void refreshUsers() throws JSONException
     {
-        System.out.println("Fetching Users"); // TODO - remove
+        logger.info("Fetching Users | Started");
         String url = "https://graph.microsoft.com/v1.0/users";
         String token = getToken();
         boolean done = false;
@@ -129,9 +132,11 @@ public class UsersService
             while (!done);
 
         }
+
+        logger.info("Fetching Users | Ended");
     }
 
-    private static String getToken()
+    public static String getToken()
     {
         try
         {

@@ -1,6 +1,8 @@
 package polytechnic.bh.PassPlatforms_Backend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import polytechnic.bh.PassPlatforms_Backend.Dao.NotificationDao;
 import polytechnic.bh.PassPlatforms_Backend.Dao.RoleDao;
@@ -16,6 +18,7 @@ import java.util.Optional;
 
 import static polytechnic.bh.PassPlatforms_Backend.Constant.ManagerConst.MANGER_ID;
 import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.getAzureAdName;
+import static polytechnic.bh.PassPlatforms_Backend.Util.UsersService.refreshUsers;
 
 // first time sign in / members adding
 @Service
@@ -129,5 +132,12 @@ public class UserServ
         }
 
         return newLeaders;
+    }
+
+    // get all users when the app first runs
+    @EventListener(ContextRefreshedEvent.class)
+    public void fetchUserInfo()
+    {
+        refreshUsers();
     }
 }

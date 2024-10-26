@@ -429,6 +429,8 @@ public class BookingServ
 
                 List<String> warnings = new ArrayList<>();
 
+                List<BookingMemberDao> bookingMemberDaos = new ArrayList<>();
+
                 // add group members
                 for (BookingMemberDao member : bookingMembers)
                 {
@@ -437,14 +439,21 @@ public class BookingServ
                     {
                         warnings.add("Student " + member.getStudent().getUserid() + " could not be added, they have a clash with their bookings / scheduels");
                     }
+                    else
+                    {
+                        bookingMemberDaos.add(member);
+                    }
                 }
 
                 Optional<Booking> addedBooking = bookingRepo.findById(createdBooking.getBookingid());
 
                 if (addedBooking.isPresent())
                 {
+                    BookingDao addedBookingDao = new BookingDao(addedBooking.get());
+                    addedBookingDao.setBookingMembers(bookingMemberDaos);
+
                     // send email
-                    mailServ.sendInvite(new BookingDao(addedBooking.get()));
+                    mailServ.sendInvite(addedBookingDao);
 
                     return new GenericDto<>(null, new BookingDao(addedBooking.get()), null, warnings);
                 }
